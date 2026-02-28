@@ -15,7 +15,32 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     
     <!-- 自定义样式 -->
+	
+
     <style>
+	 /* 移动端二维码触控显示样式 */
+    .qr-container {
+        position: relative;
+    }
+    .qr-popup {
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease-in-out;
+        pointer-events: none;
+    }
+    .qr-container.active .qr-popup,
+    .qr-container:hover .qr-popup {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+    }
+    /* 解决移动端点击穿透问题 */
+    .qr-popup {
+        z-index: 200;
+    }
+    .qr-popup > div {
+        z-index: 201;
+    }
         /* H5基础优化 */
         html {
             -webkit-tap-highlight-color: transparent;
@@ -382,201 +407,204 @@
     </section>
 
     <!-- “3+4+5”服务体系（H5适配） -->
-    <section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-2xl md:text-4xl font-black text-gray-900">
-                    <span class="text-blue-600">3</span> + <span class="text-indigo-600">4</span> + <span class="text-purple-600">5</span> 服务体系
-                </h2>
-                <p class="mt-4 text-gray-500">构建全方位的青少年科技教育生态圈</p>
+    <!-- “3+4+5”服务体系（二维码彻底防遮挡版） -->
+<section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl md:text-4xl font-black text-gray-900">
+                <span class="text-blue-600">3</span> + <span class="text-indigo-600">4</span> + <span class="text-purple-600">5</span> 服务体系
+            </h2>
+            <p class="mt-4 text-gray-500">构建全方位的青少年科技教育生态圈</p>
+        </div>
+
+        <div class="space-y-10">
+            <!-- "3" -->
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-blue-100 pb-6 md:pb-0">
+                    <div class="text-center md:text-right">
+                        <div class="text-4xl md:text-5xl font-black text-blue-500 mb-2">3</div>
+                        <div class="text-lg md:text-xl font-bold text-gray-800">产教融合与<br>高校实体联盟</div>
+                    </div>
+                </div>
+                <div class="w-full md:w-2/3 flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">淮阴工学院</span>
+                    <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏电子信息职业学院</span>
+                    <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏食品药品职业学院</span>
+                </div>
             </div>
 
-            <div class="space-y-10">
-                <!-- "3" -->
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-blue-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-blue-500 mb-2">3</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">产教融合与<br>高校实体联盟</div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3 flex flex-wrap gap-3">
-                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">淮阴工学院</span>
-                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏电子信息职业学院</span>
-                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏食品药品职业学院</span>
+            <!-- "4" 多维数字协同与工具中台【核心优化：二维码向上显示】 -->
+          <div class="flex flex-col md:flex-row gap-6 items-center relative overflow-visible">
+    <!-- 左侧文字区 -->
+    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-indigo-100 pb-6 md:pb-0">
+        <div class="text-center md:text-right">
+            <div class="text-4xl md:text-5xl font-black text-indigo-500 mb-2">4</div>
+            <div class="text-lg md:text-xl font-bold text-gray-800">多维数字协同<br>与工具平台</div>
+        </div>
+    </div>
+    <!-- 右侧二维码容器 -->
+    <div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 relative overflow-visible">
+        <!-- 接龙小程序 -->
+        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+            <div class="qr-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                    <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入接龙</p>
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_2px_2px_rgba(0,0,0,0.05)]"></div>
+            </div>
+            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="smartphone" class="w-5 h-5"></i></div>
+            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">接龙小程序</span>
+        </div>
+        
+        <!-- 科普活动报名平台 -->
+        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+            <div class="qr-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                    <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入平台</p>
+                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_2px_2px_rgba(0,0,0,0.05)]"></div>
+            </div>
+            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="calendar-check" class="w-5 h-5"></i></div>
+            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">科普活动报名平台</span>
+        </div>
+
+        <!-- 成长淮安填写平台 -->
+        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-1">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                    <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入填写</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
+            </div>
+            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="pen-tool" class="w-5 h-5"></i></div>
+            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">成长淮安填写平台</span>
+        </div>
+
+        <!-- 会员服务中心 -->
+        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-1">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                    <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入中心</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
+            </div>
+            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="users" class="w-5 h-5"></i></div>
+            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">会员服务中心</span>
+        </div>
+    </div>
+</div>
+
+            <!-- "5" -->
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-purple-100 pb-6 md:pb-0">
+                    <div class="text-center md:text-right">
+                        <div class="text-4xl md:text-5xl font-black text-purple-500 mb-2">5</div>
+                        <div class="text-lg md:text-xl font-bold text-gray-800">行业生态<br>活动资源</div>
                     </div>
                 </div>
-
-                <!-- "4" -->
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-indigo-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-indigo-500 mb-2">4</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">多维数字协同<br>与工具平台</div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <!-- 接龙小程序 -->
-                        <div class="relative group bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入接龙</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="smartphone" class="w-5 h-5"></i></div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">接龙小程序</span>
-                        </div>
-                        
-                        <!-- 科普活动报名平台 -->
-                        <div class="relative group bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入平台</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="calendar-check" class="w-5 h-5"></i></div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">科普活动报名平台</span>
-                        </div>
-
-                        <!-- 成长淮安填写平台 -->
-                        <div class="relative group bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入填写</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="pen-tool" class="w-5 h-5"></i></div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">成长淮安填写平台</span>
-                        </div>
-
-                        <!-- 会员服务中心 -->
-                        <div class="relative group bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入中心</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors"><i data-lucide="users" class="w-5 h-5"></i></div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">会员服务中心</span>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- "5" -->
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-purple-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-purple-500 mb-2">5</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">行业生态<br>活动资源</div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3 flex flex-wrap gap-3">
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市机器人学会</span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市青少年科技教育协会</span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市无人机协会</span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市增材智造学会</span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 亚太青少年科技创作协会</span>
-                    </div>
+                <div class="w-full md:w-2/3 flex flex-wrap gap-3">
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市机器人学会</span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市青少年科技教育协会</span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市无人机协会</span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 淮安市增材智造学会</span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback"><i data-lucide="shield-check" class="w-4 h-4"></i> 亚太青少年科技创作协会</span>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
     <!-- 融媒体与合作伙伴 & 页脚（H5优化） -->
     <footer class="bg-gray-900 text-white pt-8 pb-20 overflow-visible">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 mb-10">
                 <!-- 融媒体矩阵 -->
-                <div>
-                    <h3 class="text-lg md:text-xl font-bold mb-5 flex items-center gap-2 text-gray-200">
-                        <i data-lucide="share-2" class="w-5 h-5 text-blue-400"></i>
-                        融媒体与全域宣传平台矩阵
-                    </h3>
-                    <div class="flex flex-wrap gap-4 relative">
-                        <!-- 抖音 -->
-                        <div class="relative group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="抖音二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注抖音</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-black group-hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="music" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">抖音</span>
-                        </div>
-
-                        <!-- 快手 -->
-                        <div class="relative group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="快手二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注快手</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="video" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">快手</span>
-                        </div>
-
-                        <!-- 视频号 -->
-                        <div class="relative group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="视频号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注视频号</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="play-square" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">视频号</span>
-                        </div>
-
-                        <!-- 小红书 -->
-                        <div class="relative group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="小红书二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注小红书</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-red-500 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="book-heart" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">小红书</span>
-                        </div>
-
-                        <!-- 公众号 -->
-                        <div class="relative group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible -translate-y-2 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 transition-all duration-300 z-100">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="公众号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注公众号</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-600 group-hover:shadow-[0_0_15px_rgba(22,163,74,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">公众号</span>
-                        </div>
-                    </div>
+               <div>
+    <h3 class="text-lg md:text-xl font-bold mb-5 flex items-center gap-2 text-gray-200">
+        <i data-lucide="share-2" class="w-5 h-5 text-blue-400"></i>
+        融媒体与全域宣传平台矩阵
+    </h3>
+    <div class="flex flex-wrap gap-4 relative">
+        <!-- 抖音 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="抖音二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
                 </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注抖音</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-black group-hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="music" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">抖音</span>
+        </div>
+
+        <!-- 快手 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="快手二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注快手</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="video" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">快手</span>
+        </div>
+
+        <!-- 视频号 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="视频号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注视频号</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="play-square" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">视频号</span>
+        </div>
+
+        <!-- 小红书 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="小红书二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注小红书</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-red-500 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="book-heart" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">小红书</span>
+        </div>
+
+        <!-- 公众号 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="公众号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注公众号</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-600 group-hover:shadow-[0_0_15px_rgba(22,163,74,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">公众号</span>
+        </div>
+    </div>
+</div>
 
                 <!-- 战略区域合作伙伴 -->
                 <div>
@@ -642,7 +670,7 @@
             <div class="pt-8 border-t border-gray-800 text-center flex flex-col items-center">
                 <div class="inline-flex items-center gap-2 text-gray-400 text-sm mb-4">
                     <i data-lucide="loader" class="w-4 h-4 animate-spin"></i>
-                    近期项目服务更新中...详情咨询淮安地区 周老师 18762090903
+                    近期项目服务更新中...
                 </div>
                 <p class="text-gray-500 text-sm">&copy; 2024 HARC科学服务平台. 保留所有权利.</p>
             </div>
@@ -650,7 +678,6 @@
     </footer>
 
     <!-- H5交互脚本 -->
-	
     <script>
         // 等待DOM加载完成
         document.addEventListener('DOMContentLoaded', function() {
@@ -678,44 +705,9 @@
             closeMenu.addEventListener('click', closeMobileMenu);
             overlay.addEventListener('click', closeMobileMenu);
             
-            // 点击菜单项：先关闭菜单，再跳转到锚点
+            // 点击菜单项关闭菜单
             menuLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    // 先阻止默认跳转行为
-                    e.preventDefault();
-                    
-                    // 关闭菜单
-                    closeMobileMenu();
-                    
-                    // 获取目标锚点ID
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    
-                    // 延迟执行滚动（确保菜单关闭动画完成）
-                    setTimeout(() => {
-                        if (targetElement) {
-                            window.scrollTo({
-                                top: targetElement.offsetTop - 80, // 偏移导航栏高度
-                                behavior: 'smooth'
-                            });
-                        }
-                    }, 300); // 与菜单动画时长保持一致
-                });
-            });
-            
-            // 桌面端锚点跳转
-            document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
-                anchor.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    const targetElement = document.querySelector(targetId);
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop - 80, // 偏移导航栏高度
-                            behavior: 'smooth'
-                        });
-                    }
-                });
+                link.addEventListener('click', closeMobileMenu);
             });
             
             // 图片懒加载降级处理
@@ -737,6 +729,21 @@
                     imageObserver.observe(img);
                 });
             }
+            
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80, // 偏移导航栏高度
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
             
             // 背景轮播
             const carouselItems = document.querySelectorAll('.carousel-item');
@@ -762,8 +769,78 @@
                 lucide.createIcons();
             }
         });
+		// 移动端二维码触控交互
+    document.addEventListener('DOMContentLoaded', function() {
+        // 获取所有二维码容器
+        const qrContainers = document.querySelectorAll('.qr-container');
+        
+        // 为每个容器添加触控事件
+        qrContainers.forEach(container => {
+            let touchTimer = null;
+            let hideTimer = null;
+            
+            // 触摸开始 - 显示二维码
+            container.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                clearTimeout(hideTimer);
+                this.classList.add('active');
+                
+                // 长按检测（可选：长按100ms后显示，防止误触）
+                touchTimer = setTimeout(() => {
+                    this.classList.add('active');
+                }, 100);
+            });
+            
+            // 触摸移动 - 保持显示
+            container.addEventListener('touchmove', function(e) {
+                e.preventDefault();
+                clearTimeout(hideTimer);
+                this.classList.add('active');
+            });
+            
+            // 触摸结束 - 延迟隐藏（3秒后隐藏，方便扫码）
+            container.addEventListener('touchend', function() {
+                clearTimeout(touchTimer);
+                hideTimer = setTimeout(() => {
+                    this.classList.remove('active');
+                }, 3000); // 3秒延迟，足够用户扫码
+            });
+            
+            // 触摸离开 - 延迟隐藏
+            container.addEventListener('touchleave', function() {
+                clearTimeout(touchTimer);
+                hideTimer = setTimeout(() => {
+                    this.classList.remove('active');
+                }, 1000);
+            });
+            
+            // 点击事件 - 切换显示/隐藏（可选）
+            container.addEventListener('click', function(e) {
+                e.preventDefault();
+                clearTimeout(hideTimer);
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                } else {
+                    this.classList.add('active');
+                    // 点击后显示5秒
+                    hideTimer = setTimeout(() => {
+                        this.classList.remove('active');
+                    }, 5000);
+                }
+            });
+        });
+        
+        // 全局点击其他区域隐藏所有二维码
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.qr-container')) {
+                qrContainers.forEach(container => {
+                    container.classList.remove('active');
+                });
+            }
+        });
+    });
     </script>
 	
-	
+
 </body>
 </html>
