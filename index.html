@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN" class="scroll-smooth">
 <head>
@@ -93,8 +94,7 @@
             opacity: 0.85;
         }
     </style>
-	
-<!-- 轮播样式补充（放在<head>内） -->
+	<!-- 轮播样式补充（放在<head>内） -->
 <style>
 /* 轮播基础样式 */
 .partner-carousel {
@@ -112,7 +112,12 @@
         display: none !important;
     }
 }
+/* 确保克隆卡片样式一致 */
+.partner-item.clone {
+    opacity: 1;
+}
 </style>
+
 </head>
 <body class="text-gray-800 antialiased selection:bg-blue-200 selection:text-blue-900 safe-area">
     <!-- 导航栏（H5适配增强） -->
@@ -134,7 +139,7 @@
                 <a href="#recent-projects" class="hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
                 <a href="#pillars" class="hover:text-blue-600 transition-colors touch-feedback">双核支柱</a>
                 <a href="#system-433" class="hover:text-blue-600 transition-colors touch-feedback">433融合</a>
-                <a href="#system-345" class="hover:text-blue-600 transition-colors touch-feedback">3+4+5体系</a>
+                <a href="#system-345" class="hover:text-blue-600 transition-colors touch-feedback">3+4+5+N体系</a>
             </nav>
             
             <!-- 移动端菜单按钮 -->
@@ -149,7 +154,7 @@
             <a href="#recent-projects" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
             <a href="#pillars" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">双核支柱</a>
             <a href="#system-433" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">433融合</a>
-            <a href="#system-345" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">3+4+5体系</a>
+            <a href="#system-345" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">3+4+5+N体系</a>
             
             <!-- 关闭按钮 -->
             <button id="closeMenu" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center touch-feedback">
@@ -428,8 +433,8 @@
 
     <!-- “3+4+5”服务体系（H5适配） -->
     <!-- “3+4+5”服务体系（二维码彻底防遮挡版） -->
-<section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
 
+	<section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-2xl md:text-4xl font-black text-gray-900">
@@ -557,7 +562,7 @@
                 </div>
             </div>
 
-            <!-- "N" 资源共赢·支持伙伴（新增轮播板块） -->
+            <!-- "N" 资源共赢·支持伙伴（多卡片循环轮播） -->
             <div class="flex flex-col md:flex-row gap-6 items-center">
                 <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-slate-100 pb-6 md:pb-0">
                     <div class="text-center md:text-right">
@@ -570,7 +575,7 @@
                 <div class="w-full md:w-2/3 relative">
                     <!-- 轮播外框 -->
                     <div class="partner-carousel overflow-hidden rounded-xl" style="position: relative;">
-                        <!-- 轮播内容容器 -->
+                        <!-- 轮播内容容器（支持任意数量卡片） -->
                         <div class="partner-track flex items-center gap-3 md:gap-4" id="partnerTrack" style="transition: transform 0.5s ease; will-change: transform;">
                             <!-- 伙伴1 -->
                             <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
@@ -614,7 +619,28 @@
                                 </div>
                                 <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX科技研究院</p>
                             </div>
-                            <!-- 可继续添加更多伙伴 -->
+                            <!-- 伙伴7 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner7.png" alt="伙伴7logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX教育集团</p>
+                            </div>
+                            <!-- 伙伴8 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner8.png" alt="伙伴8logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX创新实验室</p>
+                            </div>
+                            <!-- 伙伴9 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner9.png" alt="伙伴9logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX产业投资基金</p>
+                            </div>
+                            <!-- 可无限添加更多伙伴卡片 -->
                         </div>
                     </div>
                     
@@ -630,8 +656,6 @@
         </div>
     </div>
 </section>
-
-
 
     <!-- 融媒体与合作伙伴 & 页脚（H5优化） -->
     <footer class="bg-gray-900 text-white pt-8 pb-20 overflow-visible">
@@ -956,8 +980,7 @@
     });
     </script>
 
-	
-	<!-- 轮播功能脚本（放在页面底部，</body>之前） -->
+	<!-- 轮播功能脚本（支持多卡片循环，放在页面底部</body>之前） -->
 <script>
 // 等待页面完全加载
 window.onload = function() {
@@ -979,12 +1002,13 @@ window.onload = function() {
     let itemCount = document.querySelectorAll('.partner-item').length;
     let currentPos = 0;
     let autoPlayTimer = null;
+    let isTransitioning = false; // 防止快速滑动冲突
 
-    // 计算元素宽度（适配不同屏幕）
+    // 计算元素宽度（适配不同屏幕和卡片数量）
     function calcItemWidth() {
         const firstItem = document.querySelector('.partner-item');
         if (firstItem) {
-            // 元素宽度 + gap间距
+            // 元素宽度 + gap间距（动态适配）
             itemWidth = firstItem.offsetWidth + (window.innerWidth >= 768 ? 16 : 12);
         }
     }
@@ -992,26 +1016,61 @@ window.onload = function() {
     // 初始化宽度（首次+窗口变化）
     calcItemWidth();
     window.addEventListener('resize', function() {
-        calcItemWidth();
-        track.style.transform = `translateX(${currentPos}px)`;
+        if (!isTransitioning) {
+            calcItemWidth();
+            track.style.transform = `translateX(${currentPos}px)`;
+        }
     });
 
-    // 滑动核心函数
+    // 滑动核心函数（支持无限循环）
     function slide(direction) {
+        if (isTransitioning) return;
+        isTransitioning = true;
+
         if (direction === 'next') {
             currentPos -= itemWidth * settings.step;
-            // 到达末尾重置到开头
-            if (Math.abs(currentPos) >= itemWidth * (itemCount - (window.innerWidth >= 768 ? 7 : 4))) {
-                currentPos = 0;
+            // 滑动到最后一张后，无缝切换到开头
+            if (Math.abs(currentPos) >= itemWidth * (itemCount - getVisibleCount())) {
+                // 先滑动到克隆的开头卡片，再瞬间重置位置
+                track.style.transform = `translateX(-${itemWidth * itemCount}px)`;
+                setTimeout(() => {
+                    track.style.transition = 'none';
+                    currentPos = 0;
+                    track.style.transform = `translateX(0)`;
+                    // 恢复过渡效果
+                    setTimeout(() => track.style.transition = `transform ${settings.speed}ms ease`, 50);
+                    isTransitioning = false;
+                }, settings.speed);
+            } else {
+                track.style.transform = `translateX(${currentPos}px)`;
+                setTimeout(() => {
+                    isTransitioning = false;
+                }, settings.speed);
             }
         } else {
             currentPos += itemWidth * settings.step;
-            // 到达开头重置到末尾
+            // 滑动到第一张后，无缝切换到末尾
             if (currentPos > 0) {
-                currentPos = -itemWidth * (itemCount - (window.innerWidth >= 768 ? 7 : 4));
+                track.style.transition = 'none';
+                currentPos = -itemWidth * (itemCount - getVisibleCount());
+                track.style.transform = `translateX(${currentPos}px)`;
+                // 恢复过渡效果并继续滑动
+                setTimeout(() => {
+                    track.style.transition = `transform ${settings.speed}ms ease`;
+                    currentPos += itemWidth * settings.step;
+                    track.style.transform = `translateX(${currentPos}px)`;
+                    setTimeout(() => isTransitioning = false, settings.speed);
+                }, 50);
+            } else {
+                track.style.transform = `translateX(${currentPos}px)`;
+                setTimeout(() => isTransitioning = false, settings.speed);
             }
         }
-        track.style.transform = `translateX(${currentPos}px)`;
+    }
+
+    // 获取当前屏幕可见的卡片数量
+    function getVisibleCount() {
+        return window.innerWidth >= 768 ? 7 : 4; // PC端7个，移动端4个
     }
 
     // 绑定按钮事件
@@ -1030,7 +1089,7 @@ window.onload = function() {
 
     // 自动播放
     function startAutoPlay() {
-        if (settings.autoPlay && track) {
+        if (settings.autoPlay && track && itemCount > getVisibleCount()) {
             autoPlayTimer = setInterval(() => slide('next'), settings.interval);
         }
     }
@@ -1062,14 +1121,39 @@ window.onload = function() {
         startAutoPlay();
     });
 
-    // 启动自动播放
+    // 初始化克隆首尾卡片（实现无缝循环）
+    function initCloneItems() {
+        if (itemCount <= getVisibleCount()) return; // 卡片数量少于可见数量时不克隆
+        const items = document.querySelectorAll('.partner-item');
+        // 克隆开头2张卡片放到末尾
+        for (let i = 0; i < 2; i++) {
+            const clone = items[i].cloneNode(true);
+            track.appendChild(clone);
+        }
+        // 克隆末尾2张卡片放到开头
+        for (let i = itemCount - 2; i < itemCount; i++) {
+            const clone = items[i].cloneNode(true);
+            track.insertBefore(clone, items[0]);
+        }
+        // 调整初始位置，跳过开头的克隆卡片
+        currentPos = -itemWidth * 2;
+        track.style.transition = 'none';
+        track.style.transform = `translateX(${currentPos}px)`;
+        // 恢复过渡效果
+        setTimeout(() => track.style.transition = `transform ${settings.speed}ms ease`, 50);
+    }
+
+    // 初始化克隆卡片并启动自动播放
+    initCloneItems();
     startAutoPlay();
+
+    // 调试信息（可选）
+    console.log('轮播卡片总数：', itemCount);
+    console.log('当前可见卡片数：', getVisibleCount());
 };
 </script>
 
-
 </body>
 </html>
-
 
 
