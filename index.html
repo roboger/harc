@@ -33,21 +33,19 @@
     <!-- 导航栏 (结构不变，保持原有交互) -->
     <header class="fixed w-full top-0 z-50 glass-card shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Logo区域 - 增加链接 -->
-            <div class="flex items-center gap-2">
-                <a href="#" class="block"> <!-- Logo增加链接 -->
-                    <div class="bg-gradient-to-br p-1 rounded-xl">
-                        <img src="images/logo.png" alt="HARC科学服务平台logo" class="w-8 h-8 rounded-lg object-contain" loading="lazy" width="32" height="32" />
-                    </div>
-                </a>
+            <!-- Logo区域 - 添加首页链接 -->
+            <a href="#" class="flex items-center gap-2 hover:opacity-90 transition-opacity">
+                <div class="bg-gradient-to-br p-1 rounded-xl">
+                    <img src="images/logo.png" alt="HARC科学服务平台logo" class="w-8 h-8 rounded-lg object-contain" loading="lazy" width="32" height="32" />
+                </div>
                 <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
                     HARC科学服务平台
                 </span>
-            </div>
+            </a>
             
             <!-- 桌面导航 (隐藏移动端) -->
             <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
-                <a href="#" class="hover:text-blue-600 transition-colors touch-feedback">首页</a>
+				 <a href="#" class="hover:text-blue-600 transition-colors touch-feedback">首页</a>
                 <a href="#vision" class="hover:text-blue-600 transition-colors touch-feedback">HARC愿景</a>
                 <a href="#recent-projects" class="hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
                 <a href="#pillars" class="hover:text-blue-600 transition-colors touch-feedback">双核支柱</a>
@@ -63,6 +61,7 @@
         
         <!-- 移动端侧滑菜单 -->
         <div id="mobileMenu" class="menu-slide fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-60 pt-16 px-6 flex flex-col gap-4">
+            <a href="#" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">首页</a>
             <a href="#vision" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">HARC愿景</a>
             <a href="#recent-projects" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
             <a href="#pillars" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">双核支柱</a>
@@ -181,7 +180,7 @@
         </div>
     </section>
 
-<!-- 双核业务支柱 (不变) -->
+    <!-- 双核业务支柱 (不变) -->
     <section id="pillars" class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10">
@@ -722,11 +721,7 @@
         </div>
     </footer>
 
-
-
-
     <!-- 引入外部脚本文件 -->
-    <script src="js/main.js" defer></script>
+    <script src="js/main.js"></script>
 </body>
 </html>
-
