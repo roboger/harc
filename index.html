@@ -1,12 +1,14 @@
 <!DOCTYPE html>
-<html lang="zh-CN" class="scroll-smooth">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 视口与H5核心适配 -->
+    <!-- 视口与H5核心适配 - 增强兼容性 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no, email=no">
+    <!-- 兼容IE浏览器 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>HARC科学服务平台 - 世代创新 世界伙伴</title>
 
     <!-- 资源预连接与DNS预取：加速第三方CDN -->
@@ -17,17 +19,381 @@
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
 
-    <!-- 外部字体: 使用 media="print" 异步加载，加载后切换；仅加载必要字重 -->
+    <!-- 外部字体: 使用media="print"异步加载，并添加font-display:swap提升兼容性 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <!-- 异步加载 Tailwind 和 Lucide (defer 不阻塞解析) -->
+    <!-- 降级方案：如果异步加载失败，提供系统字体 -->
+    <noscript>
+        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
+    </noscript>
+    
+    <!-- 异步加载 Tailwind 和 Lucide - 添加备用方案 -->
     <script src="https://cdn.tailwindcss.com" defer></script>
     <script src="https://unpkg.com/lucide@latest" defer></script>
+    <!-- 降级方案：如果CDN加载失败，提供备用CDN -->
+    <script>
+        window.tailwind || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"><\/script>');
+    </script>
 
     <!-- 预加载首屏背景图 (优先级高) -->
     <link rel="preload" as="image" href="images/bg1.jpg" fetchpriority="high">
 
-    <!-- 引入外部样式文件 -->
-    <link rel="stylesheet" href="css/style.css">
+    <!-- 内联关键CSS - 增强浏览器兼容性 -->
+    <style>
+        /* === 浏览器兼容性重置 === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+
+        /* === 基础重置与H5优化 - 兼容各浏览器 === */
+        html {
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            -webkit-text-size-adjust: 100%;
+            -moz-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+            touch-action: manipulation;
+            -ms-touch-action: manipulation;
+            scroll-behavior: smooth;
+            /* 降级方案：如果smooth不支持，使用默认滚动 */
+        }
+        
+        /* 兼容不支持scroll-behavior的浏览器 */
+        @media screen and (prefers-reduced-motion: reduce) {
+            html {
+                scroll-behavior: auto;
+            }
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border: 0;
+            -ms-interpolation-mode: bicubic;
+        }
+
+        /* 清除所有浏览器的默认样式 */
+        a, button, input, textarea {
+            outline: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+            background-color: transparent;
+        }
+
+        button {
+            border: none;
+            background: none;
+            cursor: pointer;
+        }
+
+        /* === 导航与毛玻璃 - 兼容各浏览器 === */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            /* 标准语法 */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            /* 降级方案 */
+            background: -moz-linear-gradient(top, rgba(255,255,255,0.85), rgba(255,255,255,0.85));
+            background: -webkit-linear-gradient(top, rgba(255,255,255,0.85), rgba(255,255,255,0.85));
+            /* 如果backdrop-filter不支持，使用纯色背景 */
+        }
+        
+        /* 检测不支持backdrop-filter的浏览器 */
+        @supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
+            .glass-card {
+                background: rgba(255, 255, 255, 0.95);
+            }
+        }
+
+        header {
+            height: 4rem;
+        }
+
+        /* === 移动端菜单动画 - 兼容各浏览器 === */
+        .menu-slide {
+            transform: translateX(100%);
+            -webkit-transform: translateX(100%);
+            -moz-transform: translateX(100%);
+            -ms-transform: translateX(100%);
+            transition: transform 0.3s ease-in-out;
+            -webkit-transition: -webkit-transform 0.3s ease-in-out;
+            -moz-transition: -moz-transform 0.3s ease-in-out;
+            -ms-transition: -ms-transform 0.3s ease-in-out;
+        }
+        .menu-slide.active {
+            transform: translateX(0);
+            -webkit-transform: translateX(0);
+            -moz-transform: translateX(0);
+            -ms-transform: translateX(0);
+        }
+
+        /* === 加载骨架动画 - 兼容各浏览器 === */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: -webkit-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: -moz-linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            -webkit-background-size: 200% 100%;
+            animation: skeleton-loading 1.5s infinite;
+            -webkit-animation: skeleton-loading 1.5s infinite;
+            -moz-animation: skeleton-loading 1.5s infinite;
+        }
+        @keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        @-webkit-keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+        @-moz-keyframes skeleton-loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* === 安全区域适配 - 兼容各浏览器 === */
+        .safe-area {
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-top: env(safe-area-inset-top);
+            /* 降级方案 */
+            padding-bottom: constant(safe-area-inset-bottom);
+            padding-top: constant(safe-area-inset-top);
+        }
+
+        /* === 触摸反馈 - 兼容各浏览器 === */
+        .touch-feedback {
+            transition: all 0.15s ease;
+            -webkit-transition: all 0.15s ease;
+            -moz-transition: all 0.15s ease;
+            -ms-transition: all 0.15s ease;
+        }
+        .touch-feedback:active {
+            transform: scale(0.95);
+            -webkit-transform: scale(0.95);
+            -moz-transform: scale(0.95);
+            -ms-transform: scale(0.95);
+            opacity: 0.85;
+        }
+
+        /* === 二维码弹出层 (移动优化) - 兼容各浏览器 === */
+        .qr-container {
+            position: relative;
+        }
+        .qr-popup {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+            -webkit-transition: all 0.3s ease-in-out;
+            -moz-transition: all 0.3s ease-in-out;
+            -ms-transition: all 0.3s ease-in-out;
+            pointer-events: none;
+            z-index: 200;
+        }
+        .qr-container.active .qr-popup,
+        .qr-container:hover .qr-popup {
+            opacity: 1;
+            visibility: visible;
+            pointer-events: auto;
+        }
+        .qr-popup > div {
+            z-index: 201;
+        }
+
+        /* === 轮播基础样式 - 兼容各浏览器 === */
+        .partner-carousel {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        .partner-item {
+            flex-shrink: 0;
+            -webkit-flex-shrink: 0;
+            -ms-flex-negative: 0;
+        }
+        .partner-item:active {
+            transform: scale(0.98);
+            -webkit-transform: scale(0.98);
+            -moz-transform: scale(0.98);
+            -ms-transform: scale(0.98);
+        }
+        @media (max-width: 768px) {
+            #prevBtn, #nextBtn {
+                display: none !important;
+            }
+        }
+        .partner-item.clone {
+            opacity: 1;
+        }
+
+        /* === 英雄区轮播过渡 - 兼容各浏览器 === */
+        .carousel-item {
+            transition: opacity 1s ease-in-out;
+            -webkit-transition: opacity 1s ease-in-out;
+            -moz-transition: opacity 1s ease-in-out;
+            -ms-transition: opacity 1s ease-in-out;
+        }
+
+        /* === 浮动动画 - 兼容各浏览器 === */
+        @keyframes float {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+        @-webkit-keyframes float {
+            0% { -webkit-transform: translateY(0); }
+            50% { -webkit-transform: translateY(-10px); }
+            100% { -webkit-transform: translateY(0); }
+        }
+        @-moz-keyframes float {
+            0% { -moz-transform: translateY(0); }
+            50% { -moz-transform: translateY(-10px); }
+            100% { -moz-transform: translateY(0); }
+        }
+        .animate-float {
+            animation: float 3s ease-in-out infinite;
+            -webkit-animation: float 3s ease-in-out infinite;
+            -moz-animation: float 3s ease-in-out infinite;
+        }
+
+        /* 防止背景内容溢出 */
+        .overflow-hidden {
+            overflow: hidden;
+        }
+
+        /* 修复：433板块按钮文字PC端显示问题 */
+        .action-text {
+            opacity: 1 !important;
+            transition: opacity 0.3s ease;
+            -webkit-transition: opacity 0.3s ease;
+            -moz-transition: opacity 0.3s ease;
+            -ms-transition: opacity 0.3s ease;
+        }
+        .group:hover .action-text {
+            transform: translateX(2px);
+            -webkit-transform: translateX(2px);
+            -moz-transform: translateX(2px);
+            -ms-transform: translateX(2px);
+        }
+
+        /* 修复：锚点跳转偏移（导航栏固定导致的定位错误） */
+        :target {
+            scroll-margin-top: 4rem;
+            -webkit-scroll-margin-top: 4rem;
+            -moz-scroll-margin-top: 4rem;
+            -ms-scroll-margin-top: 4rem;
+        }
+
+        /* Flexbox兼容性修复 */
+        .flex {
+            display: -webkit-box;
+            display: -moz-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+        }
+        .flex-col {
+            -webkit-box-orient: vertical;
+            -webkit-box-direction: normal;
+            -moz-box-orient: vertical;
+            -moz-box-direction: normal;
+            -ms-flex-direction: column;
+            -webkit-flex-direction: column;
+            flex-direction: column;
+        }
+        .items-center {
+            -webkit-box-align: center;
+            -moz-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+        }
+        .justify-center {
+            -webkit-box-pack: center;
+            -moz-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+        }
+        .justify-between {
+            -webkit-box-pack: justify;
+            -moz-box-pack: justify;
+            -ms-flex-pack: justify;
+            -webkit-justify-content: space-between;
+            justify-content: space-between;
+        }
+        .gap-2 {
+            gap: 0.5rem;
+        }
+        .gap-3 {
+            gap: 0.75rem;
+        }
+        .gap-4 {
+            gap: 1rem;
+        }
+        .gap-6 {
+            gap: 1.5rem;
+        }
+
+        /* Grid兼容性修复 */
+        .grid {
+            display: -ms-grid;
+            display: grid;
+        }
+        .grid-cols-1 {
+            -ms-grid-columns: 1fr;
+            grid-template-columns: repeat(1, 1fr);
+        }
+        @media (min-width: 768px) {
+            .md\:grid-cols-2 {
+                -ms-grid-columns: 1fr 1fr;
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+        @media (min-width: 1024px) {
+            .lg\:grid-cols-3 {
+                -ms-grid-columns: 1fr 1fr 1fr;
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .lg\:grid-cols-4 {
+                -ms-grid-columns: 1fr 1fr 1fr 1fr;
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        /* 隐藏类兼容性 */
+        .hidden {
+            display: none !important;
+        }
+
+        /* 文本渐变兼容性 */
+        .bg-clip-text {
+            -webkit-background-clip: text;
+            background-clip: text;
+        }
+        .text-transparent {
+            color: transparent;
+        }
+    </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-blue-200 selection:text-blue-900 safe-area">
     <!-- 导航栏 (结构不变，保持原有交互) -->
@@ -45,7 +411,7 @@
             
             <!-- 桌面导航 (隐藏移动端) -->
             <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
-				 <a href="#" class="hover:text-blue-600 transition-colors touch-feedback">首页</a>
+                <a href="#" class="hover:text-blue-600 transition-colors touch-feedback">首页</a>
                 <a href="#vision" class="hover:text-blue-600 transition-colors touch-feedback">HARC愿景</a>
                 <a href="#recent-projects" class="hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
                 <a href="#pillars" class="hover:text-blue-600 transition-colors touch-feedback">双核支柱</a>
@@ -337,7 +703,7 @@
 
     <!-- “3+4+5+N”服务体系 (包含二维码交互，结构不变，但图片已优化懒加载) -->
    
-	<section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
+    <section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="text-center mb-12">
             <h2 class="text-2xl md:text-4xl font-black text-gray-900">
@@ -479,7 +845,7 @@
                     <!-- 轮播外框 -->
                     <div class="partner-carousel overflow-hidden rounded-xl" style="position: relative;">
                         <!-- 轮播内容容器（支持任意数量卡片） -->
-                        <div class="partner-track flex items-center gap-3 md:gap-4" id="partnerTrack" style="transition: transform 0.5s ease; will-change: transform;">
+                        <div class="partner-track flex items-center gap-3 md:gap-4" id="partnerTrack" style="transition: transform 0.5s ease; -webkit-transition: -webkit-transform 0.5s ease; -moz-transition: -moz-transform 0.5s ease; -ms-transition: -ms-transform 0.5s ease; will-change: transform;">
                             <!-- 伙伴1 -->
                             <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
                                 <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
@@ -721,7 +1087,422 @@
         </div>
     </footer>
 
-    <!-- 引入外部脚本文件 -->
-    <script src="js/main.js"></script>
+    <!-- JavaScript - 增强浏览器兼容性 -->
+    <script>
+        (function() {
+            'use strict';
+
+            // 检测浏览器功能支持情况
+            var features = {
+                intersectionObserver: 'IntersectionObserver' in window,
+                backdropFilter: CSS.supports('backdrop-filter', 'blur(1px)') || CSS.supports('-webkit-backdrop-filter', 'blur(1px)'),
+                smoothScroll: 'scrollBehavior' in document.documentElement.style
+            };
+
+            // 如果不支持平滑滚动，使用JavaScript降级方案
+            if (!features.smoothScroll) {
+                document.querySelectorAll('a[href^="#"]').forEach(function(anchor) {
+                    anchor.addEventListener('click', function(e) {
+                        var targetId = this.getAttribute('href');
+                        if (targetId === '#') return;
+                        var targetElement = document.querySelector(targetId);
+                        if (targetElement) {
+                            e.preventDefault();
+                            var headerOffset = 80;
+                            var elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                            var offsetPosition = elementPosition - headerOffset;
+
+                            window.scrollTo({
+                                top: offsetPosition,
+                                behavior: 'smooth'
+                            });
+                        }
+                    });
+                });
+            }
+
+            // --- 移动端菜单 ---
+            function initMobileMenu() {
+                var menuToggle = document.getElementById('menuToggle');
+                var closeMenu = document.getElementById('closeMenu');
+                var mobileMenu = document.getElementById('mobileMenu');
+                var overlay = document.getElementById('overlay');
+                
+                if (!menuToggle || !mobileMenu || !overlay) return;
+
+                var menuLinks = mobileMenu.querySelectorAll('a');
+
+                function openMenu() {
+                    mobileMenu.classList.add('active');
+                    overlay.classList.remove('hidden');
+                    document.body.style.overflow = 'hidden';
+                }
+
+                function closeMobileMenu() {
+                    mobileMenu.classList.remove('active');
+                    overlay.classList.add('hidden');
+                    document.body.style.overflow = '';
+                }
+
+                menuToggle.addEventListener('click', openMenu);
+                if (closeMenu) closeMenu.addEventListener('click', closeMobileMenu);
+                overlay.addEventListener('click', closeMobileMenu);
+
+                for (var i = 0; i < menuLinks.length; i++) {
+                    menuLinks[i].addEventListener('click', closeMobileMenu);
+                }
+            }
+
+            // --- 图片懒加载 ---
+            function initLazyLoading() {
+                if (!features.intersectionObserver) {
+                    // 降级方案：直接加载所有图片
+                    var lazyImages = document.querySelectorAll('img[loading="lazy"]');
+                    for (var i = 0; i < lazyImages.length; i++) {
+                        lazyImages[i].classList.add('loaded', 'opacity-100');
+                        lazyImages[i].classList.remove('opacity-0');
+                    }
+                    return;
+                }
+
+                var lazyImages = document.querySelectorAll('img[loading="lazy"]:not(.processed)');
+                var imageObserver = new IntersectionObserver(function(entries) {
+                    entries.forEach(function(entry) {
+                        if (entry.isIntersecting) {
+                            var img = entry.target;
+                            if (img.classList.contains('loaded')) return;
+                            img.classList.add('loaded', 'opacity-100');
+                            img.classList.remove('opacity-0');
+                            imageObserver.unobserve(img);
+                        }
+                    });
+                }, { rootMargin: '200px' });
+
+                for (var i = 0; i < lazyImages.length; i++) {
+                    lazyImages[i].classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                    imageObserver.observe(lazyImages[i]);
+                }
+            }
+
+            // --- 背景轮播 ---
+            function initCarousel() {
+                var carouselItems = document.querySelectorAll('.carousel-item');
+                if (carouselItems.length === 0) return;
+
+                var currentSlide = 0;
+                
+                function showSlide(index) {
+                    for (var i = 0; i < carouselItems.length; i++) {
+                        carouselItems[i].style.opacity = i === index ? '1' : '0';
+                    }
+                }
+
+                function nextSlide() {
+                    currentSlide = (currentSlide + 1) % carouselItems.length;
+                    showSlide(currentSlide);
+                }
+
+                setInterval(nextSlide, 5000);
+            }
+
+            // --- 二维码触摸交互 ---
+            function initQrCode() {
+                var qrContainers = document.querySelectorAll('.qr-container');
+                
+                for (var i = 0; i < qrContainers.length; i++) {
+                    (function(container) {
+                        var hideTimer = null;
+                        
+                        container.addEventListener('touchstart', function(e) {
+                            e.preventDefault();
+                            if (hideTimer) clearTimeout(hideTimer);
+                            container.classList.add('active');
+                        });
+
+                        container.addEventListener('touchend', function() {
+                            hideTimer = setTimeout(function() {
+                                container.classList.remove('active');
+                            }, 3000);
+                        });
+
+                        container.addEventListener('touchcancel', function() {
+                            if (hideTimer) clearTimeout(hideTimer);
+                            container.classList.remove('active');
+                        });
+
+                        container.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            if (container.classList.contains('active')) {
+                                container.classList.remove('active');
+                            } else {
+                                container.classList.add('active');
+                                setTimeout(function() {
+                                    container.classList.remove('active');
+                                }, 5000);
+                            }
+                        });
+                    })(qrContainers[i]);
+                }
+
+                // 全局点击隐藏
+                document.addEventListener('click', function(e) {
+                    for (var i = 0; i < qrContainers.length; i++) {
+                        if (!e.target.closest('.qr-container')) {
+                            qrContainers[i].classList.remove('active');
+                        }
+                    }
+                });
+            }
+
+            // --- 合作伙伴轮播 ---
+            function initPartnerCarousel() {
+                var track = document.getElementById('partnerTrack');
+                var prevBtn = document.getElementById('prevBtn');
+                var nextBtn = document.getElementById('nextBtn');
+                
+                if (!track || !prevBtn || !nextBtn) return;
+
+                var itemWidth = 0;
+                var itemCount = document.querySelectorAll('.partner-item').length;
+                var currentPos = 0;
+                var autoPlayTimer = null;
+                var isTransitioning = false;
+
+                function calcItemWidth() {
+                    var firstItem = document.querySelector('.partner-item');
+                    if (firstItem) {
+                        var gap = window.innerWidth >= 768 ? 16 : 12;
+                        itemWidth = firstItem.offsetWidth + gap;
+                    }
+                }
+
+                calcItemWidth();
+
+                window.addEventListener('resize', function() {
+                    if (!isTransitioning) {
+                        calcItemWidth();
+                        track.style.transform = 'translateX(' + currentPos + 'px)';
+                        if ('webkitTransform' in track.style) {
+                            track.style.webkitTransform = 'translateX(' + currentPos + 'px)';
+                        }
+                    }
+                });
+
+                function getVisibleCount() {
+                    return window.innerWidth >= 768 ? 7 : 4;
+                }
+
+                function slide(direction) {
+                    if (isTransitioning || itemCount <= getVisibleCount()) return;
+                    isTransitioning = true;
+                    var step = 1;
+
+                    if (direction === 'next') {
+                        currentPos -= itemWidth * step;
+                        if (Math.abs(currentPos) >= itemWidth * (itemCount - getVisibleCount())) {
+                            track.style.transition = 'none';
+                            if ('webkitTransition' in track.style) {
+                                track.style.webkitTransition = 'none';
+                            }
+                            track.style.transform = 'translateX(-' + (itemWidth * itemCount) + 'px)';
+                            if ('webkitTransform' in track.style) {
+                                track.style.webkitTransform = 'translateX(-' + (itemWidth * itemCount) + 'px)';
+                            }
+                            
+                            setTimeout(function() {
+                                track.style.transition = 'transform 0.5s ease';
+                                if ('webkitTransition' in track.style) {
+                                    track.style.webkitTransition = '-webkit-transform 0.5s ease';
+                                }
+                                currentPos = 0;
+                                track.style.transform = 'translateX(0)';
+                                if ('webkitTransform' in track.style) {
+                                    track.style.webkitTransform = 'translateX(0)';
+                                }
+                                isTransitioning = false;
+                            }, 50);
+                        } else {
+                            track.style.transform = 'translateX(' + currentPos + 'px)';
+                            if ('webkitTransform' in track.style) {
+                                track.style.webkitTransform = 'translateX(' + currentPos + 'px)';
+                            }
+                            setTimeout(function() { isTransitioning = false; }, 500);
+                        }
+                    } else {
+                        currentPos += itemWidth * step;
+                        if (currentPos > 0) {
+                            track.style.transition = 'none';
+                            if ('webkitTransition' in track.style) {
+                                track.style.webkitTransition = 'none';
+                            }
+                            currentPos = -itemWidth * (itemCount - getVisibleCount());
+                            track.style.transform = 'translateX(' + currentPos + 'px)';
+                            if ('webkitTransform' in track.style) {
+                                track.style.webkitTransform = 'translateX(' + currentPos + 'px)';
+                            }
+                            
+                            setTimeout(function() {
+                                track.style.transition = 'transform 0.5s ease';
+                                if ('webkitTransition' in track.style) {
+                                    track.style.webkitTransition = '-webkit-transform 0.5s ease';
+                                }
+                                currentPos += itemWidth * step;
+                                track.style.transform = 'translateX(' + currentPos + 'px)';
+                                if ('webkitTransform' in track.style) {
+                                    track.style.webkitTransform = 'translateX(' + currentPos + 'px)';
+                                }
+                                setTimeout(function() { isTransitioning = false; }, 500);
+                            }, 50);
+                        } else {
+                            track.style.transform = 'translateX(' + currentPos + 'px)';
+                            if ('webkitTransform' in track.style) {
+                                track.style.webkitTransform = 'translateX(' + currentPos + 'px)';
+                            }
+                            setTimeout(function() { isTransitioning = false; }, 500);
+                        }
+                    }
+                }
+
+                prevBtn.addEventListener('click', function() { 
+                    slide('prev'); 
+                    resetAutoPlay(); 
+                });
+
+                nextBtn.addEventListener('click', function() { 
+                    slide('next'); 
+                    resetAutoPlay(); 
+                });
+
+                function startAutoPlay() {
+                    if (itemCount > getVisibleCount()) {
+                        autoPlayTimer = setInterval(function() { slide('next'); }, 3000);
+                    }
+                }
+
+                function resetAutoPlay() {
+                    if (autoPlayTimer) clearInterval(autoPlayTimer);
+                    startAutoPlay();
+                }
+
+                function initCloneItems() {
+                    if (itemCount <= getVisibleCount()) return;
+                    currentPos = 0;
+                    track.style.transform = 'translateX(0)';
+                    if ('webkitTransform' in track.style) {
+                        track.style.webkitTransform = 'translateX(0)';
+                    }
+                }
+
+                initCloneItems();
+                startAutoPlay();
+
+                track.addEventListener('touchstart', function() { 
+                    if (autoPlayTimer) clearInterval(autoPlayTimer); 
+                });
+
+                track.addEventListener('touchend', startAutoPlay);
+            }
+
+            // --- 初始化Lucide图标 ---
+            function initLucide() {
+                if (window.lucide) {
+                    try {
+                        lucide.createIcons();
+                    } catch (e) {
+                        console.warn('Lucide图标初始化失败');
+                    }
+                } else {
+                    // 等待lucide加载
+                    var checkLucide = setInterval(function() {
+                        if (window.lucide) {
+                            clearInterval(checkLucide);
+                            try {
+                                lucide.createIcons();
+                            } catch (e) {
+                                console.warn('Lucide图标初始化失败');
+                            }
+                        }
+                    }, 100);
+                    
+                    // 超时处理
+                    setTimeout(function() {
+                        clearInterval(checkLucide);
+                    }, 5000);
+                }
+            }
+
+            // 执行所有初始化函数
+            function init() {
+                initMobileMenu();
+                initLazyLoading();
+                initCarousel();
+                initQrCode();
+                initPartnerCarousel();
+                initLucide();
+
+                // 添加触摸反馈修复
+                var touchElements = document.querySelectorAll('.touch-feedback');
+                for (var i = 0; i < touchElements.length; i++) {
+                    touchElements[i].addEventListener('touchstart', function() {
+                        // 空函数，触发触摸事件
+                    });
+                }
+            }
+
+            // 根据文档加载状态执行
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', init);
+            } else {
+                init();
+            }
+
+            // 窗口加载完成后执行
+            window.addEventListener('load', function() {
+                // 修复iOS上某些元素的点击问题
+                document.querySelectorAll('a, button').forEach(function(el) {
+                    el.addEventListener('touchstart', function() {}, { passive: true });
+                });
+            });
+        })();
+    </script>
+
+    <!-- 备用方案：如果CSS属性不支持，添加降级样式 -->
+    <style>
+        /* 降级方案：为不支持backdrop-filter的浏览器添加 */
+        @supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
+            .glass-card {
+                background: rgba(255, 255, 255, 0.98);
+                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            }
+        }
+
+        /* IE11特定修复 */
+        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+            .flex {
+                display: -ms-flexbox;
+            }
+            .grid {
+                display: -ms-grid;
+            }
+            .menu-slide {
+                -ms-transform: translateX(100%);
+            }
+            .menu-slide.active {
+                -ms-transform: translateX(0);
+            }
+        }
+
+        /* 确保触摸元素在移动端有足够大的点击区域 */
+        button, a {
+            min-height: 44px;
+            min-width: 44px;
+        }
+        @media (max-width: 768px) {
+            a, button, [role="button"] {
+                min-height: 44px;
+                min-width: 44px;
+            }
+        }
+    </style>
 </body>
 </html>
