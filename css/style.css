@@ -1,1 +1,134 @@
+/* === 基础重置与H5优化 === */
+html {
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    scroll-behavior: smooth; /* 原生平滑滚动替代部分JS */
+}
+body {
+    font-family: 'Noto Sans SC', sans-serif;
+    overflow-x: hidden;
+}
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
 
+/* === 导航与毛玻璃 === */
+.glass-card {
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+header {
+    height: 4rem; /* 固定高度防止跳动 */
+}
+
+/* === 移动端菜单动画 === */
+.menu-slide {
+    transform: translateX(100%);
+    transition: transform 0.3s ease-in-out;
+}
+.menu-slide.active {
+    transform: translateX(0);
+}
+
+/* === 加载骨架动画 === */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* === 安全区域适配 === */
+.safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-top: env(safe-area-inset-top);
+}
+
+/* === 触摸反馈 === */
+.touch-feedback {
+    transition: all 0.15s ease;
+}
+.touch-feedback:active {
+    transform: scale(0.95);
+    opacity: 0.85;
+}
+
+/* === 二维码弹出层 (移动优化) === */
+.qr-container {
+    position: relative;
+}
+.qr-popup {
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease-in-out;
+    pointer-events: none;
+    z-index: 200;
+}
+.qr-container.active .qr-popup,
+.qr-container:hover .qr-popup {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+.qr-popup > div {
+    z-index: 201;
+}
+
+/* === 轮播基础样式 (无限循环) === */
+.partner-carousel {
+    user-select: none;
+}
+.partner-item {
+    flex-shrink: 0;
+}
+.partner-item:active {
+    transform: scale(0.98);
+}
+@media (max-width: 768px) {
+    #prevBtn, #nextBtn {
+        display: none !important;
+    }
+}
+.partner-item.clone {
+    opacity: 1;
+}
+
+/* === 英雄区轮播过渡 === */
+.carousel-item {
+    transition: opacity 1s ease-in-out;
+}
+
+/* === 浮动动画 === */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* 防止背景内容溢出 */
+.overflow-hidden {
+    overflow: hidden;
+}
+
+/* 修复：433板块按钮文字PC端显示问题 */
+.action-text {
+    opacity: 1 !important;
+    transition: opacity 0.3s ease;
+}
+.group:hover .action-text {
+    transform: translateX(2px);
+}
+
+/* 修复：锚点跳转偏移（导航栏固定导致的定位错误） */
+:target {
+    scroll-margin-top: 4rem;
+}
