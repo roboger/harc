@@ -39,37 +39,6 @@
 
     <!-- 引入外部样式文件 -->
     <link rel="stylesheet" href="css/style.css">
-    
-    <!-- 修复PC端导航显示的临时样式 -->
-    <style>
-        /* 临时修复：确保PC端导航显示 */
-        @media (min-width: 768px) {
-            .md\\:flex {
-                display: -webkit-box !important;
-                display: -moz-box !important;
-                display: -ms-flexbox !important;
-                display: -webkit-flex !important;
-                display: flex !important;
-            }
-            .md\\:hidden {
-                display: none !important;
-            }
-        }
-        
-        /* 确保导航容器正确显示 */
-        nav.hidden {
-            display: none;
-        }
-        @media (min-width: 768px) {
-            nav.hidden.md\\:flex {
-                display: -webkit-box !important;
-                display: -moz-box !important;
-                display: -ms-flexbox !important;
-                display: -webkit-flex !important;
-                display: flex !important;
-            }
-        }
-    </style>
 </head>
 <body class="text-gray-800 antialiased selection:bg-blue-200 selection:text-blue-900 safe-area">
     <!-- 导航栏 (结构不变，保持原有交互) -->
@@ -86,7 +55,7 @@
             </a>
             
             <!-- 桌面导航 - 修复显示问题 -->
-            <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600" style="display: none !important;" id="desktopNav">
+            <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600" id="desktopNav">
                 <a href="#" class="hover:text-blue-600 transition-colors touch-feedback">首页</a>
                 <a href="#vision" class="hover:text-blue-600 transition-colors touch-feedback">HARC愿景</a>
                 <a href="#recent-projects" class="hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
@@ -761,37 +730,6 @@
 
     <!-- 引入外部脚本文件 -->
     <script src="js/main.js"></script>
-    
-    <!-- 修复导航显示的脚本 -->
-    <script>
-        (function() {
-            // 确保PC端导航显示
-            function fixDesktopNav() {
-                var desktopNav = document.getElementById('desktopNav');
-                if (desktopNav) {
-                    // 移除内联样式
-                    desktopNav.style.display = '';
-                    
-                    // 检查屏幕宽度，添加正确的类
-                    if (window.innerWidth >= 768) {
-                        desktopNav.classList.add('md:flex');
-                        desktopNav.classList.remove('hidden');
-                    } else {
-                        desktopNav.classList.add('hidden');
-                        desktopNav.classList.remove('md:flex');
-                    }
-                }
-            }
-            
-            // 初始执行
-            fixDesktopNav();
-            
-            // 窗口大小改变时重新检查
-            window.addEventListener('resize', function() {
-                fixDesktopNav();
-            });
-        })();
-    </script>
     
     <!-- 备用方案：如果CSS属性不支持，添加降级样式 -->
     <style>
