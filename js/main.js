@@ -1,74 +1,236 @@
-// 页面加载完成后初始化
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. 移动端菜单交互
-    const menuToggle = document.getElementById('menuToggle');
-    const closeMenu = document.getElementById('closeMenu');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const overlay = document.getElementById('overlay');
+(function() {
+    'use strict';
 
-    // 打开菜单
-    menuToggle?.addEventListener('click', function() {
-        mobileMenu.classList.add('active');
-        overlay.classList.remove('hidden');
-        document.body.style.overflow = 'hidden'; // 防止背景滚动
-    });
+    // 等待DOM解析完成
+    function initApp() {
+        // --- 移动端菜单 ---
+        const menuToggle = document.getElementById('menuToggle');
+        const closeMenu = document.getElementById('closeMenu');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const overlay = document.getElementById('overlay');
+        const menuLinks = mobileMenu ? mobileMenu.querySelectorAll('a') : [];
 
-    // 关闭菜单
-    function closeMobileMenu() {
-        mobileMenu.classList.remove('active');
-        overlay.classList.add('hidden');
-        document.body.style.overflow = ''; // 恢复滚动
-    }
-    closeMenu?.addEventListener('click', closeMobileMenu);
-    overlay?.addEventListener('click', closeMobileMenu);
+        if (menuToggle && mobileMenu && overlay) {
+            function openMenu() {
+                mobileMenu.classList.add('active');
+                overlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                overlay.classList.add('hidden');
+                document.body.style.overflow = '';
+            }
+            menuToggle.addEventListener('click', openMenu);
+            if (closeMenu) closeMenu.addEventListener('click', closeMobileMenu);
+            overlay.addEventListener('click', closeMobileMenu);
+            menuLinks.forEach(link => link.addEventListener('click', closeMobileMenu));
+        }
 
-    // 2. 英雄区背景轮播（自动切换）
-    const carouselItems = document.querySelectorAll('.carousel-item');
-    let currentCarouselIndex = 0;
-    
-    function rotateCarousel() {
-        // 隐藏当前项
-        carouselItems[currentCarouselIndex].style.opacity = 0;
-        // 切换到下一项
-        currentCarouselIndex = (currentCarouselIndex + 1) % carouselItems.length;
-        // 显示下一项
-        carouselItems[currentCarouselIndex].style.opacity = 1;
-    }
-
-    // 启动轮播（5秒切换一次）
-    if (carouselItems.length > 1) {
-        setInterval(rotateCarousel, 5000);
-    }
-
-    // 3. Lucide 图标初始化（确保图标渲染）
-    if (window.lucide) {
-        lucide.createIcons();
-    }
-
-    // 4. 二维码弹出层交互（移动端触摸支持）
-    const qrContainers = document.querySelectorAll('.qr-container');
-    qrContainers.forEach(container => {
-        // 移动端触摸切换
-        container.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            this.classList.toggle('active');
-        });
-    });
-
-    // 5. 平滑滚动增强（兼容低版本浏览器）
-    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            e.preventDefault();
-            const targetId = this.getAttribute('href');
-            if (targetId === '#') return; // 首页链接不处理
-            const targetElement = document.querySelector(targetId);
-            if (targetElement) {
-                targetElement.scrollIntoView({
-                    behavior: 'smooth'
+        // --- 图片懒加载增强 (IntersectionObserver) ---
+        if ('IntersectionObserver' in window) {
+            const lazyImages = document.querySelectorAll('img[loading="lazy"]:not(.processed)');
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        // 如果已加载过就不再处理
+                        if (img.classList.contains('loaded')) return;
+                        img.classList.add('loaded', 'opacity-100');
+                        img.classList.remove('opacity-0');
+                        observer.unobserve(img);
+                    }
                 });
-                // 移动端点击锚点后关闭菜单
-                closeMobileMenu();
+            }, { rootMargin: '200px' }); // 提前加载
+
+            lazyImages.forEach(img => {
+                img.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                imageObserver.observe(img);
+            });
+        }
+
+        // --- 背景轮播 ---
+        const carouselItems = document.querySelectorAll('.carousel-item');
+        if (carouselItems.length > 0) {
+            let currentSlide = 0;
+            function showSlide(index) {
+                carouselItems.forEach((item, i) => {
+                    item.style.opacity = i === index ? '1' : '0';
+                });
+            }
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % carouselItems.length;
+                showSlide(currentSlide);
+            }
+            setInterval(nextSlide, 5000);
+        }
+
+        // --- 二维码触摸交互 (移动端长按显示) ---
+        const qrContainers = document.querySelectorAll('.qr-container');
+        qrContainers.forEach(container => {
+            let hideTimer = null;
+            container.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                clearTimeout(hideTimer);
+                container.classList.add('active');
+            });
+            container.addEventListener('touchend', () => {
+                hideTimer = setTimeout(() => {
+                    container.classList.remove('active');
+                }, 3000); // 保持3秒方便扫码
+            });
+            container.addEventListener('touchcancel', () => {
+                clearTimeout(hideTimer);
+                container.classList.remove('active');
+            });
+            // 点击切换 (可选)
+            container.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (container.classList.contains('active')) {
+                    container.classList.remove('active');
+                } else {
+                    container.classList.add('active');
+                    setTimeout(() => container.classList.remove('active'), 5000);
+                }
+            });
+        });
+        // 全局点击隐藏所有二维码
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.qr-container')) {
+                qrContainers.forEach(c => c.classList.remove('active'));
             }
         });
-    });
-});
+
+        // --- 无限循环轮播 (合作伙伴) ---
+        const track = document.getElementById('partnerTrack');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        if (track && prevBtn && nextBtn) {
+            let itemWidth = 0;
+            let itemCount = document.querySelectorAll('.partner-item').length;
+            let currentPos = 0;
+            let autoPlayTimer = null;
+            let isTransitioning = false;
+
+            function calcItemWidth() {
+                const firstItem = document.querySelector('.partner-item');
+                if (firstItem) {
+                    itemWidth = firstItem.offsetWidth + (window.innerWidth >= 768 ? 16 : 12);
+                }
+            }
+            calcItemWidth();
+            window.addEventListener('resize', () => {
+                if (!isTransitioning) {
+                    calcItemWidth();
+                    track.style.transform = `translateX(${currentPos}px)`;
+                }
+            });
+
+            function getVisibleCount() {
+                return window.innerWidth >= 768 ? 7 : 4;
+            }
+
+            function slide(direction) {
+                if (isTransitioning || itemCount <= getVisibleCount()) return;
+                isTransitioning = true;
+                const step = 1;
+                if (direction === 'next') {
+                    currentPos -= itemWidth * step;
+                    if (Math.abs(currentPos) >= itemWidth * (itemCount - getVisibleCount())) {
+                        track.style.transform = `translateX(-${itemWidth * itemCount}px)`;
+                        setTimeout(() => {
+                            track.style.transition = 'none';
+                            currentPos = 0;
+                            track.style.transform = `translateX(0)`;
+                            setTimeout(() => track.style.transition = 'transform 0.5s ease', 50);
+                            isTransitioning = false;
+                        }, 500);
+                    } else {
+                        track.style.transform = `translateX(${currentPos}px)`;
+                        setTimeout(() => isTransitioning = false, 500);
+                    }
+                } else {
+                    currentPos += itemWidth * step;
+                    if (currentPos > 0) {
+                        track.style.transition = 'none';
+                        currentPos = -itemWidth * (itemCount - getVisibleCount());
+                        track.style.transform = `translateX(${currentPos}px)`;
+                        setTimeout(() => {
+                            track.style.transition = 'transform 0.5s ease';
+                            currentPos += itemWidth * step;
+                            track.style.transform = `translateX(${currentPos}px)`;
+                            setTimeout(() => isTransitioning = false, 500);
+                        }, 50);
+                    } else {
+                        track.style.transform = `translateX(${currentPos}px)`;
+                        setTimeout(() => isTransitioning = false, 500);
+                    }
+                }
+            }
+
+            prevBtn.addEventListener('click', () => { slide('prev'); resetAutoPlay(); });
+            nextBtn.addEventListener('click', () => { slide('next'); resetAutoPlay(); });
+
+            function startAutoPlay() {
+                if (itemCount > getVisibleCount()) {
+                    autoPlayTimer = setInterval(() => slide('next'), 3000);
+                }
+            }
+            function resetAutoPlay() {
+                clearInterval(autoPlayTimer);
+                startAutoPlay();
+            }
+
+            // 初始化克隆卡片（简易无缝）
+            function initCloneItems() {
+                if (itemCount <= getVisibleCount()) return;
+                const items = document.querySelectorAll('.partner-item');
+                // 简单处理：这里只做位置初始化
+                currentPos = 0;
+                track.style.transform = `translateX(0)`;
+            }
+            initCloneItems();
+            startAutoPlay();
+
+            track.addEventListener('touchstart', (e) => { clearInterval(autoPlayTimer); });
+            track.addEventListener('touchend', startAutoPlay);
+        }
+
+        // --- 初始化 Lucide 图标 (确保图标渲染) ---
+        if (window.lucide) {
+            lucide.createIcons();
+        } else {
+            // 如果lucide未加载，等待它
+            window.addEventListener('load', function() {
+                if (window.lucide) lucide.createIcons();
+            });
+        }
+
+        // --- 平滑滚动处理 ---
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    e.preventDefault(); // 阻止默认跳转
+                    const headerOffset = 80; // 固定头部高度
+                    const elementPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+                    const offsetPosition = elementPosition - headerOffset;
+
+                    window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    }
+
+    // 如果DOM已加载则立即执行，否则监听事件
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+})();
