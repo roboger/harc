@@ -1,14 +1,13 @@
+
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <!-- 视口与H5核心适配 - 增强兼容性 -->
+    <!-- 视口与H5核心适配 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no, email=no">
-    <!-- 兼容IE浏览器 -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <title>HARC科学服务平台 - 世代创新 世界伙伴</title>
 
     <!-- 资源预连接与DNS预取：加速第三方CDN -->
@@ -19,20 +18,11 @@
     <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
     <link rel="dns-prefetch" href="https://unpkg.com">
 
-    <!-- 外部字体: 使用media="print"异步加载，并添加font-display:swap提升兼容性 -->
+    <!-- 外部字体: 使用 media="print" 异步加载，加载后切换；仅加载必要字重 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'">
-    <!-- 降级方案：如果异步加载失败，提供系统字体 -->
-    <noscript>
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&display=swap" rel="stylesheet">
-    </noscript>
-    
-    <!-- 异步加载 Tailwind 和 Lucide - 添加备用方案 -->
+    <!-- 异步加载 Tailwind 和 Lucide (defer 不阻塞解析) -->
     <script src="https://cdn.tailwindcss.com" defer></script>
     <script src="https://unpkg.com/lucide@latest" defer></script>
-    <!-- 降级方案：如果CDN加载失败，提供备用CDN -->
-    <script>
-        window.tailwind || document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.js"><\/script>');
-    </script>
 
     <!-- 预加载首屏背景图 (优先级高) -->
     <link rel="preload" as="image" href="images/bg1.jpg" fetchpriority="high">
@@ -44,15 +34,17 @@
     <!-- 导航栏 (结构不变，保持原有交互) -->
     <header class="fixed w-full top-0 z-50 glass-card shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Logo区域 - 添加首页链接 -->
-            <a href="#" class="flex items-center gap-2 hover:opacity-90 transition-opacity">
-                <div class="bg-gradient-to-br p-1 rounded-xl">
-                    <img src="images/logo.png" alt="HARC科学服务平台logo" class="w-8 h-8 rounded-lg object-contain" loading="lazy" width="32" height="32" />
-                </div>
+            <!-- Logo区域 - 增加链接 -->
+            <div class="flex items-center gap-2">
+                <a href="#" class="block"> <!-- Logo增加链接 -->
+                    <div class="bg-gradient-to-br p-1 rounded-xl">
+                        <img src="images/logo.png" alt="HARC科学服务平台logo" class="w-8 h-8 rounded-lg object-contain" loading="lazy" width="32" height="32" />
+                    </div>
+                </a>
                 <span class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
                     HARC科学服务平台
                 </span>
-            </a>
+            </div>
             
             <!-- 桌面导航 (隐藏移动端) -->
             <nav class="hidden md:flex gap-6 text-sm font-medium text-gray-600">
@@ -72,7 +64,6 @@
         
         <!-- 移动端侧滑菜单 -->
         <div id="mobileMenu" class="menu-slide fixed top-0 right-0 h-full w-64 bg-white shadow-lg z-60 pt-16 px-6 flex flex-col gap-4">
-            <a href="#" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">首页</a>
             <a href="#vision" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">HARC愿景</a>
             <a href="#recent-projects" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">近期项目</a>
             <a href="#pillars" class="py-2 border-b border-gray-100 text-gray-700 hover:text-blue-600 transition-colors touch-feedback">双核支柱</a>
@@ -191,7 +182,7 @@
         </div>
     </section>
 
-    <!-- 双核业务支柱 (不变) -->
+<!-- 双核业务支柱 (不变) -->
     <section id="pillars" class="py-12 bg-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-10">
@@ -347,315 +338,319 @@
     </section>
 
     <!-- “3+4+5+N”服务体系 (包含二维码交互，结构不变，但图片已优化懒加载) -->
-    <section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
-                <h2 class="text-2xl md:text-4xl font-black text-gray-900">
-                    <span class="text-blue-600">3</span> + <span class="text-indigo-600">4</span> + <span class="text-purple-600">5</span> + <span class="text-slate-600">N</span> 服务体系
-                </h2>
-                <p class="mt-4 text-gray-500">构建全方位的青少年科技教育生态圈</p>
+   
+	<section id="system-345" class="py-12 bg-gradient-to-b from-white to-blue-50/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-2xl md:text-4xl font-black text-gray-900">
+                <span class="text-blue-600">3</span> + <span class="text-indigo-600">4</span> + <span class="text-purple-600">5</span> + <span class="text-slate-600">N</span> 服务体系
+            </h2>
+            <p class="mt-4 text-gray-500">构建全方位的青少年科技教育生态圈</p>
+        </div>
+
+        <div class="space-y-10">
+            <!-- "3" 产教融合与高校实体联盟 -->
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-blue-100 pb-6 md:pb-0">
+                    <div class="text-center md:text-right">
+                        <div class="text-4xl md:text-5xl font-black text-blue-500 mb-2">3</div>
+                        <div class="text-lg md:text-xl font-bold text-gray-800">产教融合与<br>高校实体联盟</div>
+                    </div>
+                </div>
+                <div class="w-full md:w-2/3 flex flex-wrap gap-3">
+                    <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">淮阴工学院</span>
+                    <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏电子信息职业学院</span>
+                    <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏食品药品职业学院</span>
+                </div>
             </div>
 
-            <div class="space-y-10">
-                <!-- "3" 产教融合与高校实体联盟 -->
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-blue-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-blue-500 mb-2">3</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">产教融合与<br>高校实体联盟</div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3 flex flex-wrap gap-3">
-                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">淮阴工学院</span>
-                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏电子信息职业学院</span>
-                        <span class="px-4 py-2 bg-white rounded-full shadow-sm text-blue-700 font-medium border border-blue-100 hover:bg-blue-50 transition-colors touch-feedback">江苏食品药品职业学院</span>
+            <!-- "4" 多维数字协同与工具平台 -->
+            <div class="flex flex-col md:flex-row gap-6 items-center relative overflow-visible">
+                <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-indigo-100 pb-6 md:pb-0">
+                    <div class="text-center md:text-right">
+                        <div class="text-4xl md:text-5xl font-black text-indigo-500 mb-2">4</div>
+                        <div class="text-lg md:text-xl font-bold text-gray-800">多维数字协同<br>与工具平台</div>
                     </div>
                 </div>
-
-                <!-- "4" 多维数字协同与工具平台 -->
-                <div class="flex flex-col md:flex-row gap-6 items-center relative overflow-visible">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-indigo-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-indigo-500 mb-2">4</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">多维数字协同<br>与工具平台</div>
+                <div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 relative overflow-visible">
+                    <!-- 接龙小程序 -->
+                    <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+                        <div class="qr-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                            <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                                <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
+                            </div>
+                            <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入接龙</p>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_2px_2px_rgba(0,0,0,0.05)]"></div>
                         </div>
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone w-5 h-5"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
+                        </div>
+                        <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">接龙小程序</span>
                     </div>
-                    <div class="w-full md:w-2/3 grid grid-cols-1 sm:grid-cols-2 gap-4 relative overflow-visible">
-                        <!-- 接龙小程序 -->
-                        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="qr-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
-                                    <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入接龙</p>
-                                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_2px_2px_rgba(0,0,0,0.05)]"></div>
+                    
+                    <!-- 科普活动报名平台 -->
+                    <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+                        <div class="qr-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                            <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                                <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
                             </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-smartphone w-5 h-5"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"></rect><path d="M12 18h.01"></path></svg>
-                            </div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">接龙小程序</span>
+                            <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入平台</p>
+                            <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_2px_2px_rgba(0,0,0,0.05)]"></div>
                         </div>
-                        
-                        <!-- 科普活动报名平台 -->
-                        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="qr-popup absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
-                                    <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入平台</p>
-                                <div class="absolute bottom-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_2px_2px_rgba(0,0,0,0.05)]"></div>
-                            </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check w-5 h-5"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg>
-                            </div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">科普活动报名平台</span>
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar-check w-5 h-5"><path d="M8 2v4"></path><path d="M16 2v4"></path><rect width="18" height="18" x="3" y="4" rx="2"></rect><path d="M3 10h18"></path><path d="m9 16 2 2 4-4"></path></svg>
                         </div>
+                        <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">科普活动报名平台</span>
+                    </div>
 
-                        <!-- 成长淮安填写平台 -->
-                        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-1">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
-                                    <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入填写</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
+                    <!-- 成长淮安填写平台 -->
+                    <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+                        <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-1">
+                            <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                                <img src="images/b4.jpg" alt="平台二维码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
                             </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-tool w-5 h-5"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"></path><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"></path><path d="m2.3 2.3 7.286 7.286"></path><circle cx="11" cy="11" r="2"></circle></svg>
-                            </div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">成长淮安填写平台</span>
+                            <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入填写</p>
+                            <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
                         </div>
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pen-tool w-5 h-5"><path d="M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"></path><path d="m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"></path><path d="m2.3 2.3 7.286 7.286"></path><circle cx="11" cy="11" r="2"></circle></svg>
+                        </div>
+                        <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">成长淮安填写平台</span>
+                    </div>
 
-                        <!-- 会员服务中心 -->
-                        <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-1">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
-                                    <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入中心</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
+                    <!-- 会员服务中心 -->
+                    <div class="qr-container bg-white p-4 rounded-xl shadow-sm border border-indigo-50 flex items-center gap-3 cursor-pointer hover:border-indigo-200 hover:shadow-md transition-all touch-feedback">
+                        <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-2 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-1">
+                            <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+                                <img src="images/b4.jpg" alt="小程序码" class="w-full h-full object-cover rounded-lg transition-opacity duration-500 opacity-100" loading="lazy">
                             </div>
-                            <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-5 h-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
-                            </div>
-                            <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">会员服务中心</span>
+                            <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码进入中心</p>
+                            <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
                         </div>
+                        <div class="bg-indigo-100 p-2 rounded-lg text-indigo-600 group-hover:bg-indigo-500 group-hover:text-white transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-users w-5 h-5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><path d="M16 3.128a4 4 0 0 1 0 7.744"></path><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        </div>
+                        <span class="font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">会员服务中心</span>
                     </div>
                 </div>
+            </div>
 
-                <!-- "5" 行业生态活动资源 -->
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-purple-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-purple-500 mb-2">5</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">行业生态<br>活动资源</div>
-                        </div>
-                    </div>
-                    <div class="w-full md:w-2/3 flex flex-wrap gap-3">
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
-                            淮安市机器人学会
-                        </span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
-                            淮安市青少年科技教育协会
-                        </span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
-                            淮安市无人机协会
-                        </span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
-                            淮安市增材智造学会
-                        </span>
-                        <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
-                            亚太青少年科技创作协会
-                        </span>
+            <!-- "5" 行业生态活动资源 -->
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-purple-100 pb-6 md:pb-0">
+                    <div class="text-center md:text-right">
+                        <div class="text-4xl md:text-5xl font-black text-purple-500 mb-2">5</div>
+                        <div class="text-lg md:text-xl font-bold text-gray-800">行业生态<br>活动资源</div>
                     </div>
                 </div>
+                <div class="w-full md:w-2/3 flex flex-wrap gap-3">
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
+                        淮安市机器人学会
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
+                        淮安市青少年科技教育协会
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
+                        淮安市无人机协会
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
+                        淮安市增材智造学会
+                    </span>
+                    <span class="flex items-center gap-2 px-4 py-2 bg-purple-50 text-purple-700 rounded-lg font-medium touch-feedback">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-check w-4 h-4"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"></path><path d="m9 12 2 2 4-4"></path></svg> 
+                        亚太青少年科技创作协会
+                    </span>
+                </div>
+            </div>
 
-                <!-- "N" 资源共赢·支持伙伴（多卡片循环轮播） -->
-                <div class="flex flex-col md:flex-row gap-6 items-center">
-                    <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-slate-100 pb-6 md:pb-0">
-                        <div class="text-center md:text-right">
-                            <div class="text-4xl md:text-5xl font-black text-slate-600 mb-2">N</div>
-                            <div class="text-lg md:text-xl font-bold text-gray-800">资源共赢<br>支持伙伴</div>
+            <!-- "N" 资源共赢·支持伙伴（多卡片循环轮播） -->
+            <div class="flex flex-col md:flex-row gap-6 items-center">
+                <div class="w-full md:w-1/3 flex justify-center md:justify-end pr-0 md:pr-8 border-b-2 md:border-b-0 md:border-r-2 border-slate-100 pb-6 md:pb-0">
+                    <div class="text-center md:text-right">
+                        <div class="text-4xl md:text-5xl font-black text-slate-600 mb-2">N</div>
+                        <div class="text-lg md:text-xl font-bold text-gray-800">资源共赢<br>支持伙伴</div>
+                    </div>
+                </div>
+                
+                <!-- N板块轮播容器 -->
+                <div class="w-full md:w-2/3 relative">
+                    <!-- 轮播外框 -->
+                    <div class="partner-carousel overflow-hidden rounded-xl" style="position: relative;">
+                        <!-- 轮播内容容器（支持任意数量卡片） -->
+                        <div class="partner-track flex items-center gap-3 md:gap-4" id="partnerTrack" style="transition: transform 0.5s ease; will-change: transform;">
+                            <!-- 伙伴1 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner1.png" alt="伙伴1logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX科技有限公司</p>
+                            </div>
+                            <!-- 伙伴2 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner2.png" alt="伙伴2logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX教育基金会</p>
+                            </div>
+                            <!-- 伙伴3 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner3.png" alt="伙伴3logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX融媒体中心</p>
+                            </div>
+                            <!-- 伙伴4 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner4.png" alt="伙伴4logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX产业园区</p>
+                            </div>
+                            <!-- 伙伴5 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner5.png" alt="伙伴5logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX公益协会</p>
+                            </div>
+                            <!-- 伙伴6 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner6.png" alt="伙伴6logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX科技研究院</p>
+                            </div>
+                            <!-- 伙伴7 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner7.png" alt="伙伴7logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX教育集团</p>
+                            </div>
+                            <!-- 伙伴8 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner8.png" alt="伙伴8logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX创新实验室</p>
+                            </div>
+                            <!-- 伙伴9 -->
+                            <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
+                                <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
+                                    <img src="images/partner9.png" alt="伙伴9logo" class="w-8 h-8 object-contain" loading="lazy">
+                                </div>
+                                <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX产业投资基金</p>
+                            </div>
+                            <!-- 可无限添加更多伙伴卡片 -->
                         </div>
                     </div>
                     
-                    <!-- N板块轮播容器 -->
-                    <div class="w-full md:w-2/3 relative">
-                        <!-- 轮播外框 -->
-                        <div class="partner-carousel overflow-hidden rounded-xl" style="position: relative;">
-                            <!-- 轮播内容容器（支持任意数量卡片） -->
-                            <div class="partner-track flex items-center gap-3 md:gap-4" id="partnerTrack" style="transition: transform 0.5s ease; will-change: transform;">
-                                <!-- 伙伴1 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner1.png" alt="伙伴1logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX科技有限公司</p>
-                                </div>
-                                <!-- 伙伴2 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner2.png" alt="伙伴2logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX教育基金会</p>
-                                </div>
-                                <!-- 伙伴3 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner3.png" alt="伙伴3logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX融媒体中心</p>
-                                </div>
-                                <!-- 伙伴4 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner4.png" alt="伙伴4logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX产业园区</p>
-                                </div>
-                                <!-- 伙伴5 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner5.png" alt="伙伴5logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX公益协会</p>
-                                </div>
-                                <!-- 伙伴6 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner6.png" alt="伙伴6logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX科技研究院</p>
-                                </div>
-                                <!-- 伙伴7 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner7.png" alt="伙伴7logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX教育集团</p>
-                                </div>
-                                <!-- 伙伴8 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner8.png" alt="伙伴8logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX创新实验室</p>
-                                </div>
-                                <!-- 伙伴9 -->
-                                <div class="partner-item min-w-[90px] sm:min-w-[100px] md:min-w-[120px] bg-white rounded-xl shadow-sm border border-slate-100 hover:border-slate-300 hover:shadow-md transition-all touch-feedback flex flex-col items-center justify-center p-3">
-                                    <div class="w-12 h-12 rounded-lg bg-slate-50 flex items-center justify-center mb-2 overflow-hidden">
-                                        <img src="images/partner9.png" alt="伙伴9logo" class="w-8 h-8 object-contain" loading="lazy">
-                                    </div>
-                                    <p class="text-xs md:text-sm font-medium text-slate-700 text-center leading-tight">XX产业投资基金</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- 轮播控制按钮（PC端显示） -->
-                        <button class="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors z-20 md:block hidden" id="prevBtn" style="cursor: pointer;">
-                            ←
-                        </button>
-                        <button class="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors z-20 md:block hidden" id="nextBtn" style="cursor: pointer;">
-                            →
-                        </button>
-                    </div>
+                    <!-- 轮播控制按钮（PC端显示） -->
+                    <button class="absolute left-0 top-1/2 -translate-y-1/2 -ml-3 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors z-20 md:block hidden" id="prevBtn" style="cursor: pointer;">
+                        ←
+                    </button>
+                    <button class="absolute right-0 top-1/2 -translate-y-1/2 -mr-3 bg-white w-8 h-8 rounded-full shadow-md flex items-center justify-center text-slate-600 hover:bg-slate-100 transition-colors z-20 md:block hidden" id="nextBtn" style="cursor: pointer;">
+                        →
+                    </button>
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- 融媒体与合作伙伴 & 页脚 -->
-    <footer class="bg-gray-900 text-white pt-8 pb-20 overflow-visible">
+   
+
+    <!-- 融媒体与合作伙伴 & 页脚 (结构不变，图片已加lazy) -->
+   <footer class="bg-gray-900 text-white pt-8 pb-20 overflow-visible">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12 mb-10">
                 <!-- 融媒体矩阵 -->
-                <div>
-                    <h3 class="text-lg md:text-xl font-bold mb-5 flex items-center gap-2 text-gray-200">
-                        <i data-lucide="share-2" class="w-5 h-5 text-blue-400"></i>
-                        融媒体与全域宣传平台矩阵
-                    </h3>
-                    <div class="flex flex-wrap gap-4 relative">
-                        <!-- 抖音 -->
-                        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="抖音二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注抖音</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-black group-hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="music" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">抖音</span>
-                        </div>
-
-                        <!-- 快手 -->
-                        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="快手二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注快手</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="video" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">快手</span>
-                        </div>
-
-                        <!-- 视频号 -->
-                        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="视频号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注视频号</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="play-square" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">视频号</span>
-                        </div>
-
-                        <!-- 小红书 -->
-                        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/b4.jpg" alt="小红书二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注小红书</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-red-500 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="book-heart" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">小红书</span>
-                        </div>
-
-                        <!-- 公众号 -->
-                        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
-                            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
-                                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
-                                    <img src="images/harc公众号科普中心.jpg" alt="公众号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
-                                </div>
-                                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注公众号</p>
-                                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
-                            </div>
-                            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-600 group-hover:shadow-[0_0_15px_rgba(22,163,74,0.4)] transition-all duration-300 border border-gray-700">
-                                <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
-                            </div>
-                            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">公众号</span>
-                        </div>
-                    </div>
+               <div>
+    <h3 class="text-lg md:text-xl font-bold mb-5 flex items-center gap-2 text-gray-200">
+        <i data-lucide="share-2" class="w-5 h-5 text-blue-400"></i>
+        融媒体与全域宣传平台矩阵
+    </h3>
+    <div class="flex flex-wrap gap-4 relative">
+        <!-- 抖音 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="抖音二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
                 </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注抖音</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-black group-hover:shadow-[0_0_15px_rgba(255,255,255,0.3)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="music" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">抖音</span>
+        </div>
+
+        <!-- 快手 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="快手二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注快手</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-orange-500 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="video" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">快手</span>
+        </div>
+
+        <!-- 视频号 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="视频号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注视频号</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="play-square" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">视频号</span>
+        </div>
+
+        <!-- 小红书 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/b4.jpg" alt="小红书二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注小红书</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-red-500 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="book-heart" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">小红书</span>
+        </div>
+
+        <!-- 公众号 -->
+        <div class="qr-container group flex flex-col items-center gap-2 cursor-pointer touch-feedback">
+            <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl -translate-y-2">
+                <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative z-101">
+                    <img src="images/harc公众号科普中心.jpg" alt="公众号二维码" class="w-full h-full object-cover rounded-lg" loading="lazy" />
+                </div>
+                <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注公众号</p>
+                <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[2px_-2px_2px_rgba(0,0,0,0.05)] z-101"></div>
+            </div>
+            <div class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center group-hover:bg-green-600 group-hover:shadow-[0_0_15px_rgba(22,163,74,0.4)] transition-all duration-300 border border-gray-700">
+                <i data-lucide="message-circle" class="w-5 h-5 text-white"></i>
+            </div>
+            <span class="text-xs text-gray-400 group-hover:text-white transition-colors">公众号</span>
+        </div>
+    </div>
+</div>
 
                 <!-- 战略区域合作伙伴 -->
                 <div>
@@ -728,48 +723,11 @@
         </div>
     </footer>
 
+
+
+
     <!-- 引入外部脚本文件 -->
-    <script src="js/main.js"></script>
-    <!-- 备用方案：如果CSS属性不支持，添加降级样式 -->
-    <style>
-        /* 降级方案：为不支持backdrop-filter的浏览器添加 */
-        @supports not ((backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px))) {
-            .glass-card {
-                background: rgba(255, 255, 255, 0.98);
-                border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-            }
-        }
-
-        /* IE11特定修复 */
-        @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-            .flex {
-                display: -ms-flexbox;
-            }
-            .grid {
-                display: -ms-grid;
-            }
-            .menu-slide {
-                -ms-transform: translateX(100%);
-            }
-            .menu-slide.active {
-                -ms-transform: translateX(0);
-            }
-            .glass-card {
-                background: rgba(255, 255, 255, 0.98);
-            }
-        }
-
-        /* 确保触摸元素在移动端有足够大的点击区域 */
-        button, a {
-            min-height: 44px;
-            min-width: 44px;
-        }
-        @media (max-width: 768px) {
-            a, button, [role="button"] {
-                min-height: 44px;
-                min-width: 44px;
-            }
-        }
-    </style>
+    <script src="js/main.js" defer></script>
 </body>
 </html>
+
