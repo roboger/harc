@@ -1,3 +1,25 @@
+/* 二维码浮层默认隐藏 */
+.qr-popup {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+}
+
+/* hover 显示（鼠标滑过） */
+.qr-container:hover .qr-popup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* active 显示（点击后保持） */
+.qr-container.active .qr-popup {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
 /* === 浏览器兼容性重置 === */
 * {
     margin: 0;
@@ -6,6 +28,7 @@
     -moz-box-sizing: border-box;
     box-sizing: border-box;
 }
+
 
 /* === 基础重置与H5优化 - 兼容各浏览器 === */
 html {
