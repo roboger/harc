@@ -141,13 +141,23 @@
                     <i data-lucide="clock-4" class="w-7 h-7 text-blue-500"></i>
                     近期项目服务更新中
                 </h2>
-                <div class="flex gap-2 items-center text-sm text-blue-500 font-medium bg-blue-100/50 px-4 py-2 rounded-full touch-feedback">
-                    <span class="relative flex h-3 w-3">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
-                    </span>
-                    持续更新中
-                </div>
+              <div class="qr-container relative flex gap-2 items-center text-sm text-blue-500 font-medium bg-blue-100/50 px-4 py-2 rounded-full touch-feedback">
+    <span class="relative flex h-3 w-3">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-3 w-3 bg-blue-500"></span>
+    </span>
+    持续更新中
+
+    <!-- 二维码浮层（默认隐藏） -->
+    <div class="qr-popup absolute top-full left-1/2 -translate-x-1/2 mt-3 w-32 p-2 bg-white rounded-xl shadow-2xl opacity-0 invisible transition-all duration-300 z-50" style="transform: translateY(-10px);">
+        <div class="w-28 h-28 bg-gray-50 rounded-lg flex flex-col items-center justify-center border border-gray-100 relative">
+            <img src="images/持续更新中二维码.jpg" alt="持续更新中二维码" class="w-full h-full object-cover rounded-lg" loading="lazy">
+        </div>
+        <p class="text-xs text-center text-gray-700 mt-2 font-medium">扫码关注动态</p>
+        <!-- 小三角（指向标签） -->
+        <div class="absolute -top-2 left-1/2 -translate-x-1/2 w-4 h-4 bg-white transform rotate-45 shadow-[-2px_-2px_2px_rgba(0,0,0,0.05)]"></div>
+    </div>
+</div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
