@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>圆梦太空抽签系统 - 卡通版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Noto+Sans+SC:wght@900&display=swap');
+        
+        body {
+            /* 使用卡通感强烈的字体 */
+            font-family: 'Fredoka', 'Noto Sans SC', sans-serif;
+            background-color: #3b82f6; /* 亮蓝色底 */
+            /* 制作卡通波点背景 */
+            background-image: radial-gradient(#60a5fa 4px, transparent 4px);
+            background-size: 32px 32px;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* 卡通风格的核心：粗黑边框与硬阴影 (Neo-brutalism) */
+        .comic-border {
+            border: 4px solid #1e293b;
+        }
+
+        .comic-shadow {
+            box-shadow: 8px 8px 0px #1e293b;
+        }
+
+        .comic-shadow-sm {
+            box-shadow: 4px 4px 0px #1e293b;
+        }
+
+        /* 卡通大字标题特效 */
+        .comic-text {
+            color: #fff;
+            -webkit-text-stroke: 2px #1e293b;
+            text-shadow: 6px 6px 0px #1e293b;
+        }
+
+        /* 抽签球 */
+        .number-ball {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 3.5rem;
+            height: 3.5rem;
+            background: #ffffff;
+            border-radius: 9999px;
+            font-weight: 900;
+            font-size: 1.75rem;
+            color: #1e293b;
+            border: 4px solid #1e293b;
+            box-shadow: 3px 3px 0px #1e293b;
+            position: relative;
+            z-index: 10;
+        }
+
+        .bonus-ball {
+            background: #fb7185;
+            color: white;
+            -webkit-text-stroke: 1px #1e293b;
+        }
+
+        /* 按钮按下时的挤压反馈 */
+        .btn-comic {
+            transition: all 0.1s ease-in-out;
+            cursor: pointer;
+        }
+        .btn-comic:active {
+            transform: translate(6px, 6px) !important;
+            box-shadow: 0px 0px 0px #1e293b !important;
+        }
+
+        /* 活泼的弹跳动画 */
+        @keyframes pop {
+            0% { transform: scale(1) translateY(0) rotate(0deg); }
+            30% { transform: scale(1.2) translateY(-15px) rotate(-10deg); }
+            70% { transform: scale(1.1) translateY(-5px) rotate(10deg); }
+            100% { transform: scale(1) translateY(0) rotate(0deg); }
+        }
+
+        .anim-pop {
+            animation: pop 0.3s ease-in-out infinite;
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+    <div class="max-w-5xl mx-auto relative">
+        
+        <!-- 背景装饰符号 -->
+        <div class="absolute -top-4 left-0 md:-left-12 text-5xl md:text-7xl transform -rotate-12 animate-bounce drop-shadow-lg" style="animation-duration: 3s;">⭐</div>
+        <div class="absolute top-10 right-0 md:-right-12 text-5xl md:text-7xl transform rotate-12 animate-bounce drop-shadow-lg" style="animation-duration: 2.5s;">🚀</div>
+
+        <!-- 标题区域 -->
+        <header class="text-center mb-10 relative z-10 pt-4">
+            <h1 class="text-5xl md:text-7xl font-black mb-6 comic-text tracking-wider transform -rotate-2">
+                圆梦太空抽签平台
+            </h1>
+            <div class="inline-block bg-yellow-300 text-blue-900 font-black text-xl md:text-2xl px-8 py-3 rounded-full comic-border comic-shadow-sm transform rotate-2">
+                🎲 HARC抽签与计时系统 ⏱️
+            </div>
+        </header>
+
+        <!-- 倒数计时器 -->
+        <div class="bg-white rounded-[2rem] p-6 md:p-8 mb-10 comic-border comic-shadow text-center relative overflow-hidden">
+            <div class="absolute top-2 left-4 text-gray-300 text-8xl font-black opacity-30 select-none">TIMER</div>
+            
+            <div id="timer-display" class="text-7xl md:text-9xl font-black text-red-500 tabular-nums mb-6 relative z-10 comic-text" style="-webkit-text-stroke: 3px #1e293b;">
+                00:00
+            </div>
+            
+            <div class="flex flex-wrap justify-center items-center gap-4 md:gap-6 relative z-10">
+                <select id="minute-select" class="bg-blue-100 border-4 border-slate-800 rounded-2xl px-4 py-3 font-black text-xl text-slate-800 focus:outline-none comic-shadow-sm cursor-pointer hover:bg-blue-200">
+                    <option value="5">5 分钟</option>
+                    <option value="15">15 分钟</option>
+                    <option value="30">30 分钟</option>
+                    <option value="45">45 分钟</option>
+                    <option value="60">60 分钟</option>
+                    <option value="75">75 分钟</option>
+                    <option value="90" selected>90 分钟</option>
+                </select>
+                <button onclick="handleTimerControl()" id="timer-btn" class="bg-red-500 hover:bg-red-400 text-white font-black text-xl px-8 py-3 rounded-2xl comic-border comic-shadow btn-comic">
+                    ▶ 启动倒数
+                </button>
+                <button onclick="resetTimer()" class="bg-gray-300 hover:bg-gray-200 text-slate-800 font-black text-xl px-6 py-3 rounded-2xl comic-border comic-shadow btn-comic">
+                    ↻ 重设
+                </button>
+            </div>
+        </div>
+
+        <!-- 抽签结果展示区 -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            <!-- 题组 A -->
+            <div class="bg-amber-300 rounded-[2rem] p-6 comic-border comic-shadow transform hover:-translate-y-2 transition-transform duration-200">
+                <div class="bg-white inline-block px-4 py-1 rounded-full comic-border font-black text-slate-800 mb-6 transform -rotate-3">
+                    📌 题组 A
+                </div>
+                <div id="set-A" class="flex justify-between gap-1">
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                </div>
+            </div>
+            <!-- 题组 B -->
+            <div class="bg-cyan-300 rounded-[2rem] p-6 comic-border comic-shadow transform hover:-translate-y-2 transition-transform duration-200">
+                <div class="bg-white inline-block px-4 py-1 rounded-full comic-border font-black text-slate-800 mb-6 transform rotate-2">
+                    📌 题组 B
+                </div>
+                <div id="set-B" class="flex justify-between gap-1">
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                </div>
+            </div>
+            <!-- 题组 C -->
+            <div class="bg-fuchsia-300 rounded-[2rem] p-6 comic-border comic-shadow transform hover:-translate-y-2 transition-transform duration-200">
+                <div class="bg-white inline-block px-4 py-1 rounded-full comic-border font-black text-slate-800 mb-6 transform -rotate-2">
+                    📌 题组 C
+                </div>
+                <div id="set-C" class="flex justify-between gap-1">
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                    <div class="number-ball">?</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 加分点 -->
+        <div class="bg-slate-800 rounded-[2rem] p-6 mb-10 comic-border comic-shadow text-center relative">
+            <div class="absolute -top-5 left-1/2 transform -translate-x-1/2 bg-pink-400 text-white font-black px-6 py-2 rounded-full comic-border rotate-2">
+                ✨ 加分点 BONUS ✨
+            </div>
+            <div id="bonus-set" class="flex justify-center gap-6 mt-6">
+                <div class="number-ball bonus-ball scale-110">?</div>
+                <div class="number-ball bonus-ball scale-110">?</div>
+                <div class="number-ball bonus-ball scale-110">?</div>
+            </div>
+        </div>
+
+        <!-- 按钮控制区 -->
+        <div class="flex flex-col md:flex-row gap-6 justify-center items-center pb-12">
+            <button onclick="drawAll()" class="bg-green-400 hover:bg-green-300 text-slate-800 font-black text-2xl md:text-3xl px-12 py-5 rounded-[2rem] comic-border comic-shadow btn-comic flex items-center justify-center gap-3 w-full md:w-auto">
+                <span class="text-4xl">🎲</span>
+                全部随机抽签
+            </button>
+            <button onclick="drawBonusOnly()" class="bg-purple-400 hover:bg-purple-300 text-white font-black text-xl px-8 py-5 rounded-[2rem] comic-border comic-shadow btn-comic w-full md:w-auto">
+                🎯 仅重抽加分点
+            </button>
+        </div>
+    </div>
+
+    <!-- 卡通风格提示框 -->
+    <div id="modal" class="fixed inset-0 bg-slate-900 bg-opacity-80 hidden items-center justify-center p-4 z-50 backdrop-blur-sm">
+        <div class="bg-white rounded-[2rem] p-8 max-w-sm w-full text-center comic-border comic-shadow transform scale-100 transition-transform">
+            <h4 id="modal-title" class="text-3xl font-black mb-4 text-red-500" style="-webkit-text-stroke: 1px #1e293b;">Oops!</h4>
+            <p id="modal-body" class="text-slate-700 font-bold text-lg mb-8"></p>
+            <button onclick="closeModal()" class="bg-blue-500 hover:bg-blue-400 text-white font-black text-xl px-10 py-3 rounded-2xl comic-border comic-shadow-sm btn-comic">
+                我知道了!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let hasDrawn = false;
+        let countdownInterval;
+        let timeLeft = 0;
+        let isRunning = false;
+
+        function showModal(title, message) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').textContent = message;
+            document.getElementById('modal').classList.remove('hidden');
+            document.getElementById('modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            document.getElementById('modal').classList.remove('flex');
+        }
+
+        function getUniqueRandomNumbers(count, min, max) {
+            const numbers = [];
+            while (numbers.length < count) {
+                const num = Math.floor(Math.random() * (max - min + 1)) + min;
+                if (!numbers.includes(num)) {
+                    numbers.push(num);
+                }
+            }
+            return numbers.sort((a, b) => a - b);
+        }
+
+        function getRandomBonusSet(count) {
+            const bonuses = ['B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            const result = [];
+            for (let i = 0; i < count; i++) {
+                const letter = bonuses[Math.floor(Math.random() * bonuses.length)];
+                result.push(letter);
+            }
+            return result;
+        }
+
+        async function animateBalls(containerId, values) {
+            const container = document.getElementById(containerId);
+            const balls = container.querySelectorAll('.number-ball');
+            
+            // 启动卡通弹跳动画
+            balls.forEach(ball => ball.classList.add('anim-pop'));
+            
+            // 随机变换数字特效
+            let flashInterval = setInterval(() => {
+                balls.forEach(ball => {
+                    ball.textContent = Math.floor(Math.random() * 9) + 1;
+                });
+            }, 50);
+            
+            // 延迟展现最终结果
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            // 停止动画并填入真实数值
+            clearInterval(flashInterval);
+            balls.forEach((ball, idx) => {
+                ball.classList.remove('anim-pop');
+                ball.textContent = values[idx];
+            });
+        }
+
+        async function animateBonusBalls(containerId, values) {
+            const container = document.getElementById(containerId);
+            const balls = container.querySelectorAll('.number-ball');
+            
+            balls.forEach(ball => ball.classList.add('anim-pop'));
+            
+            const letters = ['B', 'C', 'D', 'E', 'F', 'G', 'H'];
+            let flashInterval = setInterval(() => {
+                balls.forEach(ball => {
+                    ball.textContent = letters[Math.floor(Math.random() * letters.length)];
+                });
+            }, 50);
+            
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            clearInterval(flashInterval);
+            balls.forEach((ball, idx) => {
+                ball.classList.remove('anim-pop');
+                ball.textContent = values[idx];
+            });
+        }
+
+        async function drawAll() {
+            hasDrawn = true;
+            
+            // 抽题组 A, B, C
+            const sets = ['set-A', 'set-B', 'set-C'];
+            for (const setId of sets) {
+                const nums = getUniqueRandomNumbers(4, 1, 9);
+                // 为了让动画更有层次，稍微错开执行
+                setTimeout(() => animateBalls(setId, nums), sets.indexOf(setId) * 150);
+            }
+            
+            // 抽加分点
+            const bonus = getRandomBonusSet(3);
+            setTimeout(() => animateBonusBalls('bonus-set', bonus), 600);
+        }
+
+        function drawBonusOnly() {
+            if (!hasDrawn) {
+                showModal("提示!", "请先进行一次完整抽签哦！ 🎲");
+                return;
+            }
+            const bonus = getRandomBonusSet(3);
+            animateBonusBalls('bonus-set', bonus);
+        }
+
+        function handleTimerControl() {
+            if (!isRunning) {
+                startCountdown();
+            } else {
+                pauseCountdown();
+            }
+        }
+
+        function startCountdown() {
+            if (timeLeft <= 0) {
+                const select = document.getElementById('minute-select');
+                timeLeft = parseInt(select.value, 10) * 60;
+            }
+
+            isRunning = true;
+            document.getElementById('timer-btn').innerHTML = "⏸ 暂停倒数";
+            document.getElementById('timer-btn').classList.replace('bg-red-500', 'bg-orange-400');
+            document.getElementById('timer-btn').classList.replace('hover:bg-red-400', 'hover:bg-orange-300');
+
+            clearInterval(countdownInterval);
+            updateTimerDisplay();
+
+            countdownInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+                if (timeLeft <= 0) {
+                    clearInterval(countdownInterval);
+                    isRunning = false;
+                    document.getElementById('timer-display').textContent = "TIME UP!";
+                    document.getElementById('timer-btn').innerHTML = "▶ 启动倒数";
+                    resetTimerBtnColors();
+                    showModal("⏰ 时间到！", "倒数计时已结束！");
+                }
+            }, 1000);
+        }
+
+        function pauseCountdown() {
+            isRunning = false;
+            clearInterval(countdownInterval);
+            document.getElementById('timer-btn').innerHTML = "▶ 继续倒数";
+            resetTimerBtnColors();
+        }
+
+        function resetTimer() {
+            isRunning = false;
+            clearInterval(countdownInterval);
+            timeLeft = 0;
+            document.getElementById('timer-display').textContent = "00:00";
+            document.getElementById('timer-display').classList.remove('text-red-700', 'animate-pulse');
+            document.getElementById('timer-btn').innerHTML = "▶ 启动倒数";
+            resetTimerBtnColors();
+        }
+
+        function resetTimerBtnColors() {
+            const btn = document.getElementById('timer-btn');
+            btn.classList.remove('bg-orange-400', 'hover:bg-orange-300');
+            btn.classList.add('bg-red-500', 'hover:bg-red-400');
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            const display = document.getElementById('timer-display');
+            display.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+            
+            // 最后一分钟变色提示并闪烁
+            if (timeLeft > 0 && timeLeft <= 60) {
+                display.classList.add('text-red-700', 'animate-pulse');
+            } else {
+                display.classList.remove('text-red-700', 'animate-pulse');
+            }
+        }
+    </script>
+</body>
+</html>
