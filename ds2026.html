@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>第三十二届江苏省青少年科技模型大赛 | 淮安市选拔赛 官网</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f6fe;
+            color: #0a2540;
+            scroll-behavior: smooth;
+        }
+        /* 科技蓝全新主题变量 */
+        :root {
+            --primary: #004e92;        /* 沉稳深海蓝 */
+            --primary-dark: #003366;
+            --primary-light: #2b7fc1;
+            --accent: #00a6ff;          /* 亮丽科技蓝 */
+            --accent-glow: #4dc3ff;
+            --gray-bg: #f4f9fe;
+            --card-shadow: 0 20px 35px -12px rgba(0, 64, 128, 0.15), 0 4px 12px rgba(0, 0, 0, 0.05);
+            --border-light: #cde5ff;
+            --gradient-hero: linear-gradient(135deg, #001f3f, #004e92);
+        }
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        /* 导航栏 科技深蓝 */
+        .navbar {
+            background: rgba(0, 35, 70, 0.95);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+            border-bottom: 1px solid rgba(0, 166, 255, 0.3);
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 24px;
+            max-width: 1320px;
+            margin: 0 auto;
+        }
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: -0.3px;
+            text-shadow: 0 0 8px rgba(0,166,255,0.3);
+        }
+        .logo p {
+            font-size: 0.7rem;
+            color: #b8dcff;
+        }
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 500;
+            color: white;
+            transition: 0.2s;
+            font-size: 0.95rem;
+        }
+        .nav-links a:hover { color: #00a6ff; }
+        .mobile-menu {
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
+            color: white;
+        }
+        @media (max-width: 800px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 80%;
+                height: calc(100vh - 70px);
+                background: #002952;
+                flex-direction: column;
+                padding: 2rem 1.5rem;
+                transition: 0.3s ease;
+                box-shadow: 2px 0 20px rgba(0,0,0,0.3);
+                z-index: 999;
+                align-items: flex-start;
+                gap: 1.5rem;
+            }
+            .nav-links.active { left: 0; }
+            .mobile-menu { display: block; }
+            .nav-links a { color: white; }
+        }
+        .btn {
+            display: inline-block;
+            background: var(--accent);
+            color: #001f3f;
+            padding: 10px 28px;
+            border-radius: 40px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: 0.2s;
+            box-shadow: 0 4px 12px rgba(0,166,255,0.3);
+        }
+        .btn-outline {
+            background: transparent;
+            border: 1.5px solid white;
+            color: white;
+            box-shadow: none;
+        }
+        .btn-outline:hover {
+            background: white;
+            color: var(--primary);
+            border-color: white;
+        }
+        .section-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            color: #003366;
+        }
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 70px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 4px;
+        }
+        /* ========= 轮播背景区域 科技蓝调 ========= */
+        .hero-carousel {
+            position: relative;
+            min-height: 560px;
+            background: var(--gradient-hero);
+            overflow: hidden;
+        }
+        .carousel-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+        }
+        .carousel-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-size: cover;
+            background-position: center 30%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .carousel-slide.active {
+            opacity: 1;
+            z-index: 1;
+        }
+        .carousel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 25, 55, 0.75);
+            z-index: 2;
+            backdrop-filter: brightness(0.85);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            padding: 4rem 0;
+            color: white;
+        }
+        .hero-grid {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        .hero-text { flex: 1; }
+        .hero-text h1 {
+            font-size: 2.7rem;
+            font-weight: 800;
+            line-height: 1.2;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        .hero-badge {
+            background: rgba(0,166,255,0.2);
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            margin-bottom: 1rem;
+            border-left: 3px solid var(--accent);
+        }
+        .date-highlight {
+            background: rgba(0, 100, 180, 0.45);
+            border-radius: 28px;
+            padding: 1rem 1.5rem;
+            margin-top: 1.5rem;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(0,166,255,0.5);
+        }
+        .carousel-control {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 20;
+            font-size: 1.2rem;
+            transition: 0.2s;
+        }
+        .carousel-control:hover { background: var(--accent); }
+        .carousel-prev { left: 20px; }
+        .carousel-next { right: 20px; }
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 20;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.6);
+            cursor: pointer;
+        }
+        .dot.active { background: var(--accent); width: 24px; border-radius: 8px; transition: 0.2s; }
+        /* 赛点卡片 科技蓝主题 */
+        .venues-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 2rem 0 1rem;
+        }
+        .venue-card {
+            background: white;
+            border-radius: 32px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(0,166,255,0.2);
+            transition: all 0.3s;
+        }
+        .venue-card:hover { transform: translateY(-6px); box-shadow: 0 25px 40px -12px rgba(0,78,146,0.3); border-color: #00a6ff; }
+        .venue-header {
+            padding: 1.4rem 1.5rem 0.8rem;
+            background: linear-gradient(120deg, #eef5ff, #ffffff);
+            border-bottom: 2px solid #cce5ff;
+        }
+        .venue-header h3 { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 10px; color: #004e92; }
+        .venue-badge { background: #e0f0ff; border-radius: 40px; padding: 4px 14px; font-size: 0.7rem; font-weight: 600; color: #004e92; display: inline-block; margin-top: 8px; }
+        .venue-dates { background: #f8fafd; padding: 0.8rem 1.5rem; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.8rem; font-size: 0.85rem; font-weight: 500; }
+        .date-item i { width: 24px; color: var(--accent); }
+        .venue-content { padding: 1rem 1.5rem 1.5rem; }
+        .project-section h4 { font-size: 1rem; margin: 0.6rem 0 0.8rem; font-weight: 700; border-left: 3px solid #00a6ff; padding-left: 12px; color: #003366; }
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+        /* 项目链接样式 (科技蓝) */
+        .project-link {
+            background: #eff6ff;
+            padding: 6px 12px;
+            border-radius: 28px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #004e92;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: 0.2s;
+            text-decoration: none;
+            border: 1px solid #cae0ff;
+        }
+        .project-link i { font-size: 0.7rem; color: #0077cc; }
+        .project-link:hover {
+            background: #d9ebff;
+            color: #002551;
+            transform: translateX(3px);
+            border-color: #00a6ff;
+        }
+        .alert-limit {
+            background: #fff3e0;
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 0.75rem;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        @media (max-width: 780px) {
+            .venues-grid { grid-template-columns: 1fr; }
+            .hero-text h1 { font-size: 1.9rem; }
+            .section-title { font-size: 1.6rem; }
+        }
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            margin: 2rem 0;
+        }
+        .info-card {
+            background: white;
+            border-radius: 28px;
+            padding: 1.5rem;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #dcebff;
+        }
+        .step-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-top: 1rem;
+        }
+        .step-item {
+            flex: 1;
+            background: #f8fafd;
+            border-radius: 24px;
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 3px solid #00a6ff;
+        }
+        footer {
+            background: #001f3f;
+            color: #b8dcff;
+            padding: 2rem 0 1rem;
+            margin-top: 3rem;
+        }
+        .alert-note {
+            background: #eef5ff;
+            border-left: 5px solid var(--accent);
+            padding: 1rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+        .supporter { font-size: 0.8rem; color: #2c6280; }
+        .config-tip {
+            font-size: 0.7rem;
+            color: #2b7fc1;
+            margin-top: 8px;
+            text-align: right;
+        }
+        /* 技术服务二维码卡片 */
+        .tech-qrcode {
+            background: white;
+            border-radius: 28px;
+            padding: 1.8rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            border: 1px solid #d0e5ff;
+            margin: 2rem 0 1rem;
+        }
+        .tech-qrcode h3 {
+            font-size: 1.6rem;
+            color: #004e92;
+            margin-bottom: 1rem;
+        }
+        .qr-img {
+            max-width: 180px;
+            width: 100%;
+            margin: 0 auto;
+            display: block;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            transition: 0.2s;
+        }
+        .qr-note {
+            margin-top: 12px;
+            color: #2b7fc1;
+            font-size: 0.8rem;
+            background: #eaf4ff;
+            display: inline-block;
+            padding: 4px 16px;
+            border-radius: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1><i class="fas fa-microchip" style="color:#00a6ff;"></i> 科技模型大赛·淮安</h1>
+                <p>第三十二届江苏省青少年科技模型大赛选拔赛</p>
+            </div>
+            <div class="mobile-menu" id="mobileMenuBtn"><i class="fas fa-bars"></i></div>
+            <div class="nav-links" id="navLinks">
+                <a href="#home">首页</a><a href="#events">赛事信息</a><a href="#projects">竞赛项目</a>
+                <a href="#apply">报名指南</a><a href="#notice">奖项监督</a><a href="#contact">联系我们</a>
+                <a href="#" class="btn-outline btn" style="padding:6px 18px;">下载报名表</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 首图轮播区域 (科技蓝基调，背景图可后期更换) -->
+    <div class="hero-carousel" id="home">
+        <div class="carousel-bg" id="carouselBg">
+            <!-- 轮播图片由JS动态填充，便于后期更换 -->
+        </div>
+        <div class="carousel-overlay"></div>
+        <div class="hero-content">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-text">
+                        <div class="hero-badge"><i class="fas fa-flask"></i> 省教育厅批准竞赛 | 苏教办基函〔2026〕5号、省青科协 |（苏青科教发〔2026〕20号  </div>
+						
+                        <h1>第三十二届江苏省青少年科技模型大赛<br>淮安市选拔赛</h1>
+                        <p style="font-size: 1.1rem; margin: 1rem 0; opacity: 0.95;">科技点燃梦想，创新引领未来 — 全市幼儿园、中小学及职校生同台竞技！</p>
+                        <div class="date-highlight">
+                            <i class="fas fa-calendar-alt"></i> <strong>报名 & 比赛关键节点</strong><br>
+                            郑梁梅高级中学赛点：报名 6.1-6.20 | 比赛 7.3-7.4<br>
+                            淮阴师院附小赛点：报名 6.15-6.25 | 比赛 7.3-7.4<br>
+                            <span class="supporter" style="color:#ffecb3;"><i class="fas fa-trophy"></i> 优秀选手晋级全省总决赛！</span>
+                        </div>
+                    </div>
+                    <div style="flex:0.8; text-align: center; background: rgba(0,80,120,0.3); border-radius: 60px; backdrop-filter: blur(5px);">
+                        <i class="fas fa-robot" style="font-size: 7rem; color: #b0e0ff;"></i>
+                        <i class="fas fa-drone" style="font-size: 3.5rem; margin-left: -15px; color: #ffd966;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control carousel-prev" id="prevSlide"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-control carousel-next" id="nextSlide"><i class="fas fa-chevron-right"></i></button>
+        <div class="carousel-dots" id="dotsContainer"></div>
+    </div>
+
+    <!-- 赛点安排（比赛项目增加可更换链接） -->
+    <div class="container" id="events">
+        <div style="margin: 3rem 0 0.5rem;">
+            <span class="section-title">🏟️ 双赛点 · 竞逐科技之巅</span>
+            <p style="margin-top: 12px; color: #2c6280;">全市两大校区联动，点击项目名称即可查阅详细规则</p>
+        </div>
+        <div class="venues-grid">
+            <!-- 赛点1 淮阴师范学院附属小学 -->
+            <div class="venue-card">
+                <div class="venue-header">
+                    <h3><i class="fas fa-chalkboard-user"></i> 淮阴师范学院附属小学</h3>
+                    <div class="venue-badge"><i class="fas fa-map-marker-alt"></i> 交通路校区</div>
+                </div>
+                <div class="venue-dates">
+                    <div class="date-item"><i class="fas fa-calendar-check"></i> 报名：2026.6.15 - 6.25</div>
+                    <div class="date-item"><i class="fas fa-flag-checkered"></i> 比赛：2026.7.3 - 7.4</div>
+                </div>
+                <div class="venue-content">
+                    <div class="project-section">
+                        <h4><i class="fas fa-microchip"></i> 比赛项目 (点击链接查看规则)</h4>
+                        <div class="project-grid" id="projectLinks1">
+                            <!-- 每个项目均为可配置链接 a 标签，管理员直接修改 href 地址即可 -->
+                            <a href="https://harcrobot.feishu.cn/wiki/IltXwvc1mi6i71kmNhWcfswenkd?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-cube"></i> 创意模型搭建(小/初)</a>
+                            <a href="https://harcrobot.feishu.cn/wiki/AQUowYtM9i842ZkJHTOcdO73nJf?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-puzzle-piece"></i> 搭搭乐竞技(幼儿/小学)</a>
+                            <a href="https://harcrobot.feishu.cn/wiki/GxF0wSjlGibfY2kxDPMcLzmfnPg?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-car"></i> 拼装赛车(小/初/高)</a>
+                            <a href="https://harcrobot.feishu.cn/wiki/DgfswHVG7iLGtxkGey2cpQflnXd?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-chart-line"></i> 数智创新(小/初/高)</a>
+                            <a href="https://harcrobot.feishu.cn/wiki/DQg7wlyT3ixW8fkxpP2cAjI8nBc?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-palette"></i> 创艺智慧空间(小/初/高中/中职)</a>
+                            <a href="https://harcrobot.feishu.cn/wiki/WYPUw6im2iq2JOkZP09czivvnie?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-home"></i> 智能家居(小/初/高中/中职)</a>
+                            <a href="https://harcrobot.feishu.cn/wiki/SGgKwaekYiQB53k3hVTcL8U9nQf?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-plane"></i> 无人机工程技能(小/初/高中/中职)</a>
+                            <a href="https://www.sciedu.org/rules/robot_eco" target="_blank" class="project-link"><i class="fas fa-recycle"></i> 环保机器人普及(小/初/高中/中职)</a>
+                        </div>
+                        <div class="config-tip"><i class="fas fa-link"></i> 提示：规则如有修正以最新为准</div>
+                    </div>
+                    <div class="alert-limit">
+                        <i class="fas fa-users"></i> 每组别须满30人且不为同一学校，未达标则取消该组别。
+                    </div>
+                </div>
+            </div>
+            <!-- 赛点2 江苏省郑梁梅高级中学 -->
+            <div class="venue-card">
+                <div class="venue-header">
+                    <h3><i class="fas fa-landmark"></i> 江苏省郑梁梅高级中学</h3>
+                    <div class="venue-badge"><i class="fas fa-map-marker-alt"></i> 金城路校区</div>
+                </div>
+                <div class="venue-dates">
+                    <div class="date-item"><i class="fas fa-calendar-check"></i> 报名：2026.6.1 - 6.20</div>
+                    <div class="date-item"><i class="fas fa-flag-checkered"></i> 比赛：2026.7.3 - 7.4</div>
+                </div>
+                <div class="venue-content">
+                    <div class="project-section">
+                        <h4><i class="fas fa-tower-broadcast"></i> 比赛项目 (点击链接查看规则)</h4>
+                        <div class="project-grid">
+                            <a href="https://harcrobot.feishu.cn/wiki/YpsmwZCFIi8xQXkeswLcsNLpn8E?from=from_copylink" target="_blank" class="project-link"><i class="fas fa-weight-hanging"></i> 木梁承重竞技赛(幼儿/小学/初中/高中)</a>
+                        </div>
+                        <div class="config-tip"><i class="fas fa-link"></i> 提示：规则如有修正以最新为准</div>
+                    </div>
+                    <div class="alert-limit">
+                        <i class="fas fa-users"></i> 每组别须满30人且不为同一学校，未达标则取消该组别。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 竞赛项目总览等其他模块 -->
+    <div class="container" id="projects">
+        <div style="margin: 2rem 0 1rem;">
+            <span class="section-title">🧩 全项目组别一览</span>
+            <p class="supporter" style="margin-top: 12px;">覆盖幼儿、小学、初中、高中（含中职），激发创新实践能力</p>
+        </div>
+        <div class="card-grid">
+            <div class="info-card"><h4><i class="fas fa-cogs" style="color:#004e92;"></i> 工程技术类</h4><div>木梁承重、拼装赛车、创意模型搭建、搭搭乐</div></div>
+            <div class="info-card"><h4><i class="fas fa-microchip"></i> 智能机器人 & 无人机</h4><div>环保机器人普及赛、无人机工程技能赛、智能家居竞赛</div></div>
+            <div class="info-card"><h4><i class="fas fa-lightbulb"></i> 数智创新 & 空间创意</h4><div>数智创新竞技赛、创艺智慧空间竞技赛</div></div>
+        </div>
+        <div class="alert-note">⚙️ 竞赛器材以省大赛组委会核准器材，详细规则请访问 <a href="http://www.sciedu.org" target="_blank">www.sciedu.org</a> 下载。</div>
+    </div>
+
+    <!-- 报名指南等 -->
+    <div class="container" id="apply">
+        <div style="margin: 2rem 0 1rem;"><span class="section-title">📋 报名流程 & 参赛须知</span></div>
+        <div class="step-list">
+            <div class="step-item"><i class="fas fa-user-graduate fa-2x" style="color:#004e92;"></i><h4>1. 组织报名</h4><p>学校为单位报名，幼儿需家长陪同。</p></div>
+            <div class="step-item"><i class="fas fa-file-alt fa-2x" style="color:#004e92;"></i><h4>2. 填写报名表</h4><p>下载报名表（加盖公章），填写选手信息（不得兼项）。</p></div>
+            <div class="step-item"><i class="fas fa-envelope fa-2x" style="color:#004e92;"></i><h4>3. 邮件提交</h4><p>发送至 jsrobot@163.com，标题注明“淮安选拔赛+学校”。</p></div>
+            <div class="step-item"><i class="fas fa-id-card fa-2x" style="color:#004e92;"></i><h4>4. 现场报到</h4><p>签到时提交盖章报名表原件，按秩序册检录。</p></div>
+        </div>
+        <div class="info-card"><i class="fas fa-exclamation-triangle" style="color:#e67e22;"></i> <strong>重要声明：</strong> 大赛器材以省大赛组委会核准器材，不举办任何培训。成绩与升学不挂钩，不享受高考、中考加分待遇。省协会委派巡视员监督。</div>
+    </div>
+
+    <!-- 奖项荣誉 & 监督机制 板块 -->
+    <div class="container" id="notice">
+        <div style="margin: 3rem 0 1rem;"><span class="section-title">🏅 奖项荣誉 & 监督机制</span></div>
+        <div class="card-grid">
+            <div class="info-card"><h4><i class="fas fa-medal"></i> 个人奖项</h4><p>按组别评一、二、三等奖、优秀奖；评选优秀科技辅导员、校长奖、裁判员奖。</p><h4 style="margin-top:12px"><i class="fas fa-users"></i> 团体奖项</h4><p>省协会会员单位可参评项目团体奖（前30名总分）及优秀组织单位奖。</p></div>
+            <div class="info-card"><h4><i class="fas fa-eye"></i> 赛事监督</h4><p>省大赛组委会派巡视员，招募公众监督员。成绩仅公布等次，0分不予评奖，按《工作规程》申诉。</p></div>
+            <div class="info-card"><h4><i class="fas fa-chart-line"></i> 晋级福利</h4><p>优秀选手晋级全省总决赛！参赛师生需自行购买人身意外险，交通食宿自理，安全由派出单位负责。</p></div>
+        </div>
+    </div>
+
+    <!-- 新增：技术服务联系 可更换二维码区域（放在奖项监督之后） -->
+    <div class="container">
+        <div class="tech-qrcode">
+            <h3><i class="fas fa-headset"></i> 技术服务联系</h3>
+            <p style="margin-bottom: 16px; color: #2c6280;">如遇报名系统、赛事平台等技术问题，请扫码联系技术支持</p>
+            <img id="techQR" class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=https%3A%2F%2Fqm.qq.com%2Fq%2F677318988" alt="技术服务二维码">
+            <div class="qr-note">
+                <i class="fas fa-sync-alt"></i> 技术支持微信/QQ群：677318988 | 或直接联系周老师 18762090903
+            </div>
+             <!-- <p style="margin-top: 12px; font-size: 0.8rem;">🔧 技术支持微信/QQ群：677318988 | 或直接联系周老师 18762090903</p> -->
+       
+        </div>
+    </div>
+
+    <!-- 原有联系我们板块 -->
+    <div class="container" id="contact">
+        <div style="margin: 2rem 0 1rem;"><span class="section-title">📞 联系我们 & 官方渠道</span></div>
+        <div class="card-grid">
+            <div class="info-card"><i class="fas fa-phone-alt"></i> <strong>省大赛组委会</strong><br>刘天源 025-86670701<br>邮箱 jssciedu@163.com</div>
+            <div class="info-card"><i class="fab fa-weixin"></i> <strong>淮安市青少年科技教育协会</strong><br>周老师 0517-83731001<br>淮安联络QQ群：677318988</div>
+            <div class="info-card"><i class="fas fa-globe"></i> <strong>官方网站 & 规则下载</strong><br><a href="http://www.sciedu.org">http://www.sciedu.org</a><br>秩序册、总则及时更新。</div>
+        </div>
+        <div class="alert-note" style="background: #e6f4ea;"><i class="fas fa-user-check"></i> <strong>公众监督员招募中</strong> —— 欢迎社会各界人士报名参与赛事监督。</div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; flex-wrap:wrap;">
+                <div>© 2026 江苏省青少年科技教育协会（淮安组委会） ｜ 淮安市青少年科技教育协会</div>
+                <div><i class="fas fa-envelope"></i> jsrobot@163.com   |   <i class="fas fa-phone"></i> 0517-83731001</div>
+            </div>
+            <div style="font-size: 0.7rem; margin-top: 1.5rem; text-align: center; border-top: 1px solid #2c6280; padding-top: 1rem;">
+                本赛事最终解释权归大赛组委会所有。苏教办基函〔2026〕5号批准项目，坚持公益性、自愿原则。
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ========== 1. 轮播背景图配置 (后期轻松更换图片数组) ==========
+        const bgImages = [
+            "https://picsum.photos/id/24/1920/800?grayscale",   // 科技感示例图 (后期替换为真实科技背景)
+            "https://picsum.photos/id/0/1920/800",               // 明亮科技
+            "https://picsum.photos/id/96/1920/800"               // 芯片风格
+        ];
+        // 建议实际使用时替换为真实背景: 如 "images/tech1.jpg", "images/robot_bg.jpg" 等
+        
+        let currentIndex = 0;
+        let slideInterval;
+        
+        function renderCarousel() {
+            const bgContainer = document.getElementById('carouselBg');
+            if(!bgContainer) return;
+            bgContainer.innerHTML = '';
+            bgImages.forEach((imgSrc, idx) => {
+                const slideDiv = document.createElement('div');
+                slideDiv.className = 'carousel-slide';
+                if(idx === currentIndex) slideDiv.classList.add('active');
+                slideDiv.style.backgroundImage = `url(${imgSrc})`;
+                bgContainer.appendChild(slideDiv);
+            });
+            // 更新dots
+            const dotsContainer = document.getElementById('dotsContainer');
+            dotsContainer.innerHTML = '';
+            bgImages.forEach((_, idx) => {
+                const dot = document.createElement('div');
+                dot.classList.add('dot');
+                if(idx === currentIndex) dot.classList.add('active');
+                dot.addEventListener('click', () => goToSlide(idx));
+                dotsContainer.appendChild(dot);
+            });
+        }
+        
+        function goToSlide(index) {
+            if(index < 0) index = 0;
+            if(index >= bgImages.length) index = bgImages.length - 1;
+            const slides = document.querySelectorAll('.carousel-slide');
+            slides.forEach((slide, i) => {
+                if(i === index) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+            currentIndex = index;
+            const dots = document.querySelectorAll('.dot');
+            dots.forEach((dot, i) => {
+                if(i === currentIndex) dot.classList.add('active');
+                else dot.classList.remove('active');
+            });
+            resetInterval();
+        }
+        
+        function nextSlide() { goToSlide(currentIndex + 1 >= bgImages.length ? 0 : currentIndex + 1); }
+        function prevSlide() { goToSlide(currentIndex - 1 < 0 ? bgImages.length - 1 : currentIndex - 1); }
+        function resetInterval() {
+            if(slideInterval) clearInterval(slideInterval);
+            slideInterval = setInterval(() => nextSlide(), 5000);
+        }
+        
+        // 初始化轮播
+        renderCarousel();
+        document.getElementById('prevSlide')?.addEventListener('click', prevSlide);
+        document.getElementById('nextSlide')?.addEventListener('click', nextSlide);
+        resetInterval();
+        
+        // 2. 移动端导航
+        const mobileBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        if(mobileBtn){
+            mobileBtn.addEventListener('click', () => navLinks.classList.toggle('active'));
+            navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => navLinks.classList.remove('active')));
+        }
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e){
+                const href = this.getAttribute('href');
+                if(href === "#" || href === "") return;
+                const target = document.querySelector(href);
+                if(target){ e.preventDefault(); target.scrollIntoView({ behavior: 'smooth' }); }
+            });
+        });
+        // 下载报名模拟
+        const downloadBtn = document.querySelector('.btn-outline');
+        if(downloadBtn && downloadBtn.innerText.includes('下载报名表')){
+            downloadBtn.addEventListener('click', (e) => { e.preventDefault(); alert('报名表文件请至淮安联络QQ群 677318988 群文件下载，或发送邮件至组委会获取电子版。'); });
+        }
+        // 可配置链接说明: 所有 .project-link 的 href 都可以在后期任意修改，满足需求。
+        // 二维码更换示例：下面的代码仅为示意，实际管理员可修改 img 的 src 属性
+        // 例如： document.getElementById('techQR').src = '新二维码图片地址';
+    </script>
+</body>
+</html>
