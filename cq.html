@@ -16,7 +16,7 @@
            ========================================== */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         
-        body {
+       /*   body {
             background-color: #020617;
             background-image: 
                 linear-gradient(rgba(0, 234, 255, 0.05) 1px, transparent 1px),
@@ -30,6 +30,34 @@
             align-items: center;
             overflow-x: hidden;
         }
+*/
+
+
+        body {
+    /* 多层背景：网格(上) → 黑色遮罩(中) → 图片(最下) */
+    background-image: 
+        linear-gradient(rgba(0, 234, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 234, 255, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), /* 黑色遮罩 */
+        url("images//hxla/background2026.jpg"); /* 你的背景图，最后写=最底层 */
+
+    background-color: #020617;
+    background-size: 
+        30px 30px, /* 第一个网格 */
+        30px 30px, /* 第二个网格 */
+        cover,      /* 遮罩 */
+        cover;      /* 背景图铺满 */
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    color: #ffffff;
+    font-family: 'Noto Sans SC', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
 
         .app-container {
             width: 100vw;
