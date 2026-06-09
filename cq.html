@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海峡两岸青年学生机器人擂台争霸赛 - 圆梦太空抽签（小学/初中）系统</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700;900&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- 引入强大的 SheetJS 用于导出真正的 Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        /* ==========================================
+           HRAC科技主题 CSS
+           ========================================== */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: #020617;
+            background-image: 
+                linear-gradient(rgba(0, 234, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 234, 255, 0.05) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #ffffff;
+            font-family: 'Noto Sans SC', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+        }
+
+        .app-container {
+            width: 100vw;
+            min-height: 100vh;
+            background: radial-gradient(circle at center, rgba(0, 26, 51, 0.85) 0%, rgba(0, 0, 0, 0.95) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 40px 60px;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* 顶部标题区 */
+        .led-header { text-align: center; margin-top: 10px; display: flex; flex-direction: column; align-items: center; }
+        .logo-box {
+            height: 80px; margin-bottom: 15px; 
+            filter: drop-shadow(0 0 15px rgba(0,234,255,0.5));
+            display: flex; justify-content: center; align-items: center;
+        }
+        .logo-box img { max-height: 100%; object-fit: contain; }
+        .led-header h2 { font-size: 30px; color: #00eaff; letter-spacing: 10px; margin-bottom: 10px; font-weight: 500; }
+        .led-header h1 { 
+            font-size: 64px; 
+            color: #fff; 
+            letter-spacing: 12px; 
+            font-family: 'Orbitron', 'Noto Sans SC', sans-serif; 
+            text-shadow: 0 0 25px #00eaff;
+            font-weight: 900;
+            line-height: 1.2;
+        }
+
+        /* 动态地标 Banner 专区 */
+        .banner-container {
+            width: 100%;
+            max-width: 1200px;
+            height: 180px;
+            margin: 30px auto 10px;
+            position: relative;
+            border-radius: 16px;
+            border: 2px solid rgba(0, 234, 255, 0.5);
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(0, 234, 255, 0.15);
+            background: #000;
+        }
+        .bg-slider {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background-size: cover; background-position: center;
+            opacity: 0; transition: opacity 1.5s ease-in-out;
+            z-index: 1; filter: brightness(0.85) contrast(1.1);
+        }
+        .banner-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, rgba(0,15,30,0.9) 0%, rgba(0,0,0,0) 40%, rgba(0,15,30,0.9) 100%);
+            z-index: 2; pointer-events: none;
+        }
+        .city-label {
+            position: absolute; bottom: 15px; left: 20px; color: rgba(0, 234, 255, 0.9);
+            font-size: 16px; font-family: 'Orbitron', 'Noto Sans SC', sans-serif;
+            letter-spacing: 2px; z-index: 10; display: flex; align-items: center; gap: 10px;
+            background: rgba(0, 15, 30, 0.7); padding: 8px 20px; border-radius: 30px;
+            border: 1px solid rgba(0, 234, 255, 0.4); backdrop-filter: blur(5px);
+            box-shadow: 0 0 15px rgba(0, 234, 255, 0.2);
+        }
+
+        /* 中控操作台 */
+        .led-controls {
+            display: flex; justify-content: center; align-items: center; gap: 20px;
+            background: rgba(0, 34, 68, 0.7); padding: 20px 40px; border-radius: 50px; 
+            border: 1px solid rgba(0, 234, 255, 0.4);
+            box-shadow: 0 0 20px rgba(0, 234, 255, 0.1);
+            margin: 20px auto 40px;
+            width: fit-content;
+            flex-wrap: wrap;
+        }
+        .led-controls label { color: #00eaff; font-size: 20px; font-weight: bold; }
+        .led-controls select {
+            background: #000; color: #fff; border: 2px solid #00eaff; padding: 10px 15px;
+            font-size: 20px; border-radius: 8px; outline: none; cursor: pointer; font-weight: bold;
+        }
+        .btn-cyber {
+            background: linear-gradient(90deg, #0055ff, #00eaff); border: none; color: #000;
+            padding: 12px 25px; font-size: 20px; font-weight: 900; border-radius: 8px; cursor: pointer;
+            letter-spacing: 1px; transition: all 0.3s;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 25px rgba(0, 234, 255, 0.8); transform: scale(1.05); }
+        .btn-cyber:disabled { background: #333; color: #777; cursor: not-allowed; box-shadow: none; transform: none; }
+        
+        .btn-outline { background: rgba(0,0,0,0.5); border: 2px solid #00eaff; color: #00eaff; }
+        .btn-outline:hover { background: rgba(0, 234, 255, 0.2); }
+        
+        .btn-excel { background: rgba(0,0,0,0.5); border: 2px solid #00ff88; color: #00ff88; }
+        .btn-excel:hover { background: rgba(0, 255, 136, 0.2); box-shadow: 0 0 25px rgba(0, 255, 136, 0.5); transform: scale(1.05); }
+
+        /* 核心卡槽展示区 */
+        .led-slots { 
+            display: flex; justify-content: center; align-items: center; gap: 25px; 
+            flex-grow: 1; flex-wrap: wrap; padding: 20px 0;
+            align-content: center;
+        }
+        .slot-box {
+            background: rgba(0, 15, 30, 0.9); border: 2px solid #00eaff; 
+            padding: 20px 30px; box-shadow: 0 0 20px rgba(0, 234, 255, 0.3), inset 0 0 30px rgba(0, 234, 255, 0.1);
+            display: flex; justify-content: center; align-items: center; min-width: 180px;
+            clip-path: polygon(15px 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%, 0 15px);
+            transition: all 0.2s;
+            position: relative;
+        }
+        .slot-order {
+            position: absolute; top: 0; left: 0;
+            background: rgba(0, 234, 255, 0.15); color: #00eaff;
+            padding: 5px 15px; font-size: 16px; font-weight: bold;
+            font-family: 'Orbitron', monospace;
+            border-bottom: 1px solid rgba(0, 234, 255, 0.5);
+            border-right: 1px solid rgba(0, 234, 255, 0.5);
+            border-bottom-right-radius: 12px;
+            letter-spacing: 2px; text-shadow: 0 0 10px #00eaff; z-index: 10;
+        }
+        .slot-num { 
+            font-family: 'Orbitron', monospace; font-size: 65px; color: #fff; 
+            text-shadow: 0 0 25px #00eaff; letter-spacing: 5px; font-weight: 900; 
+        }
+        .slot-box.rolling .slot-num { color: #00eaff; filter: blur(3px); transform: scale(1.05); }
+        .slot-box.flash { background: rgba(0, 234, 255, 0.5); box-shadow: 0 0 60px #00eaff; transform: scale(1.05); }
+
+        /* 底部信息栏 */
+        .led-footer {
+            display: flex; justify-content: space-between; align-items: flex-end; width: 100%;
+            border-top: 2px dashed rgba(0, 234, 255, 0.4); padding-top: 25px; margin-top: 20px;
+        }
+        .led-footer > div { color: #00eaff; font-size: 22px; font-weight: bold; }
+        .admin-trigger { cursor: pointer; transition: color 0.3s; }
+        .admin-trigger:hover { color: #fff; text-shadow: 0 0 15px #fff; }
+
+        /* 组织机构底部信息 */
+        .org-footer {
+            margin-top: 20px; padding-top: 15px; 
+            text-align: center; color: rgba(255, 255, 255, 0.6); font-size: 15px;
+            display: flex; flex-direction: column; gap: 10px;
+            border-top: 1px dashed rgba(0, 234, 255, 0.2);
+            font-weight: normal; letter-spacing: 1px;
+        }
+        .org-footer .org-title { color: #00eaff; font-weight: bold; margin-right: 15px; text-shadow: 0 0 10px rgba(0,234,255,0.4); }
+        .org-footer .org-list { color: #a0c4e8; }
+        .org-footer .org-divider { margin: 0 10px; color: rgba(0, 234, 255, 0.3); }
+
+        /* ================= HARC模态框 ================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 1000;
+            opacity: 1; transition: opacity 0.3s;
+        }
+        .modal-overlay.hidden { opacity: 0; pointer-events: none; }
+        .modal-box {
+            background: rgba(0, 15, 30, 0.95); border: 2px solid #00eaff;
+            padding: 30px 40px; border-radius: 12px; width: 450px; max-width: 90%; text-align: center;
+            box-shadow: 0 0 40px rgba(0, 234, 255, 0.3); position: relative;
+        }
+        .modal-box::before {
+            content: ''; position: absolute; top: -2px; left: 10%; width: 80%; height: 2px;
+            background: #fff; box-shadow: 0 0 20px #fff;
+        }
+        .modal-box h3 { color: #00eaff; margin-bottom: 20px; font-size: 26px; font-family: 'Orbitron', sans-serif; letter-spacing: 2px; }
+        .modal-box p { font-size: 20px; margin-bottom: 25px; color: #fff; line-height: 1.5; }
+        .modal-box input {
+            width: 100%; background: #000; border: 1px solid #00eaff; color: #00eaff;
+            padding: 12px; font-size: 20px; text-align: center; margin-bottom: 25px; 
+            outline: none; font-family: 'Orbitron', monospace; letter-spacing: 5px;
+        }
+        .modal-box input:focus { box-shadow: inset 0 0 10px rgba(0,234,255,0.5); }
+        .modal-btns { display: flex; justify-content: space-around; gap: 20px; }
+        .modal-btns button { padding: 10px 25px; font-size: 18px; flex: 1; }
+
+        /* ================= H5 移动端深度适配 (响应式) ================= */
+        @media (max-width: 768px) {
+            .app-container { padding: 15px; }
+            .logo-box { height: 50px; margin-bottom: 10px; }
+            .led-header h1 { font-size: 26px; letter-spacing: 2px; }
+            .led-header h2 { font-size: 14px; letter-spacing: 2px; }
+            
+            /* Banner 移动端适配 */
+            .banner-container { height: 120px; border-radius: 10px; margin: 15px auto; }
+            .city-label { font-size: 12px; padding: 5px 12px; bottom: 8px; left: 10px; letter-spacing: 1px; }
+
+            /* 控制台变为垂直流 */
+            .led-controls { 
+                flex-direction: column; width: 100%; padding: 15px; 
+                gap: 12px; border-radius: 15px; margin: 10px auto 20px;
+            }
+            .led-controls label { font-size: 16px; }
+            .led-controls select, .btn-cyber { width: 100%; font-size: 16px; padding: 10px; }
+            
+            /* 卡槽变为 2 列网格布局 */
+            .led-slots { gap: 10px; padding: 10px 0; }
+            .slot-box { flex: 1 1 40%; min-width: 40%; padding: 15px 10px; }
+            .slot-num { font-size: 36px; letter-spacing: 2px; }
+            .slot-order { font-size: 12px; padding: 3px 8px; }
+
+            /* 底部适配 */
+            .led-footer { flex-direction: column; align-items: center; gap: 15px; text-align: center; }
+            .led-footer > div { font-size: 16px; }
+            
+            /* 组织机构换行去划线 */
+            .org-footer { font-size: 12px; gap: 15px; }
+            .org-footer .org-title { display: block; margin-bottom: 5px; margin-right: 0; color: #fff; }
+            .org-footer .org-list { line-height: 1.8; display: flex; flex-direction: column; gap: 5px; }
+            .org-footer .org-divider { display: none; }
+            
+            /* 模态框适配 */
+            .modal-box { padding: 20px; }
+            .modal-box h3 { font-size: 20px; }
+            .modal-box p { font-size: 16px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- 头部标识 -->
+    <div class="led-header">
+        <!-- 附件Logo占位 (部署时请将 src 替换为您真实附件的图片路径) -->
+        <div class="logo-box">
+            <img src="https://dummyimage.com/350x90/001a33/00eaff.png&text=[Image+of+赛事Logo]" alt="赛事Logo">
+        </div>
+        <h2>海峡两岸青年学生机器人擂台争霸赛</h2>
+        <h1> 圆梦太空抽签算法系统</h1>
+    </div>
+
+    <!-- 动态地标 Banner 橱窗 -->
+    <div class="banner-container">
+        <div id="bgSlider" class="bg-slider"></div>
+        <div class="banner-overlay"></div>
+        <div class="city-label" id="cityLabel"><i class="fa-solid fa-location-dot"></i> [ 信号连接中... ]</div>
+    </div>
+
+    <!-- 操控面板 -->
+    <div class="led-controls">
+        <label>大屏阵列布置</label>
+        <select id="colSelect">
+            <option value="1">1 列显示</option>
+            <option value="2">2 列显示</option>
+            <option value="3">3 列显示</option>
+            <option value="4" selected>4 列显示</option>
+            <option value="5">5 列显示</option>
+            <option value="6">6 列显示</option>
+            <option value="7">7 列显示</option>
+            <option value="8">8 列显示</option>
+            <option value="9">9 列显示</option>
+            <option value="10">10 列显示</option>
+        </select>
+        <button id="btnDraw" class="btn-cyber"><i class="fa-solid fa-satellite-dish" style="margin-right:8px;"></i>启动抽签</button>
+        <button id="btnReset" class="btn-cyber btn-outline"><i class="fa-solid fa-shield-halved" style="margin-right:8px;"></i>安全复位</button>
+        <button id="btnExport" class="btn-cyber btn-excel"><i class="fa-solid fa-file-excel" style="margin-right:8px;"></i>导出记录</button>
+    </div>
+
+    <!-- 结果卡槽 -->
+    <div class="led-slots" id="slotContainer">
+        <!-- JS将在此处渲染格子 -->
+    </div>
+
+    <!-- 底部状态栏 -->
+    <div class="led-footer">
+        <div><i class="fa-solid fa-database" style="margin-right:8px;"></i>全场已产生编号: <span id="drawCount" style="color:#fff;">0</span></div>
+        <div class="admin-trigger" id="adminTrigger" title="双击此处激活全屏控制台">指控中心</div>
+        <div><i class="fa-solid fa-clock" style="margin-right:8px;"></i>赛事时钟: <span id="sysClock" style="color:#fff;">00:00:00</span></div>
+    </div>
+
+    <!-- 组织机构 -->
+    <div class="org-footer">
+        <div>
+            <span class="org-title">主办单位</span>
+            <span class="org-list">
+                江苏省青少年科技教育协会<span class="org-divider">|</span>
+                江苏省科普服务中心<span class="org-divider">|</span>
+                江苏省人工智能学会<span class="org-divider">|</span>
+                江苏省工程技术创新课程基地
+            </span>
+        </div>
+        <div>
+            <span class="org-title">承办单位</span>
+            <span class="org-list">
+                南京师范大学附属中学<span class="org-divider">|</span>
+                高雄市海峡两岸民间交流协会<span class="org-divider">|</span>
+                淮安市青少年科技教育协会<span class="org-divider">|</span>
+                淮安市机器人学会
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- ================= 自定义 UI 模态框 ================= -->
+<div id="cyberModal" class="modal-overlay hidden">
+    <div class="modal-box">
+        <h3 id="modalTitle"><i class="fa-solid fa-triangle-exclamation" style="margin-right:10px;"></i>系统提示</h3>
+        <p id="modalMsg"></p>
+        <input type="password" id="modalInput" class="hidden" placeholder="请输入超级密令" autocomplete="off">
+        <div class="modal-btns">
+            <button id="modalBtnCancel" class="btn-cyber btn-outline">取 消</button>
+            <button id="modalBtnConfirm" class="btn-cyber">确 认</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function initSystem() {
+        const slotsContainer = document.getElementById('slotContainer');
+        const colSelect = document.getElementById('colSelect');
+        const btnDraw = document.getElementById('btnDraw');
+        const btnReset = document.getElementById('btnReset');
+        const btnExport = document.getElementById('btnExport');
+        const drawCountEl = document.getElementById('drawCount');
+        const adminTrigger = document.getElementById('adminTrigger');
+        const sysClock = document.getElementById('sysClock');
+
+        function showModal({ title="系统提示", msg="", type="alert", onConfirm }) {
+            const overlay = document.getElementById('cyberModal');
+            document.getElementById('modalTitle').innerHTML = `<i class="fa-solid fa-circle-exclamation" style="margin-right:10px;"></i>${title}`;
+            document.getElementById('modalMsg').innerText = msg;
+            
+            const inputEl = document.getElementById('modalInput');
+            const btnCancel = document.getElementById('modalBtnCancel');
+            const btnConfirm = document.getElementById('modalBtnConfirm');
+            inputEl.value = ''; 
+
+            if (type === 'prompt') {
+                inputEl.classList.remove('hidden');
+                btnCancel.classList.remove('hidden');
+                setTimeout(() => inputEl.focus(), 100);
+            } else if (type === 'confirm') {
+                inputEl.classList.add('hidden');
+                btnCancel.classList.remove('hidden');
+            } else { 
+                inputEl.classList.add('hidden');
+                btnCancel.classList.add('hidden');
+            }
+
+            overlay.classList.remove('hidden');
+
+            btnConfirm.onclick = () => {
+                overlay.classList.add('hidden');
+                if(onConfirm) {
+                    if(type === 'prompt') onConfirm(inputEl.value);
+                    else onConfirm(true);
+                }
+            };
+            btnCancel.onclick = () => overlay.classList.add('hidden');
+        }
+
+        let isDrawing = false;
+        let drawRecords = JSON.parse(localStorage.getItem("robot_draw_records") || "[]");
+        let usedNumbers = new Set(drawRecords.map(r => r.code));
+        const MAX_COMBINATIONS = 240; 
+
+        // 强迫采用 Banner 尺寸比例的高清风景底图参数
+        const cityLandmarks = [
+            { name: "南京 · 紫峰大厦", url: "./images/hxla/南京.jpg"  },
+            { name: "苏州 · 东方之门", url: "./images/hxla/苏州.jpg" },
+            { name: "无锡 · 灵山大佛", url: "./images/hxla/无锡.jpg" },
+            { name: "徐州 · 云龙湖", url: "./images/hxla/徐州.jpg" },
+            { name: "常州 · 天宁宝塔", url: "./images/hxla/常州.jpg" },
+            { name: "南通 · 狼山", url: "./images/hxla/南通.jpg" },
+            { name: "连云港 · 花果山", url: "./images/hxla/连云港.jpg" },
+            { name: "淮安 · 西游乐园", url: "./images/hxla/淮安.jpg" },
+            { name: "盐城 · 丹顶鹤湿地", url: "./images/hxla/盐城.jpg" },
+            { name: "扬州 · 瘦西湖", url: "./images/hxla/扬州.jpg" },
+            { name: "镇江 · 金山寺", url: "./images/hxla/镇江.jpg" },
+            { name: "泰州 · 溱湖", url: "./images/hxla/泰州.jpg" },
+            { name: "宿迁 · 项王故里", url: "./images/hxla/宿迁.jpg" }
+        ];
+
+        drawCountEl.innerText = drawRecords.length;
+        renderSlots();
+        startClock();
+        initBgSlider();
+
+        function initBgSlider() {
+            const bgEl = document.getElementById('bgSlider');
+            const labelEl = document.getElementById('cityLabel');
+            let idx = 0;
+            function switchBg() {
+                bgEl.style.opacity = '0';
+                setTimeout(() => {
+                    bgEl.style.backgroundImage = `url('${cityLandmarks[idx].url}')`;
+                    labelEl.innerHTML = `<i class="fa-solid fa-location-dot"></i> 当前地标：${cityLandmarks[idx].name}`;
+                    bgEl.style.opacity = '0.7'; 
+                    idx = (idx + 1) % cityLandmarks.length;
+                }, 1500); 
+            }
+            switchBg(); 
+            setInterval(switchBg, 12000); 
+        }
+
+        colSelect.addEventListener('change', renderSlots);
+        btnDraw.addEventListener('click', handleDraw);
+        btnReset.addEventListener('click', handleReset);
+        btnExport.addEventListener('click', handleExport);
+        adminTrigger.addEventListener('dblclick', toggleFullscreen);
+
+        function renderSlots() {
+            if (isDrawing) return;
+            slotsContainer.innerHTML = '';
+            const count = parseInt(colSelect.value);
+            const currentTotal = drawRecords.length;
+
+            for (let i = 0; i < count; i++) {
+                const div = document.createElement('div');
+                div.className = 'slot-box';
+                const nextOrder = currentTotal + i + 1;
+                div.innerHTML = `
+                    <div class="slot-order">NO.${String(nextOrder).padStart(3, '0')}</div>
+                    <span class="slot-num" id="slot-${i}">----</span>
+                `;
+                slotsContainer.appendChild(div);
+            }
+        }
+
+        function randomUnique(arr, count) {
+            let result = [];
+            let copy = [...arr];
+            while (result.length < count && copy.length > 0) {
+                let index = Math.floor(Math.random() * copy.length);
+                result.push(copy[index]);
+                copy.splice(index, 1);
+            }
+            return result;
+        }
+
+        function generateCode() {
+            if (usedNumbers.size >= MAX_COMBINATIONS) return null; 
+            let attempts = 0;
+            while(attempts < 1000) {
+                let part1 = randomUnique([1, 2, 3, 4], 2);
+                let part2 = randomUnique([5, 6, 7, 8, 9], 2);
+                let code = part1.join('') + part2.join('');
+                if (!usedNumbers.has(code)) return code;
+                attempts++;
+            }
+            return null;
+        }
+
+        function handleDraw() {
+            if (isDrawing) return;
+            const count = parseInt(colSelect.value);
+            
+            if (usedNumbers.size + count > MAX_COMBINATIONS) {
+                showModal({ title: "容量警告", msg: "剩余号码池不足以完成本次抽签配额！", type: "alert" });
+                return;
+            }
+
+            renderSlots();
+            isDrawing = true;
+            btnDraw.disabled = true;
+            btnDraw.innerHTML = `<i class="fa-solid fa-spinner fa-spin" style="margin-right:8px;"></i>信号解析中...`;
+
+            let newCodes = [];
+            let currentTime = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            
+            for (let i = 0; i < count; i++) {
+                let code = generateCode();
+                newCodes.push(code);
+                usedNumbers.add(code); 
+                drawRecords.push({ order: drawRecords.length + 1, code: code, time: currentTime });
+            }
+
+            localStorage.setItem("robot_draw_records", JSON.stringify(drawRecords));
+
+            let completed = 0;
+            newCodes.forEach((code, index) => {
+                const el = document.getElementById(`slot-${index}`);
+                startRoll(el, code, index, () => {
+                    completed++;
+                    if (completed === count) {
+                        isDrawing = false;
+                        btnDraw.disabled = false;
+                        btnDraw.innerHTML = `<i class="fa-solid fa-satellite-dish" style="margin-right:8px;"></i>启动抽签`;
+                        drawCountEl.innerText = drawRecords.length;
+                        speakResult(newCodes);
+                    }
+                });
+            });
+        }
+
+        function startRoll(element, finalValue, delayIndex, callback) {
+            let frameCount = 0;
+            element.parentElement.classList.add('rolling');
+            setTimeout(() => {
+                let timer = setInterval(() => {
+                    element.innerText = Math.floor(1000 + Math.random() * 9000);
+                    frameCount++;
+                    if (frameCount > 25) { 
+                        clearInterval(timer);
+                        element.innerText = finalValue;
+                        element.parentElement.classList.remove('rolling');
+                        element.parentElement.classList.add('flash');
+                        playBeep();
+                        setTimeout(() => element.parentElement.classList.remove('flash'), 400);
+                        if (callback) callback();
+                    }
+                }, 50); 
+            }, delayIndex * 150); 
+        }
+
+        function playBeep() {
+            try {
+                let ctx = new (window.AudioContext || window.webkitAudioContext)();
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(800, ctx.currentTime);
+                gain.gain.setValueAtTime(0.05, ctx.currentTime);
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                osc.start();
+                osc.stop(ctx.currentTime + 0.1);
+            } catch (e) { }
+        }
+
+        function speakResult(codes) {
+            if (!window.speechSynthesis) return;
+            let text = "赛号分配，" + codes.map(c => c.split('').join(' ')).join('，');
+            let utter = new SpeechSynthesisUtterance(text);
+            utter.lang = "zh-CN";
+            utter.rate = 0.85; 
+            window.speechSynthesis.speak(utter);
+        }
+
+        function handleReset() {
+            showModal({
+                title: "安全控制台",
+                msg: "清除内存记录属极高危操作，请输入总控口令：",
+                type: "prompt",
+                onConfirm: (pwd) => {
+                    if (pwd === "2026robot") {
+                        usedNumbers.clear();
+                        drawRecords = [];
+                        localStorage.removeItem("robot_draw_records");
+                        drawCountEl.innerText = "0";
+                        renderSlots();
+                        showModal({ title: "操作成功", msg: "内存已净化，号码池和记录已归零。", type: "alert" });
+                    } else {
+                        showModal({ title: "访问拒绝", msg: "密令错误，您的异常操作已被拦截！", type: "alert" });
+                    }
+                }
+            });
+        }
+
+        function handleExport() {
+            if (drawRecords.length === 0) {
+                showModal({ title: "文件导出失败", msg: "当前没有任何已抽取的数据记录！", type: "alert" });
+                return;
+            }
+
+            let sheetData = [["抽取序号", "队伍分配号码", "操作记录时间"]];
+            drawRecords.forEach(record => {
+                sheetData.push([record.order, record.code, record.time]);
+            });
+
+            let wb = XLSX.utils.book_new();
+            let ws = XLSX.utils.aoa_to_sheet(sheetData);
+            ws['!cols'] = [{ wch: 12 }, { wch: 20 }, { wch: 20 }];
+            XLSX.utils.book_append_sheet(wb, ws, "抽签结果存档");
+
+            let now = new Date();
+            let timeStr = now.getFullYear() + 
+                         String(now.getMonth() + 1).padStart(2, '0') + 
+                         String(now.getDate()).padStart(2, '0') + "_" + 
+                         String(now.getHours()).padStart(2, '0') + 
+                         String(now.getMinutes()).padStart(2, '0');
+                         
+            XLSX.writeFile(wb, `圆梦太空比赛抽签结果_${timeStr}.xlsx`);
+        }
+
+        function toggleFullscreen() {
+            showModal({
+                title: "全屏投影指控系统",
+                msg: "请输入密令将画面投射至 LED 无边框主屏：",
+                type: "prompt",
+                onConfirm: (pwd) => {
+                    if (pwd === "2026robot") {
+                        if (document.documentElement.requestFullscreen) {
+                            document.documentElement.requestFullscreen();
+                        }
+                    } else {
+                        showModal({ title: "投影失败", msg: "授权口令不正确。", type: "alert" });
+                    }
+                }
+            });
+        }
+
+        function startClock() {
+            setInterval(() => {
+                const now = new Date();
+                sysClock.innerText = now.toLocaleTimeString('zh-CN', { hour12: false });
+            }, 1000);
+        }
+
+    })();
+</script>
+</body>
+</html>
