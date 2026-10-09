@@ -1,0 +1,2239 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="author" content="周亮亮 Chao-Yu Chung">
+<meta name="description" content="无人机足球一站式学习平台：规则、飞行教学、3D 战术板、计分板、维修与教案。HARC研发团队整理。">
+<meta property="og:title" content="无人机足球一站式学习平台">
+<meta property="og:description" content="规则、飞行教学、3D 战术板、计分板、维修与教案，HARC研发团队整理。">
+<title>无人机足球战术板</title>
+<!-- ============================================================
+     无人机足球一站式学习平台（战术板・规则・操作・构造・原理・维修）
+     HARC研发团队整理 © 2026　Compiled by Chao-Yu Chung
+     本页内容与程式码由HARC研发团队整理制作，供教学使用；转载或修改请保留此标示。
+     ============================================================ -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#0d1218; --panel:#151c25; --panel2:#1c2531; --line:#2c3a4a; --line2:#3d4f63;
+  --text:#e8eef5; --muted:#8fa1b5; --accent:#ffc857;
+  --red:#ff5a5f; --red-dim:#7a2f33; --blue:#3fa2ff; --blue-dim:#25507a;
+  --ok:#5ad38a; --danger:#ff7b7b;
+  --num:"Barlow Condensed","Noto Sans TC",system-ui,sans-serif;
+  --body:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html,body{height:100%;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;overflow:hidden;}
+*{box-sizing:border-box;}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit;}
+#shell{display:flex;flex-direction:column;height:100%;width:100%;}
+#topbar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;}
+#topbar .brand{font-family:var(--num);font-weight:700;font-size:18px;letter-spacing:.04em;}
+#topbar .credit{margin-left:auto;font-size:11px;color:var(--muted);letter-spacing:.06em;white-space:nowrap;}
+#navToggle{display:none;background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:4px 10px;font-size:18px;cursor:pointer;}
+#main{display:flex;flex:1 1 auto;min-height:0;}
+#nav{flex:0 0 218px;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;}
+#nav .grp{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.12em;padding:12px 10px 4px;}
+#nav button{background:none;border:1px solid transparent;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--text);text-align:left;font-size:13px;}
+#nav button:hover{background:var(--panel2);}
+#nav button.on{background:var(--panel2);border-color:var(--line2);color:var(--accent);font-weight:700;}
+#nav .navfoot{margin-top:auto;padding:12px 10px 4px;font-size:11px;color:var(--muted);}
+#content{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;}
+#navBackdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:19;}
+@media (max-width:900px){ #navToggle{display:block;} #nav{position:fixed;left:0;top:0;bottom:0;z-index:20;transform:translateX(-100%);transition:transform .2s;width:240px;} #nav.open{transform:none;} #navBackdrop.open{display:block;} #topbar .credit{display:none;} }
+#app{display:flex;flex:1 1 auto;min-height:0;width:100%;}
+.page{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 16px 40px;}
+.page .wrap{max-width:980px;margin:0 auto;}
+.page h2{font-family:var(--num);font-weight:700;font-size:26px;letter-spacing:.03em;margin:28px 0 6px;text-wrap:balance;}
+.page h3{font-size:15px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin:22px 0 8px;}
+.page p{color:var(--text);line-height:1.7;max-width:70ch;margin:6px 0;}
+.page p.note{color:var(--muted);font-size:13px;}
+.card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:10px 0;}
+.card.solo{grid-template-columns:1fr;}
+.card svg{width:100%;height:auto;display:block;}
+.card .txt{min-width:0;}
+.card .txt h4{margin:0 0 6px;font-size:16px;font-weight:700;}
+.card .txt ul{margin:6px 0 0;padding-left:18px;line-height:1.7;}
+.card .txt li{margin:2px 0;}
+.anim{background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;}
+.anim .cap{position:absolute;left:8px;bottom:6px;font-family:var(--num);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.04em;}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0;}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;}
+.tbl th{background:var(--panel2);color:var(--muted);font-weight:700;font-size:12px;letter-spacing:.06em;}
+.tbl td b{font-family:var(--num);font-size:15px;font-weight:600;}
+.tblwrap{overflow-x:auto;}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:8px 0;}
+.step{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;transition:border-color .3s,background .3s;}
+.step .n{font-family:var(--num);font-weight:700;font-size:20px;color:var(--muted);}
+.step.on{border-color:var(--accent);background:#2a2618;}
+.step.on .n{color:var(--accent);}
+.step b{display:block;margin:2px 0 4px;}
+.step span{font-size:12px;color:var(--muted);line-height:1.5;}
+.tag-s{display:inline-block;padding:1px 7px;border-radius:4px;font-family:var(--num);font-weight:600;font-size:13px;letter-spacing:.04em;}
+.tag-y{background:#ffc857;color:#1a1200;} .tag-r{background:var(--red);color:#fff;} .tag-p{background:var(--blue);color:#fff;}
+/* 摇杆教学 */
+#ctrlGrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start;}
+#ctrlGrid .anim{padding:6px;}
+.modebar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0;}
+.modebar button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 12px;cursor:pointer;}
+.modebar button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.demo{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin:8px 0;}
+.demo button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:8px;cursor:pointer;font-weight:500;}
+.demo button.on{border-color:var(--accent);color:var(--accent);}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin:8px 0;}
+.kv b{font-family:var(--num);font-size:15px;font-weight:600;color:var(--accent);}
+.credit-foot{margin:36px 0 8px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);letter-spacing:.04em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.credit-foot b{color:var(--accent);font-weight:600;}
+#wm{position:absolute;right:12px;bottom:12px;font-family:var(--num);font-size:12px;letter-spacing:.08em;color:var(--muted);opacity:.85;pointer-events:none;background:rgba(13,18,24,.6);padding:3px 8px;border-radius:4px;}
+#panel .credit-foot{margin:auto 16px 12px;}
+/* 球机结构 */
+#partsGrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;align-items:start;}
+#partsView{position:relative;height:460px;background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden;touch-action:none;}
+#partsView canvas{display:block;width:100%;height:100%;}
+#partsHud{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px;}
+#partsHud button{background:rgba(21,28,37,.9);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;text-align:left;}
+#partsHud button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+#partsHud label{display:flex;align-items:center;gap:6px;background:rgba(21,28,37,.9);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--muted);}
+#partsHud input[type=range]{width:110px;accent-color:var(--accent);}
+#partList{display:flex;flex-direction:column;gap:4px;}
+.part{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;}
+.part:hover{border-color:var(--line2);}
+.part.on{border-color:var(--accent);background:var(--panel2);}
+.part .sw{width:12px;height:12px;border-radius:3px;flex:0 0 auto;margin-top:4px;}
+.part b{display:block;font-size:14px;}
+.part span{font-size:12px;color:var(--muted);line-height:1.5;}
+.part.on span{color:var(--text);}
+/* 飞行原理 */
+.ctlrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0;font-size:13px;color:var(--muted);}
+.ctlrow input[type=range]{accent-color:var(--accent);width:160px;}
+.ctlrow button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--text);}
+.ctlrow button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.propsel{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:260px;margin:8px 0;}
+.propsel button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:8px;cursor:pointer;font-family:var(--num);font-weight:600;font-size:15px;}
+.propsel button.a{border-color:#5ad38a;color:#5ad38a;} .propsel button.b{border-color:#c084fc;color:#c084fc;}
+.verdict{font-size:14px;line-height:1.6;padding:8px 10px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);margin-top:8px;}
+.verdict.ok{border-color:var(--ok);} .verdict.bad{border-color:var(--danger);}
+/* 维修手册 */
+.fixsearch{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--text);margin:8px 0 12px;}
+.acc{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin:6px 0;overflow:hidden;}
+.acc summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style:none;display:flex;gap:10px;align-items:center;}
+.acc summary::before{content:'+';font-family:var(--num);font-size:18px;color:var(--accent);width:14px;}
+.acc[open] summary::before{content:'−';}
+.acc summary .lv{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;padding:2px 7px;border-radius:4px;background:var(--panel2);color:var(--muted);}
+.acc .body{padding:0 14px 12px;font-size:13px;line-height:1.7;}
+.acc .body h5{margin:8px 0 2px;font-size:12px;color:var(--accent);letter-spacing:.08em;}
+.acc .body ol,.acc .body ul{margin:2px 0;padding-left:20px;}
+.flash{animation:flashbg 1.6s ease-out;}
+@keyframes flashbg{0%{background:#3a3418}100%{background:transparent}}
+/* 首页 */
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:center;margin:20px 0 8px;}
+.hero h1{font-family:var(--num);font-weight:700;font-size:38px;letter-spacing:.03em;margin:0 0 8px;line-height:1.1;text-wrap:balance;}
+.hero p{max-width:60ch;}
+.pathmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0;}
+.pm{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;position:relative;}
+.pm .idx{font-family:var(--num);font-size:30px;font-weight:700;color:var(--accent);line-height:1;}
+.pm h4{margin:4px 0 6px;font-size:15px;}
+.pm a{display:block;color:var(--text);text-decoration:none;font-size:13px;padding:4px 6px;border-radius:5px;cursor:pointer;}
+.pm a:hover{background:var(--panel2);color:var(--accent);}
+.pm a::before{content:'▸ ';color:var(--muted);}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0 20px;}
+.quick button{background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:14px;cursor:pointer;text-align:left;color:var(--text);}
+.quick button b{display:block;font-size:16px;color:var(--accent);margin-bottom:4px;}
+.quick button span{font-size:12px;color:var(--muted);}
+/* 认识无人机 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:8px 0;}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;}
+.tile svg{width:100%;height:auto;display:block;margin-bottom:6px;background:var(--bg);border-radius:6px;}
+.tile b{display:block;font-size:15px;margin-bottom:4px;}
+.tile span{font-size:12px;color:var(--muted);line-height:1.6;}
+.timeline{position:relative;margin:12px 0 12px 12px;padding-left:22px;border-left:2px solid var(--line2);}
+.tl{position:relative;margin:0 0 16px;}
+.tl::before{content:'';position:absolute;left:-29px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);}
+.tl .yr{font-family:var(--num);font-weight:700;font-size:18px;color:var(--accent);letter-spacing:.04em;}
+.tl b{display:block;margin:2px 0;}
+.tl span{font-size:13px;color:var(--muted);line-height:1.6;}
+.zone{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px;}
+/* 计分板 */
+#board{background:#05080c;border:1px solid var(--line);border-radius:12px;padding:16px;margin:10px 0;color:#fff;}
+#board:fullscreen{border:0;border-radius:0;padding:4vh 4vw;display:flex;flex-direction:column;justify-content:center;}
+.sb-top{display:flex;justify-content:space-between;align-items:center;font-family:var(--num);font-size:clamp(14px,2.2vw,22px);letter-spacing:.08em;color:var(--muted);}
+.sb-main{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:8px 0;}
+.sb-team{text-align:center;border-radius:12px;padding:10px 6px;}
+.sb-team.red{background:rgba(255,90,95,.12);border:2px solid var(--red);} .sb-team.blue{background:rgba(63,162,255,.12);border:2px solid var(--blue);}
+.sb-team .nm{font-size:clamp(16px,2.5vw,28px);font-weight:700;background:none;border:0;color:#fff;text-align:center;width:100%;}
+.sb-team .sc{font-family:var(--num);font-weight:700;font-size:clamp(64px,14vw,180px);line-height:1;font-variant-numeric:tabular-nums;}
+.sb-team .sets{font-family:var(--num);font-size:clamp(14px,2vw,22px);color:var(--muted);letter-spacing:.1em;}
+.sb-team .btns{display:flex;justify-content:center;gap:6px;margin-top:6px;}
+.sb-team .btns button,.sb-ctl button{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 14px;cursor:pointer;color:#fff;font-family:var(--num);font-weight:600;font-size:16px;}
+.sb-team .btns button.big{font-size:22px;padding:8px 22px;}
+.sb-clock{text-align:center;}
+.sb-clock .ph{font-size:clamp(13px,1.8vw,20px);color:var(--accent);letter-spacing:.12em;font-weight:700;}
+.sb-clock .tm{font-family:var(--num);font-weight:700;font-size:clamp(56px,12vw,150px);line-height:1;font-variant-numeric:tabular-nums;}
+.sb-clock .tm.warn{color:var(--red);}
+.sb-clock .set{font-family:var(--num);font-size:clamp(14px,2vw,24px);color:var(--muted);letter-spacing:.1em;}
+.sb-ctl{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;}
+.sb-ctl button.pri{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.sb-log{font-size:12px;color:var(--muted);margin-top:8px;max-height:80px;overflow:auto;font-family:ui-monospace,Menlo,monospace;}
+.sb-sets{display:flex;gap:6px;justify-content:center;margin-top:4px;}
+.sb-sets span{font-family:var(--num);font-size:13px;padding:2px 8px;border-radius:4px;background:var(--panel2);color:var(--muted);}
+.sb-sets span.r{background:var(--red);color:#fff;} .sb-sets span.b{background:var(--blue);color:#fff;} .sb-sets span.d{background:var(--muted);color:#0d1218;}
+/* 训练关卡 */
+.lv{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;}
+.lv svg{width:100%;height:auto;background:var(--bg);border-radius:6px;}
+.lv h4{margin:0 0 4px;font-size:16px;} .lv h4 small{color:var(--muted);font-weight:500;margin-left:6px;}
+.lv .crit{font-size:13px;line-height:1.6;} .lv .crit li{margin:1px 0;}
+.lv .tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;}
+.lv .tools button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;font-family:var(--num);font-weight:600;font-size:15px;}
+.lv .tools .sw{font-family:var(--num);font-size:22px;font-weight:700;min-width:70px;font-variant-numeric:tabular-nums;}
+.lv.done{border-color:var(--ok);} .lv.done h4::after{content:' ✓ 已通过';color:var(--ok);font-size:13px;}
+.lv .rec{font-size:12px;color:var(--muted);}
+.prog{height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:6px 0 12px;} .prog i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s;}
+/* 测验 */
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;}
+.q .qt{font-weight:700;margin-bottom:8px;} .q .qt em{font-family:var(--num);font-style:normal;color:var(--accent);margin-right:6px;}
+.q .opts{display:grid;gap:6px;}
+.q .opts button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;cursor:pointer;text-align:left;color:var(--text);}
+.q .opts button:hover{border-color:var(--line2);}
+.q .opts button.ok{border-color:var(--ok);background:#173222;} .q .opts button.ng{border-color:var(--danger);background:#3a1d1d;}
+.q .exp{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.6;} .q .exp a{color:var(--accent);cursor:pointer;}
+.qscore{position:sticky;top:0;background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 12px;font-family:var(--num);font-size:16px;z-index:2;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.qscore button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;}
+/* 战术范例 */
+.tac{display:grid;grid-template-columns:220px minmax(0,1fr);gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;}
+.tac svg{width:100%;height:auto;background:var(--bg);border-radius:6px;}
+.tac h4{margin:0 0 4px;font-size:16px;} .tac p{font-size:13px;margin:4px 0;}
+.tac .tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.tac .tools button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 12px;cursor:pointer;} .tac .tools button.pri{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+/* 管理 */
+.subtabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;}
+.subtabs button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 12px;cursor:pointer;color:var(--text);}
+.subtabs button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.mg{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;}
+.mg .bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;}
+.mg .bar button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--text);}
+.mg .bar button.pri{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.mg .bar .cnt{margin-left:auto;font-size:12px;color:var(--muted);}
+.mg table{width:100%;border-collapse:collapse;font-size:13px;}
+.mg th{background:var(--panel2);color:var(--muted);font-size:11px;letter-spacing:.06em;padding:6px 6px;text-align:left;border:1px solid var(--line);}
+.mg td{border:1px solid var(--line);padding:2px 4px;vertical-align:middle;}
+.mg td input,.mg td select{width:100%;background:transparent;border:0;border-bottom:1px solid transparent;padding:5px 4px;color:var(--text);font-size:13px;}
+.mg td input:focus,.mg td select:focus{outline:0;border-bottom-color:var(--accent);background:var(--bg);}
+.mg td select option{background:var(--panel);}
+.mg td.num{font-family:var(--num);font-size:15px;text-align:center;white-space:nowrap;}
+.mg td .x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;} .mg td .x:hover{color:var(--danger);}
+.mg td .pl{background:var(--panel2);border:1px solid var(--line2);border-radius:4px;color:var(--text);cursor:pointer;padding:2px 8px;font-family:var(--num);font-weight:600;}
+.badge{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:700;}
+.badge.ok{background:#173222;color:var(--ok);} .badge.warn{background:#3a3418;color:var(--accent);} .badge.bad{background:#3a1d1d;color:var(--danger);}
+.chk{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px;}
+.chk label{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:13px;line-height:1.5;}
+.chk label.on{border-color:var(--ok);} .chk input{margin-top:3px;accent-color:var(--ok);}
+.chk label b{display:block;} .chk label span{color:var(--muted);font-size:12px;}
+/* 教案 */
+.lesson{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden;}
+.lesson summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;gap:12px;align-items:center;}
+.lesson summary .n{font-family:var(--num);font-weight:700;font-size:26px;color:var(--accent);min-width:34px;}
+.lesson summary b{font-size:16px;} .lesson summary span{color:var(--muted);font-size:12px;display:block;}
+.lesson .body{padding:0 14px 14px;font-size:13px;line-height:1.7;}
+.lesson .body h5{margin:10px 0 3px;font-size:12px;color:var(--accent);letter-spacing:.08em;}
+.lesson .flow{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;}
+.lesson .flow b{font-family:var(--num);font-weight:600;color:var(--muted);white-space:nowrap;}
+.lesson a[data-tab]{color:var(--accent);cursor:pointer;text-decoration:underline dotted;}
+.ws{background:#fff;color:#111;border-radius:8px;padding:20px 24px;margin:8px 0;font-size:14px;line-height:1.8;}
+.ws h4{margin:0 0 4px;font-size:18px;} .ws .meta{font-size:12px;color:#555;margin-bottom:10px;}
+.ws .line{border-bottom:1px solid #999;height:26px;}
+.ws ol{padding-left:22px;} .ws .box{border:1px solid #999;min-height:70px;border-radius:4px;margin:4px 0 10px;}
+.ws .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;}
+/* 词汇表 */
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;}
+.gl .it{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+.gl .it b{display:block;font-size:15px;} .gl .it b small{color:var(--accent);font-family:var(--num);font-weight:600;font-size:13px;margin-left:6px;letter-spacing:.03em;}
+.gl .it span{font-size:12px;color:var(--muted);line-height:1.6;display:block;margin-top:2px;}
+.gl .it .cat{display:inline-block;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-top:6px;}
+@media print{ body{background:#fff;color:#000;overflow:visible;} #topbar,#nav,#navBackdrop,.credit-foot,.subtabs,.mg .bar,.no-print{display:none!important;} #shell,#main,#content{display:block;height:auto;} .page{overflow:visible;padding:0;} .ws{border:1px solid #999;page-break-after:always;} #lesson .wrap>:not(#wsList){display:none!important;} }
+@media (max-width:800px){ .card,#ctrlGrid,#partsGrid,.hero,.lv,.tac{grid-template-columns:1fr;} #partsView{height:340px;} }
+#stage{position:relative;flex:1 1 auto;min-width:0;background:var(--bg);touch-action:none;}
+#stage canvas{display:block;width:100%;height:100%;}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.lbl{position:absolute;transform:translate(-50%,-100%);white-space:nowrap;font-family:var(--num);font-weight:600;font-size:15px;letter-spacing:.02em;padding:2px 7px;border-radius:4px;background:rgba(13,18,24,.78);border:1px solid var(--line2);color:var(--text);line-height:1.25;}
+.lbl.red{border-color:var(--red);} .lbl.blue{border-color:var(--blue);}
+.lbl.sel{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.lbl small{display:block;font-family:var(--num);font-weight:500;font-size:12px;color:inherit;opacity:.85;}
+.lbl.dist{background:var(--accent);color:#1a1200;border-color:var(--accent);transform:translate(-50%,-50%);font-size:16px;}
+.lbl.goal{font-size:13px;font-weight:500;color:var(--muted);border-color:var(--line);background:rgba(13,18,24,.6);}
+#hud{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap;}
+#hud button,#hud .chip{background:rgba(21,28,37,.9);border:1px solid var(--line2);color:var(--text);padding:6px 10px;border-radius:6px;cursor:pointer;font-family:var(--num);font-weight:600;font-size:15px;letter-spacing:.03em;}
+#hud button:hover{border-color:var(--accent);}
+#hud button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+#hint{position:absolute;left:12px;bottom:12px;color:var(--muted);font-size:12px;background:rgba(13,18,24,.7);padding:4px 8px;border-radius:4px;max-width:calc(100% - 150px);}
+#panel{flex:0 0 340px;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;}
+#panel h1{font-family:var(--num);font-weight:700;font-size:22px;letter-spacing:.04em;margin:0;padding:14px 16px 6px;}
+#panel h1 span{color:var(--muted);font-weight:500;font-size:14px;margin-left:8px;letter-spacing:.02em;}
+.sec{padding:10px 16px 12px;border-top:1px solid var(--line);}
+.sec h2{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;}
+.team{margin-bottom:10px;}
+.team-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.team-head .sw{width:12px;height:12px;border-radius:50%;flex:0 0 auto;}
+.team-head input{flex:1 1 auto;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-weight:700;}
+.drone{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:5px 6px;border-radius:6px;border:1px solid transparent;cursor:pointer;}
+.drone:hover{background:var(--panel2);}
+.drone.sel{border-color:var(--accent);background:var(--panel2);}
+.drone .tag{font-family:var(--num);font-weight:700;font-size:16px;width:44px;}
+.drone .tag small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.05em;}
+.drone label{display:flex;flex-direction:column;font-size:10px;color:var(--muted);letter-spacing:.06em;}
+.drone input[type=number]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:3px 4px;font-family:var(--num);font-weight:600;font-size:15px;color:var(--text);}
+.drone input[type=range]{grid-column:2/5;width:100%;accent-color:var(--accent);margin:0;height:14px;}
+.row{display:flex;flex-wrap:wrap;gap:6px;}
+.row button{flex:1 1 auto;background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 8px;cursor:pointer;font-weight:500;}
+.row button:hover{border-color:var(--accent);}
+.row button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.row button.danger:hover{border-color:var(--danger);color:var(--danger);}
+.row input[type=text]{flex:1 1 120px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;}
+.lab{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;}
+.row input[type=number]{width:64px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 6px;font-family:var(--num);font-size:15px;font-weight:600;}
+.info{font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.5;}
+.info b{color:var(--text);font-family:var(--num);font-size:16px;font-weight:600;}
+#saved{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
+#saved .it{display:flex;align-items:center;gap:6px;background:var(--panel2);border-radius:6px;padding:4px 6px 4px 10px;}
+#saved .it span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#saved .it button{background:none;border:1px solid var(--line2);border-radius:4px;padding:3px 8px;cursor:pointer;font-size:12px;}
+#saved .it button:hover{border-color:var(--accent);}
+textarea{width:100%;height:80px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:11px;font-family:ui-monospace,Menlo,monospace;resize:vertical;}
+#shot{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;z-index:9;}
+#shot img{max-width:100%;max-height:80%;border:1px solid var(--line2);border-radius:6px;}
+#shot .row{width:min(520px,100%);}
+#shot p{margin:0;color:var(--muted);font-size:12px;text-align:center;}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--accent);color:#1a1200;padding:8px 14px;border-radius:6px;font-weight:700;z-index:10;transition:opacity .3s;pointer-events:none;}
+[hidden]{display:none!important;}
+@media (max-width:800px){
+  #app{flex-direction:column;}
+  #stage{flex:0 0 55%;}
+  #panel{flex:1 1 auto;border-left:0;border-top:1px solid var(--line);}
+}
+@media (prefers-reduced-motion:reduce){#toast{transition:none;}}
+</style>
+</head>
+<body>
+
+
+<div id="shell">
+<div id="navBackdrop"></div>
+<div id="topbar"><button id="navToggle" aria-label="菜单">☰</button><span class="brand">无人机足球一站式学习平台</span><span class="credit">HARC研发团队整理</span></div>
+<div id="main">
+<nav id="nav">
+  <button data-tab="home" class="on">》 首页・学习路径</button>
+  <button data-tab="http://www.harc.org.cn" class="on">》HARC信息</button>
+  <div class="grp">认识无人机</div>
+  <button data-tab="intro">无人机种类・用途・法规</button>
+  <button data-tab="taiwan">无人机与足球发展</button>
+  <button data-tab="world">世界的无人机足球</button>
+  <div class="grp">学规则</div>
+  <button data-tab="rules">规则介绍（FAI）</button>
+  <button data-tab="cup">竞技规则</button>
+  <button data-tab="quiz">规则小测验</button>
+  <div class="grp">学飞行</div>
+  <button data-tab="ctrl">摇杆与基本操作</button>
+  <button data-tab="fly">飞行原理</button>
+  <button data-tab="train">飞行训练关卡</button>
+  <div class="grp">上场竞赛</div>
+  <button data-tab="app">3D 战术板</button>
+  <button data-tab="tactics">战术范例库</button>
+  <button data-tab="score">比赛计时计分板</button>
+  <button data-tab="manage">队伍与器材管理</button>
+  <div class="grp">动手做</div>
+  <button data-tab="parts">球机结构 3D</button>
+  <button data-tab="fix">维修手册</button>
+  <div class="grp">教学资源</div>
+  <button data-tab="lesson">教案与学习单</button>
+  <button data-tab="glossary">中英词汇表</button>
+  <div class="navfoot">HARC研发团队整理 © 2026</div>
+</nav>
+<div id="content">
+<div id="app">
+  <div id="stage">
+    <div id="labels"></div>
+    <div id="hud">
+      <button data-view="free">自由视角</button>
+      <button data-view="top">俯视</button>
+      <button data-view="side">侧视</button>
+      <button data-view="goalA" id="hudGoalA">红队球门</button>
+      <button data-view="goalB" id="hudGoalB">蓝队球门</button>
+    </div>
+    <div id="wm">HARC研发团队整理</div>
+    <div id="hint">拖曳球机移动｜Shift＋拖曳调高度｜点选一台再 Shift＋点另一台量距离｜空白处拖曳旋转、滚轮缩放、右键平移</div>
+  </div>
+  <aside id="panel">
+    <h1>无人机足球战术板<span>FAI F9A · 3 vs 3</span></h1>
+
+    <div class="sec">
+      <h2>球机位置（米）</h2>
+      <div id="teams"></div>
+      <div class="info" id="distInfo">点选一台球机，再按住 Shift 点另一台，会显示两机直线距离。</div>
+    </div>
+
+    <div class="sec">
+      <h2>路径箭头</h2>
+      <div class="row">
+        <button id="btnPath">为选取球机画路径</button>
+        <button id="btnClearPath" class="danger">清除此机路径</button>
+        <button id="btnClearAll" class="danger">清除全部</button>
+      </div>
+      <div class="row" style="margin-top:6px;align-items:center;">
+        <button id="btnPlay">▶ 播放动向</button>
+        <button id="btnReset">↺ 回到起点</button>
+        <label class="lab">速度 m/s <input type="number" id="speed" value="3" min="0.5" max="20" step="0.5"></label>
+      </div>
+      <div class="info">画路径模式下，点场地任一点即新增一个航点，可以连续点出折线；播放时所有有路径的球机会同时沿箭头飞行。</div>
+    </div>
+
+    <div class="sec">
+      <h2>阵型</h2>
+      <div class="row">
+        <input type="text" id="saveName" placeholder="阵型名称，例如：开球、防守">
+        <button id="btnSave">储存</button>
+        <button id="btnDefault">预设阵型</button>
+      </div>
+      <div id="saved"></div>
+    </div>
+
+    <div class="sec">
+      <h2>导出／导入</h2>
+      <div class="row">
+        <button id="btnShot">📷 截图</button>
+        <button id="btnExport">复制 JSON</button>
+        <button id="btnDownloadJson">下载 JSON 档</button>
+        <button id="btnImport">贴上 JSON 载入</button>
+      </div>
+      <textarea id="json" placeholder="按「复制 JSON」会把目前阵型（含队名与路径）放到这里；把别人给的 JSON 贴进来再按「贴上 JSON 载入」。" style="margin-top:6px;"></textarea>
+    </div>
+
+    <div class="sec">
+      <h2>场地设定</h2>
+      <div class="row">
+        <label class="lab">长 <input type="number" id="cfgL" value="20" min="10" max="30" step="1"></label>
+        <label class="lab">宽 <input type="number" id="cfgW" value="10" min="5" max="15" step="1"></label>
+        <label class="lab">高 <input type="number" id="cfgH" value="5" min="3" max="8" step="0.5"></label>
+        <label class="lab">球门中心高 <input type="number" id="cfgGH" value="3.5" min="2" max="5" step="0.1"></label>
+        <label class="lab">球门距端线 <input type="number" id="cfgGD" value="2" min="0.5" max="5" step="0.5"></label>
+        <label class="lab">球机直径 cm <input type="number" id="cfgD" value="40" min="20" max="60" step="5"></label>
+      </div>
+      <div class="info">预设为 FAI F9A 规格：20 × 10 × 5 m，球门环外径 1.0 m、中心离地 3.5 m、距端线 2 m。</div>
+    </div>
+    <div class="credit-foot"><span><b>HARC研发团队整理</b></span><span>© 2026</span></div>
+  </aside>
+</div>
+
+<!-- ============ 首页 ============ -->
+<div id="home" class="page" hidden>
+<div class="wrap">
+  <div class="hero">
+    <div><h1>无人机足球<br>一站式学习平台</h1>
+      <p>从认识无人机、看懂规则、学会飞，到上场竞赛和动手维修，六个模组、十八个单元，每个单元都有互动图或动画。适合中小到高中的无人机足球社团与课程，也可以投影在教室讲解。</p>
+      <p class="note">依 FAI F9A 规则与无人机足球竞赛实施计划整理 · HARC研发团队整理</p></div>
+    <div class="anim"><svg id="homeAnim" viewBox="0 0 320 180"></svg></div>
+  </div>
+  <h3>建议学习路径</h3>
+  <div class="pathmap">
+    <div class="pm"><div class="idx">1</div><h4>认识无人机</h4><a data-tab="intro">种类、用途与法规</a><a data-tab="taiwan">发展</a><a data-tab="world">世界的无人机足球</a></div>
+    <div class="pm"><div class="idx">2</div><h4>学规则</h4><a data-tab="rules">FAI 规则介绍</a><a data-tab="cup">竞技规则</a><a data-tab="quiz">规则小测验</a></div>
+    <div class="pm"><div class="idx">3</div><h4>学飞行</h4><a data-tab="ctrl">摇杆与基本操作</a><a data-tab="fly">飞行原理</a><a data-tab="train">飞行训练关卡</a></div>
+    <div class="pm"><div class="idx">4</div><h4>上场竞赛</h4><a data-tab="tactics">战术范例库</a><a data-tab="app">3D 战术板</a><a data-tab="score">计时计分板</a><a data-tab="manage">队伍与器材管理</a></div>
+    <div class="pm"><div class="idx">5</div><h4>动手做</h4><a data-tab="parts">球机结构 3D</a><a data-tab="fix">维修手册</a></div>
+    <div class="pm"><div class="idx">6</div><h4>教学资源</h4><a data-tab="lesson">教案与学习单</a><a data-tab="glossary">中英词汇表</a></div>
+  </div>
+  <h3>老师常用</h3>
+  <div class="quick">
+    <button data-tab="score"><b>⏱ 计时计分板</b><span>3 分钟倒数、局间休息、比分与局数，可全萤幕投影</span></button>
+    <button data-tab="app"><b>◎ 3D 战术板</b><span>拖曳摆位、画动向、播放，讲解阵型</span></button>
+    <button data-tab="train"><b>▲ 训练关卡</b><span>五级任务与计时，记录学生进度</span></button>
+    <button data-tab="quiz"><b>? 规则小测验</b><span>20 题选择题，答错直接跳回教材</span></button>
+  </div>
+</div>
+</div>
+
+<!-- ============ 认识无人机：种类・用途・法规 ============ -->
+<div id="intro" class="page" hidden>
+<div class="wrap">
+  <h2>无人机的种类、用途与法规</h2>
+  <p>「无人机」是所有没有人在机上、由遥控或程式控制的飞行器的统称。无人机足球用的球机是其中最小的一种多旋翼机，但它的飞行原理和大型空拍机、农喷机是一样的。</p>
+
+  <h3 id="intro-types">一、依构型分类</h3>
+  <div class="tiles">
+    <div class="tile"><svg viewBox="0 0 200 110" id="tQuad"></svg><b>多旋翼机（四轴／六轴）</b><span>靠多颗旋翼直接产生升力，可垂直起降、悬停、原地转向，操作最直觉但续航短（通常 10～40 分钟）。空拍机、球机、教育用小四轴都属于这类。</span></div>
+    <div class="tile"><svg viewBox="0 0 200 110" id="tFixed"></svg><b>固定翼机</b><span>像飞机一样靠机翼产生升力，飞得快、飞得远（数小时），但需要跑道或弹射起飞，不能悬停。用于大范围测绘、巡逻、长程物流。</span></div>
+    <div class="tile"><svg viewBox="0 0 200 110" id="tVtol"></svg><b>垂直起降固定翼（VTOL）</b><span>结合两者：用旋翼垂直起飞，再切换成固定翼巡航。近年农业测绘与防侦察的主流构型之一。</span></div>
+    <div class="tile"><svg viewBox="0 0 200 110" id="tHeli"></svg><b>单旋翼（直升机型）</b><span>一大一小两个旋翼，载重大、效率高，但机械复杂、危险性高，多用于农喷与工业吊挂。</span></div>
+  </div>
+
+  <h3 id="intro-motor">二、依动力与用途分类</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>类型</th><th>特征</th><th>代表</th></tr>
+    <tr><td>有刷微型机</td><td>空心杯有刷马达、1S 电池、100～300 g，便宜耐撞、适合室内与初学</td><td>教育用小四轴、20 cm 足球球机（Class 20）</td></tr>
+    <tr><td>无刷穿越机／FPV</td><td>无刷马达、3S～6S、以第一人称视角飞行，速度可超过 150 km/h</td><td>穿越机竞速、40 cm 足球球机（Class 40）多为无刷</td></tr>
+    <tr><td>消费级空拍机</td><td>GPS 定位、云台相机、避障传感器、自动返航</td><td>摄影、旅游记录</td></tr>
+    <tr><td>工业／农业机</td><td>载重 10～50 kg、RTK 定位、可程式航线</td><td>农喷、电塔巡检、物流、消防、救灾搜索</td></tr>
+    <tr><td>防／公共安全机</td><td>长航时、加密链路、抗干扰</td><td>侦察、巡逻、灾害评估</td></tr>
+  </table></div></div></div>
+
+  <h3 id="intro-law">三、无人机法规（民用航空法遥控无人机专章）</h3>
+  <div class="card">
+    <div class="anim"><svg id="lawAnim" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><h4>飞之前先问三件事：要不要注册？能不能飞这里？飞多高？</h4><ul>
+      <li><b>注册</b>：自然人所有、最大起飞重量 <b>250 g 以上</b>要向民航局注册（有效期 2 年）；<b>政府机关、学校、法人</b>所有的无人机<b>不分重量</b>都要注册。20 cm 球机约 100～200 g，个人持有可免注册，但学校购置的球机仍须依规定办理。</li>
+      <li><b>操作证</b>：<b>2 kg 以上</b>需操作证；学习操作证 16 岁、普通与专业操作证 18 岁以上。休闲操作 2 kg 以下免证，球机远低于此。</li>
+      <li><b>高度</b>：实际高度不得超过离地 <b>400 呎（约 120 m）</b>；黄区限 60 m。</li>
+      <li><b>禁飞区</b>：<span class="zone" style="background:#ff5a5f"></span>红区禁飞（机场周边、军事设施、政府机关等）、<span class="zone" style="background:#ffc857"></span>黄区限高 60 m、<span class="zone" style="background:#5ad38a"></span>绿区可飞 120 m 以下；家公园需另外申请。飞前用民航局 <b>DroneMap</b> App 或空域查询系统确认。</li>
+      <li><b>十大操作限制</b>：不得超过 400 呎、不得投掷或喷洒物件、不得装载危险物品、不得在人群聚集或集会游行上空、日落后至日出前不得飞、须在目视范围内、一人一次只能操作一架、随时监看并避让其他航空器与障碍物。</li>
+      <li><b>室内</b>：在有屋顶、四周封闭的室内空间飞行，民航局说明不适用遥控无人机专章的空域规范，这也是无人机足球在体育馆比赛的法律基础；但校内仍应有自己的安全规范（护笼、防护网、护目镜）。</li>
+      <li><b>罚则</b>：未注册 3 万～15 万元；无证操作 6 万～30 万元；超高、闯禁区 30 万～150 万元。</li>
+    </ul></div>
+  </div>
+
+  <h3 id="intro-safety">四、教室与体育馆的安全守则</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li>飞行区一定要有<b>防护网或围笼</b>，观众与等待的同学站在网外；操作者戴护目镜。</li>
+    <li>拿球机时<b>先拔电池</b>；装桨、换电池、检查时遥控器油门必须在最低。</li>
+    <li>锂电池：不过充、不过放、不拉扯线材；鼓起或发热的电池放入防火袋隔离；充电时有人看管。</li>
+    <li>失控时第一反应是<b>收油门让它落地</b>，不要伸手去抓飞行中的球机，也不要用手接住。</li>
+    <li>比赛用球机必须有<b>失控保护（failsafe）</b>：讯号中断自动停桨。</li>
+  </ul></div></div>
+  <p class="note">法规依民用航空法第 99 条之 14 与遥控无人机管理规则（第 6、9、15、20、30 条）整理；金额与分区以民航局最新公告为准。</p>
+</div>
+</div>
+
+<!-- ============ 发展 ============ -->
+<div id="taiwan" class="page" hidden>
+<div class="wrap">
+  <h2>无人机与无人机足球发展</h2>
+  <p>无人机足球是在相关政策带动下进行推进的。下面的时间轴把产业政策和校园推广放在一起看，比较容易理解为什么 2026 年会有第一届总统杯。</p>
+  <div class="timeline">
+    <div class="tl"><div class="yr">2014</div><b>亚洲无人机足球在韩诞生</b><span>无人机足球在韩诞生，灵感来自《哈利·波特》中的“魁地奇”。</span></div>
+    <div class="tl"><div class="yr">2019</div><b>引入中与际认证</b><span>5月，际航空联合会（FAI）将无人机足球列为正式竞赛项目。同年引入中，主要在上海、深圳等科技展会亮相。10月，第十届上海科技体育嘉年华成为热门项目之一。</span></div>
+    <div class="tl"><div class="yr">2022</div><b>启动无人机教育推广</b><span>中航空学会联合其他18个家和地区的相关社会组织，发起成立际无人机足球联盟（FIDA）。江苏镇江在全省率先引入该项目，并作为低空经济新增长点培育。</span></div>
+    <div class="tl"><div class="yr">2024</div><b>赛事落地与首个世界冠军</b><span>2月，中航空学会在北京举办首届无人机足球友谊赛。5月，成都举办FIDA第二届世界锦标赛中区首届选拔赛，全69支球队参与。5月，临沂市航模运动协会选派队伍赴韩仁川参加FIDA第二届世界锦标赛，以全胜战绩夺得世界冠军。</span></div>
+    <div class="tl"><div class="yr">2025-2026</div><b>万人规模与联赛制度化・ 与世锦赛突破</b><span>低空经济连续两年写入务院《政府工作报告》，并被纳入家“十五五”规划建议。无人机足球，分小、高中职、大专三组，教学用无人机（含足球机、程控机、空拍机与教学配套）推动校园无人机教育。</span></div>
+  </div>
+  <h3>校园推动的特色</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>从 20 cm 级入门</b>：便宜、安全、教室就能飞，先普及再往 40 cm 正式级发展；决赛同时安排 40 cm 五对五示范赛让学生看到下一步。</li>
+    <li><b>同校组队、三对三</b>：降低组队门槛，一个社团就能成队；中小 组每队 5 人（3 先发＋2 候补）。</li>
+    <li><b>器材产化与检核</b>：中小 组统一使用主办单位提供的球机，设备贴检核标签与防拆封条、零组件编号不得涂改，把「认识器材」变成课程的一部分。</li>
+    <li><b>跨部会连结</b>：经济部的技术竞赛、科会的关键技术挑战赛与的足球赛放在同一个总统杯里，让学生看到从校园到产业的路径。</li>
+  </ul></div></div>
+  <p class="note">资料来源：大语言模型deepseek对话式回复，仅作参考。</p>
+</div>
+</div>
+
+<!-- ============ 世界的无人机足球 ============ -->
+<div id="world" class="page" hidden>
+<div class="wrap">
+  <h2>世界的无人机足球</h2>
+  <p>无人机足球是目前唯一被际航空运动联盟（FAI）承认的「面对面�抗」团体航空运动，从韩一个研究机构的点子，十年内变成十八参加的世界锦标赛。</p>
+  <div class="card">
+    <div class="anim"><svg id="worldMap" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><ul>
+      <li><b>2016 韩全州</b>：CAMTIC 先进机电技术研究院的研究员李范洙（Lee Beom-su，曾任军人与消防员）受《哈利波特》魁地奇与带笼无人机互撞的画面启发，发明无人机足球。</li>
+      <li><b>2017</b>：韩首次公开比赛；<b>2018</b> 在政府支持下进入全学校与青少年中心。</li>
+      <li><b>2019 年 5 月 1 日</b>：FAI 正式承认无人机足球，编为 <b>F9A</b> 级，成为 FAI 第一个对抗型团体运动。</li>
+      <li><b>2021</b>：传入美，最早在科罗拉多、加州、俄亥俄、纽约等航空教育活跃的州推广，并发展出 U19 Class 20 规则。</li>
+      <li><b>2022</b>：际无人机足球协会 FIDA 成立；<b>2023</b> 首届世界杯在韩举行。</li>
+      <li><b>2025 年 6 月</b>：FAI 公布 F9A-B（20 cm）世界锦标赛规则；<b>2025 年 11 月 15～18 日</b>首届 FAI 世界无人机足球锦标赛在中上海举行，<b>18 个家</b>参赛。</li>
+      <li><b>2026</b>：举办第一届总统杯无人机足球竞赛，245 队报名。</li>
+    </ul></div>
+  </div>
+  <h3>两种级别、两种玩法</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th></th><th>Class B／Class 20（20 cm）</th><th>Class A／Class 40（40 cm）</th></tr>
+    <tr><td>每队人数</td><td>3 对 3（FAI）</td><td>5 对 5（FAI／KDSA）</td></tr>
+    <tr><td>场地</td><td>6 × 3 m，高 3 m</td><td>20 × 10 m 以下，高 5 m 以上</td></tr>
+    <tr><td>球机</td><td>≤ 300 g，有刷或小型无刷</td><td>≤ 1 kg，多为无刷 4S</td></tr>
+    <tr><td>主要地区</td><td>学校、青少年、美 U19</td><td>韩职业联赛、世界杯、FAI 世锦赛</td></tr>
+    <tr><td>角色</td><td>前锋＋2 名防守／辅助</td><td>Striker、Guide、Libero、Sweeper、Keeper</td></tr>
+  </table></div>
+  <p class="note">FAI 规则：三局制、每局 3 分钟、先赢两局者胜；平局以罚球决胜，每队 3 次、每次 10 秒。</p></div></div>
+  <h3>为什么它适合教育</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>低门槛的 STEM 入口</b>：一台球机同时教到空气力学、电子、控制、程式与团队战术。</li>
+    <li><b>安全的对抗</b>：护笼加防护网，可以撞、可以挡，却不会受伤，这是它跟穿越机竞速最大的不同。</li>
+    <li><b>男女与年龄差距小</b>：靠反应与战术而非体能，小到大学可以用同一套规则。</li>
+    <li><b>产业连结</b>：韩把它当作无人机人才培育的第一阶，总统杯也把它与关键技术挑战赛放在一起。</li>
+  </ul></div></div>
+  <p class="note">资料来源：FAI 官方新闻与规则页、Drone Sports USA「The History of Drone Soccer」、DroneXL 报导。</p>
+</div>
+</div>
+
+<!-- ============ 计时计分板 ============ -->
+<div id="score" class="page" hidden>
+<div class="wrap">
+  <h2>比赛计时计分板</h2>
+  <p>依 3 局制、每局 3 分钟、局间休息 3 分钟设计。按「开始」会先倒数 3 秒并鸣笛，时间到自动鸣笛并进入休息；比分与局数会自动结算，也可以手动修正。全萤幕后投影即可当正式计分板用。快捷键：空白键 开始／暂停，Q／P 红队加减分，Z／M 蓝队加减分，F 全萤幕。</p>
+  <div id="board" tabindex="0">
+    <div class="sb-top"><span>无人机足球竞赛・3 局 2 胜</span><span id="sbSetInfo">第 1 局</span><span>HARC研发团队整理</span></div>
+    <div class="sb-main">
+      <div class="sb-team red"><input class="nm" id="sbNameA" value="红队" maxlength="10"><div class="sc" id="sbScA">0</div><div class="sets">局数 <span id="sbSetA">0</span></div><div class="btns"><button data-sc="A-1">−</button><button class="big" data-sc="A+1">＋1</button></div></div>
+      <div class="sb-clock"><div class="ph" id="sbPhase">准备</div><div class="tm" id="sbTime">3:00</div><div class="set" id="sbSub">按开始 → 倒数 3 秒鸣笛</div><div class="sb-sets" id="sbSets"></div></div>
+      <div class="sb-team blue"><input class="nm" id="sbNameB" value="蓝队" maxlength="10"><div class="sc" id="sbScB">0</div><div class="sets">局数 <span id="sbSetB">0</span></div><div class="btns"><button data-sc="B-1">−</button><button class="big" data-sc="B+1">＋1</button></div></div>
+    </div>
+    <div class="sb-ctl">
+      <button class="pri" id="sbStart">▶ 开始</button><button id="sbPause">‖ 暂停</button><button id="sbEndSet">结束本局</button><button id="sbBreak">局间休息 3:00</button><button id="sbPen">罚球（不计时）</button><button id="sbWhistle">🔔 鸣笛</button><button id="sbFoul">记录犯规</button><button id="sbFull">⛶ 全萤幕</button><button id="sbReset">重设比赛</button>
+    </div>
+    <div class="sb-log" id="sbLog"></div>
+  </div>
+  <div class="card solo"><div class="txt"><h4>使用流程</h4><ol style="margin:4px 0;padding-left:20px;line-height:1.8">
+    <li>改队名，按「全萤幕」投影。</li><li>双方球机放好、裁判宣告「Arm your quads」后按「开始」：倒数 3 秒后一短声鸣笛起飞。</li><li>进球按该队「＋1」，误按用「−」。罚球时按「罚球」暂停计时，罚完再按开始。</li><li>3 分钟到自动一长一短鸣笛，该局胜负自动记入局数，并自动开始 3 分钟休息倒数。</li><li>休息结束再按「开始」进入下一局；某队先拿 2 局时会显示胜方。</li></ol></div></div>
+</div>
+</div>
+
+<!-- ============ 飞行训练关卡 ============ -->
+<div id="train" class="page" hidden>
+<div class="wrap">
+  <h2>飞行训练关卡</h2>
+  <p>五个等级、由易到难，每关有示意图、通过标准与计时器。通过后按「标记通过」，纪录会存在这台装置的浏览器里（换电脑不会带着走，可以请学生用自己的帐号截图留存）。</p>
+  <div class="prog"><i id="trainProg"></i></div>
+  <div id="levels"></div>
+  <p class="note">场地以 6×3 m 的 20 cm 级场地为准；没有正式场地时，用胶带在地上贴出 1 m 方格与圆圈即可。</p>
+</div>
+</div>
+
+<!-- ============ 规则小测验 ============ -->
+<div id="quiz" class="page" hidden>
+<div class="wrap">
+  <h2>规则小测验</h2>
+  <p>20 题选择题，涵盖得分、犯规、赛制、球机规格与飞行原理。作答后立刻显示对错与解说，答错的题目会给你「回去看」的连结，直接跳到对应的教材段落。</p>
+  <div class="qscore"><span>得分 <b id="qzScore">0</b> / <span id="qzTotal">20</span></span><span id="qzMsg" style="color:var(--muted);font-size:13px"></span><button id="qzReset">重新作答</button><button id="qzShuffle">随机出题顺序</button></div>
+  <div id="qzList"></div>
+</div>
+</div>
+
+<!-- ============ 战术范例库 ============ -->
+<div id="tactics" class="page" hidden>
+<div class="wrap">
+  <h2>战术范例库</h2>
+  <p>六个常用阵型与动向，每个都有俯视示意图与讲解。按「载入战术板」会把阵型和路径箭头送进 3D 战术板，再按「载入并播放」可以直接看球机飞动。座标以 20×10 m 场地为准，红队在左、进攻右边的蓝队球门；换成 6×3 m 场地时会依比例缩放。</p>
+  <div id="tacList"></div>
+</div>
+</div>
+
+<!-- ============ 队伍与器材管理 ============ -->
+<div id="manage" class="page" hidden>
+<div class="wrap">
+  <h2>队伍与器材管理</h2>
+  <p>队员、球机、电池、维修纪录与飞前检查清单。资料存在这台装置的浏览器里；按「导出备份」可以把全部资料保存 JSON 档，换电脑时用「导入」还原，也可以把每张表保存 CSV 用 Excel 开。</p>
+  <div class="subtabs" id="mgTabs"><button data-m="members" class="on">队员</button><button data-m="drones">球机</button><button data-m="batteries">电池</button><button data-m="repairs">维修纪录</button><button data-m="check">飞前检查</button></div>
+  <div class="mg">
+    <div class="bar"><button class="pri" id="mgAdd">＋ 新增一列</button><button id="mgCsv">保存 CSV</button><button id="mgExport">导出备份 JSON</button><button id="mgImport">导入备份</button><input type="file" id="mgFile" accept=".json" hidden><button id="mgClear" style="color:var(--danger)">清空此表</button><span class="cnt" id="mgCnt"></span></div>
+    <div class="tblwrap" id="mgTable"></div>
+    <div id="mgCheck" hidden></div>
+    <p class="note" id="mgHint" style="margin-top:8px"></p>
+  </div>
+</div>
+</div>
+
+<!-- ============ 教案与学习单 ============ -->
+<div id="lesson" class="page" hidden>
+<div class="wrap">
+  <h2>教案与学习单</h2>
+  <p>八节课、每节 45 分钟的无人机足球入门课程，从认识无人机到打一场正式规则的比赛。每节课标明对应的平台单元，上课时直接点连结投影；最下方有三张可打印的学习单（用浏览器的打印功能，会自动隐藏选单）。</p>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>节次</th><th>主题</th><th>核心能力</th><th>平台单元</th></tr>
+    <tr><td>1</td><td>认识无人机与安全</td><td>分辨构型、说出法规重点、遵守安全守则</td><td>种类・法规、球机结构</td></tr>
+    <tr><td>2</td><td>飞行原理与桨的方向</td><td>解释升力与扭力、正确装桨</td><td>飞行原理</td></tr>
+    <tr><td>3</td><td>摇杆与起飞降落</td><td>完成解锁、起飞、悬停、降落</td><td>摇杆操作、训练关卡 1</td></tr>
+    <tr><td>4</td><td>平移与转向</td><td>方形航线、机头控制</td><td>训练关卡 2–3</td></tr>
+    <tr><td>5</td><td>穿环与绕桩</td><td>穿环成功率 2/3、S 形绕桩</td><td>训练关卡 4–5</td></tr>
+    <tr><td>6</td><td>规则与角色</td><td>说明得分、犯规、赛制；通过测验</td><td>总统杯规则、小测验</td></tr>
+    <tr><td>7</td><td>战术与分工</td><td>执行一种进攻与一种防守阵型</td><td>战术范例库、战术板</td></tr>
+    <tr><td>8</td><td>班级友谊赛</td><td>依正式规则完成比赛并担任裁判</td><td>计分板、管理</td></tr>
+  </table></div></div></div>
+  <div id="lessonList"></div>
+  <h3 class="no-print">学习单（可打印）</h3>
+  <div class="ctlrow no-print"><button id="wsPrint">🖨 打印学习单</button><span style="font-size:12px;color:var(--muted)">打印时只会印出下方三张学习单</span></div>
+  <div id="wsList"></div>
+</div>
+</div>
+
+<!-- ============ 词汇表 ============ -->
+<div id="glossary" class="page" hidden>
+<div class="wrap">
+  <h2>中英词汇表</h2>
+  <p>无人机足球与无人机常见的中英文术语，比赛与际规则会用到的英文都在这里。可以搜寻中文、英文或缩写。</p>
+  <input type="search" id="glSearch" class="fixsearch" placeholder="搜寻，例如：前锋、Yaw、失控保护、ESC">
+  <div class="subtabs" id="glCats"></div>
+  <div class="gl" id="glList"></div>
+</div>
+</div>
+
+<!-- ============ 规则介绍 ============ -->
+<div id="rules" class="page" hidden>
+<div class="wrap">
+  <h2>无人机足球规则介绍</h2>
+  <p>以下整理自 FAI（际航空运动联盟）F9A 无人机足球规则与韩 KDSA Class 40 规则书。正式比赛以主办单位公告为准；校内教学用的 20 cm 有刷球机（Class 20）场地与球门会等比缩小，规格差异见最后一节。</p>
+
+  <h3>一、怎么得分</h3>
+  <div class="card">
+    <div class="anim"><svg id="anGoal" viewBox="0 0 320 170"></svg><div class="cap" id="anGoalCap"></div></div>
+    <div class="txt"><h4>只有前锋（Striker）能得分</h4>
+      <ul>
+        <li>每队只有一台指定的 <b>前锋（Striker）</b> 穿过对方球门环才算分，其他球机穿过不算。</li>
+        <li>必须从球门环的<b>正面</b>穿入、朝对方端线方向穿出；FAI 规则以「球体一半通过正面」为准，KDSA 规则要求整颗球完全穿过。</li>
+        <li>得分后，该队<b>所有</b>球机必须先退回己方半场（越过中线），才能再次进攻；没退回就再进球，该球不算并判罚球。</li>
+        <li>其他球机的工作是<b>开路、卡位与防守</b>：挡住对方前锋、守住己方球门前方的空间。</li>
+      </ul></div>
+  </div>
+
+  <h3>二、赛制与时间</h3>
+  <div class="card">
+    <div class="anim"><svg id="anTime" viewBox="0 0 320 110"></svg></div>
+    <div class="txt"><h4>三局两胜，每局 3 分钟</h4>
+      <ul>
+        <li>一场比赛打 <b>3 局（set）</b>，每局 <b>3 分钟</b>，拿下多数局者获胜。</li>
+        <li>局与局之间休息约 <b>2 到 3 分钟</b>（KDSA 版本为 5 分钟保养时间），可换电池、换桨、更换上场球员。</li>
+        <li>局中不可以更换上场球员；坠落的球机可以在裁判允许下回起飞区重新起飞。</li>
+        <li>KDSA 哨音：一短声＝开局、两短声＝前锋更换完成、一长一短＝该局结束。</li>
+      </ul></div>
+  </div>
+
+  <h3>三、开局流程</h3>
+  <div class="card solo">
+    <div class="steps" id="anStart">
+      <div class="step"><div class="n">1</div><b>球机放进起飞区</b><span>每队的起飞区在自己端线内侧，约 1.5 m 深、半个端线宽。</span></div>
+      <div class="step"><div class="n">2</div><b>裁判确认双方队长就绪</b><span>队长举手或口头回覆。</span></div>
+      <div class="step"><div class="n">3</div><b>「Arm your quads」</b><span>裁判宣告后才可解锁马达，此时球机仍须停在地上。</span></div>
+      <div class="step"><div class="n">4</div><b>3～5 秒后鸣笛</b><span>听到信号才能起飞，提早离地判罚球。</span></div>
+      <div class="step"><div class="n">5</div><b>比赛进行 3 分钟</b><span>时间到再次鸣笛，所有球机降落回起飞区。</span></div>
+    </div>
+  </div>
+
+  <h3>四、场上角色（三对三）</h3>
+  <div class="card">
+    <div class="anim"><svg id="anRole" viewBox="0 0 320 170"></svg></div>
+    <div class="txt"><h4>1 台前锋（Striker）＋ 2 台防守／辅助（Guard）</h4>
+      <ul>
+        <li><b>前锋（Striker）</b>：唯一能得分的球机，通常装上明显的 LED 颜色让裁判辨识。</li>
+        <li><b>辅助（Guard，前卫／开路）</b>：跟在前锋前方清出路线，用身体卡住对方的防守球机。</li>
+        <li><b>防守（Guard，后卫／守门）</b>：留在己方球门前方，挡住对方前锋的射门路线；注意<b>不能穿过自家球门环</b>来防守。</li>
+        <li>五人制（KDSA）再细分为 Striker、Guide、Libero、Sweeper、Keeper，三人制通常合并成上面三种。</li>
+      </ul></div>
+  </div>
+
+  <h3>五、常见犯规与判罚</h3>
+  <div class="card">
+    <div class="anim"><svg id="anFoul" viewBox="0 0 320 170"></svg><div class="cap" id="anFoulCap"></div></div>
+    <div class="txt"><h4>判罚球（penalty shot）的情况</h4>
+      <ul>
+        <li>鸣笛前提早起飞或离开起飞区。</li>
+        <li>得分后没有全队退回己方半场就再次进球（该球不算）。</li>
+        <li>非前锋的球机为了防守而穿过自家球门环。</li>
+        <li>罚球时由对方前锋在无防守干扰下射门一次，细节依主办单位规定。</li>
+      </ul></div>
+  </div>
+  <div class="card solo">
+    <div class="txt"><h4>警告与卡片</h4>
+      <div class="tblwrap"><table class="tbl">
+        <tr><th>判罚</th><th>情况</th><th>结果</th></tr>
+        <tr><td><span class="tag-s tag-y">黄牌</span></td><td>局中更换上场球员；比赛中用手或身体去拨动、抓取球机；故意用球机撞击人员；不当运动行为</td><td>该局判负；累积两张黄牌等于红牌</td></tr>
+        <tr><td><span class="tag-s tag-r">红牌</span></td><td>未登录的球员上场；危险飞行行为；累积两张黄牌</td><td>整场比赛判负</td></tr>
+        <tr><td><span class="tag-s tag-p">一般</span></td><td>球机飞出围网、撞落地面</td><td>不算犯规，可在裁判示意下由起飞区重新起飞</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <h3>六、球机与场地规格</h3>
+  <div class="card solo">
+    <div class="txt">
+      <div class="tblwrap"><table class="tbl">
+        <tr><th>项目</th><th>Class 40（FAI / KDSA 正式赛）</th><th>Class 20（教育用有刷小球机）</th></tr>
+        <tr><td>球体直径</td><td><b>40 cm</b> ± 2 cm，底部可削平最多 2 cm</td><td><b>20 cm</b> ± 2 cm</td></tr>
+        <tr><td>总重（含电池）</td><td>≤ <b>1 kg</b>（KDSA：≤ 1,100 g）</td><td>≤ <b>300 g</b></td></tr>
+        <tr><td>动力</td><td>最多 4 颗电动马达，电池最高 <b>4S / 17.0 V</b>，桨最大 6 吋，禁止全金属桨</td><td>4 颗有刷马达，1S 3.7 V 锂电，桨约 2～3 吋</td></tr>
+        <tr><td>必备装置</td><td>失控保护（failsafe，触发即停马达）、可切换颜色的 LED；禁止自动定位与预编程飞行</td><td>多数机型内建失控保护与 LED，可切换颜色以辨识前锋</td></tr>
+        <tr><td>场地</td><td>长 <b>14～20 m</b>、宽 <b>7～10 m</b>（长宽比 2:1）、净高 ≥ 5 m，四周围网</td><td>依主办单位等比缩小，教室常见约 6～10 m 长、3 m 以上净高</td></tr>
+        <tr><td>球门环</td><td>外径 <b>100～120 cm</b>、内径 60～80 cm，环心离地 <b>3～3.5 m</b>，距端线约 2 m，环面朝场中央</td><td>同比例缩小的圆环，高度依场地公告</td></tr>
+        <tr><td>上场人数</td><td>最多 5 台，主办单位可指定 2～5 台；本板以 3 对 3 为准</td><td>常见 3 对 3</td></tr>
+      </table></div>
+      <p class="note">Class 20 目前没有 FAI 统一规范，重量与直径取自美 U19 Class 20 规则；场地与球门尺寸请依各赛事公告。</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 总统杯规则 ============ -->
+<div id="cup" class="page" hidden>
+<div class="wrap">
+  <h2>“西游逐梦•兵仙故里”无人机超级联赛</h2>
+  <p>本页依「无人机足球竞赛实施计划」与<b>《全民科学素质行动规划纲要（2021—2035年）》文件精神</b>整理。以 FAI 2025 年《无人机足球世界锦标赛竞赛规则》（F9A-B，20 公分 级）为核心标准，并修正为<b>「进球积分制」</b>；简章没有写到的细节（例如完整犯规清单、罚球执行方式），以 FAI F9A 规则补齐并标注来源。高中职组、大专校院组另有各自的简章，部分规定（如队伍人数、球机来源）可能不同。<b>正式比赛以裁判与赛事委员会判定为准。</b></p>
+
+  <h3 id="cup-flow">一、赛事流程与晋级</h3>
+  <div class="card solo">
+    <div class="anim"><svg id="cupFlow" viewBox="0 0 640 170"></svg></div>
+    <div class="txt" style="margin-top:10px"><ul>
+      <li><b>营队</b>（中小 组，两梯次）：每区每梯次 20 队、每区至多 40 队，第 1 天上课（原理与法规、组装与故障排除、基础飞行），第 2 天<b>实测</b>，各区前 <b>20 队</b>晋级分区赛，其余列备取。</li>
+      <li><b>集训</b>（一日）：分区赛赛制、角色分配与攻防策略、无刷无人机足球组装测试与维修管理、竞赛模拟练习。</li>
+      <li><b>分区赛</b>（南区 、中区 、北区 ）：依营队实测成绩 <b>S 型分组</b>，组内单循环，每场胜 3 分、平 1 分、负 0 分；积分相同依净胜球数、再依总进球数排序。各区<b>前 3 名</b>晋级。</li>
+      <li><b>准决赛</b>（各地竞技场地）：采积分赛制，积分最高<b>前 2 名</b>晋级决赛；积分相同依净胜球数、总进球数排序。</li>
+      <li><b>决赛</b>（竞技场地）：由准决赛前 2 名对决，无人机竞赛中举行；决赛当天另有规格示范赛。</li>
+      <li>中小 组：主办<b>#</b>、承办<b>#</b>；分区办理地点各地中心。</li>
+      <li>分组：中小 组、高中职组、大专校院组。</li>
+    </ul></div>
+  </div>
+
+  <div class="card solo"><div class="txt"><h4>中小 组营队「实测」怎么算（决定谁晋级分区赛）</h4><ul>
+    <li><b>接力机制</b>：3 位选手轮流操作，每人从起点出发攻门，<b>120 秒内完成 10 次有效进球</b>；每次进球后须先返回中线（球机碰到中线即算完成折返）才能再攻门。</li>
+    <li><b>计时</b>：第 10 球完成时立即停表，以秒数为个人成绩；120 秒到仍未满 10 球，以 120 秒计并记录实际进球数。</li>
+    <li><b>换员与换电池</b>：限时 60 秒，不计入竞赛时间，换员时球机回到出发线。</li>
+    <li><b>故障</b>：每队 1 颗预备球机；故障时举手请裁判停表，损坏球机可由其他选手维修后再当预备机；两颗都失能则以当下秒数与进球数计。</li>
+    <li><b>排名</b>：先比全队有效进球总数（多者前），相同再比团体总秒数（少者前，计至小数点后两位四舍五入）。</li>
+  </ul><p class="note">训练关卡第 4 关（穿环）可以直接改成这个「120 秒 10 球」的实测格式来练习。</p></div></div>
+
+  <h3 id="cup-field">二、场地与球门（F9A-B 20 cm 级）</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupField" viewBox="0 0 320 230"></svg></div>
+    <div class="txt"><ul>
+      <li>飞行区 <b>长 6 m × 宽 3 m</b>（以框柱内缘距离为准），四周防护网（笼）<b>高 3 m</b>，完整包覆、内部无障碍物；场地由主办单位提供。</li>
+      <li>球门环 <b>内径 40 cm、外径约 70 cm</b>，设置于场地两端底线�上方，悬挂高度<b>离地 2 m</b>，以<b>圆环内缘底部</b>为测量基准（FAI 另规定环距底线约 1 m，示意图依 FAI 绘制）。</li>
+      <li>起飞区位于底线中央，<b>宽度不超过 1 m</b>。</li>
+      <li>选手区设在防护笼短边外侧，每队一区、两侧位置与尺寸完全相同；比赛进行中<b>只有上场选手</b>可以待在选手区内。</li>
+      <li>比战术板预设的 20×10 m（40 cm 级）小得多：等比例来看球机相对场地大了 2.4 倍，空间很挤，卡位和撞击更频繁。</li>
+    </ul></div>
+  </div>
+
+  <h3 id="cup-spec">三、队伍与球机规格</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>项目</th><th>规定</th></tr>
+    <tr><td>队伍</td><td>中小 组每队注册 <b>5 名</b>选手（<b>3 名先发＋2 名候补</b>），指定 1 名先发为<b>队长</b>；至少 3 名具中华民籍，上场 3 人中至少 2 名；场上 <b>3 对 3</b>。指导老师至多 2 名（含 1 名本校老师）＋候补指导老师 1 名，须为在职教师。每校以 1 队为原则、同校组队；一人只能报一队。（实施计划写 3～5 名，高中职、大专组依各组简章。）</td></tr>
+    <tr><td>更换选手</td><td>集训到决赛期间可更换 <b>1 名、限 1 次</b>；由指导老师填「更换选手申请书」，经主办单位查核同意，须在下一场比赛开始前完成；更换后总数仍不超过 5 名。</td></tr>
+    <tr><td>前锋</td><td>场上 3 架中<b>仅 1 架</b>指定为前锋，须有特殊识别（尾部飘带或特定灯色）供裁判辨识；其余 2 架为<b>防守／辅助</b>，只能防守己方球门或协助前锋进攻，进球不列入计分。</td></tr>
+    <tr><td>球体</td><td>球型保护框直径 <b>20 cm（＋2 cm）</b>，主要单元为交错的五角与六角形；底部可平整但高度不超过 2 cm。</td></tr>
+    <tr><td>重量</td><td>含电池起飞总重 <b>≤ 300 g</b>。</td></tr>
+    <tr><td>动力</td><td>限电动马达；电池最高 <b>4S（17 V）</b>；螺旋桨最大 <b>3 吋</b>，禁止金属桨。</td></tr>
+    <tr><td>遥控</td><td><b>2.4 GHz</b>。</td></tr>
+    <tr><td>灯光</td><td>必须安装 LED 灯条，队伍分<b>红队</b>与<b>蓝队</b>（FAI：圆周至少 16 颗＋尾部 6 颗）。</td></tr>
+    <tr><td>来源限制</td><td>须符合无人机足球共同供应契约采购规格或工程会遥控无人机采购作业指引，<b>产化、非红供应链</b>。中小 组<b>应使用主办单位提供之无人机足球</b>参赛（实施计划另允许自备并经检核）；外壳可以更换，但主要单元须为交错五角与六角形、且为非红供应链。整机或零组件编号不可涂销或涂改。</td></tr>
+    <tr><td>设备检核</td><td>须有完整球型保护框、无破损松脱或尖锐外露、符合尺寸重量；<b>贴附检核标签与防拆封条</b>，未经检核不得使用；禁止改装或可能影响安全的设备。</td></tr>
+  </table></div></div></div>
+
+  <h3 id="cup-time">四、比赛怎么进行</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupTime" viewBox="0 0 320 120"></svg></div>
+    <div class="txt"><ul>
+      <li>每场 <b>3 局</b>，每局 <b>3 分钟</b>，局间休息 <b>3 分钟</b>（更换电池与维修）。</li>
+      <li>每局比赛期间，<b>球机损坏即不得在该局继续参赛</b>，要等下一局才能更换。</li>
+      <li>单局进球多者胜；同分或都没进为平局。<b>先赢 2 局</b>者胜（3 局 2 胜）。</li>
+      <li>3 局打完双方平手（例如各 1 胜 1 负 1 和，或 3 局皆和）→ <b>点球大战</b>；点球仍平手 → <b>黄金进球骤死赛</b>（先进球者胜）。</li>
+      <li>FAI：罚球所耗时间不计入该局 3 分钟；局中不得更换上场选手，只能在局间换。</li>
+    </ul></div>
+  </div>
+  <div class="card solo" id="cup-start">
+    <div class="steps" id="cupStart">
+      <div class="step"><div class="n">1</div><b>球机放入起飞区</b><span>底线中央、宽 1 m 内，机头朝场内。</span></div>
+      <div class="step"><div class="n">2</div><b>裁判确认双方就绪</b><span>队长回覆准备完成。</span></div>
+      <div class="step"><div class="n">3</div><b>「Arm your quads」</b><span>解锁马达但不离地。</span></div>
+      <div class="step"><div class="n">4</div><b>3～5 秒后鸣笛起飞</b><span>笛声前离地＝提早起飞，判罚球。</span></div>
+      <div class="step"><div class="n">5</div><b>3 分钟后鸣笛结束</b><span>落地、收油门，回到选手区准备下一局。</span></div>
+    </div>
+    <p class="note" style="margin-top:8px">开局流程简章未细述，此处依 FAI F9A 规则 A.8.2；简章规定比赛开始与结束由裁判宣告。</p>
+  </div>
+
+  <h3 id="cup-goal">五、得分方式</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupGoal" viewBox="0 0 320 190"></svg><div class="cap" id="cupGoalCap"></div></div>
+    <div class="txt"><ul>
+      <li><b>只有前锋</b>穿过对方球门环才得分，每次 <b>1 分</b>；非前锋球员穿过球门不予计分。</li>
+      <li>必须<b>「由前向后」完整穿越</b>对手球门环，且飞行方向正确（FAI 40 cm 级是球体一半通过即可，本赛事采完全穿过）。</li>
+      <li>得分后，该队<b>所有球机</b>必须退回己方半场（中线后），方可发动下一次进攻；违者判罚点球。</li>
+      <li>得分判定与进球有效性由场上裁判认定；FAI：失控时应尽力飞回己方半场，若无法恢复则启动失控保护落地并通知裁判。</li>
+    </ul></div>
+  </div>
+
+  <h3 id="cup-foul">六、违规情形与处罚</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupFoul" viewBox="0 0 320 190"></svg><div class="cap" id="cupFoulCap"></div></div>
+    <div class="txt"><h4>动画轮播五种情境</h4>
+      <div class="ctlrow" id="cupFoulBtns"><button data-i="0" class="on">提早起飞</button><button data-i="1">得分未回半场</button><button data-i="2">非前锋穿越自家球门</button><button data-i="3">撞击落地球机</button><button data-i="4">用手干预</button></div>
+      <p class="note">简章明列「得分后未退回半场判罚点球」与安全违规的处置，其余依 FAI F9A 规则（2026 年版）补充。</p>
+    </div>
+  </div>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>处罚</th><th>情形</th><th>结果</th><th>来源</th></tr>
+    <tr><td><span class="tag-s tag-p">罚点球</span></td><td>① 鸣笛前球机离地（提早起飞）<br>② 得分后球员没有正确退回己方半场<br>③ 前锋以外的球机为了防守而<b>穿过或停留在</b>自家球门环内</td><td>由对方执行一次罚球；罚球时间不计入该局。得分后未回半场所进的球不算</td><td>简章（②）、FAI A.9.1</td></tr>
+    <tr><td><span class="tag-s" style="background:#ff7b7b;color:#1a0000">安全违规</span></td><td>违反安全规定、在指定选手区以外操作、危险行为；设备在比赛中异常或失控</td><td>裁判得依情节予以<b>警告、判罚（暂停该机参赛、扣分、判负）或取消资格</b>；设备异常时裁判得要求立即停止使用</td><td>中小 组简章 拾肆</td></tr>
+    <tr><td><span class="tag-s tag-y" style="background:#8fa1b5">警告</span></td><td>飞行中的球机<b>非故意</b>碰撞在地面上的球机</td><td>口头警告，记录在案</td><td>FAI 2026 版 A.9.2（新增）</td></tr>
+    <tr><td><span class="tag-s tag-y">黄牌</span></td><td>① 局中更换上场选手<br>② 选手或教练对裁判、对手或观众有重大不文明行为<br>③ 比赛中<b>故意用手操作、拨动、抓取</b>球机<br>④ 故意用球机撞击人员<br>⑤ 飞行中的球机<b>故意</b>碰撞在地面上的球机</td><td>该局停止并判该队<b>输掉该局</b>；2026 版改为可只处罚该名选手。两张黄牌＝红牌</td><td>FAI A.9.3、2026 版</td></tr>
+    <tr><td><span class="tag-s tag-r">红牌</span></td><td>① 未登录在选手名单上的人上场<br>② 严重不文明行为<br>③ 比赛中危险或有害的飞行行为<br>④ 累积两张黄牌</td><td>比赛停止并判该队<b>输掉整场</b>；2026 版改为可只处罚该名选手</td><td>FAI A.9.4</td></tr>
+    <tr><td><span class="tag-s" style="background:var(--panel2);color:var(--text)">中断</span></td><td>外部干扰或其他正当理由，裁判可中断该局</td><td>该局重赛；若某队是造成中断的直接责任者（例如弃权），该队判输该局</td><td>FAI A.10</td></tr>
+    <tr><td><span class="tag-s" style="background:var(--panel2);color:var(--text)">失控</span></td><td>暂时失控应尽力飞回己方半场；确定无法控制时启动失控保护、落地后立即通知裁判并离开选手区</td><td>不算犯规；落地且无法再起飞的球机不受「退回半场」限制</td><td>FAI A.8.4</td></tr>
+    <tr><td><span class="tag-s" style="background:var(--panel2);color:var(--text)">资格</span></td><td>中小 组：转学即丧失资格（升学改变学制或毕业不在此限，仍以 114 学年度级别参赛）；跨校或联合组队；一人报多队；伪造、冒名或资料不实；设备未通过检核或编号涂改</td><td>取消参赛资格／不得使用该设备</td><td>中小 组简章 陆、拾肆</td></tr>
+  </table></div></div></div>
+
+  <h3 id="cup-ref">七、裁判与赛事委员会</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>判决原则</b>：「现场裁判判决优先，赛事委员会最终裁定」。一般情况由场上裁判即时判定；重大争议或特殊情况提请赛事委员会审议。裁判现场判决即时生效，比赛进行中不得提出争议或干扰赛事。</li>
+    <li><b>赛事委员会</b>：裁判长 1 名、资深裁判或技术专家若干名、主办单位指派代表；负责解释规则、统一判准、审议争议、设备合规（含非红供应链）最终认定、处理未规范情形。<b>委员会决议为最终决定</b>，不得再提异议。</li>
+    <li><b>裁判职责</b>：宣告比赛开始与结束、得分判定与进球有效性、违规判定与处置、秩序与安全维护、比赛暂停／延续／终止。</li>
+    <li><b>裁判资格</b>：须完成无人机教育推广办公室的「总统杯无人机足球裁判培训课程」并通过资格测验，证书有效期间内才能执裁。</li>
+  </ul></div></div>
+
+  <h3 id="cup-rank">八、积分与排名范例</h3>
+  <div class="card solo"><div class="txt">
+    <div class="tblwrap"><table class="tbl" id="cupStand">
+      <tr><th>名次</th><th>队伍</th><th>胜</th><th>平</th><th>负</th><th>进球</th><th>失球</th><th>净胜</th><th>积分</th></tr>
+    </table></div>
+    <p class="note">范例数据仅供说明排序方式：先比积分（胜 3、平 1、负 0），相同再比净胜球，再比总进球。</p>
+  </div></div>
+
+  <h3>九、奖励与保险</h3>
+  <div class="card solo"><div class="txt"><p>分区赛各分组冠军 1 万元、亚军 5,000 元、季军 3,000 元；准决赛全各分组积分前 3 名各 2 万元；决赛冠军 5 万元、亚军 3 万元；另颁奖杯，指导老师及参赛学生每人奖状 1 纸。承办单位统一办理公共意外责任保险，各队可视需要自行加保；因个人操作不当或违规造成的损害由相关责任人自行负责。</p>
+  <p class="note">资料来源：「115 年无人机足球竞赛实施计划」与「中小 组简章」（115.5.13 公告版）、总统府「总统杯 2026 无人机竞赛」新闻稿、FAI F9A 无人机足球规则（暂行版）与 FAI CIAM Volume F9 2026 年版。</p></div></div>
+</div>
+</div>
+
+<!-- ============ 摇杆与基本操作 ============ -->
+<div id="ctrl" class="page" hidden>
+<div class="wrap">
+  <h2>摇杆与基本操作</h2>
+  <p>下方的遥控器可以直接用滑鼠或手指拖动摇杆（放开会自动回中），右边的球机会即时反应。也可以按「示范」按钮看每个动作的动画。键盘：W/S 油门、A/D 旋转、方向键前后左右。</p>
+  <div class="modebar"><span style="color:var(--muted);font-size:12px;">摇杆模式</span><button id="modeM2" class="on">Mode 2（美手）</button><button id="modeM1">Mode 1（日手）</button><span id="modeDesc" style="color:var(--muted);font-size:12px;"></span></div>
+
+  <div id="ctrlGrid">
+    <div class="anim"><svg id="txSvg" viewBox="0 0 360 230"></svg></div>
+    <div class="anim"><svg id="droneSvg" viewBox="0 0 360 230"></svg></div>
+  </div>
+  <div class="demo">
+    <button data-demo="thr">示范：油门（上升／下降）</button>
+    <button data-demo="yaw">示范：旋转（机头左右转）</button>
+    <button data-demo="pit">示范：前进／后退</button>
+    <button data-demo="rol">示范：左右平移</button>
+    <button data-demo="stop">停止示范</button>
+  </div>
+
+  <h3>四个基本动作</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>动作</th><th>英文</th><th>Mode 2（美手）</th><th>Mode 1（日手）</th><th>球机反应</th></tr>
+    <tr><td>油门</td><td>Throttle</td><td>左杆 上／下</td><td>右杆 上／下</td><td>上升／下降（改变高度）</td></tr>
+    <tr><td>旋转</td><td>Yaw</td><td>左杆 左／右</td><td>左杆 左／右</td><td>机头原地左转／右转</td></tr>
+    <tr><td>俯仰</td><td>Pitch</td><td>右杆 上／下</td><td>左杆 上／下</td><td>往机头方向前进／后退</td></tr>
+    <tr><td>横滚</td><td>Roll</td><td>右杆 左／右</td><td>右杆 左／右</td><td>向左／向右平移（机头方向不变）</td></tr>
+  </table></div>
+  <p class="note">「前后左右」是相对于<b>机头</b>的方向。球机转头之后，你眼中的前方就变了，这是初学者最常撞笼的原因，先学会让机头永远朝前再开始移动。</p></div></div>
+
+  <h3>起飞到降落的标准流程</h3>
+  <div class="steps" id="flightSteps">
+    <div class="step"><div class="n">1</div><b>先开遥控器，再插球机电池</b><span>两支摇杆油门放最低。先开遥控器可以避免球机在无讯号状态下乱动。</span></div>
+    <div class="step"><div class="n">2</div><b>放平、机头朝前</b><span>放在平地让陀螺仪校正，LED 亮起稳定后才动作。机头（通常有标记或不同色 LED）朝远离自己的方向。</span></div>
+    <div class="step"><div class="n">3</div><b>解锁（Arm）</b><span>依机型：油门杆左下＋方向杆右下持续 2 秒，或按解锁键。马达会低速转动，此时不要碰球机。</span></div>
+    <div class="step"><div class="n">4</div><b>缓推油门起飞</b><span>油门慢慢推到球机离地约 1 m 后回到中间附近，找到能悬停的油门位置。</span></div>
+    <div class="step"><div class="n">5</div><b>悬停练习</b><span>只用小幅度修正，让球机停在原地 10 秒。飘走就反方向轻推，不要大动作。</span></div>
+    <div class="step"><div class="n">6</div><b>降落与上锁</b><span>油门慢慢收到最低让球机轻触地面，再做上锁（Disarm）动作或按锁定键。</span></div>
+    <div class="step"><div class="n">7</div><b>先拔电池，再关遥控器</b><span>与开机顺序相反。有刷球机电池小，飞完通常微热是正常的，鼓起或发烫就停用。</span></div>
+  </div>
+
+  <h3>有刷小球机的注意事项</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>飞行时间短</b>：1S 电池通常只能飞 5～8 分钟，一局 3 分钟刚好一颗电，比赛前把电池都充饱并标号轮替。</li>
+    <li><b>马达寿命</b>：有刷马达是耗材，飞行时间累积数小时后推力会明显下降，备几颗同规格马达。装马达时注意线色与位置（顺时针／逆时针马达不能装反）。</li>
+    <li><b>螺旋桨分 A／B 两种</b>：对角线是同一种，装反会起飞翻倒。撞击后检查桨叶有没有缺角，缺角会抖动、耗电。</li>
+    <li><b>撞击是正常的</b>：无人机足球本来就是身体对抗，但每次撞完检查护笼有没有松脱、变形，松的笼子会卡到桨。</li>
+    <li><b>失控就收油门</b>：飞歪、撞笼、看不清楚时，第一反应是把油门收到底让它落地，不要试图救。</li>
+    <li><b>无头模式（Headless）先关掉</b>：许多教育用球机有无头模式，练习阶段建议关闭，养成看机头方向的习惯，比赛时才不会混乱。</li>
+    <li><b>微调（Trim）</b>：如果放手就往某个方向飘，用遥控器上的微调键往反方向调 1～2 格，或重新放平做校正。</li>
+  </ul></div></div>
+</div>
+</div>
+
+<!-- ============ 球机结构 3D ============ -->
+<div id="parts" class="page" hidden>
+<div class="wrap">
+  <h2>球机结构 3D</h2>
+  <p>以 20 cm 有刷小球机为原型。拖曳旋转、滚轮缩放；点右边的零件会在模型上亮起并说明功能，拉「拆解」滑杆可以把零件散开来看内部。</p>
+  <div id="partsGrid">
+    <div id="partsView">
+      <div id="partsHud">
+        <button id="btnSpin">▶ 启动螺旋桨</button>
+        <button id="btnCage">隐藏护笼</button>
+        <button id="btnDir">显示旋转方向</button>
+        <label>拆解 <input type="range" id="explode" min="0" max="1" step="0.01" value="0"></label>
+      </div>
+    </div>
+    <div id="partList"></div>
+  </div>
+  <p class="note">马达编号采用飞控常见的 X 型配置：右前 CCW（逆时针）、左前 CW（顺时针）、左后 CCW、右后 CW，对角线同方向。不同厂牌的教育用球机可能相反，但「对角同向、相邻反向」的原则不变。</p>
+</div>
+</div>
+
+<!-- ============ 飞行原理 ============ -->
+<div id="fly" class="page" hidden>
+<div class="wrap">
+  <h2>无人机是怎么飞起来的</h2>
+  <p>四轴无人机没有机翼，也没有任何会转向的舵面，全部动作都靠<b>改变四颗马达的转速</b>完成。下面四个互动图依序说明升力、扭力抵销、倾斜移动，以及螺旋桨装错会发生什么事。</p>
+
+  <h3>一、升力：把空气往下推，机身就被往上推</h3>
+  <div class="card">
+    <div class="anim"><svg id="anLift" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><h4>推力 vs 重力</h4>
+      <div class="ctlrow">油门 <input type="range" id="liftThr" min="0" max="100" value="50"><b id="liftVal" style="font-family:var(--num)">50%</b></div>
+      <ul>
+        <li>螺旋桨是一片斜的叶子，转动时把空气往<b>下</b>拨；依作用力与反作用力，空气就把桨（和整台球机）往<b>上</b>推。</li>
+        <li>四颗马达的推力加起来<b>大于</b>重力 → 上升；<b>等于</b>重力 → 悬停；<b>小于</b>重力 → 下降。</li>
+        <li>转速越高推力越大，但推力跟转速的平方成正比，所以油门靠近悬停点时要很小的动作。</li>
+        <li>20 cm 有刷球机约 100～150 g，四颗小马达全开大约能出 200 g 以上的推力，推重比大约 1.5～2。</li>
+      </ul></div>
+  </div>
+
+  <h3 id="fly-torque">二、扭力：为什么四颗桨要两个顺时针、两个逆时针</h3>
+  <div class="card">
+    <div class="anim"><svg id="anTorque" viewBox="0 0 320 220"></svg></div>
+    <div class="txt"><h4>对角同向，相邻反向</h4>
+      <div class="ctlrow"><button id="tqHover" class="on">悬停</button><button id="tqYawL">左转（Yaw）</button><button id="tqYawR">右转（Yaw）</button></div>
+      <ul>
+        <li>马达让桨往一个方向转，机身就会被往<b>反方向</b>扭（跟直升机没有尾桨会打转是同一件事）。</li>
+        <li>两颗顺时针（CW）、两颗逆时针（CCW），扭力互相抵销，机身才不会自转。</li>
+        <li>要<b>左转</b>时，把 CW 那一对加速、CCW 那一对减速：总推力不变（不掉高度），但扭力不平衡，机身就往 CCW 方向转。右转相反。</li>
+        <li>对角线同一个方向，这样加速一对时左右前后的推力仍然对称，不会顺便倾斜。</li>
+      </ul></div>
+  </div>
+
+  <h3>三、移动：让一边的马达快一点，机身倾斜，推力就有水平分量</h3>
+  <div class="card">
+    <div class="anim"><svg id="anTilt" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><h4>前进 = 后面两颗快、前面两颗慢</h4>
+      <div class="ctlrow"><button id="tiHover" class="on">悬停</button><button id="tiFwd">前进</button><button id="tiBack">后退</button></div>
+      <ul>
+        <li>后面两颗马达加速、前面两颗减速 → 机头下压、机身<b>向前倾</b>。</li>
+        <li>推力永远垂直于机身，机身一倾斜，推力就分成「向上」和「向前」两个分量，向前的分量推著球机前进。</li>
+        <li>左右平移（Roll）是同一个道理，只是换成左右两侧的马达。</li>
+        <li>倾斜后向上分量变小，飞控会自动把总油门稍微加大来维持高度，这是为什么激烈移动时电池特别耗。</li>
+      </ul></div>
+  </div>
+
+  <h3 id="fly-wrong">四、螺旋桨装错会怎么样？自己试试看</h3>
+  <div class="card">
+    <div class="anim"><svg id="anWrong" viewBox="0 0 320 240"></svg></div>
+    <div class="txt"><h4>点击四个位置切换 A／B 桨</h4>
+      <p class="note">A 桨（顺时针 CW）与 B 桨（逆时针 CCW）叶片斜度相反。正确配置是右前 B、左前 A、左后 B、右后 A。装上去按「起飞测试」看结果。</p>
+      <div class="propsel"><button data-p="FL">左前</button><button data-p="FR">右前</button><button data-p="RL">左后</button><button data-p="RR">右后</button></div>
+      <div class="ctlrow"><button id="wrongTest">起飞测试</button><button id="wrongReset">还原正确</button></div>
+      <div class="verdict" id="wrongVerdict"></div>
+    </div>
+  </div>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>装错方式</th><th>会发生什么</th><th>怎么看出来</th></tr>
+    <tr><td>一颗桨装反（A/B 对调）</td><td>那颗桨把空气往上吹，等于少一颗推力又多一份反向扭力：一推油门就<b>朝那个角翻倒</b></td><td>起飞瞬间往固定的一个角翻</td></tr>
+    <tr><td>相邻两颗对调（例如左前与右前）</td><td>前面两颗把空气往上吹、后面两颗往下：一推油门就<b>往前翻倒</b>（左右对调则往侧边翻）</td><td>离地瞬间往固定的一侧翻</td></tr>
+    <tr><td>对角两颗对调</td><td>两颗往上推、两颗往下推，净推力为零：<b>原地不动</b>，但机身受扭，可能侧翻</td><td>油门推到底也离不了地</td></tr>
+    <tr><td>四颗全部装反（桨上下颠倒或 A/B 全换）</td><td>全部把空气往<b>上</b>吹，机身被压在地上，油门全开也飞不起来，马达与电池发热</td><td>桨转很快但不动、有风往上吹到手</td></tr>
+    <tr><td>换马达时转向装反，又「顺便」配了相反的桨</td><td>推力是对的，但扭力方向错了：扭力抵销不了，<b>起飞就自转</b>，飞控修不回来</td><td>能离地，但一直打转或明显偏航</td></tr>
+    <tr><td>桨缺角、变形</td><td>推力不对称又震动，飞控一直在修正：<b>抖动、飘移、耗电</b></td><td>悬停时明显抖、声音不均匀</td></tr>
+  </table></div>
+  <p class="note">判断小诀窍：桨的正面（有字的那面）朝上，叶片较高的那一侧就是「前缘」，桨一定往前缘方向转。装好后用手轻拨，看转向跟马达标示是否一致。</p></div></div>
+</div>
+</div>
+
+<!-- ============ 维修手册 ============ -->
+<div id="fix" class="page" hidden>
+<div class="wrap">
+  <h2>常见故障与维修</h2>
+  <p>依「症状」找问题，每一项从最简单、最常见的原因开始检查。有刷小球机的零件便宜，多数问题换零件比修快。</p>
+  <input type="search" id="fixSearch" class="fixsearch" placeholder="输入症状关键字，例如：翻倒、不转、飘、抖、对频">
+  <div class="card solo"><div class="txt"><h4>建议常备工具与零件</h4>
+    <p>小十字起子（PH0／PH00）、镊子、电烙铁与焊锡（有刷马达多为焊线式）、热缩套管、双面胶与束带、备用 A/B 桨各 4 片以上、备用有刷马达（CW／CCW 各 2 颗）、备用电池 3～4 颗与平衡充、备用护笼或修补用尼龙束带。</p></div></div>
+  <div id="fixList"></div>
+</div>
+</div>
+</div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<div id="shot" hidden>
+  <img id="shotImg" alt="战术板截图">
+  <div class="row"><button id="shotCopy">复制图片到剪贴簿</button><button id="shotDl">下载 PNG</button><button id="shotClose">关闭</button></div>
+  <p>也可以长按或右键图片另存。</p>
+</div>
+<div id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.min.js"></script>
+<script>
+/* 无人机足球战术板 · HARC研发团队整理 © 2026 · Compiled by Chao-Yu Chung */
+window.__AUTHOR__='HARC研发团队整理';
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+console.log('%c无人机足球一站式学习平台 · HARC研发团队整理 © 2026','color:#ffc857;font-weight:700');
+
+/* ---------- 设定与状态 ---------- */
+const cfg={L:20,W:10,H:5,goalH:3.5,goalD:2,droneD:0.4,ringR:0.5,ringT:0.15};
+const COLORS={A:0xff5a5f,B:0x3fa2ff,Adim:0x7a2f33,Bdim:0x25507a,accent:0xffc857};
+const state={
+  teams:{A:{name:'红队'},B:{name:'蓝队'}},
+  drones:[],           // {id,team,idx,role,x,y,h,path:[{x,y,h}],start:{x,y,h}}
+  sel:null, sel2:null, pathMode:false, playing:false, view:'free'
+};
+function defaultDrones(){
+  const L=cfg.L,W=cfg.W;
+  return [
+    {id:'A1',team:'A',idx:1,role:'S',x:L*0.30,y:W*0.5,h:2.0},
+    {id:'A2',team:'A',idx:2,role:'G',x:L*0.12,y:W*0.30,h:2.5},
+    {id:'A3',team:'A',idx:3,role:'G',x:L*0.12,y:W*0.70,h:2.5},
+    {id:'B1',team:'B',idx:1,role:'S',x:L*0.70,y:W*0.5,h:2.0},
+    {id:'B2',team:'B',idx:2,role:'G',x:L*0.88,y:W*0.30,h:2.5},
+    {id:'B3',team:'B',idx:3,role:'G',x:L*0.88,y:W*0.70,h:2.5},
+  ].map(d=>({...d,path:[]}));
+}
+state.drones=defaultDrones();
+
+/* ---------- three.js 基础 ---------- */
+const stage=$('#stage'), labelsEl=$('#labels');
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.insertBefore(renderer.domElement,labelsEl);
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d1218);
+const camera=new THREE.PerspectiveCamera(50,1,0.1,200);
+scene.add(new THREE.HemisphereLight(0xdde8f5,0x1a2230,1.1));
+const dl=new THREE.DirectionalLight(0xffffff,0.7); dl.position.set(6,14,8); scene.add(dl);
+
+// 场地座标：x 沿长边（0..L → -L/2..L/2），y 沿宽边 → z，h → y
+const toW=(x,y,h)=>new THREE.Vector3(x-cfg.L/2,h,y-cfg.W/2);
+const fromW=v=>({x:v.x+cfg.L/2,y:v.z+cfg.W/2,h:v.y});
+
+/* ---------- 自制轨道相机 ---------- */
+const orbit={target:new THREE.Vector3(0,1.2,0),theta:0.35,phi:1.0,dist:19};
+function applyCam(){
+  const s=Math.sin(orbit.phi);
+  camera.position.set(orbit.target.x+orbit.dist*s*Math.sin(orbit.theta),orbit.target.y+orbit.dist*Math.cos(orbit.phi),orbit.target.z+orbit.dist*s*Math.cos(orbit.theta));
+  camera.lookAt(orbit.target);
+}
+const VIEWS={
+  free:()=>({theta:0.35,phi:1.0,dist:Math.max(cfg.L,cfg.W*1.8)*0.95,target:[0,1.2,0]}),
+  top:()=>({theta:0,phi:0.0001,dist:Math.max(cfg.L,cfg.W*1.7)*1.05,target:[0,0,0]}),
+  side:()=>({theta:0,phi:Math.PI/2-0.02,dist:cfg.L*1.15,target:[0,cfg.H/2,0]}),
+  goalA:()=>({theta:-Math.PI/2,phi:1.35,dist:cfg.L*0.95,target:[0,1.5,0]}),   // 从蓝队端看红队球门
+  goalB:()=>({theta:Math.PI/2,phi:1.35,dist:cfg.L*0.95,target:[0,1.5,0]}),
+};
+function setView(name){
+  const v=VIEWS[name](); Object.assign(orbit,{theta:v.theta,phi:v.phi,dist:v.dist}); orbit.target.set(...v.target);
+  state.view=name; document.querySelectorAll('#hud button').forEach(b=>b.classList.toggle('on',b.dataset.view===name)); applyCam();
+}
+
+/* ---------- 场地 ---------- */
+const arena=new THREE.Group(); scene.add(arena);
+function lineMat(c,o){return new THREE.LineBasicMaterial({color:c,transparent:o<1,opacity:o});}
+function buildArena(){
+  while(arena.children.length) arena.remove(arena.children[0]);
+  const L=cfg.L,W=cfg.W,H=cfg.H,hx=L/2,hz=W/2;
+  // 地板
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(L,W),new THREE.MeshLambertMaterial({color:0x141c26}));
+  floor.rotation.x=-Math.PI/2; floor.position.y=-0.005; arena.add(floor);
+  // 格线（1m）
+  const g=[]; for(let x=-hx;x<=hx+1e-6;x+=1){g.push(x,0,-hz,x,0,hz);} for(let z=-hz;z<=hz+1e-6;z+=1){g.push(-hx,0,z,hx,0,z);}
+  const gg=new THREE.BufferGeometry(); gg.setAttribute('position',new THREE.Float32BufferAttribute(g,3));
+  arena.add(new THREE.LineSegments(gg,lineMat(0x2c3a4a,1)));
+  // 边界框
+  const box=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(L,H,W)),lineMat(0x5e7590,1)); box.position.y=H/2; arena.add(box);
+  // 中线、中心点
+  const mid=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0.01,-hz),new THREE.Vector3(0,0.01,hz)]); arena.add(new THREE.Line(mid,lineMat(0xffffff,0.8)));
+  const cp=new THREE.Mesh(new THREE.RingGeometry(0.18,0.25,32),new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide})); cp.rotation.x=-Math.PI/2; cp.position.y=0.011; arena.add(cp);
+  // 半场淡淡着色
+  const halfA=new THREE.Mesh(new THREE.PlaneGeometry(hx,W),new THREE.MeshBasicMaterial({color:COLORS.A,transparent:true,opacity:0.06})); halfA.rotation.x=-Math.PI/2; halfA.position.set(-hx/2,0.002,0); arena.add(halfA);
+  const halfB=halfA.clone(); halfB.material=new THREE.MeshBasicMaterial({color:COLORS.B,transparent:true,opacity:0.06}); halfB.position.x=hx/2; arena.add(halfB);
+  // 起飞区（1.5m 深、半个端线宽）
+  [[-hx,COLORS.A],[hx,COLORS.B]].forEach(([ex,c])=>{
+    const w=W/2,d=1.5,sx=ex<0?-hx+d/2:hx-d/2;
+    const z=new THREE.Mesh(new THREE.PlaneGeometry(d,w),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.18,side:THREE.DoubleSide}));
+    z.rotation.x=-Math.PI/2; z.position.set(sx,0.012,0); arena.add(z);
+    const e=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(d,w)),lineMat(c,0.9)); e.rotation.x=-Math.PI/2; e.position.set(sx,0.013,0); arena.add(e);
+  });
+  // 球门环
+  [[-hx+cfg.goalD,COLORS.A,'A'],[hx-cfg.goalD,COLORS.B,'B']].forEach(([gx,c,t])=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(cfg.ringR-cfg.ringT/2,cfg.ringT/2,16,48),new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:0.35,metalness:0.2,roughness:0.5}));
+    ring.rotation.y=Math.PI/2; ring.position.set(gx,cfg.goalH,0); arena.add(ring);
+    const disc=new THREE.Mesh(new THREE.CircleGeometry(cfg.ringR-cfg.ringT,40),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.22,side:THREE.DoubleSide}));
+    disc.rotation.y=Math.PI/2; disc.position.copy(ring.position); arena.add(disc);
+    // 支柱
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,cfg.goalH-cfg.ringR,8),new THREE.MeshLambertMaterial({color:0x6b7d92}));
+    pole.position.set(gx,(cfg.goalH-cfg.ringR)/2,0); arena.add(pole);
+    // 进球方向箭头（地面）
+    const dir=t==='A'?1:-1; const a=new THREE.ArrowHelper(new THREE.Vector3(-dir,0,0),new THREE.Vector3(gx+dir*1.6,0.02,0),1.1,c,0.35,0.22); arena.add(a);
+  });
+}
+
+document.querySelectorAll('button[data-tab]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const tab = btn.dataset.tab;
+    if (tab.startsWith('http')) {
+      window.location.href = tab;   // 或 window.open(tab, '_blank')
+    } else {
+      // 切换到对应的 tab 内容
+    }
+  });
+});
+
+
+/* ---------- 球机 ---------- */
+const droneGroup=new THREE.Group(); scene.add(droneGroup);
+const meshes={}; // id -> {grp, body, cage, shadow, stem, halo}
+function buildDrones(){
+  while(droneGroup.children.length) droneGroup.remove(droneGroup.children[0]);
+  const r=cfg.droneD/2;
+  state.drones.forEach(d=>{
+    const c=d.team==='A'?COLORS.A:COLORS.B;
+    const grp=new THREE.Group(); grp.userData.id=d.id;
+    const body=new THREE.Mesh(new THREE.SphereGeometry(r*0.55,24,16),new THREE.MeshStandardMaterial({color:c,roughness:0.4,metalness:0.1})); grp.add(body);
+    const cage=new THREE.Mesh(new THREE.SphereGeometry(r,14,10),new THREE.MeshBasicMaterial({color:c,wireframe:true,transparent:true,opacity:0.55})); grp.add(cage);
+    const hit=new THREE.Mesh(new THREE.SphereGeometry(r*1.4,8,6),new THREE.MeshBasicMaterial({visible:false})); hit.userData.id=d.id; grp.add(hit);
+    let halo=null;
+    if(d.role==='S'){ halo=new THREE.Mesh(new THREE.TorusGeometry(r*1.15,0.02,8,40),new THREE.MeshBasicMaterial({color:COLORS.accent})); halo.rotation.x=Math.PI/2; grp.add(halo); }
+    const selRing=new THREE.Mesh(new THREE.TorusGeometry(r*1.5,0.025,8,40),new THREE.MeshBasicMaterial({color:COLORS.accent})); selRing.visible=false; grp.add(selRing);
+    // 地面影子与垂直线
+    const shadow=new THREE.Mesh(new THREE.CircleGeometry(r*0.9,24),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35})); shadow.rotation.x=-Math.PI/2; shadow.position.y=0.015; droneGroup.add(shadow);
+    const stem=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(0,1,0)]),new THREE.LineDashedMaterial({color:c,dashSize:0.15,gapSize:0.1,transparent:true,opacity:0.7})); droneGroup.add(stem);
+    droneGroup.add(grp);
+    meshes[d.id]={grp,hit,shadow,stem,selRing};
+  });
+  syncMeshes();
+}
+function syncMeshes(){
+  state.drones.forEach(d=>{
+    const m=meshes[d.id]; if(!m) return;
+    const p=toW(d.x,d.y,d.h); m.grp.position.copy(p);
+    m.shadow.position.set(p.x,0.015,p.z);
+    m.stem.geometry.setFromPoints([new THREE.Vector3(p.x,0.02,p.z),new THREE.Vector3(p.x,p.y-cfg.droneD/2,p.z)]); m.stem.computeLineDistances();
+    m.selRing.visible=(state.sel===d.id||state.sel2===d.id);
+  });
+  syncPaths(); syncDistance();
+}
+
+/* ---------- 路径箭头 ---------- */
+const pathGroup=new THREE.Group(); scene.add(pathGroup);
+function syncPaths(){
+  while(pathGroup.children.length) pathGroup.remove(pathGroup.children[0]);
+  state.drones.forEach(d=>{
+    if(!d.path.length) return;
+    const c=d.team==='A'?COLORS.A:COLORS.B;
+    const pts=[toW(d.x,d.y,d.h),...d.path.map(p=>toW(p.x,p.y,p.h))];
+    // 若播放中，箭头从起点画
+    if(d.start) pts[0]=toW(d.start.x,d.start.y,d.start.h);
+    for(let i=0;i<pts.length-1;i++){
+      const a=pts[i],b=pts[i+1],v=b.clone().sub(a),len=v.length(); if(len<0.05) continue;
+      const arr=new THREE.ArrowHelper(v.clone().normalize(),a,len,c,Math.min(0.4,len*0.4),0.2); arr.line.material.linewidth=2; pathGroup.add(arr);
+      // 航点地面标记
+      const dot=new THREE.Mesh(new THREE.CircleGeometry(0.12,16),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.5})); dot.rotation.x=-Math.PI/2; dot.position.set(b.x,0.02,b.z); pathGroup.add(dot);
+      const st=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(b.x,0.02,b.z),b]),new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.3})); pathGroup.add(st);
+    }
+  });
+}
+
+/* ---------- 距离线 ---------- */
+const distLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineDashedMaterial({color:COLORS.accent,dashSize:0.25,gapSize:0.12})); distLine.visible=false; scene.add(distLine);
+function syncDistance(){
+  const a=byId(state.sel),b=byId(state.sel2);
+  if(a&&b&&a!==b){
+    const pa=toW(a.x,a.y,a.h),pb=toW(b.x,b.y,b.h);
+    distLine.geometry.setFromPoints([pa,pb]); distLine.computeLineDistances(); distLine.visible=true;
+    const dxy=Math.hypot(a.x-b.x,a.y-b.y),d3=pa.distanceTo(pb);
+    $('#distInfo').innerHTML=`${dName(a)} ↔ ${dName(b)}：直线 <b>${d3.toFixed(2)} m</b>，水平 <b>${dxy.toFixed(2)} m</b>，高差 <b>${Math.abs(a.h-b.h).toFixed(2)} m</b>`;
+  }else{
+    distLine.visible=false;
+    $('#distInfo').textContent='点选一台球机，再按住 Shift 点另一台，会显示两机直线距离。';
+  }
+}
+const byId=id=>state.drones.find(d=>d.id===id);
+const dName=d=>`${state.teams[d.team].name} ${d.idx}${d.role==='S'?' S':''}`;
+
+/* ---------- 标签（HTML 覆盖层） ---------- */
+const labelPool={};
+function getLabel(key,cls){
+  let el=labelPool[key]; if(!el){ el=document.createElement('div'); el.className='lbl '+cls; labelsEl.appendChild(el); labelPool[key]=el; el._cls='lbl '+cls; }
+  el._used=true; return el;
+}
+const _v=new THREE.Vector3();
+function placeLabel(el,pos,dy){
+  _v.copy(pos).project(camera);
+  const w=stage.clientWidth,h=stage.clientHeight;
+  if(_v.z>1){el.style.display='none';return;}
+  el.style.display=''; el.style.left=((_v.x+1)/2*w)+'px'; el.style.top=((1-_v.y)/2*h-(dy||0))+'px';
+}
+function updateLabels(){
+  Object.values(labelPool).forEach(el=>el._used=false);
+  state.drones.forEach(d=>{
+    const el=getLabel(d.id,d.team==='A'?'red':'blue');
+    const s=(state.sel===d.id||state.sel2===d.id);
+    el.className=el._cls+(s?' sel':'');
+    el.innerHTML=`${state.teams[d.team].name} ${d.idx} · ${d.role==='S'?'前锋':'防守'}${s?`<small>X ${d.x.toFixed(1)} · Y ${d.y.toFixed(1)} · H ${d.h.toFixed(1)} m</small>`:''}`;
+    placeLabel(el,toW(d.x,d.y,d.h),22);
+  });
+  const a=byId(state.sel),b=byId(state.sel2);
+  if(a&&b&&a!==b){ const el=getLabel('dist','dist'); const pa=toW(a.x,a.y,a.h),pb=toW(b.x,b.y,b.h); el.textContent=pa.distanceTo(pb).toFixed(2)+' m'; placeLabel(el,pa.clone().add(pb).multiplyScalar(0.5),0); }
+  const gA=getLabel('gA','goal'); gA.textContent=state.teams.A.name+'球门'; placeLabel(gA,new THREE.Vector3(-cfg.L/2+cfg.goalD,cfg.goalH+cfg.ringR,0),8);
+  const gB=getLabel('gB','goal'); gB.textContent=state.teams.B.name+'球门'; placeLabel(gB,new THREE.Vector3(cfg.L/2-cfg.goalD,cfg.goalH+cfg.ringR,0),8);
+  Object.values(labelPool).forEach(el=>{ if(!el._used) el.style.display='none'; });
+}
+
+/* ---------- 面板 ---------- */
+function clamp(v,a,b){return Math.min(b,Math.max(a,v));}
+function buildPanel(){
+  const el=$('#teams'); el.innerHTML='';
+  ['A','B'].forEach(t=>{
+    const team=document.createElement('div'); team.className='team';
+    team.innerHTML=`<div class="team-head"><span class="sw" style="background:${t==='A'?'var(--red)':'var(--blue)'}"></span><input type="text" id="name${t}" value="${state.teams[t].name}" maxlength="12" aria-label="队名"></div>`;
+    team.querySelector('input').addEventListener('input',e=>{state.teams[t].name=e.target.value||(t==='A'?'红队':'蓝队'); refreshNames();});
+    state.drones.filter(d=>d.team===t).forEach(d=>{
+      const row=document.createElement('div'); row.className='drone'; row.dataset.id=d.id;
+      row.innerHTML=`<div class="tag">${d.idx}<small>${d.role==='S'?'前锋':'防守'}</small></div>
+        <label>X 长<input type="number" step="0.1" data-k="x" id="${d.id}x"></label>
+        <label>Y 宽<input type="number" step="0.1" data-k="y" id="${d.id}y"></label>
+        <label>H 高<input type="number" step="0.1" data-k="h" id="${d.id}h"></label>
+        <input type="range" min="0.3" step="0.1" data-k="h" id="${d.id}r" aria-label="高度">`;
+      row.addEventListener('click',e=>{ if(e.target.tagName==='INPUT') return; select(d.id,e.shiftKey); });
+      row.querySelectorAll('input').forEach(inp=>inp.addEventListener('focus',()=>{ if(state.sel!==d.id) select(d.id,false); }));
+      row.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',e=>{
+        const k=e.target.dataset.k,v=parseFloat(e.target.value); if(isNaN(v)) return;
+        const lim=k==='x'?cfg.L:k==='y'?cfg.W:cfg.H; d[k]=clamp(v,k==='h'?0.3:0,lim);
+        if(!state.sel) state.sel=d.id;
+        syncMeshes(); refreshRow(d,e.target);
+      }));
+      team.appendChild(row);
+    });
+    el.appendChild(team);
+  });
+  refreshPanel();
+}
+function refreshRow(d,skip){
+  ['x','y','h'].forEach(k=>{ const i=document.getElementById(d.id+k); if(i&&i!==skip) i.value=d[k].toFixed(1); });
+  const r=document.getElementById(d.id+'r'); if(r&&r!==skip){ r.max=cfg.H; r.value=d.h; }
+}
+function refreshPanel(){
+  state.drones.forEach(d=>refreshRow(d));
+  document.querySelectorAll('.drone').forEach(r=>r.classList.toggle('sel',r.dataset.id===state.sel||r.dataset.id===state.sel2));
+  $('#btnPath').classList.toggle('on',state.pathMode);
+  $('#btnPath').textContent=state.pathMode?'画路径中：点场地新增航点（再按一次结束）':'为选取球机画路径';
+}
+function refreshNames(){ $('#hudGoalA').textContent=state.teams.A.name+'球门'; $('#hudGoalB').textContent=state.teams.B.name+'球门'; syncDistance(); }
+function select(id,shift){
+  if(shift&&state.sel&&state.sel!==id){ state.sel2=id; }
+  else { state.sel=id; state.sel2=null; }
+  syncMeshes(); refreshPanel();
+}
+
+/* ---------- 互动：拖曳／点选／相机 ---------- */
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
+const ground=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+let drag=null; // {id, plane, offset, mode:'move'|'height', startY, startH}
+let camDrag=null; // {mode:'rotate'|'pan', x,y}
+let pinch=null;
+function setPtr(e){ const r=renderer.domElement.getBoundingClientRect(); ptr.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(ptr,camera); }
+function pickDrone(){ const hits=ray.intersectObjects(Object.values(meshes).map(m=>m.hit)); return hits.length?hits[0].object.userData.id:null; }
+function groundPoint(plane){ const p=new THREE.Vector3(); return ray.ray.intersectPlane(plane||ground,p)?p:null; }
+const pointers=new Map();
+renderer.domElement.addEventListener('pointerdown',e=>{
+  if(state.playing) return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===2){ drag=null; camDrag=null; const [a,b]=[...pointers.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),dist:orbit.dist}; return; }
+  renderer.domElement.setPointerCapture(e.pointerId);
+  setPtr(e);
+  const id=pickDrone();
+  if(id&&e.button===0){
+    if(state.pathMode&&state.sel&&id!==state.sel){ /* 允许点其他球机作为航点目标 */ }
+    select(id,e.shiftKey);
+    const d=byId(id);
+    if(e.shiftKey&&state.sel2){ return; }           // 只是量距离
+    if(e.shiftKey){ drag={id,mode:'height',startY:e.clientY,startH:d.h}; return; }
+    const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-d.h);
+    const p=groundPoint(plane); if(!p) return;
+    drag={id,mode:'move',plane,offset:p.sub(toW(d.x,d.y,d.h))};
+    return;
+  }
+  if(state.pathMode&&state.sel&&e.button===0){
+    const d=byId(state.sel);
+    let p=null;
+    if(id){ const t=byId(id); p={x:t.x,y:t.y,h:t.h}; }
+    else { const g=groundPoint(); if(g){ const q=fromW(g); p={x:clamp(q.x,0,cfg.L),y:clamp(q.y,0,cfg.W),h:d.path.length?d.path[d.path.length-1].h:d.h}; } }
+    if(p){ d.path.push(p); syncPaths(); toast(`新增航点 ${d.path.length}`); }
+    return;
+  }
+  camDrag={mode:(e.button===2||e.ctrlKey)?'pan':'rotate',x:e.clientX,y:e.clientY};
+});
+renderer.domElement.addEventListener('pointermove',e=>{
+  if(pointers.has(e.pointerId)) pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&pointers.size===2){ const [a,b]=[...pointers.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); orbit.dist=clamp(pinch.dist*pinch.d/d,4,60); applyCam(); return; }
+  if(drag){
+    const d=byId(drag.id);
+    if(drag.mode==='height'){ d.h=clamp(drag.startH+(drag.startY-e.clientY)*0.02,0.3,cfg.H); }
+    else { setPtr(e); const p=groundPoint(drag.plane); if(!p) return; p.sub(drag.offset); const q=fromW(p); d.x=clamp(q.x,0,cfg.L); d.y=clamp(q.y,0,cfg.W); }
+    syncMeshes(); refreshRow(d); return;
+  }
+  if(camDrag){
+    const dx=e.clientX-camDrag.x,dy=e.clientY-camDrag.y; camDrag.x=e.clientX; camDrag.y=e.clientY;
+    if(camDrag.mode==='rotate'){ orbit.theta-=dx*0.006; orbit.phi=clamp(orbit.phi-dy*0.006,0.0001,Math.PI/2-0.01); }
+    else { const s=orbit.dist*0.0012; const right=new THREE.Vector3().setFromMatrixColumn(camera.matrix,0); const up=new THREE.Vector3().setFromMatrixColumn(camera.matrix,1); orbit.target.addScaledVector(right,-dx*s).addScaledVector(up,dy*s); }
+    applyCam();
+  }
+});
+function endPtr(e){ pointers.delete(e.pointerId); if(pointers.size<2) pinch=null; drag=null; camDrag=null; if(state.sel) refreshPanel(); }
+renderer.domElement.addEventListener('pointerup',endPtr); renderer.domElement.addEventListener('pointercancel',endPtr);
+renderer.domElement.addEventListener('wheel',e=>{ e.preventDefault(); orbit.dist=clamp(orbit.dist*(1+Math.sign(e.deltaY)*0.08),4,60); applyCam(); },{passive:false});
+renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- 视角按钮 ---------- */
+document.querySelectorAll('#hud button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+
+/* ---------- 路径与播放 ---------- */
+$('#btnPath').addEventListener('click',()=>{ if(!state.sel){toast('先点选一台球机');return;} state.pathMode=!state.pathMode; refreshPanel(); });
+$('#btnClearPath').addEventListener('click',()=>{ const d=byId(state.sel); if(!d){toast('先点选一台球机');return;} d.path=[]; syncPaths(); });
+$('#btnClearAll').addEventListener('click',()=>{ state.drones.forEach(d=>d.path=[]); syncPaths(); });
+let anim=null;
+$('#btnPlay').addEventListener('click',()=>{
+  if(state.playing) return;
+  const movers=state.drones.filter(d=>d.path.length); if(!movers.length){toast('还没有任何路径');return;}
+  const speed=Math.max(0.2,parseFloat($('#speed').value)||3);
+  movers.forEach(d=>{ if(!d.start) d.start={x:d.x,y:d.y,h:d.h}; });
+  const tracks=movers.map(d=>{ const pts=[d.start,...d.path]; const segs=[]; let acc=0; for(let i=0;i<pts.length-1;i++){ const len=Math.hypot(pts[i+1].x-pts[i].x,pts[i+1].y-pts[i].y,pts[i+1].h-pts[i].h); segs.push({a:pts[i],b:pts[i+1],t0:acc,t1:acc+len/speed}); acc+=len/speed; } return {d,segs,total:acc}; });
+  const T=Math.max(...tracks.map(t=>t.total)); state.playing=true; state.pathMode=false; refreshPanel(); $('#btnPlay').classList.add('on');
+  const t0=performance.now();
+  (function step(now){
+    const t=(now-t0)/1000;
+    tracks.forEach(({d,segs,total})=>{
+      const tt=Math.min(t,total); const s=segs.find(s=>tt>=s.t0&&tt<=s.t1)||segs[segs.length-1];
+      const k=s.t1>s.t0?clamp((tt-s.t0)/(s.t1-s.t0),0,1):1;
+      d.x=s.a.x+(s.b.x-s.a.x)*k; d.y=s.a.y+(s.b.y-s.a.y)*k; d.h=s.a.h+(s.b.h-s.a.h)*k;
+    });
+    syncMeshes(); state.drones.forEach(d=>refreshRow(d));
+    if(t<T+0.3) anim=requestAnimationFrame(step); else { state.playing=false; $('#btnPlay').classList.remove('on'); }
+  })(t0);
+});
+$('#btnReset').addEventListener('click',()=>{ if(anim) cancelAnimationFrame(anim); state.playing=false; $('#btnPlay').classList.remove('on'); state.drones.forEach(d=>{ if(d.start){ Object.assign(d,d.start); delete d.start; } }); syncMeshes(); refreshPanel(); });
+
+/* ---------- 阵型储存 ---------- */
+const LS='droneSoccerBoard.v1';
+function snapshot(){ return {app:'无人机足球战术板',author:'HARC研发团队整理',exported:new Date().toISOString(),cfg:{...cfg},teams:JSON.parse(JSON.stringify(state.teams)),drones:state.drones.map(d=>({id:d.id,team:d.team,idx:d.idx,role:d.role,x:d.start?d.start.x:d.x,y:d.start?d.start.y:d.y,h:d.start?d.start.h:d.h,path:d.path}))}; }
+function restore(s){
+  if(!s||!s.drones) throw new Error('bad');
+  if(s.cfg) Object.assign(cfg,s.cfg); ['cfgL','cfgW','cfgH','cfgGH','cfgGD'].forEach((id,i)=>{ $('#'+id).value=[cfg.L,cfg.W,cfg.H,cfg.goalH,cfg.goalD][i]; }); $('#cfgD').value=Math.round(cfg.droneD*100);
+  if(s.teams) state.teams=s.teams;
+  state.drones=s.drones.map(d=>({...d,path:d.path||[]})); state.sel=null; state.sel2=null; delete state.playing;
+  buildArena(); buildDrones(); buildPanel(); refreshNames();
+}
+function loadSaved(){ try{ return JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){ return {}; } }
+function renderSaved(){
+  const all=loadSaved(), el=$('#saved'); el.innerHTML='';
+  const names=Object.keys(all); if(!names.length){ el.innerHTML='<div class="info">尚未储存任何阵型（储存在这个浏览器里）。</div>'; return; }
+  names.forEach(n=>{ const it=document.createElement('div'); it.className='it'; it.innerHTML=`<span>${n}</span><button data-a="load">载入</button><button data-a="del">删除</button>`;
+    it.querySelector('[data-a=load]').addEventListener('click',()=>{ try{ restore(all[n]); toast('已载入：'+n); }catch(e){ toast('载入失败'); } });
+    it.querySelector('[data-a=del]').addEventListener('click',()=>{ delete all[n]; try{ localStorage.setItem(LS,JSON.stringify(all)); }catch(e){} renderSaved(); });
+    el.appendChild(it); });
+}
+$('#btnSave').addEventListener('click',()=>{ const n=$('#saveName').value.trim()||('阵型 '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})); const all=loadSaved(); all[n]=snapshot(); try{ localStorage.setItem(LS,JSON.stringify(all)); toast('已储存：'+n); }catch(e){ toast('这个浏览器无法储存，请改用复制 JSON'); } renderSaved(); });
+$('#btnDefault').addEventListener('click',()=>{ state.drones=defaultDrones(); state.sel=state.sel2=null; buildDrones(); buildPanel(); });
+$('#btnExport').addEventListener('click',()=>{ const s=JSON.stringify(snapshot()); $('#json').value=s; navigator.clipboard?.writeText(s).then(()=>toast('JSON 已复制到剪贴簿'),()=>toast('已放入下方文字框，请手动复制')); });
+$('#btnImport').addEventListener('click',()=>{ try{ restore(JSON.parse($('#json').value)); toast('已载入 JSON'); }catch(e){ toast('JSON 格式不正确'); } });
+
+/* ---------- 场地设定 ---------- */
+['cfgL','cfgW','cfgH','cfgGH','cfgGD','cfgD'].forEach(id=>$('#'+id).addEventListener('change',()=>{
+  cfg.L=clamp(+$('#cfgL').value||20,10,30); cfg.W=clamp(+$('#cfgW').value||10,5,15); cfg.H=clamp(+$('#cfgH').value||5,3,8);
+  cfg.goalH=clamp(+$('#cfgGH').value||3.5,2,cfg.H-0.6); cfg.goalD=clamp(+$('#cfgGD').value||2,0.5,5); cfg.droneD=clamp(+$('#cfgD').value||40,20,60)/100;
+  state.drones.forEach(d=>{ d.x=clamp(d.x,0,cfg.L); d.y=clamp(d.y,0,cfg.W); d.h=clamp(d.h,0.3,cfg.H); });
+  buildArena(); buildDrones(); refreshPanel(); setView(state.view);
+}));
+
+/* ---------- 截图 ---------- */
+$('#btnShot').addEventListener('click',()=>{
+  renderer.render(scene,camera);
+  // 把 HTML 标签画进去
+  const src=renderer.domElement, c=document.createElement('canvas'); c.width=src.width; c.height=src.height; const g=c.getContext('2d'); g.drawImage(src,0,0);
+  const sc=src.width/stage.clientWidth; g.font=`600 ${15*sc}px "Barlow Condensed","Noto Sans TC",sans-serif`; g.textAlign='center';
+  Object.values(labelPool).forEach(el=>{ if(el.style.display==='none'||!el._used) return; const x=parseFloat(el.style.left)*sc,y=parseFloat(el.style.top)*sc; const lines=el.innerText.split('\n'); const w=Math.max(...lines.map(l=>g.measureText(l).width))+14*sc, h=lines.length*18*sc+6*sc; const isDist=el.classList.contains('dist'); const top=isDist?y-h/2:y-h;
+    g.fillStyle=el.classList.contains('sel')||isDist?'#ffc857':'rgba(13,18,24,.85)'; g.fillRect(x-w/2,top,w,h); g.fillStyle=el.classList.contains('sel')||isDist?'#1a1200':'#e8eef5'; lines.forEach((l,i)=>g.fillText(l,x,top+(i+1)*18*sc-2*sc)); });
+  g.textAlign='right'; g.font=`600 ${13*sc}px "Barlow Condensed","Noto Sans TC",sans-serif`; g.fillStyle='rgba(232,238,245,.75)'; g.fillText('无人机足球战术板 · HARC研发团队整理',c.width-12*sc,c.height-12*sc);
+  const url=c.toDataURL('image/png'); $('#shotImg').src=url; $('#shot').hidden=false;
+  $('#shotDl').onclick=()=>c.toBlob(b=>saveFile('drone-soccer-'+stamp()+'.png',b));
+  $('#shotCopy').onclick=()=>{ c.toBlob(b=>{ try{ navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(()=>toast('图片已复制'),()=>toast('此浏览器不支持复制图片')); }catch(e){ toast('此浏览器不支持复制图片'); } }); };
+});
+$('#shotClose').addEventListener('click',()=>{ $('#shot').hidden=true; });
+
+/* ---------- 对外 API（战术范例库使用） ---------- */
+window.board={
+  load(preset,play){
+    state.drones=preset.drones.map(d=>({...d,x:d.x*cfg.L/20,y:d.y*cfg.W/10,h:Math.min(cfg.H,d.h*cfg.H/5),path:(d.path||[]).map(p=>({x:p.x*cfg.L/20,y:p.y*cfg.W/10,h:Math.min(cfg.H,p.h*cfg.H/5)}))}));
+    state.sel=state.sel2=null; state.playing=false; state.pathMode=false; if(anim) cancelAnimationFrame(anim);
+    buildDrones(); buildPanel(); setView('free'); toast('已载入：'+preset.name);
+    if(play) setTimeout(()=>$('#btnPlay').click(),500);
+  }
+};
+
+/* ---------- 档案下载（发布页透过 downloads 能力；独立档案则直接下载） ---------- */
+const stamp=()=>new Date().toISOString().slice(0,16).replace(/[-:T]/g,'');
+let dlNs=null; (async()=>{ try{ dlNs=window.claude?.use?await window.claude.use('downloads'):null; }catch(e){ dlNs=null; } })();
+async function saveFile(filename,data){
+  if(dlNs){ try{ await dlNs.save({filename,data}); toast('已储存'); }catch(e){ if(e&&e.code!=='declined') toast('无法下载：'+(e.message||e.code||'')); } return; }
+  try{ const a=document.createElement('a'); a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data])); a.download=filename; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ toast('此环境不支持下载'); }
+}
+window.saveFile=saveFile;
+$('#btnDownloadJson').addEventListener('click',()=>saveFile('drone-soccer-'+stamp()+'.json',JSON.stringify(snapshot(),null,1)));
+
+/* ---------- 其他 ---------- */
+let toastT; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; t.style.opacity=1; clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>t.hidden=true,300); },1800); }
+window.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.getElementById('nav').classList.remove('open'); document.getElementById('navBackdrop').classList.remove('open'); state.pathMode=false; state.sel2=null; refreshPanel(); syncMeshes(); } });
+function resize(){ const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(stage);
+
+buildArena(); buildDrones(); buildPanel(); renderSaved(); refreshNames(); resize(); setView('free');
+(function loop(){ requestAnimationFrame(loop); if(!$('#app').hidden){ renderer.render(scene,camera); updateLabels(); } })();
+})();
+</script>
+<script>
+/* 教学页面（规则・总统杯・操作・构造・原理・维修） · HARC研发团队整理 © 2026 */
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const RED='#ff5a5f',BLUE='#3fa2ff',ACC='#ffc857',MUTED='#8fa1b5',LINE='#3d4f63',TXT='#e8eef5';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- 页尾标示 ---------- */
+document.querySelectorAll('.page .wrap').forEach(w=>{ const f=document.createElement('div'); f.className='credit-foot'; f.innerHTML='<span>无人机足球一站式学习平台 · <b>HARC研发团队整理</b></span><span>© 2026 · 教学使用，转载请注明出处</span>'; w.appendChild(f); });
+
+/* ---------- 分页（侧栏导览） ---------- */
+const PAGES=['home','intro','taiwan','world','rules','cup','quiz','ctrl','fly','train','app','tactics','score','manage','parts','fix','lesson','glossary'];
+let tab='home';
+function goTab(id,anchor){
+  if(!PAGES.includes(id)) return; tab=id;
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x.dataset.tab===id));
+  PAGES.forEach(p=>{ const e=$('#'+p); if(e) e.hidden=(p!==id); });
+  $('#nav').classList.remove('open'); $('#navBackdrop').classList.remove('open');
+  window.dispatchEvent(new Event('resize'));
+  if(anchor){ const a=document.querySelector(anchor); if(a){ const pg=$('#'+id); requestAnimationFrame(()=>{ pg.scrollTop=a.offsetTop-70; a.classList.add('flash'); setTimeout(()=>a.classList.remove('flash'),1600); }); } }
+  else { const pg=$('#'+id); if(pg&&pg.classList.contains('page')) pg.scrollTop=0; }
+  try{ history.replaceState(null,'','#'+id); }catch(e){}
+}
+window.goTab=goTab;
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-tab]'); if(b){ e.preventDefault(); goTab(b.dataset.tab,b.dataset.anchor); } });
+$('#navToggle').addEventListener('click',()=>{ $('#nav').classList.toggle('open'); $('#navBackdrop').classList.toggle('open'); });
+$('#navBackdrop').addEventListener('click',()=>{ $('#nav').classList.remove('open'); $('#navBackdrop').classList.remove('open'); });
+{ const h=(location.hash||'').slice(1); goTab(PAGES.includes(h)?h:'home'); }
+
+/* ---------- SVG 小工具 ---------- */
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function txt(parent,x,y,s,attrs){ const t=el('text',Object.assign({x,y,fill:TXT,'font-size':11,'font-family':'"Barlow Condensed","Noto Sans TC",sans-serif','font-weight':600,'text-anchor':'middle'},attrs||{}),parent); t.textContent=s; return t; }
+function miniField(svg,W,H,pad){ // 俯视小场地，回传座标换算
+  const g=el('g',{},svg);
+  el('rect',{x:pad,y:pad,width:W-2*pad,height:H-2*pad,fill:'#141c26',stroke:LINE,'stroke-width':1.2},g);
+  el('rect',{x:pad,y:pad,width:(W-2*pad)/2,height:H-2*pad,fill:RED,opacity:.06},g);
+  el('rect',{x:W/2,y:pad,width:(W-2*pad)/2,height:H-2*pad,fill:BLUE,opacity:.06},g);
+  el('line',{x1:W/2,y1:pad,x2:W/2,y2:H-pad,stroke:'#fff',opacity:.6},g);
+  el('circle',{cx:W/2,cy:H/2,r:4,fill:'none',stroke:'#fff',opacity:.6},g);
+  // 起飞区
+  el('rect',{x:pad+1,y:H/4+pad/2,width:12,height:H/2-pad,fill:RED,opacity:.25},g); el('rect',{x:W-pad-13,y:H/4+pad/2,width:12,height:H/2-pad,fill:BLUE,opacity:.25},g);
+  // 球门（俯视为一条短线＋方向）
+  const gx=pad+22,gxB=W-pad-22;
+  el('line',{x1:gx,y1:H/2-11,x2:gx,y2:H/2+11,stroke:RED,'stroke-width':4,'stroke-linecap':'round'},g);
+  el('line',{x1:gxB,y1:H/2-11,x2:gxB,y2:H/2+11,stroke:BLUE,'stroke-width':4,'stroke-linecap':'round'},g);
+  return {gxA:gx,gxB,cy:H/2};
+}
+function drone(svg,color,striker){ const g=el('g',{},svg); el('circle',{r:7,fill:color,opacity:.9},g); el('circle',{r:9.5,fill:'none',stroke:color,'stroke-width':1,opacity:.7,'stroke-dasharray':'2 2'},g); if(striker) el('circle',{r:12,fill:'none',stroke:ACC,'stroke-width':1.5},g); g.move=(x,y)=>g.setAttribute('transform',`translate(${x},${y})`); return g; }
+const lerp=(a,b,t)=>a+(b-a)*t, ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const anims=[]; function addAnim(page,fn){ anims.push({page,fn}); }
+let t0=performance.now();
+(function loop(now){ requestAnimationFrame(loop); if(tab==='app') return; const t=Math.max(0,(now-t0)/1000); anims.forEach(a=>{ if(a.page!==tab) return; try{ a.fn(t); }catch(e){ console.warn(e); } }); })(t0);
+
+function cycleSteps(page,sel,period){ const st=[...document.querySelectorAll(sel)]; addAnim(page,t=>{ const i=Math.floor(t/period)%st.length; st.forEach((s,j)=>s.classList.toggle('on',j===i)); }); }
+function timelineAnim(page,svg,segs,W,y,dur){ const x0=16,x1=W-16,total=segs[segs.length-1][1],sx=m=>x0+(x1-x0)*m/total;
+  segs.forEach(([a,b,l,c])=>{ el('rect',{x:sx(a),y:y-10,width:sx(b)-sx(a)-2,height:20,rx:3,fill:c,opacity:c===ACC?.85:.35},svg); txt(svg,(sx(a)+sx(b))/2,y+4,l,{fill:c===ACC?'#1a1200':TXT,'font-size':11}); txt(svg,(sx(a)+sx(b))/2,y+26,(b-a)+' 分钟',{fill:MUTED,'font-size':10}); });
+  const cur=el('line',{x1:sx(0),y1:y-16,x2:sx(0),y2:y+16,stroke:'#fff','stroke-width':2},svg); const clock=txt(svg,W/2,y+48,'',{'font-size':16,fill:ACC});
+  addAnim(page,t=>{ const p=(t*1.2)%total; cur.setAttribute('x1',sx(p)); cur.setAttribute('x2',sx(p)); const seg=segs.find(s=>p>=s[0]&&p<s[1])||segs[0]; const rem=seg[1]-p,mm=Math.floor(rem),ss=Math.floor((rem-mm)*60); clock.textContent=`${seg[2]}　剩 ${mm}:${String(ss).padStart(2,'0')}`; }); }
+
+/* ---------- 一、得分动画 ---------- */
+/* HARC研发团队整理 */
+(function(){
+  const svg=$('#anGoal'),W=320,H=170,f=miniField(svg,W,H,14);
+  const guardA1=drone(svg,RED),guardA2=drone(svg,RED),gB1=drone(svg,BLUE),gB2=drone(svg,BLUE),sB=drone(svg,BLUE,true),s=drone(svg,RED,true);
+  gB1.move(f.gxB-40,f.cy-30); gB2.move(f.gxB-40,f.cy+30); sB.move(W*0.62,f.cy+45);
+  const flash=txt(svg,W/2,40,'GOAL!',{'font-size':26,fill:ACC,opacity:0});
+  const cap=$('#anGoalCap');
+  const D=9; // 周期秒
+  addAnim('rules',t=>{
+    const p=(t%D);
+    let x,y,c;
+    if(p<3){ const k=ease(p/3); x=lerp(60,f.gxB+18,k); y=lerp(f.cy+20,f.cy,k); c='前锋从正面穿过对方球门环'; guardA1.move(lerp(80,f.gxB-25,k),f.cy-28); guardA2.move(lerp(80,W*0.6,k),f.cy+40); flash.setAttribute('opacity',0); }
+    else if(p<4.2){ x=f.gxB+18; y=f.cy; c='得分！'; flash.setAttribute('opacity',Math.sin((p-3)/1.2*Math.PI)); }
+    else if(p<7.5){ const k=ease((p-4.2)/3.3); x=lerp(f.gxB+18,90,k); y=lerp(f.cy,f.cy+10,k); c='全队退回己方半场（越过中线）'; guardA1.move(lerp(f.gxB-25,70,k),f.cy-28); guardA2.move(lerp(W*0.6,70,k),f.cy+40); flash.setAttribute('opacity',0); }
+    else { x=90; y=f.cy+10; c='可以再次进攻'; guardA1.move(70,f.cy-28); guardA2.move(70,f.cy+40); }
+    s.move(x,y); cap.textContent=c;
+  });
+})();
+
+/* ---------- 二、赛制时间轴 ---------- */
+timelineAnim('rules',$('#anTime'),[[0,3,'第 1 局',ACC],[3,5.5,'休息',MUTED],[5.5,8.5,'第 2 局',ACC],[8.5,11,'休息',MUTED],[11,14,'第 3 局',ACC]],320,50);
+
+/* ---------- 三、开局流程（步骤轮播） ---------- */
+cycleSteps('rules','#anStart .step',1.8);
+
+/* ---------- 四、角色 ---------- */
+(function(){
+  const svg=$('#anRole'),W=320,H=170,f=miniField(svg,W,H,14);
+  const s=drone(svg,RED,true),g1=drone(svg,RED),g2=drone(svg,RED),bs=drone(svg,BLUE,true),bg1=drone(svg,BLUE),bg2=drone(svg,BLUE);
+  const lab=(x,y,t)=>txt(svg,x,y,t,{'font-size':10,fill:ACC});
+  const L1=lab(0,0,'前锋'),L2=lab(0,0,'辅助'),L3=lab(0,0,'防守');
+  addAnim('rules',t=>{
+    const k=Math.sin(t*1.2)*0.5+0.5; // 来回推进
+    const sx=lerp(110,200,k),sy=f.cy+Math.sin(t*2)*10;
+    s.move(sx,sy); L1.setAttribute('x',sx); L1.setAttribute('y',sy-16);
+    g1.move(sx+28,sy-22); L2.setAttribute('x',sx+28); L2.setAttribute('y',sy-40);
+    g2.move(f.gxA+22,f.cy+Math.cos(t*1.5)*18); L3.setAttribute('x',f.gxA+22); L3.setAttribute('y',f.cy-24+Math.cos(t*1.5)*18);
+    bs.move(lerp(230,180,k),f.cy+40); bg1.move(f.gxB-30,f.cy-25+Math.sin(t*1.7)*12); bg2.move(f.gxB-45,f.cy+25);
+  });
+})();
+
+/* ---------- 五、犯规三连播 ---------- */
+(function(){
+  const svg=$('#anFoul'),W=320,H=170,f=miniField(svg,W,H,14),cap=$('#anFoulCap');
+  const s=drone(svg,RED,true),g=drone(svg,RED),b=drone(svg,BLUE);
+  const whistle=txt(svg,W/2,36,'',{'font-size':16,fill:ACC});
+  const bad=txt(svg,W/2,H-22,'',{'font-size':13,fill:'#ff7b7b'});
+  b.move(f.gxB-40,f.cy-28);
+  const D=15;
+  addAnim('rules',t=>{
+    const p=t%D;
+    if(p<5){ // 提早起飞
+      const k=p/5; whistle.textContent=k<0.6?'裁判尚未鸣笛…':'哔！'; s.move(k<0.3?f.gxA-4:lerp(f.gxA-4,90,ease(clamp((k-0.3)/0.4,0,1))),f.cy+20); g.move(f.gxA-4,f.cy-20);
+      cap.textContent='犯规 1：鸣笛前提前离开起飞区'; bad.textContent=k>0.35&&k<0.6?'提早起飞 → 罚球':''; }
+    else if(p<10){ // 得分后未退回
+      const k=(p-5)/5; whistle.textContent='';
+      const x=k<0.4?lerp(150,f.gxB+18,ease(k/0.4)):k<0.7?lerp(f.gxB+18,f.gxB-40,ease((k-0.4)/0.3)):lerp(f.gxB-40,f.gxB+18,ease((k-0.7)/0.3));
+      s.move(x,f.cy); g.move(W*0.62,f.cy+40);
+      cap.textContent='犯规 2：得分后没退回己方半场就再射门'; bad.textContent=k>0.7?'第二球不算 → 罚球':k>0.4?'需先退回中线左侧':''; }
+    else { // 非 Striker 穿过自家球门
+      const k=(p-10)/5; whistle.textContent='';
+      s.move(120,f.cy+30); g.move(lerp(f.gxA+30,f.gxA-14,ease(clamp(k/0.6,0,1))),f.cy); b.move(lerp(200,f.gxA+20,ease(clamp(k/0.6,0,1))),f.cy-10);
+      cap.textContent='犯规 3：非前锋为了防守穿过自家球门环'; bad.textContent=k>0.6?'防守机穿过自家环 → 罚球':''; }
+  });
+})();
+
+/* ---------- 摇杆与球机互动 ---------- */
+/* HARC研发团队整理 */
+(function(){
+  const tx=$('#txSvg'),ds=$('#droneSvg');
+  let mode=2; const st={lx:0,ly:0,rx:0,ry:0}; // -1..1，ly/ry 上为正
+  const drn={x:0,y:0,h:0,yaw:0}; // 顶视 x,y（右、前），高度，机头角（度，0=朝前）
+  // 遥控器
+  el('rect',{x:20,y:30,width:320,height:180,rx:22,fill:'#1c2531',stroke:LINE},tx);
+  el('rect',{x:150,y:20,width:60,height:14,rx:4,fill:'#2c3a4a'},tx); el('line',{x1:60,y1:30,x2:40,y2:2,stroke:MUTED,'stroke-width':3},tx);
+  const gimbal=(cx,cy)=>{ el('circle',{cx,cy,r:52,fill:'#0d1218',stroke:LINE},tx); el('line',{x1:cx-52,y1:cy,x2:cx+52,y2:cy,stroke:LINE,'stroke-dasharray':'3 3'},tx); el('line',{x1:cx,y1:cy-52,x2:cx,y2:cy+52,stroke:LINE,'stroke-dasharray':'3 3'},tx); const k=el('circle',{cx,cy,r:16,fill:'#3d4f63',stroke:'#8fa1b5','stroke-width':2,style:'cursor:grab'},tx); el('circle',{cx,cy,r:6,fill:'#0d1218','pointer-events':'none'},tx); return {cx,cy,k}; };
+  const L=gimbal(100,125),R=gimbal(260,125);
+  const lblL=[txt(tx,100,62,'',{fill:ACC}),txt(tx,100,196,'',{fill:ACC}),txt(tx,40,128,'',{fill:ACC}),txt(tx,160,128,'',{fill:ACC})];
+  const lblR=[txt(tx,260,62,'',{fill:ACC}),txt(tx,260,196,'',{fill:ACC}),txt(tx,200,128,'',{fill:ACC}),txt(tx,320,128,'',{fill:ACC})];
+  txt(tx,100,222,'左摇杆',{fill:MUTED}); txt(tx,260,222,'右摇杆',{fill:MUTED});
+  function labels(){
+    const thr=['油门 ↑','油门 ↓'],yaw=['← 左转','右转 →'],pit=['前进 ↑','后退 ↓'],rol=['← 左移','右移 →'];
+    const [a,b]=mode===2?[[...thr,...yaw],[...pit,...rol]]:[[...pit,...yaw],[...thr,...rol]];
+    lblL.forEach((t,i)=>t.textContent=a[i]); lblR.forEach((t,i)=>t.textContent=b[i]);
+    $('#modeDesc').textContent=mode===2?'左杆：油门＋旋转　右杆：前后＋左右':'左杆：前后＋旋转　右杆：油门＋左右';
+  }
+  $('#modeM2').addEventListener('click',()=>{mode=2;$('#modeM2').classList.add('on');$('#modeM1').classList.remove('on');labels();});
+  $('#modeM1').addEventListener('click',()=>{mode=1;$('#modeM1').classList.add('on');$('#modeM2').classList.remove('on');labels();});
+  labels();
+  // 拖曳摇杆
+  let grab=null;
+  function svgPt(e){ const p=tx.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform(tx.getScreenCTM().inverse()); }
+  [['l',L],['r',R]].forEach(([side,g])=>{
+    g.k.addEventListener('pointerdown',e=>{ grab=side; demo=null; g.k.setPointerCapture(e.pointerId); e.preventDefault(); });
+    g.k.addEventListener('pointermove',e=>{ if(grab!==side) return; const p=svgPt(e); st[side+'x']=clamp((p.x-g.cx)/36,-1,1); st[side+'y']=clamp((g.cy-p.y)/36,-1,1); });
+    const rel=()=>{ if(grab===side){ grab=null; st[side+'x']=0; st[side+'y']=0; } };
+    g.k.addEventListener('pointerup',rel); g.k.addEventListener('pointercancel',rel);
+  });
+  // 键盘
+  const keys={};
+  window.addEventListener('keydown',e=>{ if(tab!=='ctrl'||e.target.tagName==='INPUT') return; keys[e.key.toLowerCase()]=1; demo=null; if(e.key.startsWith('Arrow')) e.preventDefault(); });
+  window.addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=0; });
+  // 示范
+  let demo=null,demoT=0;
+  document.querySelectorAll('.demo button').forEach(b=>b.addEventListener('click',()=>{ demo=b.dataset.demo==='stop'?null:b.dataset.demo; demoT=performance.now(); document.querySelectorAll('.demo button').forEach(x=>x.classList.toggle('on',x===b&&demo)); }));
+  // 球机画面：左＝俯视，右＝侧视
+  el('rect',{x:10,y:14,width:200,height:200,rx:6,fill:'#141c26',stroke:LINE},ds); txt(ds,110,10,'俯视（你站在下方往前看）',{fill:MUTED,'font-size':10});
+  for(let i=1;i<5;i++){ el('line',{x1:10+i*40,y1:14,x2:10+i*40,y2:214,stroke:LINE,opacity:.5},ds); el('line',{x1:10,y1:14+i*40,x2:210,y2:14+i*40,stroke:LINE,opacity:.5},ds); }
+  el('path',{d:'M110 205 l-6 6 l12 0 z',fill:MUTED},ds); txt(ds,110,226,'操作者',{fill:MUTED,'font-size':10});
+  el('rect',{x:225,y:14,width:125,height:200,rx:6,fill:'#141c26',stroke:LINE},ds); txt(ds,287,10,'侧视（高度）',{fill:MUTED,'font-size':10});
+  el('line',{x1:230,y1:206,x2:345,y2:206,stroke:MUTED},ds);
+  const top=el('g',{},ds); el('circle',{r:16,fill:RED,opacity:.9},top); el('circle',{r:20,fill:'none',stroke:RED,'stroke-dasharray':'3 2'},top); el('path',{d:'M0 -20 l-6 8 l12 0 z',fill:ACC},top); txt(top,0,4,'头',{fill:'#fff','font-size':9});
+  const side=el('g',{},ds); el('circle',{r:14,fill:RED,opacity:.9},side); el('circle',{r:18,fill:'none',stroke:RED,'stroke-dasharray':'3 2'},side);
+  const shadow=el('ellipse',{cx:287,cy:206,rx:14,ry:3,fill:'#000',opacity:.4},ds);
+  const hTxt=txt(ds,287,226,'',{fill:ACC,'font-size':12});
+  const readout=txt(tx,180,14,'',{fill:ACC,'font-size':12});
+  let last=performance.now();
+  addAnim('ctrl',()=>{
+    const now=performance.now(),dt=Math.min(0.05,(now-last)/1000); last=now;
+    // 示范动画覆写摇杆
+    if(demo){ const p=(now-demoT)/1000, s=Math.sin(p*1.5); const v=Math.abs(s)>0.15?Math.sign(s):0; const set=(k,val)=>{ st.lx=st.ly=st.rx=st.ry=0; st[k]=val*0.8; };
+      const map={thr:mode===2?'ly':'ry',yaw:'lx',pit:mode===2?'ry':'ly',rol:'rx'}; set(map[demo],v); if(demo!=='thr'&&drn.h<1) drn.h=1; }
+    else if(!grab){ // 键盘
+      const thrK=(keys.w?1:0)-(keys.s?1:0),yawK=(keys.d?1:0)-(keys.a?1:0),pitK=(keys.arrowup?1:0)-(keys.arrowdown?1:0),rolK=(keys.arrowright?1:0)-(keys.arrowleft?1:0);
+      if(mode===2){ st.ly=thrK; st.lx=yawK; st.ry=pitK; st.rx=rolK; } else { st.ly=pitK; st.lx=yawK; st.ry=thrK; st.rx=rolK; }
+    }
+    L.k.setAttribute('cx',L.cx+st.lx*36); L.k.setAttribute('cy',L.cy-st.ly*36); R.k.setAttribute('cx',R.cx+st.rx*36); R.k.setAttribute('cy',R.cy-st.ry*36);
+    const thr=mode===2?st.ly:st.ry, yaw=st.lx, pit=mode===2?st.ry:st.ly, rol=st.rx;
+    // 动力学（简化）
+    drn.h=clamp(drn.h+thr*1.2*dt,0,3); drn.yaw+=yaw*120*dt;
+    const r=drn.yaw*Math.PI/180; const fx=Math.sin(r),fy=Math.cos(r); // 机头方向（俯视：y 向前）
+    if(drn.h>0.05){ drn.x=clamp(drn.x+(fx*pit+fy*rol)*1.6*dt,-2.2,2.2); drn.y=clamp(drn.y+(fy*pit-fx*rol)*1.6*dt,-2.2,2.2); }
+    top.setAttribute('transform',`translate(${110+drn.x*40},${114-drn.y*40}) rotate(${drn.yaw})`);
+    side.setAttribute('transform',`translate(287,${192-drn.h*55})`); shadow.setAttribute('rx',14-drn.h*2);
+    hTxt.textContent='高度 '+drn.h.toFixed(1)+' m';
+    const act=[]; if(thr>0.1)act.push('上升'); if(thr<-0.1)act.push('下降'); if(yaw>0.1)act.push('右转'); if(yaw<-0.1)act.push('左转'); if(pit>0.1)act.push('前进'); if(pit<-0.1)act.push('后退'); if(rol>0.1)act.push('右移'); if(rol<-0.1)act.push('左移');
+    readout.textContent=act.length?act.join('＋'):(drn.h>0.05?'悬停':'停在地面（推油门起飞）');
+  });
+  // 流程步骤轮播
+  cycleSteps('ctrl','#flightSteps .step',2.2);
+})();
+
+/* ================= 球机结构 3D ================= */
+/* HARC研发团队整理 */
+(function(){
+  const view=$('#partsView');
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); view.insertBefore(renderer.domElement,view.firstChild);
+  const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d1218);
+  const camera=new THREE.PerspectiveCamera(40,1,0.1,200);
+  scene.add(new THREE.HemisphereLight(0xdde8f5,0x1a2230,1.0)); const dl=new THREE.DirectionalLight(0xffffff,0.9); dl.position.set(8,12,6); scene.add(dl);
+  const grid=new THREE.GridHelper(40,20,0x2c3a4a,0x1c2531); grid.position.y=-11; scene.add(grid);
+  const orbit={theta:0.7,phi:1.1,dist:36,target:new THREE.Vector3(0,0,0)};
+  function applyCam(){ const s=Math.sin(orbit.phi); camera.position.set(orbit.dist*s*Math.sin(orbit.theta),orbit.dist*Math.cos(orbit.phi),orbit.dist*s*Math.cos(orbit.theta)).add(orbit.target); camera.lookAt(orbit.target); }
+  let cd=null; const ptrs=new Map(); let pinch=null;
+  renderer.domElement.addEventListener('pointerdown',e=>{ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),dist:orbit.dist}; cd=null; return; } renderer.domElement.setPointerCapture(e.pointerId); cd={x:e.clientX,y:e.clientY}; });
+  renderer.domElement.addEventListener('pointermove',e=>{ if(ptrs.has(e.pointerId)) ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pinch&&ptrs.size===2){ const [a,b]=[...ptrs.values()]; orbit.dist=clamp(pinch.dist*pinch.d/Math.hypot(a.x-b.x,a.y-b.y),12,80); applyCam(); return; } if(!cd) return; orbit.theta-=(e.clientX-cd.x)*0.008; orbit.phi=clamp(orbit.phi-(e.clientY-cd.y)*0.008,0.05,Math.PI-0.05); cd={x:e.clientX,y:e.clientY}; applyCam(); });
+  const up=e=>{ ptrs.delete(e.pointerId); if(ptrs.size<2) pinch=null; cd=null; }; renderer.domElement.addEventListener('pointerup',up); renderer.domElement.addEventListener('pointercancel',up);
+  renderer.domElement.addEventListener('wheel',e=>{ e.preventDefault(); orbit.dist=clamp(orbit.dist*(1+Math.sign(e.deltaY)*0.08),12,80); applyCam(); },{passive:false});
+
+  // 零件定义（单位 cm，球径 20）
+  const PARTS=[
+    {id:'cage',name:'护笼（外框）',color:0x9fb3c8,desc:'20 cm 的球型外壳，比赛时互相撞击靠它保护桨与机身。多为塑胶射出件拼接，撞松了会卡到桨，每次比赛前检查扣点。'},
+    {id:'frame',name:'机架（X 型臂）',color:0x6b7d92,desc:'固定马达与飞控的骨架。X 型配置让四颗马达到中心距离相等，重心在正中央。'},
+    {id:'motor',name:'有刷马达 ×4',color:0x3a3f47,desc:'空心杯有刷马达（常见 7 mm 或 8.5 mm），两颗顺时针、两颗逆时针，用线色或标示区分。是消耗品，推力衰退就换。'},
+    {id:'propA',name:'A 桨 ×2（顺时针 CW）',color:0x5ad38a,desc:'装在左前与右后。叶片斜度朝一个方向，只能配顺时针转的马达。'},
+    {id:'propB',name:'B 桨 ×2（逆时针 CCW）',color:0xc084fc,desc:'装在右前与左后。与 A 桨互为镜像，装反会把空气往上吹。'},
+    {id:'fc',name:'飞控板（含接收机）',color:0x2dd4bf,desc:'球机的大脑：陀螺仪＋加速度计每秒读取上千次姿态，依摇杆指令算出四颗马达各自要多快。教育用球机通常把接收机整合在同一片板子上。'},
+    {id:'batt',name:'锂电池（1S 3.7 V）',color:0xffc857,desc:'容量约 300～600 mAh，飞 5～8 分钟。插拔时抓插头不要拉线；鼓起、发烫就停用。'},
+    {id:'led',name:'LED 灯环',color:0xff5a5f,desc:'可切换颜色，比赛时用来标示队伍与前锋，也让裁判和观众看得到球在哪里。'},
+    {id:'ant',name:'天线',color:0xe8eef5,desc:'接收遥控讯号。撞断或折弯会让讯号变差、失控保护频繁触发。'},
+  ];
+  const mats={}; PARTS.forEach(p=>mats[p.id]=new THREE.MeshStandardMaterial({color:p.color,roughness:0.5,metalness:0.15,transparent:true}));
+  const objs=[]; // {mesh, part, base:Vector3, dir:Vector3}
+  const root=new THREE.Group(); scene.add(root);
+  function add(mesh,part,dir){ mesh.userData.part=part; objs.push({mesh,part,base:mesh.position.clone(),dir:dir.clone()}); root.add(mesh); return mesh; }
+  // 护笼
+  const cage=new THREE.Group();
+  const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(10,2),new THREE.MeshBasicMaterial({color:0x9fb3c8,wireframe:true,transparent:true,opacity:0.35})); cage.add(wire);
+  [0,Math.PI/3,2*Math.PI/3].forEach(a=>{ const r=new THREE.Mesh(new THREE.TorusGeometry(10,0.18,8,64),mats.cage); r.rotation.y=a; cage.add(r); });
+  const eq=new THREE.Mesh(new THREE.TorusGeometry(10,0.18,8,64),mats.cage); eq.rotation.x=Math.PI/2; cage.add(eq);
+  cage.userData.part='cage'; objs.push({mesh:cage,part:'cage',base:new THREE.Vector3(),dir:new THREE.Vector3(0,1,0),scaleExplode:true}); root.add(cage);
+  // 机架
+  const armLen=6.2; const pos={FR:[armLen*0.707,0,-armLen*0.707],FL:[-armLen*0.707,0,-armLen*0.707],RL:[-armLen*0.707,0,armLen*0.707],RR:[armLen*0.707,0,armLen*0.707]};
+  const frame=new THREE.Group();
+  [Math.PI/4,-Math.PI/4].forEach(a=>{ const b=new THREE.Mesh(new THREE.BoxGeometry(armLen*2+1,0.5,1.2),mats.frame); b.rotation.y=a; frame.add(b); });
+  frame.add(new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,0.5,24),mats.frame));
+  add(frame,'frame',new THREE.Vector3(0,0,0));
+  // 马达与桨
+  const DIR={FR:-1,FL:1,RL:-1,RR:1}; // +1 CW（俯视），-1 CCW
+  const props={};
+  Object.entries(pos).forEach(([k,[x,y,z]])=>{
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.45,1.8,16),mats.motor); m.position.set(x,1.1,z); add(m,'motor',new THREE.Vector3(x,0,z).normalize().multiplyScalar(0.5).add(new THREE.Vector3(0,-0.4,0)));
+    const cw=DIR[k]>0, pid=cw?'propA':'propB';
+    const pg=new THREE.Group(); pg.position.set(x,2.2,z);
+    [0,Math.PI].forEach(a=>{ const bl=new THREE.Mesh(new THREE.BoxGeometry(2.3,0.08,0.7),mats[pid]); bl.position.x=1.25; const h=new THREE.Group(); h.add(bl); h.rotation.y=a; bl.rotation.x=(cw?1:-1)*0.35; pg.add(h); });
+    pg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,0.5,12),mats[pid]));
+    add(pg,pid,new THREE.Vector3(x,0,z).normalize().multiplyScalar(0.8).add(new THREE.Vector3(0,2.2,0)));
+    // 方向弧线
+    const arc=new THREE.Mesh(new THREE.TorusGeometry(2.0,0.08,6,32,Math.PI*1.5),new THREE.MeshBasicMaterial({color:cw?0x5ad38a:0xc084fc})); arc.rotation.x=Math.PI/2; arc.rotation.z=cw?0:Math.PI/2;
+    const cone=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.7,10),arc.material);
+    const ex=Math.cos(cw?0:Math.PI*1.5),ez=Math.sin(cw?0:Math.PI*1.5); cone.position.set(2.0*ex,0,cw?2.0*ez:-2.0*ez); cone.rotation.x=Math.PI/2; cone.rotation.z=cw?0:Math.PI;
+    const dg=new THREE.Group(); dg.add(arc); dg.add(cone); dg.position.set(x,3.2,z); dg.visible=false; dg.rotation.y=cw?0:Math.PI/2; root.add(dg);
+    props[k]={pg,dir:DIR[k],dg};
+  });
+  // 飞控、电池、LED、天线
+  const fc=new THREE.Group(); fc.add(new THREE.Mesh(new THREE.BoxGeometry(2.8,0.25,2.8),mats.fc)); const chip=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.3,0.8),new THREE.MeshStandardMaterial({color:0x111827})); chip.position.y=0.25; fc.add(chip); fc.position.y=0.9; add(fc,'fc',new THREE.Vector3(0,2.5,0));
+  const batt=new THREE.Mesh(new THREE.BoxGeometry(3.6,1.0,1.8),mats.batt); batt.position.y=-1.0; add(batt,'batt',new THREE.Vector3(0,-3,0));
+  const led=new THREE.Mesh(new THREE.TorusGeometry(2.4,0.18,8,48),new THREE.MeshStandardMaterial({color:0xff5a5f,emissive:0xff5a5f,emissiveIntensity:0.6,transparent:true})); mats.led=led.material; led.rotation.x=Math.PI/2; led.position.y=-0.4; add(led,'led',new THREE.Vector3(0,-1.6,0));
+  const ant=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,3.5,6),mats.ant); ant.position.set(-1.2,2.6,1.4); ant.rotation.z=0.4; add(ant,'ant',new THREE.Vector3(-1.5,2.5,1.5));
+
+  // 状态
+  let spin=false, showCage=true, showDir=false, sel=null, explode=0, angle=0;
+  function applyState(){
+    objs.forEach(o=>{ if(o.scaleExplode){ o.mesh.scale.setScalar(1+explode*0.9); } else { o.mesh.position.copy(o.base).addScaledVector(o.dir,explode*4.5); } });
+    Object.keys(mats).forEach(k=>{ const m=mats[k]; m.opacity=sel&&sel!==k?0.25:1; m.emissive=new THREE.Color(sel===k?0xffc857:(k==='led'?0xff5a5f:0x000000)); m.emissiveIntensity=sel===k?0.5:(k==='led'?0.6:0); });
+    wire.material.opacity=sel&&sel!=='cage'?0.08:0.35; cage.visible=showCage;
+    Object.values(props).forEach(p=>p.dg.visible=showDir);
+    document.querySelectorAll('.part').forEach(p=>p.classList.toggle('on',p.dataset.id===sel));
+  }
+  // 清单
+  const list=$('#partList');
+  PARTS.forEach(p=>{ const d=document.createElement('div'); d.className='part'; d.dataset.id=p.id; d.innerHTML=`<span class="sw" style="background:#${p.color.toString(16).padStart(6,'0')}"></span><div><b>${p.name}</b><span>${p.desc}</span></div>`; d.addEventListener('click',()=>{ sel=sel===p.id?null:p.id; applyState(); }); list.appendChild(d); });
+  $('#btnSpin').addEventListener('click',()=>{ spin=!spin; $('#btnSpin').textContent=spin?'■ 停止螺旋桨':'▶ 启动螺旋桨'; $('#btnSpin').classList.toggle('on',spin); });
+  $('#btnCage').addEventListener('click',()=>{ showCage=!showCage; $('#btnCage').textContent=showCage?'隐藏护笼':'显示护笼'; applyState(); });
+  $('#btnDir').addEventListener('click',()=>{ showDir=!showDir; $('#btnDir').classList.toggle('on',showDir); applyState(); });
+  $('#explode').addEventListener('input',e=>{ explode=+e.target.value; applyState(); });
+  // 点模型选零件
+  const ray=new THREE.Raycaster(),pv=new THREE.Vector2(); let downAt=null;
+  renderer.domElement.addEventListener('pointerdown',e=>{ downAt={x:e.clientX,y:e.clientY}; });
+  renderer.domElement.addEventListener('pointerup',e=>{ if(!downAt||Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>4) return; const r=renderer.domElement.getBoundingClientRect(); pv.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(pv,camera); const hits=ray.intersectObjects(root.children.filter(c=>c!==cage||showCage),true); let h=hits.find(x=>{ let o=x.object; while(o&&!o.userData.part) o=o.parent; return o&&o.userData.part&&(showCage||o.userData.part!=='cage'); }); if(h){ let o=h.object; while(o&&!o.userData.part) o=o.parent; sel=sel===o.userData.part?null:o.userData.part; } else sel=null; applyState(); });
+  function resize(){ const w=view.clientWidth,h=view.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+  new ResizeObserver(resize).observe(view);
+  applyCam(); applyState(); resize();
+  let last=performance.now();
+  (function loop(now){ requestAnimationFrame(loop); if(tab!=='parts') return; const dt=(now-last)/1000; last=now; if(spin&&!reduce){ angle+=dt*18; Object.values(props).forEach(p=>p.pg.rotation.y=-p.dir*angle); } if(!cd&&!pinch) { orbit.theta+=dt*0.08; applyCam(); } renderer.render(scene,camera); })(last);
+})();
+
+/* ================= 飞行原理 ================= */
+/* HARC研发团队整理 */
+(function(){
+  const GREEN='#5ad38a',PURPLE='#c084fc';
+  function propTop(svg,cx,cy,r,color){ const g=el('g',{transform:`translate(${cx},${cy})`},svg); el('circle',{r,fill:'none',stroke:color,'stroke-width':1.5,opacity:.6},g); const bl=el('g',{},g); el('rect',{x:-r,y:-3,width:2*r,height:6,rx:3,fill:color,opacity:.9},bl); el('circle',{r:3,fill:'#0d1218',stroke:color},g); return {g,bl}; }
+  function arrow(svg,x1,y1,x2,y2,color,w){ const g=el('g',{},svg); const l=el('line',{x1,y1,x2,y2,stroke:color,'stroke-width':w||2.5,'stroke-linecap':'round'},g); const a=el('path',{d:'M0 0 L-6 -8 L6 -8 Z',fill:color},g); const set=(x1,y1,x2,y2)=>{ l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2); const ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI+90; a.setAttribute('transform',`translate(${x2},${y2}) rotate(${ang})`); g.style.display=Math.hypot(x2-x1,y2-y1)<2?'none':''; }; set(x1,y1,x2,y2); return {g,set}; }
+  function sideDrone(svg,color){ const g=el('g',{},svg); el('rect',{x:-40,y:-3,width:80,height:6,rx:3,fill:'#6b7d92'},g); el('rect',{x:-9,y:-8,width:18,height:10,rx:2,fill:'#2dd4bf'},g); [-40,40].forEach(x=>{ el('rect',{x:x-3,y:-11,width:6,height:9,fill:'#3a3f47'},g); el('rect',{x:x-14,y:-13,width:28,height:3,rx:1.5,fill:color||'#5ad38a'},g); }); el('path',{d:'M-9 -8 l-4 -4 l4 0 z',fill:'#ffc857'},g); return g; }
+
+  /* 一、升力 */
+  (function(){
+    const svg=$('#anLift'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg); el('line',{x1:10,y1:H-14,x2:W-10,y2:H-14,stroke:MUTED},svg); txt(svg,W-30,H-4,'地面',{fill:MUTED,'font-size':10});
+    const flows=[]; for(let i=0;i<8;i++){ const x=(i<4?-40:40)+((i%4)-1.5)*8; flows.push({x,g:el('line',{x1:0,y1:0,x2:0,y2:14,stroke:'#8fa1b5','stroke-width':1.5,opacity:.6},svg)}); }
+    const d=sideDrone(svg); const thrust=arrow(svg,0,0,0,0,GREEN,4),weight=arrow(svg,0,0,0,0,'#ff7b7b',4);
+    const lT=txt(svg,0,0,'推力',{fill:GREEN}),lW=txt(svg,0,0,'重力',{fill:'#ff7b7b'}),cap=txt(svg,W/2,20,'',{fill:ACC,'font-size':14});
+    let h=1,thr=0.5; const slider=$('#liftThr'); slider.addEventListener('input',()=>{ thr=slider.value/100; $('#liftVal').textContent=slider.value+'%'; });
+    let last=0;
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; const acc=(thr-0.5)*3; h=clamp(h+acc*dt,0,2.2); const y=H-30-h*60, x=W/2;
+      d.setAttribute('transform',`translate(${x},${y})`); const T=thr*90,Wt=45; thrust.set(x,y-14,x,y-14-T); weight.set(x,y+4,x,y+4+Wt); lT.setAttribute('x',x+28); lT.setAttribute('y',y-14-T/2); lW.setAttribute('x',x+28); lW.setAttribute('y',y+4+Wt/2+4);
+      flows.forEach((f,i)=>{ const p=((t*(0.5+thr*2)+i*0.13)%1); const fy=y+6+p*40; f.g.setAttribute('x1',x+f.x); f.g.setAttribute('x2',x+f.x); f.g.setAttribute('y1',fy); f.g.setAttribute('y2',fy+8+thr*10); f.g.setAttribute('opacity',(1-p)*0.7*(thr>0.05?1:0)); });
+      cap.textContent=thr>0.53?'推力 > 重力 → 上升':thr<0.47?'推力 < 重力 → 下降':'推力 = 重力 → 悬停'+(h<=0?'（在地面）':''); });
+  })();
+
+  /* 二、扭力 */
+  (function(){
+    const svg=$('#anTorque'),W=320,H=220,cx=W/2,cy=H/2+8; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+    const body=el('g',{},svg); el('line',{x1:-60,y1:-60,x2:60,y2:60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},body); el('line',{x1:-60,y1:60,x2:60,y2:-60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},body); el('circle',{r:12,fill:'#2dd4bf'},body); el('path',{d:'M0 -16 l-7 10 l14 0 z',fill:ACC},body);
+    const P={FR:[60,-60,-1],FL:[-60,-60,1],RL:[-60,60,-1],RR:[60,60,1]}; const props={}; const labels={};
+    Object.entries(P).forEach(([k,[x,y,d]])=>{ props[k]=propTop(body,x,y,26,d>0?GREEN:PURPLE); props[k].d=d; labels[k]=txt(body,x,y+42,'',{fill:TXT,'font-size':11}); const arc=el('path',{d:d>0?'M-18 -18 A 26 26 0 0 1 18 -18':'M18 -18 A 26 26 0 0 0 -18 -18',fill:'none',stroke:d>0?GREEN:PURPLE,'stroke-width':2},props[k].g); el('path',{d:'M0 0 l-5 -7 l8 -1 z',fill:d>0?GREEN:PURPLE,transform:d>0?'translate(18,-18) rotate(60)':'translate(-18,-18) rotate(-60) scale(-1,1)'},props[k].g); });
+    const cap=txt(svg,cx,18,'',{fill:ACC,'font-size':14}); const cap2=txt(svg,cx,H-8,'',{fill:MUTED,'font-size':11});
+    let mode='hover',ang=0,spin=0,last=0;
+    const setMode=(m,btn)=>{ mode=m; ['tqHover','tqYawL','tqYawR'].forEach(id=>$('#'+id).classList.toggle('on',id===btn)); };
+    $('#tqHover').addEventListener('click',()=>setMode('hover','tqHover')); $('#tqYawL').addEventListener('click',()=>setMode('left','tqYawL')); $('#tqYawR').addEventListener('click',()=>setMode('right','tqYawR'));
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; spin+=dt*9;
+      // 左转：CW 对加速（机身受 CCW 反扭 → 逆时针转）
+      const fast=mode==='left'?1:mode==='right'?-1:0; let torque=0;
+      Object.values(props).forEach(p=>{ const sp=1+(p.d===fast?0.6:(fast&&p.d!==fast?-0.4:0)); p.bl.setAttribute('transform',`rotate(${ -p.d*spin*sp*57.3 })`); torque+=-p.d*sp; });
+      ang+=torque*dt*40; body.setAttribute('transform',`translate(${cx},${cy}) rotate(${ang})`);
+      Object.entries(props).forEach(([k,p])=>{ const sp=(p.d===fast&&fast)?'快':(fast&&p.d!==fast)?'慢':'一样'; labels[k].textContent=(p.d>0?'CW ':'CCW ')+sp; labels[k].setAttribute('transform',`rotate(${-ang},${P[k][0]},${P[k][1]+42})`); });
+      cap.textContent=mode==='hover'?'两对扭力相抵 → 机身不转':mode==='left'?'CW 对加速 → 反扭力使机身逆时针转（左转）':'CCW 对加速 → 机身顺时针转（右转）';
+      cap2.textContent='绿＝A 桨 CW　紫＝B 桨 CCW　黄色三角＝机头'; });
+  })();
+
+  /* 三、倾斜移动 */
+  (function(){
+    const svg=$('#anTilt'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg); el('line',{x1:10,y1:H-14,x2:W-10,y2:H-14,stroke:MUTED},svg);
+    txt(svg,40,H-24,'← 后',{fill:MUTED,'font-size':10}); txt(svg,W-40,H-24,'前 →',{fill:MUTED,'font-size':10});
+    const d=el('g',{},svg); const body=sideDrone(d); body.querySelector('path').setAttribute('d','M9 -8 l4 -4 l-4 0 z');
+    const tR=arrow(d,-40,-13,-40,-60,GREEN,3),tF=arrow(d,40,-13,40,-60,GREEN,3); const total=arrow(svg,0,0,0,0,ACC,3.5),horiz=arrow(svg,0,0,0,0,'#3fa2ff',3);
+    const lR=txt(d,-40,-66,'后',{fill:GREEN}),lF=txt(d,40,-66,'前',{fill:GREEN}); const cap=txt(svg,W/2,18,'',{fill:ACC,'font-size':14}); const lH=txt(svg,0,0,'向前分量',{fill:'#3fa2ff','font-size':11});
+    let mode=0,tilt=0,x=W/2,last=0;
+    const setMode=(m,btn)=>{ mode=m; ['tiHover','tiFwd','tiBack'].forEach(id=>$('#'+id).classList.toggle('on',id===btn)); };
+    $('#tiHover').addEventListener('click',()=>setMode(0,'tiHover')); $('#tiFwd').addEventListener('click',()=>setMode(1,'tiFwd')); $('#tiBack').addEventListener('click',()=>setMode(-1,'tiBack'));
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; const target=mode*22; tilt+=(target-tilt)*Math.min(1,dt*4); x+=Math.sin(tilt*Math.PI/180)*120*dt; if(x>W-60||x<60){ x=clamp(x,60,W-60); if(mode) setMode(0,'tiHover'); }
+      const y=H-80; d.setAttribute('transform',`translate(${x},${y}) rotate(${tilt})`);
+      const rear=1+mode*0.5,front=1-mode*0.5; tR.set(-40,-13,-40,-13-40*rear); tF.set(40,-13,40,-13-40*front); lR.setAttribute('y',-20-40*rear); lF.setAttribute('y',-20-40*front); lR.textContent=mode>0?'后：快':mode<0?'后：慢':'后'; lF.textContent=mode>0?'前：慢':mode<0?'前：快':'前';
+      const r=tilt*Math.PI/180, L=70; total.set(x,y-8,x+Math.sin(r)*L,y-8-Math.cos(r)*L); horiz.set(x,y-8-Math.cos(r)*L,x+Math.sin(r)*L,y-8-Math.cos(r)*L); lH.setAttribute('x',x+Math.sin(r)*L/2); lH.setAttribute('y',y-16-Math.cos(r)*L); lH.style.display=Math.abs(tilt)>3?'':'none';
+      cap.textContent=mode>0?'后马达快、前马达慢 → 前倾 → 前进':mode<0?'前马达快、后马达慢 → 后倾 → 后退':'四颗一样快 → 水平悬停'; });
+  })();
+
+  /* 四、装错测试 */
+  (function(){
+    const svg=$('#anWrong'),W=320,H=240,cx=W/2,cy=H/2+10; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+    const CORRECT={FR:'B',FL:'A',RL:'B',RR:'A'}; const cfg={...CORRECT};
+    const body=el('g',{},svg); const inner=el('g',{},body); el('line',{x1:-60,y1:-60,x2:60,y2:60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},inner); el('line',{x1:-60,y1:60,x2:60,y2:-60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},inner); el('circle',{r:12,fill:'#2dd4bf'},inner); el('path',{d:'M0 -16 l-7 10 l14 0 z',fill:ACC},inner);
+    const P={FR:[60,-60],FL:[-60,-60],RL:[-60,60],RR:[60,60]}; const props={};
+    Object.entries(P).forEach(([k,[x,y]])=>{ const p=propTop(inner,x,y,26,GREEN); p.lbl=txt(inner,x,y+5,'',{fill:'#0d1218','font-size':13,'font-weight':700}); p.ring=p.g.querySelector('circle'); p.rect=p.g.querySelector('rect'); p.warn=txt(inner,x,y-34,'',{fill:'#ff7b7b','font-size':11}); props[k]=p; });
+    const X=el('g',{opacity:0},svg); el('line',{x1:-30,y1:-30,x2:30,y2:30,stroke:'#ff7b7b','stroke-width':6},X); el('line',{x1:-30,y1:30,x2:30,y2:-30,stroke:'#ff7b7b','stroke-width':6},X);
+    const cap=txt(svg,cx,18,'',{fill:ACC,'font-size':14}); const ver=$('#wrongVerdict');
+    function paint(){ Object.entries(props).forEach(([k,p])=>{ const c=cfg[k]==='A'?GREEN:PURPLE; p.ring.setAttribute('stroke',c); p.rect.setAttribute('fill',c); p.lbl.textContent=cfg[k]; p.warn.textContent=cfg[k]!==CORRECT[k]?'装反':''; }); document.querySelectorAll('.propsel button').forEach(b=>{ b.className=cfg[b.dataset.p]==='A'?'a':'b'; b.textContent=`${b.textContent.slice(0,2)}：${cfg[b.dataset.p]} 桨`; }); }
+    document.querySelectorAll('.propsel button').forEach(b=>{ b.textContent=b.textContent.slice(0,2); b.addEventListener('click',()=>{ cfg[b.dataset.p]=cfg[b.dataset.p]==='A'?'B':'A'; paint(); ver.textContent=''; ver.className='verdict'; }); });
+    let test=null; // {t0,thrust,tx,ty,spinning}
+    function evaluate(){ const wrong=Object.keys(cfg).filter(k=>cfg[k]!==CORRECT[k]); const n=wrong.length; let tx=0,ty=0; wrong.forEach(k=>{ tx+=P[k][0]; ty+=P[k][1]; }); let thrust=(4-2*n)/4,thr2=null; let msg,cls='bad';
+      if(n===0){ msg='四颗桨都正确：推力平衡、扭力相抵，平稳起飞悬停。'; cls='ok'; }
+      else if(n===1){ msg=`${name(wrong[0])}的桨装反了，它把空气往上吹。净推力只剩一半，而且那个角被往下拉：一推油门就朝${name(wrong[0])}翻倒。`; }
+      else if(n===2&&tx===0&&ty===0){ msg='对角两颗装反：两颗往上推、两颗往下推，净推力为零，油门推到底也离不了地，机身还会被扭得侧翻。'; }
+      else if(n===2){ msg=`${wrong.map(name).join('与')}都装反：一侧往上吹、一侧往下吹，净推力为零，离地瞬间往${wrong.map(name).join('、')}那一侧翻倒。`; thr2=0.1; }
+      else if(n===3){ msg='三颗装反：只剩一颗在推，其他三颗把它压向地面，会朝正确那颗的对角翻倒，马达空转发热。'; }
+      else { msg='四颗全部装反（或桨上下颠倒）：全部把空气往上吹，球机被压在地上完全飞不起来，油门全开只会让马达和电池发热。'; }
+      ver.textContent=msg; ver.className='verdict '+cls; return {n,tx,ty,thrust:thr2??thrust}; }
+    const name=k=>({FR:'右前',FL:'左前',RL:'左后',RR:'右后'})[k];
+    $('#wrongTest').addEventListener('click',()=>{ test={t0:performance.now()/1000,...evaluate()}; });
+    $('#wrongReset').addEventListener('click',()=>{ Object.assign(cfg,CORRECT); paint(); test=null; ver.textContent=''; ver.className='verdict'; });
+    paint(); let spin=0,last=0;
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; let scale=1,dx=0,dy=0,rot=0,xo=0; cap.textContent='点右边按钮切换桨，再按「起飞测试」';
+      if(test){ const p=Math.min(1,(t-test.t0)/2.5); spin+=dt*10; Object.entries(props).forEach(([k,pp])=>{ const d=(k==='FL'||k==='RR')?1:-1; pp.bl.setAttribute('transform',`rotate(${-d*spin*57.3})`); });
+        if(test.n===0){ scale=1+0.25*Math.min(1,p*2); cap.textContent='正常起飞，稳定悬停'; }
+        else if(test.thrust<=0){ scale=1; rot=test.n===4?0:Math.sin(t*30)*2; cap.textContent=test.n===4?'桨狂转但离不了地':'离不了地，机身被扭动'; if(test.n!==4&&test.tx===0&&test.ty===0&&p>0.5){ rot=25*(p-0.5)*2; } }
+        else { const k=Math.min(1,p*1.6); scale=1+0.15*Math.sin(k*Math.PI); dx=test.tx/Math.max(1,test.n)*0.5*k; dy=test.ty/Math.max(1,test.n)*0.5*k; rot=(test.tx-test.ty)/60*40*k; xo=p>0.8?1:0; cap.textContent=p>0.7?'翻倒！':'离地瞬间开始倾斜…'; }
+        if(test.n>=1&&test.n<4&&test.thrust>0){ X.setAttribute('opacity',xo); X.setAttribute('transform',`translate(${cx+dx},${cy+dy})`); } else X.setAttribute('opacity',0);
+      } else { X.setAttribute('opacity',0); }
+      body.setAttribute('transform',`translate(${cx+dx},${cy+dy}) scale(${scale}) rotate(${rot})`); });
+  })();
+})();
+
+/* ================= 总统杯规则 ================= */
+/* HARC研发团队整理 */
+(function(){
+  // 6×3 m 小场地（俯视），比例 2:1
+  function cupField(svg,W,H,pad){
+    const g=el('g',{},svg); const fw=W-2*pad,fh=fw/2, top=(H-fh)/2;
+    el('rect',{x:pad,y:top,width:fw,height:fh,fill:'#141c26',stroke:LINE,'stroke-width':1.2},g);
+    el('rect',{x:pad,y:top,width:fw/2,height:fh,fill:RED,opacity:.06},g); el('rect',{x:pad+fw/2,y:top,width:fw/2,height:fh,fill:BLUE,opacity:.06},g);
+    el('line',{x1:pad+fw/2,y1:top,x2:pad+fw/2,y2:top+fh,stroke:'#fff',opacity:.6},g); el('circle',{cx:pad+fw/2,cy:top+fh/2,r:4,fill:'none',stroke:'#fff',opacity:.6},g);
+    const m=fw/6; // 每公尺像素
+    el('rect',{x:pad+1,y:top+fh/2-m/2,width:m*0.35,height:m,fill:RED,opacity:.3},g); el('rect',{x:pad+fw-1-m*0.35,y:top+fh/2-m/2,width:m*0.35,height:m,fill:BLUE,opacity:.3},g);
+    const gxA=pad+m,gxB=pad+fw-m,cy=top+fh/2;
+    el('line',{x1:gxA,y1:cy-m*0.35,x2:gxA,y2:cy+m*0.35,stroke:RED,'stroke-width':4,'stroke-linecap':'round'},g); el('line',{x1:gxB,y1:cy-m*0.35,x2:gxB,y2:cy+m*0.35,stroke:BLUE,'stroke-width':4,'stroke-linecap':'round'},g);
+    return {gxA,gxB,cy,m,top,fh,pad,fw};
+  }
+  function ball(svg,color,striker){ const g=el('g',{},svg); el('circle',{r:9,fill:color,opacity:.9},g); el('circle',{r:11,fill:'none',stroke:color,'stroke-width':1,opacity:.7,'stroke-dasharray':'2 2'},g); if(striker){ el('circle',{r:14,fill:'none',stroke:ACC,'stroke-width':1.5},g); el('path',{d:'M9 0 l10 -4 l0 8 z',fill:ACC},g); } g.move=(x,y)=>g.setAttribute('transform',`translate(${x},${y})`); return g; }
+
+  /* 一、流程 */
+  (function(){
+    const svg=$('#cupFlow'),W=640;
+    const cols=[{x:70,t:'分区赛',s:'8/24–26（营队、集训 7 月）',n:['北区','中区','南区']},{x:320,t:'准决赛',s:'10/2–3 台大体育馆',n:['各区前 3 名']},{x:560,t:'决赛',s:'12 月 大台南会展中心',n:['前 2 名']}];
+    cols.forEach(c=>{ txt(svg,c.x,22,c.t,{'font-size':16,fill:ACC}); txt(svg,c.x,38,c.s,{'font-size':10,fill:MUTED}); });
+    // 三区各三队 → 准决赛九队 → 决赛两队
+    const regionY=[70,105,140]; const dots=[];
+    regionY.forEach((y,i)=>{ txt(svg,28,y+4,cols[0].n[i],{'font-size':11,fill:TXT,'text-anchor':'end'}); for(let k=0;k<3;k++){ const d=el('circle',{cx:50+k*20,cy:y,r:6,fill:i===0?RED:i===1?ACC:BLUE,opacity:.9},svg); dots.push({d,x:50+k*20,y,tx:290+k*20,ty:y,i,k}); } el('line',{x1:118,y1:y,x2:270,y2:y,stroke:LINE,'stroke-dasharray':'4 3'},svg); });
+    const semiBox=el('rect',{x:280,y:56,width:80,height:100,rx:8,fill:'none',stroke:LINE},svg); txt(svg,320,170,'9 队积分赛',{'font-size':10,fill:MUTED});
+    el('line',{x1:365,y1:105,x2:520,y2:105,stroke:LINE,'stroke-dasharray':'4 3'},svg);
+    const fin=[el('circle',{cx:545,cy:95,r:9,fill:ACC},svg),el('circle',{cx:575,cy:115,r:9,fill:ACC},svg)]; txt(svg,560,140,'冠亚军决赛',{'font-size':11,fill:TXT}); txt(svg,560,155,'＋ 40 cm 5v5 示范赛',{'font-size':9,fill:MUTED});
+    const mover=el('circle',{r:7,fill:'#fff'},svg);
+    addAnim('cup',t=>{ const p=(t%6)/6; let x,y; if(p<0.45){ const k=ease(p/0.45); x=lerp(90,290,k); y=lerp(105,105,k); } else if(p<0.55){ x=290+Math.sin((p-0.45)*Math.PI*10)*10; y=105; } else { const k=ease((p-0.55)/0.45); x=lerp(360,545,k); y=lerp(105,95,k); } mover.setAttribute('cx',x); mover.setAttribute('cy',y); dots.forEach(d=>{ const k=ease(clamp((p-0.05-d.i*0.05)/0.35,0,1)); d.d.setAttribute('cx',lerp(d.x,d.tx,k)); }); });
+  })();
+
+  /* 二、场地：俯视＋侧视 */
+  (function(){
+    const svg=$('#cupField'),W=320,H=230;
+    // 俯视
+    const f=cupField(svg,W,120,20); const m=f.m;
+    txt(svg,W/2,f.top-4,'俯视 6 m × 3 m',{fill:MUTED,'font-size':10});
+    txt(svg,f.pad+m,f.top+f.fh+12,'球门距底线 1 m',{fill:RED,'font-size':9}); txt(svg,f.pad+m*0.2,f.cy+m*0.75,'起飞区 ≤1 m',{fill:MUTED,'font-size':8,'text-anchor':'start'});
+    // 侧视
+    const sy=140, sh=70, sx=20, sw=W-40, pm=sw/6; // 高 3 m → 70px → 每公尺 23.3
+    const hm=sh/3;
+    el('rect',{x:sx,y:sy,width:sw,height:sh,fill:'#141c26',stroke:LINE},svg); txt(svg,W/2,sy-4,'侧视 高 3 m 防护网',{fill:MUTED,'font-size':10});
+    [[sx+pm,RED],[sx+sw-pm,BLUE]].forEach(([x,c])=>{ el('line',{x1:x,y1:sy+sh,x2:x,y2:sy+sh-hm*2.35,stroke:'#6b7d92','stroke-width':1.5},svg); el('circle',{cx:x,cy:sy+sh-hm*2.35,r:hm*0.35,fill:'none',stroke:c,'stroke-width':4},svg); });
+    txt(svg,sx+pm+34,sy+sh-hm*2.2,'环底离地 2 m',{fill:RED,'font-size':9,'text-anchor':'start'}); txt(svg,sx+sw-pm-34,sy+sh-hm*2.2,'内径 40 cm',{fill:BLUE,'font-size':9,'text-anchor':'end'});
+    const b=ball(svg,RED,true); const bt=ball(svg,RED,true);
+    addAnim('cup',t=>{ const p=(t%5)/5; const k=ease(clamp(p/0.8,0,1)); bt.move(lerp(f.pad+m*0.2,f.gxB+8,k),f.cy); b.move(lerp(sx+pm*0.3,sx+sw-pm+8,k),lerp(sy+sh-6,sy+sh-hm*2.35,ease(clamp(p/0.35,0,1)))); });
+  })();
+
+  /* 四、时间轴 */
+  (function(){ const svg=$('#cupTime'); timelineAnim('cup',svg,[[0,3,'第 1 局',ACC],[3,6,'休息',MUTED],[6,9,'第 2 局',ACC],[9,12,'休息',MUTED],[12,15,'第 3 局',ACC]],320,44); txt(svg,160,108,'平手 → 点球大战 → 黄金进球',{'font-size':10,fill:MUTED}); cycleSteps('cup','#cupStart .step',1.8); })();
+
+  /* 五、得分（完整穿越） */
+  (function(){
+    const svg=$('#cupGoal'),W=320,H=190,f=cupField(svg,W,H,16),cap=$('#cupGoalCap');
+    const s=ball(svg,RED,true),g1=ball(svg,RED),g2=ball(svg,RED),d1=ball(svg,BLUE),d2=ball(svg,BLUE); d1.move(f.gxB-40,f.cy-25); d2.move(f.gxB-55,f.cy+28);
+    const flash=txt(svg,W/2,f.cy-20,'+1',{'font-size':26,fill:ACC,opacity:0}); const half=txt(svg,W/2,f.top-6,'',{'font-size':11,fill:MUTED});
+    const D=9;
+    addAnim('cup',t=>{ const p=t%D; let x,y,c;
+      if(p<3){ const k=ease(p/3); x=lerp(70,f.gxB+16,k); y=lerp(f.cy+18,f.cy,k); c='前锋由前向后、整颗穿过球门环'; g1.move(lerp(80,f.gxB-30,k),f.cy-30); g2.move(lerp(60,150,k),f.cy+35); flash.setAttribute('opacity',0); half.textContent='球体一半通过还不算，要完全穿越'; }
+      else if(p<4.2){ x=f.gxB+16; y=f.cy; c='得分 +1'; flash.setAttribute('opacity',Math.sin((p-3)/1.2*Math.PI)); half.textContent=''; }
+      else if(p<7.5){ const k=ease((p-4.2)/3.3); x=lerp(f.gxB+16,90,k); y=f.cy+5; c='三架全部退回己方半场'; g1.move(lerp(f.gxB-30,70,k),f.cy-30); g2.move(lerp(150,70,k),f.cy+35); flash.setAttribute('opacity',0); half.textContent='少一架没回来就再进球 → 不算＋罚点球'; }
+      else { x=90; y=f.cy+5; c='可以再次进攻'; g1.move(70,f.cy-30); g2.move(70,f.cy+35); half.textContent=''; }
+      s.move(x,y); cap.textContent=c; });
+  })();
+
+  /* 六、违规五情境 */
+  (function(){
+    const svg=$('#cupFoul'),W=320,H=190,f=cupField(svg,W,H,16),cap=$('#cupFoulCap');
+    const s=ball(svg,RED,true),g=ball(svg,RED),b=ball(svg,BLUE),b2=ball(svg,BLUE);
+    const top=txt(svg,W/2,f.top-6,'',{'font-size':14,fill:ACC}); const bad=txt(svg,W/2,f.top+f.fh+14,'',{'font-size':12,fill:'#ff7b7b'});
+    const hand=el('path',{d:'M0 0 l-6 10 l3 0 l0 12 l6 0 l0 -12 l3 0 z',fill:'#e8eef5',opacity:0},svg);
+    let scene=0,t0=0,auto=true; const btns=[...document.querySelectorAll('#cupFoulBtns button')];
+    btns.forEach(bt=>bt.addEventListener('click',()=>{ scene=+bt.dataset.i; t0=performance.now()/1000; auto=false; btns.forEach(x=>x.classList.toggle('on',x===bt)); }));
+    const NAMES=['提早起飞 → 罚点球','得分后未退回半场 → 进球不算＋罚点球','非前锋穿越／停留自家球门环防守 → 罚点球','撞击落地球机：非故意＝警告，故意＝黄牌','用手干预球机 → 黄牌（该局判负）'];
+    addAnim('cup',t=>{ if(auto){ const i=Math.floor(t/5)%5; if(i!==scene){ scene=i; t0=t; btns.forEach((x,j)=>x.classList.toggle('on',j===i)); } } const k=clamp((t-t0)/5,0,1); hand.setAttribute('opacity',0); b2.move(-50,-50);
+      top.textContent=btns[scene].textContent; bad.textContent=k>0.6?NAMES[scene].split('→')[1].trim():'';
+      if(scene===0){ top.textContent=k<0.5?'裁判尚未鸣笛…':'哔！'; s.move(k<0.25?f.gxA-12:lerp(f.gxA-12,110,ease(clamp((k-0.25)/0.4,0,1))),f.cy+10); g.move(f.gxA-12,f.cy-14); b.move(f.gxB+12,f.cy); }
+      else if(scene===1){ const x=k<0.35?lerp(150,f.gxB+16,ease(k/0.35)):k<0.65?lerp(f.gxB+16,f.gxB-45,ease((k-0.35)/0.3)):lerp(f.gxB-45,f.gxB+16,ease((k-0.65)/0.35)); s.move(x,f.cy); g.move(W*0.62,f.cy+30); b.move(f.gxB-30,f.cy-28); }
+      else if(scene===2){ s.move(120,f.cy+30); g.move(lerp(f.gxA+30,f.gxA-6,ease(clamp(k/0.6,0,1))),f.cy); b.move(lerp(200,f.gxA+26,ease(clamp(k/0.6,0,1))),f.cy-8); }
+      else if(scene===3){ b.move(180,f.cy+20); b2.move(-50,-50); const gx=lerp(90,180,ease(clamp(k/0.6,0,1))); g.move(gx,f.cy+20); s.move(80,f.cy-25); bad.textContent=k>0.6?'蓝机已落地 → 非故意＝警告，故意＝黄牌':'蓝机落地中，不可再撞'; }
+      else { s.move(f.gxA+40,f.cy); g.move(f.gxA+30,f.cy-30); b.move(f.gxB-30,f.cy); hand.setAttribute('opacity',k>0.3?1:0); hand.setAttribute('transform',`translate(${f.gxA+40+lerp(30,4,ease(clamp((k-0.3)/0.3,0,1)))},${f.cy-6})`); bad.textContent=k>0.6?'选手用手拨球机 → 黄牌，该局判负':''; }
+    });
+  })();
+
+  /* 七、积分范例 */
+  (function(){
+    const rows=[['忠孝中',2,1,0,7,3],['仁爱中',2,1,0,5,2],['信义中',1,0,2,4,6],['和平中',0,0,3,1,6]];
+    const tb=$('#cupStand'); rows.map(r=>({n:r[0],w:r[1],d:r[2],l:r[3],gf:r[4],ga:r[5],pts:r[1]*3+r[2],gd:r[4]-r[5]})).sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf).forEach((r,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><b>${i+1}</b>${i<3?' <span class="tag-s tag-y" style="font-size:10px">晋级</span>':''}</td><td>${r.n}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gd>0?'+':''}${r.gd}</td><td><b>${r.pts}</b></td>`; tb.appendChild(tr); });
+  })();
+})();
+
+/* ================= 首页动画 ================= */
+(function(){
+  const svg=$('#homeAnim'),W=320,H=180; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+  el('rect',{x:20,y:30,width:280,height:120,fill:'none',stroke:LINE},svg); el('line',{x1:160,y1:30,x2:160,y2:150,stroke:'#fff',opacity:.4},svg);
+  el('line',{x1:50,y1:75,x2:50,y2:105,stroke:RED,'stroke-width':4,'stroke-linecap':'round'},svg); el('line',{x1:270,y1:75,x2:270,y2:105,stroke:BLUE,'stroke-width':4,'stroke-linecap':'round'},svg);
+  const mk=(c,s)=>{ const g=el('g',{},svg); el('circle',{r:8,fill:c,opacity:.9},g); el('circle',{r:11,fill:'none',stroke:c,'stroke-dasharray':'2 2'},g); if(s) el('circle',{r:14,fill:'none',stroke:ACC,'stroke-width':1.5},g); return g; };
+  const r=[mk(RED,1),mk(RED),mk(RED)],b=[mk(BLUE,1),mk(BLUE),mk(BLUE)];
+  addAnim('home',t=>{ const k=(Math.sin(t*0.9)+1)/2; r[0].setAttribute('transform',`translate(${lerp(90,235,k)},${90+Math.sin(t*2)*8})`); r[1].setAttribute('transform',`translate(${lerp(110,200,k)},${60})`); r[2].setAttribute('transform',`translate(${70},${120+Math.cos(t*1.3)*10})`); b[0].setAttribute('transform',`translate(${lerp(230,130,1-k)},${100})`); b[1].setAttribute('transform',`translate(${240},${70+Math.sin(t*1.7)*10})`); b[2].setAttribute('transform',`translate(${250},${115})`); });
+})();
+
+/* ================= 认识无人机：图示与法规动画 ================= */
+(function(){
+  const gray='#9fb3c8';
+  function quad(svg){ const g=el('g',{transform:'translate(100,60)'},svg); [[-30,-18],[30,-18],[-30,18],[30,18]].forEach(([x,y])=>{ el('line',{x1:0,y1:0,x2:x,y2:y,stroke:gray,'stroke-width':4},g); el('ellipse',{cx:x,cy:y,rx:16,ry:5,fill:'none',stroke:'#5ad38a','stroke-width':2},g); }); el('rect',{x:-10,y:-6,width:20,height:12,rx:3,fill:'#2dd4bf'},g); return g; }
+  quad($('#tQuad'));
+  (function(svg){ const g=el('g',{transform:'translate(100,60)'},svg); el('path',{d:'M-60 0 L60 -4 L70 0 L60 4 Z',fill:gray},g); el('path',{d:'M-10 -3 L20 -3 L5 -40 L-8 -40 Z',fill:'#6b7d92'},g); el('path',{d:'M-10 3 L20 3 L5 40 L-8 40 Z',fill:'#6b7d92'},g); el('path',{d:'M-55 -2 L-40 -2 L-45 -16 L-55 -16 Z',fill:'#6b7d92'},g); el('path',{d:'M-55 2 L-40 2 L-45 16 L-55 16 Z',fill:'#6b7d92'},g); el('circle',{cx:72,cy:0,r:6,fill:'none',stroke:'#5ad38a','stroke-width':2},g); })($('#tFixed'));
+  (function(svg){ const g=el('g',{transform:'translate(100,60)'},svg); el('path',{d:'M-60 0 L60 -4 L70 0 L60 4 Z',fill:gray},g); el('path',{d:'M-10 -3 L20 -3 L5 -40 L-8 -40 Z',fill:'#6b7d92'},g); el('path',{d:'M-10 3 L20 3 L5 40 L-8 40 Z',fill:'#6b7d92'},g); [[-25,-30],[25,-30],[-25,30],[25,30]].forEach(([x,y])=>{ el('ellipse',{cx:x,cy:y,rx:12,ry:4,fill:'none',stroke:'#5ad38a','stroke-width':2},g); }); el('line',{x1:-25,y1:-30,x2:25,y2:-30,stroke:gray,'stroke-width':2},g); el('line',{x1:-25,y1:30,x2:25,y2:30,stroke:gray,'stroke-width':2},g); })($('#tVtol'));
+  (function(svg){ const g=el('g',{transform:'translate(100,62)'},svg); el('ellipse',{cx:0,cy:-22,rx:70,ry:6,fill:'none',stroke:'#5ad38a','stroke-width':2},g); el('line',{x1:0,y1:-22,x2:0,y2:-8,stroke:gray,'stroke-width':3},g); el('ellipse',{cx:0,cy:0,rx:22,ry:12,fill:'#6b7d92'},g); el('path',{d:'M18 -3 L75 -8 L75 -2 L20 4 Z',fill:gray},g); el('circle',{cx:76,cy:-5,r:7,fill:'none',stroke:'#5ad38a','stroke-width':2},g); el('path',{d:'M-14 10 L-18 22 L18 22 L14 10',fill:'none',stroke:gray,'stroke-width':2},g); })($('#tHeli'));
+  // 法规动画：高度、分区
+  const svg=$('#lawAnim'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+  const gy=170; el('line',{x1:0,y1:gy,x2:W,y2:gy,stroke:MUTED},svg);
+  const zones=[[0,100,'#ff5a5f','红区 禁飞',0],[100,210,'#ffc857','黄区 ≤60 m',60],[210,320,'#5ad38a','绿区 ≤120 m',120]];
+  zones.forEach(([x0,x1,c,l,h])=>{ el('rect',{x:x0,y:gy-h*0.9,width:x1-x0,height:h*0.9,fill:c,opacity:.12},svg); if(h) el('line',{x1:x0,y1:gy-h*0.9,x2:x1,y2:gy-h*0.9,stroke:c,'stroke-dasharray':'4 3'},svg); el('rect',{x:x0,y:gy,width:x1-x0,height:8,fill:c,opacity:.8},svg); txt(svg,(x0+x1)/2,gy+22,l,{fill:c,'font-size':11}); });
+  el('path',{d:'M30 170 l10 -30 l10 30 z',fill:'#6b7d92'},svg); txt(svg,40,135,'机场／军事',{fill:MUTED,'font-size':9});
+  txt(svg,265,gy-120*0.9-6,'400 呎 ≈ 120 m',{fill:'#5ad38a','font-size':10}); txt(svg,155,gy-60*0.9-6,'60 m',{fill:'#ffc857','font-size':10});
+  const d=el('g',{},svg); el('circle',{r:7,fill:'#2dd4bf'},d); el('circle',{r:10,fill:'none',stroke:'#2dd4bf','stroke-dasharray':'2 2'},d); const warn=txt(svg,0,0,'',{fill:'#ff7b7b','font-size':11});
+  addAnim('intro',t=>{ const p=(t%8)/8; const x=lerp(300,20,p); const cap=x>210?120:x>100?60:0; const want=60+Math.sin(t*1.5)*50; const h=Math.min(want,cap); d.setAttribute('transform',`translate(${x},${gy-h*0.9-8})`); warn.setAttribute('x',x); warn.setAttribute('y',gy-h*0.9-24); warn.textContent=cap===0?'禁飞！':want>cap?'到顶了 ↓':''; });
+})();
+
+/* ================= 世界时间轴动画 ================= */
+(function(){
+  const svg=$('#worldMap'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+  const ev=[['2016','韩全州 发明'],['2017','首次公开赛'],['2019','FAI 承认 F9A'],['2021','传入美'],['2023','首届世界杯'],['2025','FAI 世锦赛 18 '],['2026','总统杯']];
+  const x0=24,x1=W-24,y=110; el('line',{x1:x0,y1:y,x2:x1,y2:y,stroke:LINE,'stroke-width':2},svg);
+  const nodes=ev.map(([yr,l],i)=>{ const x=x0+(x1-x0)*i/(ev.length-1); const c=el('circle',{cx:x,cy:y,r:5,fill:LINE},svg); txt(svg,x,y+20,yr,{fill:MUTED,'font-size':11}); const lab=txt(svg,x,i%2?y-36:y-18,l,{fill:TXT,'font-size':9}); lab.setAttribute('opacity',0); return {c,lab,x}; });
+  const pulse=el('circle',{r:9,fill:'none',stroke:ACC,'stroke-width':2},svg); const globe=el('g',{transform:'translate(160,160)'},svg); el('circle',{r:22,fill:'none',stroke:'#5ad38a','stroke-width':1.5},globe); el('ellipse',{rx:22,ry:8,fill:'none',stroke:'#5ad38a',opacity:.6},globe); el('ellipse',{rx:8,ry:22,fill:'none',stroke:'#5ad38a',opacity:.6},globe); const cnt=txt(svg,160,197,'',{fill:'#5ad38a','font-size':10});
+  addAnim('world',t=>{ const p=(t%14)/14; const i=Math.min(ev.length-1,Math.floor(p*ev.length)); nodes.forEach((n,j)=>{ n.c.setAttribute('fill',j<=i?ACC:LINE); n.lab.setAttribute('opacity',j<=i?1:0); }); pulse.setAttribute('cx',nodes[i].x); pulse.setAttribute('cy',110); pulse.setAttribute('r',7+Math.sin(t*6)*2); const nations=[1,1,3,6,10,18,19][i]; cnt.textContent=`参与家 ≈ ${nations}`; globe.setAttribute('transform',`translate(160,160) rotate(${t*20})`); });
+})();
+
+/* ================= 计时计分板 ================= */
+(function(){
+  const S={a:0,b:0,setA:0,setB:0,set:1,phase:'ready',rem:180,run:false,results:[],log:[]};
+  const el$=id=>document.getElementById(id);
+  let ac=null; function beep(seq){ try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); let t=ac.currentTime; seq.forEach(([f,d])=>{ const o=ac.createOscillator(),g=ac.createGain(); o.type='square'; o.frequency.value=f; g.gain.value=0.15; o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d); t+=d+0.08; }); }catch(e){} }
+  const whistleStart=()=>beep([[2200,0.35]]), whistleEnd=()=>beep([[2200,0.9],[2200,0.3]]), tick=()=>beep([[1200,0.08]]);
+  function fmt(s){ s=Math.max(0,Math.ceil(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  function log(m){ S.log.unshift(`[${new Date().toLocaleTimeString('zh-TW',{hour12:false})}] ${m}`); S.log=S.log.slice(0,30); el$('sbLog').innerHTML=S.log.join('<br>'); }
+  function render(){ el$('sbScA').textContent=S.a; el$('sbScB').textContent=S.b; el$('sbSetA').textContent=S.setA; el$('sbSetB').textContent=S.setB; el$('sbTime').textContent=S.phase==='countdown'?Math.ceil(S.rem):fmt(S.rem); el$('sbTime').classList.toggle('warn',S.phase==='play'&&S.rem<=10);
+    const ph={ready:'准备',countdown:'倒数',play:'比赛中',pause:'暂停',break:'局间休息',pen:'罚球（不计时）',over:'比赛结束'}[S.phase]; el$('sbPhase').textContent=ph; el$('sbSetInfo').textContent=S.phase==='over'?'比赛结束':`第 ${S.set} 局`;
+    const A=el$('sbNameA').value||'红队',B=el$('sbNameB').value||'蓝队';
+    el$('sbSub').textContent=S.phase==='ready'?'按开始 → 倒数 3 秒鸣笛':S.phase==='break'?'休息结束后按开始进入下一局':S.phase==='over'?(S.setA>S.setB?A:B)+' 获胜':S.phase==='pen'?'罚完球按开始继续':'';
+    el$('sbSets').innerHTML=S.results.map((r,i)=>`<span class="${r}">第${i+1}局 ${r==='r'?A:r==='b'?B:'平'}</span>`).join(''); }
+  let last=null; function loop(now){ requestAnimationFrame(loop); if(!S.run){ last=null; return; } if(last==null){ last=now; return; } const dt=(now-last)/1000; last=now; S.rem-=dt;
+    if(S.phase==='countdown'){ if(Math.ceil(S.rem+dt)!==Math.ceil(S.rem)&&S.rem>0) tick(); if(S.rem<=0){ S.phase='play'; S.rem=180; whistleStart(); log(`第 ${S.set} 局开始`); } }
+    else if(S.phase==='play'){ if(S.rem<=0){ endSet(); } }
+    else if(S.phase==='break'){ if(S.rem<=0){ S.run=false; S.phase='ready'; S.rem=180; beep([[1500,0.2],[1500,0.2]]); log('休息结束'); } }
+    render(); }
+  requestAnimationFrame(loop);
+  function endSet(){ S.run=false; whistleEnd(); const r=S.a>S.b?'r':S.b>S.a?'b':'d'; S.results.push(r); if(r==='r') S.setA++; if(r==='b') S.setB++; log(`第 ${S.set} 局结束 ${S.a}:${S.b}`);
+    if(S.setA>=2||S.setB>=2||S.set>=3){ S.phase='over'; render(); return; } S.set++; S.a=0; S.b=0; S.phase='break'; S.rem=180; S.run=true; render(); }
+  el$('sbStart').addEventListener('click',()=>{ if(S.phase==='ready'){ S.phase='countdown'; S.rem=3; S.run=true; } else if(S.phase==='pause'||S.phase==='pen'){ S.phase='play'; S.run=true; } else if(S.phase==='break'){ S.run=true; } else if(S.phase==='over'){ return; } render(); });
+  el$('sbPause').addEventListener('click',()=>{ if(S.phase==='play'){ S.phase='pause'; S.run=false; log('暂停'); } else if(S.phase==='break'){ S.run=false; } render(); });
+  el$('sbPen').addEventListener('click',()=>{ if(S.phase==='play'||S.phase==='pause'){ S.phase='pen'; S.run=false; log('罚球'); render(); } });
+  el$('sbEndSet').addEventListener('click',()=>{ if(S.phase==='play'||S.phase==='pause'||S.phase==='pen') endSet(); });
+  el$('sbBreak').addEventListener('click',()=>{ S.phase='break'; S.rem=180; S.run=true; render(); });
+  el$('sbWhistle').addEventListener('click',whistleStart);
+  el$('sbFoul').addEventListener('click',()=>{ const who=prompt('犯规纪录（例如：红 2 提早起飞 → 罚球）'); if(who) log('犯规：'+who); });
+  el$('sbFull').addEventListener('click',()=>{ const b=el$('board'); if(document.fullscreenElement) document.exitFullscreen(); else b.requestFullscreen?.(); });
+  el$('sbReset').addEventListener('click',()=>{ if(!confirm('重设整场比赛？')) return; Object.assign(S,{a:0,b:0,setA:0,setB:0,set:1,phase:'ready',rem:180,run:false,results:[]}); log('重设'); render(); });
+  document.querySelectorAll('[data-sc]').forEach(b=>b.addEventListener('click',()=>{ const [t,d]=[b.dataset.sc[0],+b.dataset.sc.slice(1)]; if(t==='A') S.a=Math.max(0,S.a+d); else S.b=Math.max(0,S.b+d); if(d>0) log(`${t==='A'?el$('sbNameA').value:el$('sbNameB').value} 得分 ${S.a}:${S.b}`); render(); }));
+  window.addEventListener('keydown',e=>{ if(tab!=='score'||e.target.tagName==='INPUT') return; const k=e.key.toLowerCase(); if(k===' '){ e.preventDefault(); (S.run&&S.phase==='play'?el$('sbPause'):el$('sbStart')).click(); } else if(k==='q'){ S.a++; render(); } else if(k==='p'){ S.a=Math.max(0,S.a-1); render(); } else if(k==='z'){ S.b++; render(); } else if(k==='m'){ S.b=Math.max(0,S.b-1); render(); } else if(k==='f'){ el$('sbFull').click(); } });
+  ['sbNameA','sbNameB'].forEach(id=>el$(id).addEventListener('input',render)); render();
+})();
+
+/* ================= 飞行训练关卡 ================= */
+(function(){
+  const LS='droneTrain.v1'; let rec={}; try{ rec=JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){}
+  const LV=[
+    {id:'l1',t:'悬停 10 秒',sub:'Level 1',c:['起飞到约 1 m 高度','在 1 m × 1 m 的方格内悬停 10 秒不出界','高度变化不超过 ±30 cm','平稳降落回方格内'],tip:'只用小幅修正；飘出去就反方向轻推，不要大动作。',draw:(g)=>{ el('rect',{x:70,y:35,width:60,height:60,fill:'none',stroke:ACC,'stroke-dasharray':'4 3'},g); return t=>({x:100+Math.sin(t*1.3)*6,y:65+Math.cos(t*1.7)*5,r:0}); }},
+    {id:'l2',t:'方形航线',sub:'Level 2',c:['沿 2 m × 1 m 长方形飞一圈，四个角要停 1 秒','机头保持朝前（不转向），只用前后左右平移','30 秒内完成','不碰地、不碰网'],tip:'这一关练的是 Roll 与 Pitch 的分离：转角时先停、再换方向。',draw:(g)=>{ el('rect',{x:40,y:35,width:120,height:60,fill:'none',stroke:ACC,'stroke-dasharray':'4 3'},g); return t=>{ const p=(t%8)/8; const pts=[[40,35],[160,35],[160,95],[40,95],[40,35]]; const i=Math.floor(p*4),k=ease(p*4-i); return {x:lerp(pts[i][0],pts[i+1][0],k),y:lerp(pts[i][1],pts[i+1][1],k),r:0}; }; }},
+    {id:'l3',t:'转向与机头控制',sub:'Level 3',c:['在原地做 360° 旋转，高度不变','旋转后机头朝任意方向，仍能正确前进到指定点','完成「机头朝右时往自己方向飞回来」','不出 2 m 圆圈'],tip:'记住：前后左右永远是机头的方向，眼睛要盯着机头的 LED。',draw:(g)=>{ el('circle',{cx:100,cy:65,r:45,fill:'none',stroke:ACC,'stroke-dasharray':'4 3'},g); return t=>({x:100+Math.cos(t)*20,y:65+Math.sin(t)*20,r:t*90}); }},
+    {id:'l4',t:'穿环',sub:'Level 4',c:['距离 3 m、环心高 2 m（20 cm 级规格）','正面穿过球门环，整颗球通过','3 次尝试至少成功 2 次','穿环后退回起点'],tip:'先在环前 50 cm 悬停对准，再直线推进；高度比环心略高一点比较容易。',draw:(g)=>{ el('ellipse',{cx:160,cy:65,rx:5,ry:20,fill:'none',stroke:BLUE,'stroke-width':4},g); el('line',{x1:160,y1:85,x2:160,y2:110,stroke:'#6b7d92'},g); return t=>{ const p=(t%4)/4; return {x:p<0.6?lerp(30,175,ease(p/0.6)):lerp(175,30,ease((p-0.6)/0.4)),y:65+(p<0.6?0:-25*Math.sin((p-0.6)/0.4*Math.PI)),r:0}; }; }},
+    {id:'l5',t:'绕桩计时与卡位',sub:'Level 5',c:['S 形绕过 3 支桩（间距 1 m）再穿环，计时','两人一组：一人穿环、一人卡位阻挡，30 秒内至少成功 1 次','撞击后能在 3 秒内恢复控制','完成后全队退回半场'],tip:'这一关是比赛的缩影：进攻要有节奏，卡位要用身体不是用撞。',draw:(g)=>{ [60,100,140].forEach(x=>el('circle',{cx:x,cy:65,r:5,fill:'#6b7d92'},g)); el('ellipse',{cx:180,cy:65,rx:4,ry:16,fill:'none',stroke:BLUE,'stroke-width':3},g); return t=>{ const p=(t%5)/5; const x=lerp(25,190,p); const y=65+Math.sin((x-40)/40*Math.PI)*(x<160?25:0); return {x,y,r:0}; }; }},
+  ];
+  const wrap=$('#levels'); const timers={};
+  function prog(){ const n=LV.filter(l=>rec[l.id]).length; $('#trainProg').style.width=(n/LV.length*100)+'%'; }
+  LV.forEach(l=>{
+    const d=document.createElement('div'); d.className='lv'+(rec[l.id]?' done':''); d.id='lv-'+l.id;
+    d.innerHTML=`<svg viewBox="0 0 200 130"></svg><div><h4>${l.t}<small>${l.sub}</small></h4><ul class="crit">${l.c.map(x=>`<li>${x}</li>`).join('')}</ul><div class="note" style="font-size:12px;color:var(--muted)">教练提示：${l.tip}</div><div class="tools"><span class="sw">0.0</span><button data-a="start">计时</button><button data-a="stop">停止</button><button data-a="reset">归零</button><button data-a="pass">标记通过</button><button data-a="undo">取消</button><span class="rec">${rec[l.id]?'通过日期：'+rec[l.id]:''}</span></div></div>`;
+    const svg=d.querySelector('svg'); el('rect',{x:0,y:0,width:200,height:130,fill:'#141c26'},svg); const g=el('g',{},svg); const upd=l.draw(g); const dr=el('g',{},svg); el('circle',{r:8,fill:RED},dr); el('path',{d:'M0 -12 l-5 7 l10 0 z',fill:ACC},dr);
+    addAnim('train',t=>{ const s=upd(t); dr.setAttribute('transform',`translate(${s.x},${s.y}) rotate(${s.r})`); });
+    const sw=d.querySelector('.sw'); const T={t0:0,acc:0,run:false};
+    d.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ const a=b.dataset.a;
+      if(a==='start'&&!T.run){ T.run=true; T.t0=performance.now(); } else if(a==='stop'&&T.run){ T.acc+=performance.now()-T.t0; T.run=false; } else if(a==='reset'){ T.acc=0; T.run=false; sw.textContent='0.0'; }
+      else if(a==='pass'){ rec[l.id]=new Date().toLocaleDateString('zh-TW'); d.classList.add('done'); d.querySelector('.rec').textContent='通过日期：'+rec[l.id]; try{ localStorage.setItem(LS,JSON.stringify(rec)); }catch(e){} prog(); }
+      else if(a==='undo'){ delete rec[l.id]; d.classList.remove('done'); d.querySelector('.rec').textContent=''; try{ localStorage.setItem(LS,JSON.stringify(rec)); }catch(e){} prog(); } }));
+    addAnim('train',()=>{ if(T.run) sw.textContent=((T.acc+performance.now()-T.t0)/1000).toFixed(1); else if(T.acc) sw.textContent=(T.acc/1000).toFixed(1); });
+    wrap.appendChild(d);
+  });
+  prog();
+})();
+
+/* ================= 规则小测验 ================= */
+(function(){
+  const Q=[
+    {q:'在无人机足球中，哪一台球机穿过对方球门环才算得分？',o:['任何一台','只有前锋（Striker）','只有守门球机','队长的球机'],a:1,e:'只有指定的前锋得分，其他球机穿过不计分。',t:'cup',an:'#cup-goal'},
+    {q:'竞赛规定，前锋要怎么穿过球门环才算得分？',o:['球体一半通过即可','从任何方向穿过','由前向后完整穿越','碰到环就算'],a:2,e:'实施计划规定「由前向后」完整穿越；FAI 40 cm 级是球体一半通过即可。',t:'cup',an:'#cup-goal'},
+    {q:'得分之后，该队必须做什么才能再次进攻？',o:['降落一次','所有球机退回己方半场','只有前锋退回','不需要做任何事'],a:1,e:'全队都要越过中线回到己方半场，否则下一球不算并判罚球。',t:'cup',an:'#cup-goal'},
+    {q:'一场比赛有几局、每局几分钟？',o:['2 局、5 分钟','3 局、3 分钟','4 局、2 分钟','1 局、10 分钟'],a:1,e:'3 局制、每局 3 分钟、局间休息 3 分钟，先赢 2 局者胜。',t:'cup',an:'#cup-time'},
+    {q:'三局打完双方平手，接下来怎么办？',o:['掷硬币','加赛一局','点球大战，仍平手再黄金进球','并列冠军'],a:2,e:'实施计划：点球大战 → 仍平手 → 黄金进球骤死赛。',t:'cup',an:'#cup-time'},
+    {q:'20 cm 级（F9A-B）的场地大小是？',o:['20 × 10 m','10 × 5 m','6 × 3 m','8 × 4 m'],a:2,e:'长 6 m、宽 3 m、防护网高 3 m。',t:'cup',an:'#cup-field'},
+    {q:'20 cm 级球门环的离地高度是？',o:['1 m','2 m','3.5 m','5 m'],a:1,e:'球门环悬挂高度离地 2 m；40 cm 级才是 3～3.5 m。',t:'cup',an:'#cup-field'},
+    {q:'20 cm 级球机含电池的起飞总重上限？',o:['150 g','300 g','500 g','1 kg'],a:1,e:'不得超过 300 g；40 cm 级为 1 kg。',t:'cup',an:'#cup-spec'},
+    {q:'裁判宣告「Arm your quads」后，选手可以做什么？',o:['立刻起飞','解锁马达但不能离地','把球机拿到场中央','关闭遥控器'],a:1,e:'解锁后仍须停在地上，听到鸣笛才能起飞，提早离地判罚球。',t:'cup',an:'#cup-start'},
+    {q:'下列哪一种情况会被判罚球（点球）？',o:['球机撞到防护网','非前锋的球机为了防守穿过自家球门环','球机坠落在地','前锋被对方挡住'],a:1,e:'FAI A.9.1：非前锋穿过或停留在自家球门环内防守要判罚球。',t:'cup',an:'#cup-foul'},
+    {q:'比赛中用手去拨动、抓取场上的球机，会怎样？',o:['警告','罚球','黄牌，该局判负','没事'],a:2,e:'故意用手操作球机是黄牌，该局判负；两张黄牌等于红牌。',t:'cup',an:'#cup-foul'},
+    {q:'哪一种情况是红牌？',o:['局中换人','未登录的选手上场','提早起飞','碰到落地的球机'],a:1,e:'未登录选手上场、危险飞行、严重不文明行为都是红牌，整场判负。',t:'cup',an:'#cup-foul'},
+    {q:'飞行中的球机「不小心」撞到已经落在地上的球机，依 FAI 2026 年版规则？',o:['罚球','警告','黄牌','红牌'],a:1,e:'非故意是警告，故意才是黄牌（2026 年新增条文）。',t:'cup',an:'#cup-foul'},
+    {q:'分区赛积分怎么算？',o:['胜 2 平 1 负 0','胜 3 平 1 负 0','胜 1 负 0','以进球数计'],a:1,e:'胜 3 分、平 1 分、负 0 分，同分比净胜球，再比总进球。',t:'cup',an:'#cup-rank'},
+    {q:'四轴无人机要「左转（Yaw）」时，飞控会怎么做？',o:['四颗马达一起加速','让顺时针那一对加速、逆时针那一对减速','只让左边两颗减速','让前面两颗减速'],a:1,e:'对角同向的一对加速，反扭力让机身往反方向转，总推力不变所以不掉高度。',t:'fly',an:'#fly-torque'},
+    {q:'一颗螺旋桨 A/B 装反，一推油门会发生什么？',o:['正常起飞','原地打转','朝那一角翻倒','飞得更快'],a:2,e:'装反的桨把空气往上吹，那个角被往下拉，起飞瞬间就翻倒。',t:'fly',an:'#fly-wrong'},
+    {q:'Mode 2（美手）遥控器，左摇杆控制的是？',o:['前后＋左右','油门＋旋转','油门＋左右','前后＋旋转'],a:1,e:'Mode 2 左杆是油门与旋转，右杆是前后与左右。',t:'ctrl'},
+    {q:'球机「前进」是相对于什么方向？',o:['操作者面对的方向','场地的长边','机头的方向','球门的方向'],a:2,e:'前后左右永远是相对机头；机头转了，你的前方就变了。',t:'ctrl'},
+    {q:'法规中，自然人所有的无人机多重以上需要向民航局注册？',o:['100 g','250 g','1 kg','2 kg'],a:1,e:'250 g 以上要注册；学校、法人所有则不分重量都要注册。',t:'intro',an:'#intro-law'},
+    {q:'失控时第一个该做的动作是？',o:['伸手接住','猛推油门拉高','收油门让它落地','关遥控器'],a:2,e:'收油门落地最安全；不要用手接飞行中的球机。',t:'intro',an:'#intro-safety'},
+  ];
+  const list=$('#qzList'); let order=Q.map((_,i)=>i), score=0, answered={};
+  function render(){ list.innerHTML=''; score=0; answered={}; $('#qzScore').textContent=0; $('#qzMsg').textContent='';
+    order.forEach((qi,n)=>{ const q=Q[qi]; const d=document.createElement('div'); d.className='q'; d.innerHTML=`<div class="qt"><em>${n+1}.</em>${q.q}</div><div class="opts">${q.o.map((o,i)=>`<button data-i="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div class="exp" hidden></div>`;
+      d.querySelectorAll('.opts button').forEach(b=>b.addEventListener('click',()=>{ if(answered[qi]!=null) return; const i=+b.dataset.i; answered[qi]=i; const ok=i===q.a; if(ok) score++; d.querySelectorAll('.opts button').forEach((x,j)=>{ if(j===q.a) x.classList.add('ok'); else if(j===i) x.classList.add('ng'); });
+        const ex=d.querySelector('.exp'); ex.hidden=false; ex.innerHTML=(ok?'✓ 答对了。':'✗ 答错了。')+q.e+(ok?'':` <a data-tab="${q.t}"${q.an?` data-anchor="${q.an}"`:''}>回去看这一段 →</a>`);
+        $('#qzScore').textContent=score; const done=Object.keys(answered).length; if(done===Q.length) $('#qzMsg').textContent=score>=18?'太强了，可以去当裁判了！':score>=14?'不错，把答错的看一遍就完整了。':'再读一次规则页，然后重新作答。'; }));
+      list.appendChild(d); }); }
+  $('#qzReset').addEventListener('click',render); $('#qzShuffle').addEventListener('click',()=>{ order.sort(()=>Math.random()-0.5); render(); }); render();
+})();
+
+/* ================= 战术范例库 ================= */
+(function(){
+  const D=(id,team,idx,role,x,y,h,path)=>({id,team,idx,role,x,y,h,path:path||[]});
+  const T=[
+    {name:'开球站位',desc:'鸣笛前的标准站位。前锋在起飞区中央、两台防守机 在两侧；鸣笛后防守机先起飞抢中线，前锋随后跟上，避免起飞瞬间就被对方撞落。',pts:['防守机先起飞，前锋慢半拍','起飞后立刻拉到 2 m 以上','别急着冲，先看对方前锋在哪'],
+      drones:[D('A1','A',1,'S',1.5,5,0.3,[{x:5,y:5,h:2}]),D('A2','A',2,'G',1.5,3,0.3,[{x:8,y:3.5,h:2.5}]),D('A3','A',3,'G',1.5,7,0.3,[{x:8,y:6.5,h:2.5}]),D('B1','B',1,'S',18.5,5,0.3,[{x:15,y:5,h:2}]),D('B2','B',2,'G',18.5,3,0.3,[{x:12,y:3.5,h:2.5}]),D('B3','B',3,'G',18.5,7,0.3,[{x:12,y:6.5,h:2.5}])]},
+    {name:'三角进攻',desc:'两台防守机 在前方形成三角形的两个顶点，把对方防守球机顶开，前锋从三角形后方沿中线推进，最后一段拉高对准球门环。',pts:['防守机走外侧，把空间让给前锋','前锋保持在防守机后方 2 m','最后 3 m 才拉到环的高度'],
+      drones:[D('A1','A',1,'S',6,5,2,[{x:12,y:5,h:2.2},{x:16,y:5,h:3.5},{x:18.6,y:5,h:3.5}]),D('A2','A',2,'G',8,3,2.5,[{x:14,y:2.5,h:3},{x:17,y:3.5,h:3.3}]),D('A3','A',3,'G',8,7,2.5,[{x:14,y:7.5,h:3},{x:17,y:6.5,h:3.3}]),D('B1','B',1,'S',13,8.5,2,[]),D('B2','B',2,'G',16.5,4,3,[{x:15.5,y:2.5,h:3}]),D('B3','B',3,'G',16.5,6,3,[{x:15.5,y:7.5,h:3}])]},
+    {name:'双后卫防守',desc:'两台防守机 站在自家球门环前方 1～2 m、一高一低，形成一道墙；前锋留在中线附近准备反攻，不要退太深。',pts:['一台守环的高度、一台守下方','用身体挡，不要追着对方跑','对方射失就是反攻时机'],
+      drones:[D('A1','A',1,'S',9,5,2,[]),D('A2','A',2,'G',3.5,4,3.5,[{x:3.5,y:6,h:3.5},{x:3.5,y:4,h:3.5}]),D('A3','A',3,'G',3,6,2,[{x:3,y:4,h:2},{x:3,y:6,h:2}]),D('B1','B',1,'S',8,3,3,[{x:5,y:4.5,h:3.5},{x:3.5,y:5,h:3.5}]),D('B2','B',2,'G',6,7,2.5,[{x:4,y:7,h:2.5}]),D('B3','B',3,'G',7,2,2.5,[{x:4.5,y:2.5,h:3}])]},
+    {name:'边路突破',desc:'一台辅助机 假装从中路进攻吸引防守，前锋与另一台辅助机 沿边线推进，到球门侧边再切入，从斜角穿环。',pts:['中路辅助机 要「像真的」','边路走高，靠近网也没关系','切入角度 45° 内才算正面穿越'],
+      drones:[D('A1','A',1,'S',6,9,2.5,[{x:13,y:9,h:3},{x:16.5,y:7.5,h:3.5},{x:18.6,y:5.2,h:3.5}]),D('A2','A',2,'G',7,5,2.5,[{x:12,y:5,h:3},{x:15,y:5,h:3}]),D('A3','A',3,'G',6,8,2.5,[{x:14,y:8.5,h:3},{x:17,y:8,h:3}]),D('B1','B',1,'S',14,2,2,[]),D('B2','B',2,'G',16,5,3,[{x:15,y:5.5,h:3}]),D('B3','B',3,'G',17,6,3,[{x:17,y:7,h:3}])]},
+    {name:'反攻转换',desc:'对方射门失败、球机集中在我方半场时，前锋立刻拉高沿中线冲刺，两台防守机 一前一后护送，趁对方回防前完成射门。',pts:['守成功的瞬间就是进攻','前锋先走，防守机在后方挡追兵','对方没回半场前得分最容易'],
+      drones:[D('A1','A',1,'S',5,5,2.5,[{x:11,y:5,h:3},{x:16,y:5,h:3.5},{x:18.6,y:5,h:3.5}]),D('A2','A',2,'G',3.5,4,3,[{x:9,y:4,h:3},{x:14,y:4.5,h:3}]),D('A3','A',3,'G',4,6.5,2,[{x:8,y:6.5,h:2.5},{x:12,y:6,h:3}]),D('B1','B',1,'S',4.5,3,3.5,[{x:9,y:3,h:3},{x:13,y:3,h:3}]),D('B2','B',2,'G',5,7,3,[{x:10,y:7,h:3},{x:15,y:6,h:3}]),D('B3','B',3,'G',6,5,2.5,[{x:11,y:5.5,h:3},{x:16,y:6,h:3}])]},
+    {name:'罚球（点球）',desc:'罚球时由进攻方前锋在无干扰下射门一次。前锋先在环前 3 m 悬停对准，确认高度后直线推进；防守方全部退到指定位置。',pts:['先悬停对准，再前进','高度取环心略高 10 cm','不要在最后一刻修正方向'],
+      drones:[D('A1','A',1,'S',15,5,3.5,[{x:17,y:5,h:3.5},{x:18.6,y:5,h:3.5}]),D('A2','A',2,'G',8,2,2,[]),D('A3','A',3,'G',8,8,2,[]),D('B1','B',1,'S',12,9,2,[]),D('B2','B',2,'G',13,1,2,[]),D('B3','B',3,'G',19.5,1,2,[])]},
+  ];
+  const wrap=$('#tacList');
+  T.forEach((t,ti)=>{
+    const d=document.createElement('div'); d.className='tac'; d.innerHTML=`<svg viewBox="0 0 220 120"></svg><div><h4>${t.name}</h4><p>${t.desc}</p><ul style="font-size:13px;margin:4px 0;padding-left:18px;line-height:1.6">${t.pts.map(x=>`<li>${x}</li>`).join('')}</ul><div class="tools"><button class="pri" data-p="${ti}" data-play="1">载入并播放</button><button data-p="${ti}">载入战术板</button></div></div>`;
+    const svg=d.querySelector('svg'); el('rect',{x:0,y:0,width:220,height:120,fill:'#141c26'},svg); const f=el('g',{},svg); const sx=x=>10+x*10, sy=y=>10+y*10;
+    el('rect',{x:10,y:10,width:200,height:100,fill:'none',stroke:LINE},f); el('line',{x1:110,y1:10,x2:110,y2:110,stroke:'#fff',opacity:.4},f); el('line',{x1:sx(2),y1:sy(4.5),x2:sx(2),y2:sy(5.5),stroke:RED,'stroke-width':3},f); el('line',{x1:sx(18),y1:sy(4.5),x2:sx(18),y2:sy(5.5),stroke:BLUE,'stroke-width':3},f);
+    t.drones.forEach(dr=>{ const c=dr.team==='A'?RED:BLUE; let px=sx(dr.x),py=sy(dr.y); dr.path.forEach(p=>{ const nx=sx(p.x),ny=sy(p.y); el('line',{x1:px,y1:py,x2:nx,y2:ny,stroke:c,'stroke-width':1.5,opacity:.8},f); const a=Math.atan2(ny-py,nx-px); el('path',{d:'M0 0 L-5 -3 L-5 3 Z',fill:c,transform:`translate(${nx},${ny}) rotate(${a*180/Math.PI})`},f); px=nx; py=ny; }); el('circle',{cx:sx(dr.x),cy:sy(dr.y),r:5,fill:c},f); if(dr.role==='S') el('circle',{cx:sx(dr.x),cy:sy(dr.y),r:7.5,fill:'none',stroke:ACC,'stroke-width':1.5},f); });
+    d.querySelectorAll('.tools button').forEach(b=>b.addEventListener('click',()=>{ goTab('app'); window.board.load(T[+b.dataset.p],!!b.dataset.play); }));
+    wrap.appendChild(d);
+  });
+})();
+
+/* ================= 队伍与器材管理 ================= */
+/* HARC研发团队整理 */
+(function(){
+  const LS='droneManage.v1'; const today=()=>new Date().toISOString().slice(0,10);
+  const SCHEMA={
+    members:{name:'队员',hint:'角色：前锋（S）、防守／辅助（G）、候补。球机编号对应「球机」表。',cols:[{k:'name',t:'姓名',w:'14%'},{k:'cls',t:'班级／年级',w:'12%'},{k:'role',t:'角色',type:'select',opts:['前锋','防守','辅助','候补','队长','裁判']},{k:'drone',t:'球机编号',w:'12%'},{k:'mode',t:'摇杆模式',type:'select',opts:['Mode 2','Mode 1']},{k:'note',t:'备注'}]},
+    drones:{name:'球机',hint:'状态：可用／待修／报废。整机与零组件编号不得涂改，检核时要对得上。',cols:[{k:'id',t:'编号',w:'10%'},{k:'model',t:'型号',w:'14%'},{k:'status',t:'状态',type:'select',opts:['可用','待修','报废','借出']},{k:'motor',t:'最近换马达',type:'date'},{k:'prop',t:'最近换桨',type:'date'},{k:'hours',t:'累计飞行(分)',type:'number',w:'10%'},{k:'note',t:'备注'}]},
+    batteries:{name:'电池',hint:'每次充电按「+1」累计循环；超过 100 次或状态异常就淘汰。存放电压约 3.8 V。',cols:[{k:'id',t:'编号',w:'10%'},{k:'cap',t:'容量 mAh',type:'number',w:'10%'},{k:'cycles',t:'循环次数',type:'counter',w:'12%'},{k:'status',t:'状态',type:'select',opts:['正常','衰退','鼓起・停用','报废']},{k:'last',t:'最后充电',type:'date'},{k:'note',t:'备注'}]},
+    repairs:{name:'维修纪录',hint:'症状写具体一点（例如「起飞往右前翻」），之后查问题会快很多。',cols:[{k:'date',t:'日期',type:'date',w:'12%'},{k:'drone',t:'球机',w:'9%'},{k:'sym',t:'症状'},{k:'fix',t:'处理'},{k:'who',t:'处理人',w:'10%'},{k:'ok',t:'结果',type:'select',opts:['已修好','待零件','观察中','报废']}]},
+  };
+  const CHECK=[['遥控器电量足够、天线完好','低电会导致讯号不稳'],['球机电池充饱、无鼓起，插头干净','鼓起或发烫的电池不上场'],['四片桨无缺角、A/B 位置正确、压到底','对角同款、字面朝上'],['护笼无裂缝、扣点全部扣紧','手拨桨任何角度都碰不到笼'],['马达手转顺畅、无异物','有阻力先清理'],['LED 颜色正确（队色／前锋标示）','裁判要能一眼认前锋'],['先开遥控器再插电池，LED 稳定后放平校正',''],['失控保护测试：关遥控器，桨应停止','比赛必备'],['起飞区内、机头朝场内、油门最低','等鸣笛'],['护目镜戴上、观众在网外','']];
+  let data={members:[],drones:[],batteries:[],repairs:[],check:{}}; try{ Object.assign(data,JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  let cur='members'; const save=()=>{ try{ localStorage.setItem(LS,JSON.stringify(data)); }catch(e){} };
+  function blank(m){ const o={}; SCHEMA[m].cols.forEach(c=>o[c.k]=c.type==='number'||c.type==='counter'?0:c.type==='select'?c.opts[0]:c.type==='date'?today():''); return o; }
+  function render(){
+    document.querySelectorAll('#mgTabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===cur));
+    const isCheck=cur==='check'; $('#mgTable').hidden=isCheck; $('#mgCheck').hidden=!isCheck; $('#mgAdd').hidden=isCheck; $('#mgCsv').hidden=isCheck;
+    if(isCheck){ $('#mgHint').textContent='每次上场前逐项确认；按「清空此表」可以重新开始。'; $('#mgCnt').textContent=`${Object.values(data.check).filter(Boolean).length} / ${CHECK.length} 完成`;
+      $('#mgCheck').innerHTML='<div class="chk">'+CHECK.map((c,i)=>`<label class="${data.check[i]?'on':''}"><input type="checkbox" data-i="${i}" ${data.check[i]?'checked':''}><div><b>${c[0]}</b><span>${c[1]}</span></div></label>`).join('')+'</div>';
+      $('#mgCheck').querySelectorAll('input').forEach(i=>i.addEventListener('change',()=>{ data.check[i.dataset.i]=i.checked; save(); render(); })); return; }
+    const sc=SCHEMA[cur],rows=data[cur]; $('#mgHint').textContent=sc.hint; $('#mgCnt').textContent=rows.length+' 笔';
+    const t=document.createElement('table'); t.innerHTML='<tr>'+sc.cols.map(c=>`<th style="width:${c.w||'auto'}">${c.t}</th>`).join('')+'<th style="width:36px"></th></tr>';
+    rows.forEach((r,ri)=>{ const tr=document.createElement('tr'); sc.cols.forEach(c=>{ const td=document.createElement('td'); let inp;
+      if(c.type==='select'){ inp=document.createElement('select'); c.opts.forEach(o=>{ const op=document.createElement('option'); op.value=o; op.textContent=o; inp.appendChild(op); }); inp.value=r[c.k]; }
+      else if(c.type==='counter'){ td.className='num'; const n=+r[c.k]||0; td.innerHTML=`<span class="badge ${n>=100?'bad':n>=60?'warn':'ok'}">${n}</span> <button class="pl">+1</button>`; td.querySelector('.pl').addEventListener('click',()=>{ r[c.k]=n+1; if(c.k==='cycles') r.last=today(); save(); render(); }); tr.appendChild(td); return; }
+      else { inp=document.createElement('input'); inp.type=c.type||'text'; inp.value=r[c.k]??''; }
+      inp.addEventListener('change',()=>{ r[c.k]=inp.type==='number'?+inp.value:inp.value; save(); if(c.type==='select') render(); }); td.appendChild(inp); tr.appendChild(td); });
+      const td=document.createElement('td'); td.innerHTML='<button class="x" title="删除">×</button>'; td.querySelector('.x').addEventListener('click',()=>{ if(confirm('删除这一列？')){ rows.splice(ri,1); save(); render(); } }); tr.appendChild(td); t.appendChild(tr); });
+    $('#mgTable').innerHTML=''; $('#mgTable').appendChild(t);
+    if(!rows.length){ $('#mgTable').innerHTML+='<p class="note">还没有资料，按「＋ 新增一列」开始。</p>'; }
+  }
+  document.querySelectorAll('#mgTabs button').forEach(b=>b.addEventListener('click',()=>{ cur=b.dataset.m; render(); }));
+  $('#mgAdd').addEventListener('click',()=>{ data[cur].push(blank(cur)); save(); render(); setTimeout(()=>{ const last=$('#mgTable').querySelector('tr:last-child input'); last&&last.focus(); },50); });
+  $('#mgClear').addEventListener('click',()=>{ if(!confirm('清空「'+(cur==='check'?'飞前检查':SCHEMA[cur].name)+'」？')) return; if(cur==='check') data.check={}; else data[cur]=[]; save(); render(); });
+  $('#mgCsv').addEventListener('click',()=>{ const sc=SCHEMA[cur]; const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"'; const csv='﻿'+[sc.cols.map(c=>esc(c.t)).join(','),...data[cur].map(r=>sc.cols.map(c=>esc(r[c.k])).join(','))].join('\r\n'); window.saveFile(`${sc.name}-${today()}.csv`,csv); });
+  $('#mgExport').addEventListener('click',()=>window.saveFile(`队伍器材备份-${today()}.json`,JSON.stringify({app:'无人机足球一站式学习平台',author:'HARC研发团队整理',exported:new Date().toISOString(),data},null,1)));
+  $('#mgImport').addEventListener('click',()=>$('#mgFile').click());
+  $('#mgFile').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ const j=JSON.parse(rd.result); const d=j.data||j; if(!d.members&&!d.drones) throw 0; if(confirm('导入会覆盖目前资料，确定？')){ data={members:[],drones:[],batteries:[],repairs:[],check:{},...d}; save(); render(); } }catch(err){ alert('档案格式不正确'); } }; rd.readAsText(f); e.target.value=''; });
+  render();
+})();
+
+/* ================= 教案与学习单 ================= */
+/* HARC研发团队整理 */
+(function(){
+  const L=[
+    {t:'认识无人机与安全',goal:['能分辨多旋翼、固定翼、VTOL 三种构型','能说出 250 g 注册、400 呎、红黄绿区三个法规重点','能复述教室安全守则并示范正确拿取球机'],flow:[['5 分','引起动机：播放球机互撞影片，问「为什么不会受伤？」'],['10 分','投影「种类・用途・法规」：四种构型与用途','intro'],['10 分','法规动画：分区与高度；讨论体育馆为什么可以飞','intro','#intro-law'],['10 分','实物观察：发一台球机，对照「球机结构 3D」找出九个零件','parts'],['7 分','安全守则演练：拔电池、油门最低、失控收油门','intro','#intro-safety'],['3 分','总结与学习单 1']],gear:'每组一台球机（不装电池）、投影机',eval:'学习单 1；口头抽问三个法规数字'},
+    {t:'飞行原理与桨的方向',goal:['能用推力与重力解释上升、悬停、下降','能说明为什么两颗顺时针、两颗逆时针','能正确装上四片桨并用手拨检查转向'],flow:[['5 分','复习零件名称'],['10 分','升力动画：拉油门滑杆观察','fly'],['10 分','扭力动画：左转时哪一对加速？','fly','#fly-torque'],['12 分','装错测试：学生上台切换 A/B 桨并预测结果','fly','#fly-wrong'],['5 分','实作：每组拆桨、依配置图装回、手拨检查'],['3 分','总结']],gear:'每组一台球机、备用桨、桨配置图',eval:'每组装桨正确率；学习单 2'},
+    {t:'摇杆与起飞降落',goal:['能说出 Mode 2 四个动作的对应','能完成开机顺序、解锁、起飞、悬停 10 秒、降落、关机'],flow:[['8 分','摇杆互动页：拖动摇杆看球机反应，示范四个动作','ctrl'],['7 分','起飞到降落七步骤','ctrl'],['25 分','分组实飞：训练关卡 1（悬停 10 秒），教练在旁，一人飞、一人计时、一人检查','train'],['5 分','纪录通过、收拾器材']],gear:'每组一台球机、两颗电池、方格胶带、护目镜、防护网',eval:'关卡 1 通过人数'},
+    {t:'平移与转向',goal:['能保持机头朝前完成方形航线','能在机头转向后仍正确操控'],flow:[['5 分','复习：前后左右是机头的方向'],['5 分','关卡 2、3 说明与示范','train'],['30 分','分组实飞：关卡 2 → 关卡 3；完成者协助同学'],['5 分','纪录与讨论：哪个方向最容易搞混？']],gear:'同上、地面方形与圆圈标记',eval:'关卡 2、3 通过纪录'},
+    {t:'穿环与绕桩',goal:['穿环 3 次成功 2 次','完成 S 形绕桩并计时'],flow:[['5 分','示范穿环要领：先悬停对准、再直线推进','train'],['30 分','分组实飞：关卡 4 → 关卡 5，用计时器记录'],['7 分','班级排行：各组最佳时间'],['3 分','预告下周规则课']],gear:'球门环（或呼拉圈＋立架）、三支桩、码表',eval:'关卡 4、5 通过与时间'},
+    {t:'规则与角色',goal:['能说明得分条件、退回半场规定','能分辨罚球、黄牌、红牌情形','小测验 14 分以上'],flow:[['12 分','总统杯规则：得分与违规动画','cup','#cup-goal'],['8 分','赛制与开局流程','cup','#cup-time'],['5 分','角色分工：前锋与两名防守／辅助','rules'],['15 分','规则小测验（个人作答），答错回去看','quiz'],['5 分','检讨最多人错的题目']],gear:'投影机、每人一台装置（或纸本学习单 3）',eval:'小测验分数；学习单 3'},
+    {t:'战术与分工',goal:['能执行三角进攻与双后卫防守','能用战术板说明自己队的阵型'],flow:[['10 分','战术范例库：载入并播放三角进攻、双后卫','tactics'],['10 分','各组在战术板上摆出自己的开球阵型并画动向','app'],['20 分','分组对练：3 分钟一局，攻守互换'],['5 分','检讨：得分后有没有退回半场？']],gear:'球机 6 台、计分板、场地',eval:'各组战术板截图；对练得分'},
+    {t:'班级友谊赛',goal:['依正式规则完成三局两胜的比赛','能担任裁判并正确判罚'],flow:[['5 分','抽签与器材检核：对照飞前检查清单','manage'],['35 分','循环赛：每场 3 局，学生轮流当裁判与计分','score'],['5 分','颁奖与回顾：整学期通过的关卡']],gear:'计分板投影、哨子、球机与备用电池、飞前检查清单',eval:'比赛成绩；裁判判罚正确性'},
+  ];
+  const wrap=$('#lessonList');
+  L.forEach((l,i)=>{ const d=document.createElement('details'); d.className='lesson'; if(i===0) d.open=true;
+    d.innerHTML=`<summary><span class="n">${i+1}</span><div><b>${l.t}</b><span>45 分钟 · ${l.gear}</span></div></summary><div class="body"><h5>学习目标</h5><ul style="margin:2px 0;padding-left:20px">${l.goal.map(g=>`<li>${g}</li>`).join('')}</ul><h5>流程</h5><div class="flow">${l.flow.map(f=>`<b>${f[0]}</b><div>${f[1]}${f[2]?` <a data-tab="${f[2]}"${f[3]?` data-anchor="${f[3]}"`:''}>→ 开启单元</a>`:''}</div>`).join('')}</div><h5>评量</h5><div>${l.eval}</div></div>`;
+    wrap.appendChild(d); });
+  const WS=[
+    {t:'学习单 1：认识无人机与安全',items:['写出三种无人机构型，各举一个用途：','自然人所有的无人机多重以上要注册？学校的呢？','无人机最高可以飞多高？红区、黄区、绿区分别代表什么？','球机失控时，第一个动作是什么？为什么不能用手接？','画出球机的九个零件并标名称（可对照 3D 模型）：']},
+    {t:'学习单 2：飞行原理',items:['用「推力」和「重力」说明：上升、悬停、下降各是什么情况？','为什么四颗桨要两颗顺时针、两颗逆时针？如果四颗都同方向会怎样？','要让球机「左转」，哪一对马达要加速？高度会不会变？','在下面的四个位置写上 A 或 B 桨（机头朝上）：','如果右前的桨装反了，一推油门会发生什么事？']},
+    {t:'学习单 3：规则与战术',items:['哪一台球机可以得分？穿过球门的方向有什么规定？','得分后全队要做什么才能再进攻？没做会怎样？','写出三种会被判罚球的情况：','黄牌和红牌各举一例，结果分别是什么？','在下面的场地图画你们队的开球阵型与前 5 秒动向：']},
+  ];
+  $('#wsList').innerHTML=WS.map(w=>`<div class="ws"><h4>${w.t}</h4><div class="meta">无人机足球一站式学习平台 · HARC研发团队整理　　班级：＿＿＿＿　姓名：＿＿＿＿＿＿　日期：＿＿＿＿＿</div><ol>${w.items.map(q=>`<li>${q}<div class="box"></div></li>`).join('')}</ol></div>`).join('');
+  $('#wsPrint').addEventListener('click',()=>window.print());
+})();
+
+/* ================= 词汇表 ================= */
+/* HARC研发团队整理 */
+(function(){
+  const G=[
+    ['前锋','Striker','比赛','每队唯一能得分的球机，须有明显识别。'],['防守／辅助','Guard / Keeper','比赛','简章用词「防守／辅助」：防守己方球门或协助前锋进攻，进球不计分；不可穿过自家球门环防守。'],['进球积分制','Goal-scoring format','比赛','中小 组简章对本赛事规则的称呼：以进球数决定单局胜负。'],['先发／候补','Starter / Substitute','比赛','中小 组每队 3 名先发＋2 名候补，局间才能换人。'],['赛事委员会','Competition committee','比赛','裁判长、资深裁判与主办代表组成，争议的最终裁定机构。'],['选手区','Pilots area','比赛','防护笼短边外侧，比赛中只有上场选手能待在裡面。'],['无人机足球（球机）','Drone ball','机体','简章中的「无人机足球」指的就是球机本身。'],['开路／前卫','Guide','比赛','在前锋前方清出路线、卡位。'],['球门环','Goal ring','比赛','圆形球门，20 cm 级内径 40 cm、离地 2 m。'],['起飞区','Start area','比赛','底线中央、宽 1 m 以内，鸣笛前球机停放处。'],['局','Set','比赛','3 分钟一局，三局两胜。'],['罚球／点球','Penalty shot','比赛','由对方前锋无干扰射门一次，时间不计入该局。'],['黄牌','Yellow card','比赛','该局判负；两张等于红牌。'],['红牌','Red card','比赛','整场判负。'],['黄金进球','Golden goal','比赛','骤死赛，先进球者胜。'],['解锁马达','Arm','操作','裁判宣告 Arm your quads 后才可做，仍不得离地。'],['上锁','Disarm','操作','降落后停止马达。'],['失控保护','Failsafe','操作','讯号中断自动停桨，比赛必备。'],['油门','Throttle','操作','控制总推力，上升／下降。'],['偏航／旋转','Yaw','操作','机头左右转。'],['俯仰','Pitch','操作','前进／后退。'],['横滚','Roll','操作','左右平移。'],['微调','Trim','操作','修正摇杆中立点的小偏移。'],['无头模式','Headless mode','操作','以操作者方向为前方；练习时建议关闭。'],['悬停','Hover','操作','原地停在空中，推力等于重力。'],['美手／日手','Mode 2 / Mode 1','操作','摇杆配置：Mode 2 左杆油门＋旋转；Mode 1 右杆油门。'],['多旋翼','Multirotor','机体','靠多颗旋翼产生升力的无人机。'],['四轴','Quadcopter','机体','四颗马达的多旋翼。'],['飞控','Flight controller (FC)','机体','读取陀螺仪与加速度计、计算四颗马达转速的主板。'],['电子调速器','ESC','机体','无刷机才有，把飞控讯号变成马达电流；有刷机由飞控直接驱动。'],['有刷马达','Brushed motor','机体','空心杯马达，便宜、寿命短，20 cm 球机常用。'],['无刷马达','Brushless motor','机体','效率高、寿命长，需搭配 ESC。'],['螺旋桨','Propeller','机体','A 桨（CW）与 B 桨（CCW）互为镜像。'],['顺时针／逆时针','CW / CCW','机体','马达与桨的旋转方向，对角同向。'],['护笼','Cage / Exoskeleton','机体','球形外壳，20 cm ± 2 cm。'],['接收机','Receiver (RX)','机体','接收遥控器讯号。'],['遥控器','Transmitter (TX)','机体','2.4 GHz 遥控发射器。'],['对频','Binding','机体','让接收机记住这支遥控器。'],['陀螺仪','Gyroscope','机体','量测角速度，飞控稳定的核心。'],['加速度计','Accelerometer','机体','量测倾斜与加速度。'],['锂聚合物电池','LiPo battery','机体','1S = 3.7 V；4S 上限 17 V。'],['循环次数','Cycle count','机体','充放电次数，100 次左右考虑淘汰。'],['推重比','Thrust-to-weight ratio','原理','总推力除以重量，大于 1 才能飞，球机约 1.5～2。'],['反扭力','Reaction torque','原理','马达转动桨时机身受到的反向扭转。'],['升力／推力','Lift / Thrust','原理','桨把空气往下推产生的向上力。'],['第一人称视角','FPV','其他','戴眼镜看机上镜头飞行；球机一般不用。'],['际航空运动联盟','FAI','其他','无人机足球的际主管单位，级别 F9A。'],['F9A-A / F9A-B','Class 40 / Class 20','其他','FAI 的 40 cm 五对五与 20 cm 三对三级别。'],['韩无人机足球协会','KDSA','其他','发源地韩的主管单位。'],['民航局','CAA','其他','无人机注册与法规主管机关。'],['禁航区','No-fly zone','其他','红区禁飞；用 DroneMap 查询。'],
+  ];
+  const cats=['全部',...new Set(G.map(g=>g[2]))]; let cat='全部';
+  $('#glCats').innerHTML=cats.map(c=>`<button data-c="${c}" class="${c===cat?'on':''}">${c}</button>`).join('');
+  document.querySelectorAll('#glCats button').forEach(b=>b.addEventListener('click',()=>{ cat=b.dataset.c; document.querySelectorAll('#glCats button').forEach(x=>x.classList.toggle('on',x===b)); render(); }));
+  function render(){ const q=$('#glSearch').value.trim().toLowerCase(); const items=G.filter(g=>(cat==='全部'||g[2]===cat)&&(!q||g.join(' ').toLowerCase().includes(q))); $('#glList').innerHTML=items.map(g=>`<div class="it"><b>${g[0]}<small>${g[1]}</small></b><span>${g[3]}</span><div class="cat">${g[2]}</div></div>`).join('')||'<p class="note">没有符合的词汇。</p>'; }
+  $('#glSearch').addEventListener('input',render); render();
+})();
+
+/* ================= 维修手册 ================= */
+/* HARC研发团队整理 */
+(function(){
+  const ISSUES=[
+    {t:'插电后 LED 不亮、完全没反应',lv:'简单',kw:'不亮 没反应 没电 开机',s:'插上电池后 LED 不亮、马达也不动。',c:['电池没电或电压过低（1S 低于 3.3 V 飞控会拒绝开机）','电池插头氧化或插反（注意红线方向）','电池线断在插头根部（常见于用力拉线拔电池）','飞控板进水或撞击后焊点裂开'],f:['换一颗确定充饱的电池再试','用电表量电池电压，低于 3.5 V 先充电','检查插头金属片是否松开或发黑，用细砂纸轻磨','轻摇电池线根部看 LED 是否闪烁，是的话重焊或换线','以上都正常就是飞控板故障，直接换板']},
+    {t:'遥控器对不上频（无法连线）',lv:'简单',kw:'对频 连线 遥控器 讯号 绑定',s:'遥控器开机后球机 LED 持续快闪，摇杆没反应。',c:['没有做对频程序（每台球机记住一支遥控器）','遥控器电池电压不足','天线断裂或折进护笼内','附近有多台同型球机互相干扰'],f:['关掉球机电源，遥控器油门推到最高再开球机电，等 LED 由快闪变恒亮或依说明书做对频','换遥控器电池','检查天线有没有整根露出、是否折断；断了要换接收板或重焊','一次只开一台球机做对频，对好再开下一台']},
+    {t:'解锁后马达不转或只转一下',lv:'简单',kw:'不转 解锁 arm 起飞不了 马达',s:'做解锁动作 LED 有变化，但推油门马达不动，或转一下就停。',c:['球机没放平，陀螺仪校正失败','油门杆没有回到最低就解锁','某颗马达卡住或断线，飞控侦测异常停机','电池电压在负载下掉太多（老化电池）'],f:['放到平地、拔电再插电重新校正','油门推到最低、等两秒再做一次解锁','用手轻转每颗桨，卡住的那颗检查有没有头发、线材、护笼碎片缠住轴心','换电池；换了就正常代表旧电池该淘汰']},
+    {t:'某一颗马达不转或明显比较慢',lv:'中等',kw:'马达 不转 一颗 慢 烧 换马达',s:'四颗桨有一颗不转、转得慢或声音尖锐，起飞就翻向那一角。',c:['马达线断（有刷马达线很细，撞击后常断在根部）','马达碳刷磨损寿命到了（累计飞行数小时后）','轴心有异物、轴承卡死','飞控上该路马达的驱动晶片烧毁'],f:['先把那颗桨跟对角的桨互换位置测试：问题跟着桨走就是桨的问题','用手转轴心，阻力明显大于其他三颗就是异物或轴承，先清理再上一滴薄油','换一颗同转向（CW/CCW）的新马达；焊线时注意红黑（或蓝白）线色与原本相同，装反转向会错','换新马达仍不转，就是飞控驱动故障，换飞控']},
+    {t:'一起飞就翻倒',lv:'简单',kw:'翻 翻倒 翻覆 起飞 倾斜 桨',s:'油门一推，球机立刻朝某个方向翻过去。',c:['螺旋桨 A/B 装错（最常见，尤其是刚换桨之后）','马达装错转向位置（换马达后）','一颗马达不转或推力不足','护笼变形顶到某一片桨'],f:['对照「飞行原理」页的配置图：右前 B、左前 A、左后 B、右后 A，对角同款','手拨每颗桨确认转向：右前、左后逆时针；左前、右后顺时针','翻向哪一角，就先检查那一角的桨与马达','把护笼拆下来裸机测试，正常就是护笼的问题']},
+    {t:'悬停一直往某个方向飘',lv:'简单',kw:'飘 漂 飘移 微调 trim 校正',s:'放手不动摇杆，球机自己慢慢往一边移动。',c:['陀螺仪／加速度计校正时没放平','遥控器摇杆中立点偏移或微调（trim）被动过','某片桨缺角、推力不对称','重心偏移：电池没放正中央'],f:['在水平地面重新校正（拔电重插，或依说明书做校正手势）','把遥控器的微调键全部归零，再往飘的反方向调 1～2 格','换一组新桨测试','电池置中并用束带固定，不要靠一边']},
+    {t:'飞行中抖动、震动、声音不均',lv:'中等',kw:'抖 震 抖动 震动 晃 声音',s:'悬停时机身明显发抖，马达声音时高时低。',c:['桨缺角、变形或装歪（没压到底）','马达轴心弯曲（撞击后）','护笼松脱，共振','飞控板固定螺丝松动或减震垫掉了'],f:['换整组新桨，装时压到底、转一下确认没晃','马达通电空转看轴心有没有画圈，有就换马达','锁紧护笼所有扣点，断掉的扣点用尼龙束带补固','检查飞控固定，四角都要锁']},
+    {t:'飞行时间很短、电池很快没电',lv:'简单',kw:'电池 没电 飞行时间 短 鼓起 充电',s:'新电池只能飞 2～3 分钟就低电量警示，或降落后电池发烫。',c:['电池老化（循环次数多、长期满电或空电存放）','马达磨损，同样推力需要更大电流','桨损伤造成效率变差','电池鼓起（内部已损坏）'],f:['电池编号并记录使用次数，超过 100～150 次循环就淘汰','没有要飞时存放在约 3.8 V（半电），不要满电放整个学期','鼓起、变形、发热明显的电池立刻停用，放在防火袋回收','同时换桨与马达后再测一次飞行时间']},
+    {t:'护笼破裂、变形、扣点断掉',lv:'简单',kw:'护笼 外框 笼子 破 裂 变形 扣',s:'撞击后护笼有裂缝或凹陷，桨会打到笼子。',c:['高速撞击围网或其他球机','护笼塑胶老化变脆','扣点没有全部扣紧，受力集中在少数几个'],f:['小裂缝用瞬间胶加一滴小苏打粉快速硬化，或用尼龙束带跨过裂缝绑紧','凹陷处用热风枪低温吹软再压回原形（塑胶件）','扣点断掉超过三个就换整组护笼，勉强用会在比赛中散开','装回去后手拨四颗桨，确认每片桨在任何角度都不会碰到笼子']},
+    {t:'飞一飞突然掉下来（失控保护）',lv:'中等',kw:'掉 坠落 失控 讯号 failsafe 断讯',s:'飞行中突然停桨坠落，或飘离后自动降落。',c:['遥控讯号中断触发失控保护（天线问题、距离太远、干扰）','电池电压瞬间掉到保护值以下（电池老化）','电池插头松脱，飞行中瞬断','飞控过热或焊点裂开'],f:['检查天线完整、方向朝上不要被护笼压住','换新电池测试，并确认插头插紧、用束带固定电池','不要在多台同型球机密集的场地边缘飞，远离 Wi-Fi 基地台与金属围网死角','摔落后检查飞控板焊点，有裂痕补焊']},
+    {t:'换马达、换桨后怎么确认装对',lv:'简单',kw:'换马达 换桨 确认 检查 转向 顺时针 逆时针',s:'维修后的标准检查流程，避免一起飞就翻。',c:['马达转向与位置不符','桨型号（A/B）与马达转向不符','线焊反'],f:['拆掉所有桨，插电解锁、油门推一点点，用手指感觉或看轴心转向：右前、左后应为逆时针（CCW），左前、右后顺时针（CW）','转向错的马达把两条线对调重焊（有刷马达对调正负极就反转）','装桨：CW 马达装 A 桨、CCW 马达装 B 桨，桨的字面朝上','装上护笼，放平校正，先在离地 30 cm 试飞 10 秒，稳了才正常使用']},
+  ];
+  const list=$('#fixList');
+  function render(q){ list.innerHTML=''; const qq=(q||'').trim().toLowerCase(); let n=0;
+    ISSUES.forEach(it=>{ const hay=(it.t+' '+it.kw+' '+it.s+' '+it.c.join(' ')+' '+it.f.join(' ')).toLowerCase(); if(qq&&!qq.split(/\s+/).every(w=>hay.includes(w))) return; n++;
+      const d=document.createElement('details'); d.className='acc'; if(qq) d.open=true;
+      d.innerHTML=`<summary>${it.t}<span class="lv">${it.lv}</span></summary><div class="body"><h5>症状</h5><p style="margin:0">${it.s}</p><h5>可能原因（由常见到少见）</h5><ul>${it.c.map(x=>`<li>${x}</li>`).join('')}</ul><h5>处理步骤</h5><ol>${it.f.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+      list.appendChild(d); });
+    if(!n) list.innerHTML='<p class="note">找不到符合的症状，试试其他关键字，例如「翻」「飘」「不转」。</p>'; }
+  $('#fixSearch').addEventListener('input',e=>render(e.target.value)); render('');
+})();
+})();
+</script>
+
+</body>
+</html>
