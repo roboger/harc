@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HARC无人机足球模拟挑战</title>
+    <title>无人机足球真实模拟挑战</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -381,8 +381,8 @@
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
                 const baseFreq = 60 + speedRatio * 80;
-                // 修复：引擎音量乘以 masterVolume
-                const baseGain = (0.01 + speedRatio * 0.03) * this.masterVolume;
+                // 修复：极大提升引擎音量，解决各平台听不到声音的问题 (提升约10倍)
+                const baseGain = (0.1 + speedRatio * 0.5) * this.masterVolume;
                 this.engineOsc.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.1);
                 this.engineGain.gain.setTargetAtTime(baseGain, this.ctx.currentTime, 0.1);
             }
@@ -392,16 +392,16 @@
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
                 osc.type = type; osc.frequency.setValueAtTime(freq, now);
-                // 修复：提示音量乘以 masterVolume
-                const finalVol = vol * this.masterVolume;
+                // 修复：提示音量极大提升
+                const finalVol = vol * this.masterVolume * 2.0;
                 gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(finalVol, now + 0.01);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
                 osc.connect(gain); gain.connect(this.ctx.destination);
                 osc.start(now); osc.stop(now + duration + 0.1);
             }
-            playPassRing() { this.playBeep(880, 'sine', 0.3, 0.3); setTimeout(()=>this.playBeep(1046, 'sine', 0.4, 0.3), 100); }
-            playHit() { this.playBeep(120, 'square', 0.2, 0.4); }
-            playLevelUp() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>this.playBeep(f, 'triangle', 0.5, 0.2), i*100)); }
+            playPassRing() { this.playBeep(880, 'sine', 0.3, 1.0); setTimeout(()=>this.playBeep(1046, 'sine', 0.4, 1.0), 100); }
+            playHit() { this.playBeep(120, 'square', 0.3, 1.5); }
+            playLevelUp() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>this.playBeep(f, 'triangle', 0.5, 1.0), i*100)); }
             toggleMute() {
                 this.isMuted = !this.isMuted;
                 if (this.engineGain && this.ctx) this.engineGain.gain.setValueAtTime(this.isMuted ? 0 : 0.01, this.ctx.currentTime);
@@ -419,8 +419,9 @@
                 sound.init(); 
             }
         };
-        document.body.addEventListener('touchstart', unlockAudio, { capture: true, once: true });
-        document.body.addEventListener('click', unlockAudio, { capture: true, once: true });
+        // 移除 once:true，确保手机端每次触摸都能强制唤醒被锁死的音频上下文
+        document.body.addEventListener('touchstart', unlockAudio, { capture: true });
+        document.body.addEventListener('click', unlockAudio, { capture: true });
 
         const CONFIG = { RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
         const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: false, playerName: "", score: 0, timeLeft: 60, baseTimeLimit: 60 };
@@ -801,7 +802,24 @@
 
             dronePhysics.vel.multiplyScalar(0.94); // 阻力减速
             dronePhysics.pos.addScaledVector(dronePhysics.vel, delta);
-            dronePhysics.pos.y = Math.max(0.5, Math.min(dronePhysics.pos.y, 40));
+            
+            // 触地炸机判定逻辑
+            const groundLimit = CONFIG.DRONE_RADIUS;
+            if (dronePhysics.pos.y < groundLimit) {
+                if (dronePhysics.isHovering && Math.abs(dronePhysics.vel.y) < 2) {
+                    // 平稳悬停时触地，仅做硬直限制
+                    dronePhysics.pos.y = groundLimit;
+                    dronePhysics.vel.y = 0;
+                } else {
+                    // 飞行中直接触地，判定为炸机！
+                    sound.playHit();
+                    showToast("💥 警告：发生触地坠毁！已重新部署机体。");
+                    resetDrone();
+                    return; // 结束本帧物理运算并重置
+                }
+            }
+
+            dronePhysics.pos.y = Math.max(groundLimit, Math.min(dronePhysics.pos.y, 40));
             dronePhysics.pos.x = Math.max(-42, Math.min(dronePhysics.pos.x, 42));
             dronePhysics.pitch += (dronePhysics.targetPitch - dronePhysics.pitch) * 0.1;
             dronePhysics.roll += (dronePhysics.targetRoll - dronePhysics.roll) * 0.1;
