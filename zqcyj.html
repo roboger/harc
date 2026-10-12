@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <!-- 禁用所有缩放，确保摇杆触控准确 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, touch-action=none">
+    <title>无人机足球真实模拟挑战</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+SC:wght@400;700;900&display=swap');
+        
+        * { 
+            user-select: none; 
+            -webkit-user-select: none; 
+            touch-action: none; /* 彻底禁用系统层面的滑动事件，保护摇杆 */
+        }
+
+        body {
+            font-family: 'Noto Sans SC', 'Orbitron', sans-serif;
+            overflow: hidden;
+            background-color: #87CEEB; 
+            color: #f3f4f6;
+        }
+
+        /* 顶部赛车仪表盘 UI */
+        .top-hud-bar {
+            background: linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(15,23,42,0) 100%);
+            padding-top: 15px;
+        }
+
+        .hud-badge {
+            background: rgba(15, 23, 42, 0.85);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-top: 4px solid #38bdf8;
+            border-radius: 6px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* 扫描线效果 */
+        .hud-badge::after {
+            content: ''; position: absolute; inset: 0;
+            background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(56, 189, 248, 0.05) 2px, rgba(56, 189, 248, 0.05) 4px);
+            pointer-events: none;
+        }
+
+        .joystick-container {
+            width: 130px; height: 130px;
+            background: rgba(15, 23, 42, 0.5);
+            border: 3px solid rgba(56, 189, 248, 0.4);
+            backdrop-filter: blur(8px);
+            border-radius: 50%;
+            position: relative;
+            cursor: crosshair;
+            box-shadow: inset 0 0 20px rgba(56, 189, 248, 0.2);
+            transition: border-color 0.1s, box-shadow 0.1s;
+        }
+
+        /* 摇杆激活时的视觉高亮反馈 */
+        .joystick-container.active {
+            border-color: #facc15;
+            background: rgba(30, 41, 59, 0.7);
+            box-shadow: inset 0 0 30px rgba(250, 204, 21, 0.5), 0 0 20px rgba(250, 204, 21, 0.4);
+        }
+
+        .joystick-thumb {
+            width: 50px; height: 50px;
+            background: radial-gradient(circle, #fff 0%, #94a3b8 100%);
+            border: 3px solid #38bdf8;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6);
+            transition: border-color 0.1s, transform 0.05s ease-out;
+        }
+        
+        .joystick-container.active .joystick-thumb {
+            border-color: #facc15;
+            background: radial-gradient(circle, #fff 0%, #fde047 100%);
+        }
+
+        .level-card {
+            background: linear-gradient(135deg, rgba(30,41,59,0.9), rgba(15,23,42,0.95));
+            border: 2px solid #475569;
+            border-radius: 12px; transition: all 0.3s ease;
+            cursor: pointer; overflow: hidden;
+        }
+        .level-card:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3); border-color: #38bdf8; }
+        .level-card.selected { border-color: #facc15; box-shadow: 0 0 30px rgba(250, 204, 21, 0.4); }
+        .card-img-placeholder { height: 140px; background-size: cover; background-position: center; position: relative; }
+
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none; height: 26px; width: 26px; border-radius: 50%;
+            background: #facc15; cursor: pointer; margin-top: -10px;
+            box-shadow: 0 0 15px rgba(250, 204, 21, 0.8); border: 3px solid #fff;
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%; height: 8px; cursor: pointer; background: rgba(255,255,255,0.2); border-radius: 4px;
+        }
+        
+        .custom-input { background: rgba(0, 0, 0, 0.5); border: 2px solid #475569; color: white; transition: 0.3s;}
+        .custom-input:focus { outline: none; border-color: #38bdf8; box-shadow: 0 0 15px rgba(56,189,248,0.5);}
+
+        .gold-btn {
+            background: linear-gradient(180deg, #fef08a 0%, #eab308 100%);
+            color: #422006; font-weight: 900; border: 2px solid #fef9c3;
+            box-shadow: 0 6px 20px rgba(234, 179, 8, 0.4); transition: all 0.2s;
+        }
+        .gold-btn:active { transform: translateY(3px); box-shadow: 0 2px 5px rgba(234, 179, 8, 0.4); }
+        
+        #pause-overlay { backdrop-filter: blur(8px); background: rgba(0,0,0,0.6); }
+    </style>
+</head>
+<body class="w-screen h-screen overflow-hidden select-none">
+
+    <!-- WebGL Canvas Container -->
+    <div id="canvas-container" class="absolute inset-0 z-0"></div>
+
+    <!-- UI Overlay HUD -->
+    <div class="absolute inset-0 z-20 pointer-events-none flex flex-col justify-between">
+        
+        <!-- TOP HUD -->
+        <div class="top-hud-bar w-full flex justify-between items-start px-4 sm:px-8 pb-4">
+            
+            <!-- 左侧：积分与高度 -->
+            <div class="flex flex-col gap-2 pointer-events-auto">
+                <div class="hud-badge px-4 py-2 flex items-center gap-3 min-w-[140px]">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-600 flex items-center justify-center border-2 border-yellow-200">
+                        <i class="fa-solid fa-coins text-yellow-900 text-lg"></i>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-xs text-slate-400 font-bold tracking-wider">总积分</span>
+                        <span id="score-display" class="text-2xl font-black text-yellow-400 font-mono leading-none">0</span>
+                    </div>
+                </div>
+                <div class="hud-badge px-3 py-1.5 flex items-center gap-2">
+                    <i class="fa-solid fa-ruler-vertical text-cyan-400 text-sm"></i>
+                    <span class="text-xs text-slate-300 font-bold tracking-wider">高度: <span id="alt-display" class="text-white font-mono text-sm ml-1">0</span> m</span>
+                </div>
+            </div>
+
+            <!-- 中间：核心时间与暂停 -->
+            <div class="flex flex-col items-center pointer-events-auto">
+                <div class="flex items-center gap-2">
+                    <div class="hud-badge px-8 py-2 flex items-center gap-4 border-t-4 border-t-yellow-400 bg-slate-900/95">
+                        <i class="fa-regular fa-clock text-3xl text-slate-300"></i>
+                        <span id="time-display" class="text-4xl font-black text-white font-mono tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">60.0s</span>
+                    </div>
+                    <!-- 暂停按钮 -->
+                    <button id="btn-pause" class="hud-badge w-12 h-12 flex items-center justify-center hover:bg-white/10 transition active:scale-95 border-t-white" title="暂停 (P)">
+                        <i class="fa-solid fa-pause text-white text-xl"></i>
+                    </button>
+                </div>
+                <div class="mt-3 flex items-center gap-3 bg-slate-900/80 px-4 py-1.5 rounded-full border border-slate-600 backdrop-blur-md">
+                    <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest">目标进度</span>
+                    <div class="w-32 bg-gray-800 h-2.5 rounded-full overflow-hidden shadow-inner">
+                        <div id="ring-progress-bar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-300"></div>
+                    </div>
+                    <span class="text-sm font-mono font-black text-white"><span id="rings-count">0</span><span class="text-slate-500 text-xs">/10</span></span>
+                </div>
+            </div>
+
+            <!-- 右侧：速度与关卡 -->
+            <div class="flex flex-col gap-2 items-end pointer-events-auto">
+                <div class="hud-badge px-4 py-2 flex items-center gap-3 min-w-[140px] flex-row-reverse">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center border-2 border-red-200">
+                        <i class="fa-solid fa-flag-checkered text-white text-lg"></i>
+                    </div>
+                    <div class="flex flex-col items-end">
+                        <span class="text-xs text-slate-400 font-bold tracking-wider">当前关卡</span>
+                        <span id="stage-display" class="text-2xl font-black text-white font-mono leading-none">1/3</span>
+                    </div>
+                </div>
+                 <div class="hud-badge px-3 py-1.5 flex items-center gap-2">
+                    <span class="text-xs text-slate-300 font-bold tracking-wider">时速: <span id="speed-display" class="text-green-400 font-mono text-sm ml-1">0</span> km/h</span>
+                    <i class="fa-solid fa-gauge-high text-green-400 text-sm"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- BOTTOM HUD: 控制按钮与摇杆 -->
+        <div class="flex flex-col justify-end p-6 gap-4 w-full h-full pointer-events-none">
+            
+            <div class="flex justify-between items-end w-full relative h-full">
+                 
+                 <!-- 左下角按钮 -->
+                 <div class="flex flex-col gap-3 pointer-events-auto z-30">
+                    <button id="btn-hover" class="hud-badge px-4 py-3 hover:bg-white/10 transition flex items-center justify-center gap-2 text-sm font-bold text-white active:scale-95 border-t-pink-400">
+                        <i id="hover-icon" class="fa-solid fa-hand-paper text-pink-400 text-lg"></i>
+                        <span id="hover-text" class="hidden sm:inline">一键悬停 (Space)</span>
+                    </button>
+                    <button id="btn-reset-pos" class="hud-badge px-4 py-3 hover:bg-white/10 transition flex items-center justify-center gap-2 text-sm font-bold text-white active:scale-95 border-t-amber-400">
+                        <i class="fa-solid fa-rotate-left text-amber-400 text-lg"></i>
+                        <span class="hidden sm:inline">返回起点 (R)</span>
+                    </button>
+                </div>
+
+                <!-- 摇杆区域 (移除了所有隐藏类，强制全平台显示) -->
+                <div id="joysticks-layer" class="absolute bottom-0 inset-x-0 flex justify-between items-end pointer-events-none px-4 sm:px-32 z-10 pb-4">
+                    <div class="flex flex-col items-center gap-3 opacity-95 pointer-events-auto">
+                        <div class="text-sm font-bold text-white bg-slate-900/90 px-4 py-1.5 rounded-full border border-slate-600 shadow-lg tracking-widest">升降 / 偏航</div>
+                        <div id="joystick-left" class="joystick-container"><div id="thumb-left" class="joystick-thumb"></div></div>
+                    </div>
+                    <div class="flex flex-col items-center gap-3 opacity-95 pointer-events-auto">
+                        <div class="text-sm font-bold text-white bg-slate-900/90 px-4 py-1.5 rounded-full border border-slate-600 shadow-lg tracking-widest">前后 / 左右</div>
+                        <div id="joystick-right" class="joystick-container"><div id="thumb-right" class="joystick-thumb"></div></div>
+                    </div>
+                </div>
+
+                <!-- 右下角按钮 -->
+                <div class="flex flex-col gap-2 items-end pointer-events-auto z-30">
+                    <button id="btn-audio" class="hud-badge px-4 py-3 hover:bg-white/10 transition flex items-center justify-center gap-2 text-sm font-bold text-white active:scale-95">
+                        <i id="audio-icon" class="fa-solid fa-volume-high text-cyan-400 text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 暂停遮罩层 -->
+    <div id="pause-overlay" class="fixed inset-0 z-40 hidden items-center justify-center select-none pointer-events-auto">
+        <div class="text-center bg-slate-900/80 p-12 rounded-2xl border border-slate-600 shadow-2xl backdrop-blur-md">
+            <i class="fa-solid fa-pause text-6xl text-white mb-4 drop-shadow-lg"></i>
+            <h2 class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-widest drop-shadow-lg">游戏已暂停</h2>
+            <p class="text-slate-300 mt-4 text-lg font-bold">点击继续按钮或按 P 键返回比赛</p>
+            <button id="btn-resume" class="mt-8 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white font-black text-2xl px-12 py-4 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all transform hover:scale-105 active:scale-95 border-2 border-cyan-300">
+                <i class="fa-solid fa-play mr-2"></i> 继续游戏
+            </button>
+        </div>
+    </div>
+
+    <!-- 游戏开始/设置 面板 -->
+    <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300 p-4 select-none pointer-events-auto">
+        <div class="bg-slate-800 w-full max-w-4xl rounded-2xl border border-slate-600 shadow-2xl flex flex-col p-6 sm:p-8 relative overflow-hidden">
+            
+            <div class="text-center mb-6">
+                <h1 id="modal-title" class="text-3xl sm:text-4xl font-black text-white tracking-wider mb-2 drop-shadow-md">无人机足球竞技模拟</h1>
+                <p id="modal-subtitle" class="text-slate-400 text-sm font-bold tracking-widest">设定车手资讯与倒数时间，迎接终极竞速！</p>
+            </div>
+
+            <!-- 设置区：姓名与自定义倒计时 -->
+            <div id="setup-panel" class="flex flex-col md:flex-row gap-6 mb-8 bg-slate-900/60 p-5 rounded-xl border border-slate-700 shadow-inner">
+                <div class="flex-1 flex flex-col gap-3">
+                    <label class="text-sm font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-user-astronaut text-cyan-400 mr-2"></i> 飞行员代号</label>
+                    <input type="text" id="player-name-input" placeholder="输入您的名字..." class="custom-input rounded-lg px-4 py-3 font-bold text-lg w-full text-center tracking-widest">
+                    <p id="name-warning" class="text-red-400 text-xs hidden font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> 必须输入代号才能出仓！</p>
+                </div>
+                
+                <div class="flex-1 flex flex-col gap-3">
+                    <label class="text-sm font-bold text-slate-300 uppercase flex justify-between tracking-widest">
+                        <span><i class="fa-solid fa-stopwatch text-yellow-400 mr-2"></i> 关卡时间限制</span>
+                        <span id="time-setting-display" class="text-yellow-400 font-mono text-lg font-black">60 秒</span>
+                    </label>
+                    <div class="flex items-center h-full px-2 mt-2">
+                        <input type="range" id="time-slider" min="30" max="180" value="60" step="10" class="w-full">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卡片式关卡选择区 -->
+            <div id="mode-select-container" class="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <!-- 练习模式 -->
+                <div class="level-card flex flex-col" id="card-freshman" onclick="selectMode(true)">
+                    <div class="card-img-placeholder flex items-center justify-center relative bg-slate-700">
+                        <img src="https://images.unsplash.com/photo-1527011045974-4b5cb3a47926?auto=format&fit=crop&q=80&w=400&h=200" class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay">
+                        <i class="fa-solid fa-chalkboard-user text-6xl text-white drop-shadow-lg absolute"></i>
+                        <div class="z-10 text-center mt-auto mb-4">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-widest shadow-lg">单关卡体验</span>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-black text-white mb-2 tracking-wide">新手飞行训练</h3>
+                            <p class="text-sm text-slate-400 leading-relaxed">固定光环，无自动推力，全手动物理操控体验，适合初学者熟悉摇杆。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 正式比赛 -->
+                <div class="level-card flex flex-col border-cyan-500 selected" id="card-full" onclick="selectMode(false)">
+                    <div class="card-img-placeholder flex items-center justify-center relative bg-slate-700">
+                        <img src="https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&q=80&w=400&h=200" class="absolute inset-0 w-full h-full object-cover opacity-50 mix-blend-overlay">
+                        <i class="fa-solid fa-trophy text-6xl text-yellow-400 drop-shadow-lg absolute"></i>
+                        <div class="z-10 text-center mt-auto mb-4">
+                            <span class="bg-red-600 text-white text-xs font-bold px-3 py-1.5 rounded-full tracking-widest shadow-lg">完整 3 关卡联赛</span>
+                        </div>
+                    </div>
+                    <div class="p-5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-black text-white mb-2 tracking-wide">职业竞速锦标赛</h3>
+                            <p class="text-sm text-slate-400 leading-relaxed">光环会移动，距离更远。需要在限定时间内靠纯操作完成高难度穿越。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 成绩与排行榜 -->
+            <div id="stats-panel" class="hidden flex-col gap-4 mb-6">
+                <div class="grid grid-cols-3 gap-2 text-center bg-slate-900/60 rounded-xl p-4 border border-slate-700 shadow-inner">
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">最终积分</div>
+                        <div id="stat-score" class="text-3xl font-black text-yellow-400 font-mono">0</div>
+                    </div>
+                    <div class="border-l border-r border-slate-700">
+                        <div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">消耗时间</div>
+                        <div id="stat-time" class="text-3xl font-black text-cyan-400 font-mono">00:00</div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold uppercase tracking-wider mb-1">达成进度</div>
+                        <div id="stat-stage" class="text-2xl font-black text-white font-mono mt-1">关卡 1</div>
+                    </div>
+                </div>
+                
+                <div class="bg-slate-800 rounded-xl border border-slate-700 p-4 shadow-lg">
+                    <div class="flex justify-between items-center mb-3 border-b border-slate-600 pb-2">
+                        <h4 class="text-sm font-black text-white tracking-widest"><i class="fa-solid fa-medal text-yellow-400 mr-2"></i> 英雄排行榜 (TOP 5)</h4>
+                        <button onclick="exportRecords()" class="text-xs bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded text-white font-bold transition"><i class="fa-solid fa-file-csv mr-1"></i> 导出成绩</button>
+                    </div>
+                    <div class="max-h-[160px] overflow-y-auto pr-2">
+                        <table class="w-full text-sm text-left">
+                            <tbody id="leaderboard-list"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div class="flex justify-center mt-2">
+                <button id="btn-start-game" class="gold-btn w-full sm:w-2/3 py-4 rounded-xl text-xl tracking-widest uppercase">
+                    <i class="fa-solid fa-plane-departure mr-2"></i> 发射升空
+                </button>
+                <button id="btn-next-level" class="hidden w-full sm:w-2/3 py-4 rounded-xl text-xl font-black tracking-widest uppercase bg-cyan-600 hover:bg-cyan-500 border border-cyan-400 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)] transition">
+                    进入下一关 <i class="fa-solid fa-forward-fast ml-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN GAME SCRIPT -->
+    <script>
+        class SoundEngine {
+            constructor() { this.ctx = null; this.isMuted = false; this.engineOsc = null; this.engineGain = null; }
+            init() {
+                if (this.ctx) return;
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioCtx();
+                this.engineOsc = this.ctx.createOscillator();
+                this.engineGain = this.ctx.createGain();
+                this.engineOsc.type = 'sawtooth';
+                this.engineOsc.frequency.setValueAtTime(60, this.ctx.currentTime); 
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass'; filter.frequency.setValueAtTime(320, this.ctx.currentTime);
+                this.engineOsc.connect(filter); filter.connect(this.engineGain); this.engineGain.connect(this.ctx.destination);
+                this.engineGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
+                this.engineOsc.start();
+            }
+            updateEngine(speedRatio) {
+                if (!this.ctx || this.isMuted) return;
+                const baseFreq = 60 + speedRatio * 80;
+                const baseGain = 0.01 + speedRatio * 0.03;
+                this.engineOsc.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.1);
+                this.engineGain.gain.setTargetAtTime(baseGain, this.ctx.currentTime, 0.1);
+            }
+            playBeep(freq, type, duration, vol) {
+                if (!this.ctx || this.isMuted) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+                osc.type = type; osc.frequency.setValueAtTime(freq, now);
+                gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(vol, now + 0.01);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
+                osc.connect(gain); gain.connect(this.ctx.destination);
+                osc.start(now); osc.stop(now + duration + 0.1);
+            }
+            playPassRing() { this.playBeep(880, 'sine', 0.3, 0.3); setTimeout(()=>this.playBeep(1046, 'sine', 0.4, 0.3), 100); }
+            playHit() { this.playBeep(120, 'square', 0.2, 0.4); }
+            playLevelUp() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>this.playBeep(f, 'triangle', 0.5, 0.2), i*100)); }
+            toggleMute() {
+                this.isMuted = !this.isMuted;
+                if (this.engineGain) this.engineGain.gain.setValueAtTime(this.isMuted ? 0 : 0.01, this.ctx.currentTime);
+                return this.isMuted;
+            }
+        }
+        const sound = new SoundEngine();
+
+        const CONFIG = {
+            RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, 
+            RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 // 稍微缩小无人机尺寸显得场地更大
+        };
+
+        const gameState = {
+            active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0,
+            isFreshmanMode: false, playerName: "飞行员", score: 0,
+            timeLeft: 60, baseTimeLimit: 60, records: []
+        };
+
+        let scene, camera, renderer;
+        let droneGroup, propellers = [];
+        let ringsList = [];
+        let clock = new THREE.Clock();
+
+        const keys = { w:false, s:false, ' ':false, r:false, p:false, ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false };
+        
+        // 摇杆控制状态
+        const touchInput = {
+            left: { x:0, y:0, active:false, pointerId:null },
+            right: { x:0, y:0, active:false, pointerId:null }
+        };
+
+        const dronePhysics = {
+            pos: new THREE.Vector3(0, 5, 0), vel: new THREE.Vector3(0, 0, 0),
+            pitch: 0, roll: 0, targetPitch: 0, targetRoll: 0,
+            hitTimer: 0, isHovering: false
+        };
+
+        function initThreeScene() {
+            const container = document.getElementById('canvas-container');
+            scene = new THREE.Scene();
+            
+            // 明亮的晴天天空背景
+            scene.background = new THREE.Color(0x60a5fa); 
+            scene.fog = new THREE.FogExp2(0x60a5fa, 0.001);
+
+            camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 2000);
+            
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            container.appendChild(renderer.domElement);
+
+            // 物理光照
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const sunLight = new THREE.DirectionalLight(0xffffff, 0.9);
+            sunLight.position.set(100, 200, 50);
+            sunLight.castShadow = true;
+            sunLight.shadow.camera.top = 100;
+            sunLight.shadow.camera.bottom = -100;
+            sunLight.shadow.camera.left = -50;
+            sunLight.shadow.camera.right = 50;
+            sunLight.shadow.mapSize.width = 512;  // 性能优化：降低阴影分辨率，拒绝卡顿
+            sunLight.shadow.mapSize.height = 512;
+            scene.add(sunLight);
+
+            createRealStadium();
+            createRealisticDrone(); 
+            
+            window.addEventListener('resize', () => {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            });
+        }
+
+        function createRealStadium() {
+            // 1. 真实绿茵草皮带标线
+            const grassCanvas = document.createElement('canvas');
+            grassCanvas.width = 1024; grassCanvas.height = 1024;
+            const ctx = grassCanvas.getContext('2d');
+            
+            ctx.fillStyle = '#166534'; // 深绿
+            ctx.fillRect(0,0,1024,1024);
+            ctx.fillStyle = '#15803d'; // 稍浅
+            for(let i=0; i<1024; i+=128) ctx.fillRect(0, i, 1024, 64);
+            
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 12;
+            ctx.strokeRect(64, 64, 896, 896); // 边线
+            ctx.beginPath(); ctx.moveTo(64, 512); ctx.lineTo(960, 512); ctx.stroke(); // 中线
+            ctx.beginPath(); ctx.arc(512, 512, 120, 0, Math.PI*2); ctx.stroke(); // 中圈
+            
+            const grassTex = new THREE.CanvasTexture(grassCanvas);
+            grassTex.wrapS = THREE.RepeatWrapping; grassTex.wrapT = THREE.RepeatWrapping;
+            grassTex.repeat.set(1, 20);
+
+            const groundGeo = new THREE.PlaneGeometry(100, 2000);
+            const groundMat = new THREE.MeshStandardMaterial({ map: grassTex, roughness: 1.0, metalness: 0.0 });
+            const ground = new THREE.Mesh(groundGeo, groundMat);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.z = 900; 
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // 1.5 专属起飞停机坪 (H)
+            const padCanvas = document.createElement('canvas');
+            padCanvas.width = 512; padCanvas.height = 512;
+            const pCtx = padCanvas.getContext('2d');
+            // 停机坪底色
+            pCtx.fillStyle = '#1e293b'; pCtx.beginPath(); pCtx.arc(256, 256, 250, 0, Math.PI*2); pCtx.fill();
+            // 黄黑警示外圈
+            pCtx.lineWidth = 30;
+            for(let i=0; i<360; i+=15) {
+                pCtx.strokeStyle = (i%30===0) ? '#facc15' : '#0f172a';
+                pCtx.beginPath(); pCtx.arc(256, 256, 230, i*Math.PI/180, (i+15)*Math.PI/180); pCtx.stroke();
+            }
+            // 中心 H 标志
+            pCtx.fillStyle = '#facc15'; pCtx.font = '900 250px "Orbitron"';
+            pCtx.textAlign = 'center'; pCtx.textBaseline = 'middle';
+            pCtx.fillText('H', 256, 260);
+
+            const padTex = new THREE.CanvasTexture(padCanvas);
+            const padMat = new THREE.MeshStandardMaterial({ map: padTex, transparent: true });
+            const padGeo = new THREE.PlaneGeometry(12, 12);
+            const pad = new THREE.Mesh(padGeo, padMat);
+            pad.rotation.x = -Math.PI / 2;
+            pad.position.set(0, 0.05, 0); // 略微浮空防止深度冲突
+            scene.add(pad);
+
+            // 2. 体育场红蓝看台
+            const standsGroup = new THREE.Group();
+            const standGeo = new THREE.BoxGeometry(20, 4, 2000);
+            const redMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.8 });
+            const blueMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.8 });
+
+            for(let i=0; i<6; i++) {
+                const yPos = 2 + i * 4;
+                const offset = 50 + i * 5;
+                const mat = (i%2===0) ? blueMat : redMat;
+                
+                const leftStand = new THREE.Mesh(standGeo, mat);
+                leftStand.position.set(-offset, yPos, 900);
+                standsGroup.add(leftStand);
+
+                const rightStand = new THREE.Mesh(standGeo, mat);
+                rightStand.position.set(offset, yPos, 900);
+                standsGroup.add(rightStand);
+            }
+            scene.add(standsGroup);
+
+            // 3. 高清复用的自定义广告牌 (HARC)
+            const adTexts = ["HARC无人机足球", "竞技训练场欢迎您"];
+            const adMaterials = adTexts.map(text => {
+                const bCanvas = document.createElement('canvas');
+                bCanvas.width = 1024; bCanvas.height = 256;
+                const bCtx = bCanvas.getContext('2d');
+                
+                bCtx.fillStyle = '#0f172a'; bCtx.fillRect(0,0,1024,256); // 黑底
+                bCtx.strokeStyle = '#facc15'; bCtx.lineWidth = 8; bCtx.strokeRect(4,4,1016,248); // 黄边
+                
+                bCtx.fillStyle = '#ffffff'; 
+                // 自适应字体大小
+                bCtx.font = text.length > 8 ? '900 80px "Noto Sans SC"' : '900 110px "Noto Sans SC"';
+                bCtx.textAlign = 'center'; bCtx.textBaseline = 'middle';
+                bCtx.fillText(text, 512, 128);
+
+                const bTex = new THREE.CanvasTexture(bCanvas);
+                bTex.minFilter = THREE.LinearMipmapLinearFilter; 
+                return new THREE.MeshStandardMaterial({ map: bTex, roughness: 0.6 });
+            });
+
+            const bGeo = new THREE.BoxGeometry(80, 16, 2);
+            for(let i=0; i<16; i++) {
+                const board = new THREE.Mesh(bGeo, adMaterials[i % adMaterials.length]);
+                const isLeft = i%2 === 0;
+                board.position.set(isLeft ? -48 : 48, 8, i*100 + 50);
+                board.rotation.y = isLeft ? Math.PI/2 : -Math.PI/2;
+                scene.add(board);
+            }
+
+            // 4. 蓝白防护网 (复用材质极大提升性能)
+            const netCanvas = document.createElement('canvas');
+            netCanvas.width = 256; netCanvas.height = 256;
+            const nCtx = netCanvas.getContext('2d');
+            nCtx.fillStyle = 'rgba(0,0,0,0)'; nCtx.fillRect(0,0,256,256);
+            nCtx.strokeStyle = 'rgba(59, 130, 246, 0.8)'; // 蓝色网线
+            nCtx.lineWidth = 4;
+            nCtx.beginPath();
+            for(let i=0; i<256; i+=32) {
+                nCtx.moveTo(i, 0); nCtx.lineTo(256, 256-i);
+                nCtx.moveTo(0, i); nCtx.lineTo(256-i, 256);
+                nCtx.moveTo(i, 256); nCtx.lineTo(256, i);
+                nCtx.moveTo(0, 256-i); nCtx.lineTo(256-i, 0);
+            }
+            nCtx.stroke();
+            const netTex = new THREE.CanvasTexture(netCanvas);
+            netTex.wrapS = THREE.RepeatWrapping; netTex.wrapT = THREE.RepeatWrapping;
+            netTex.repeat.set(100, 4);
+
+            const netGeo = new THREE.PlaneGeometry(2000, 40);
+            const netMat = new THREE.MeshBasicMaterial({ map: netTex, transparent: true, side: THREE.DoubleSide, opacity: 0.6 });
+            
+            const leftNet = new THREE.Mesh(netGeo, netMat);
+            leftNet.position.set(-35, 20, 900); leftNet.rotation.y = Math.PI/2;
+            scene.add(leftNet);
+
+            const rightNet = new THREE.Mesh(netGeo, netMat);
+            rightNet.position.set(35, 20, 900); rightNet.rotation.y = -Math.PI/2;
+            scene.add(rightNet);
+
+            // 5. 场地标志筒 (Cones)
+            const coneGeo = new THREE.ConeGeometry(1.5, 4, 16);
+            const coneMat = new THREE.MeshStandardMaterial({ color: 0xff5500, roughness: 0.6 });
+            const stripeMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.6 });
+            const coneGroup = new THREE.Group();
+            const cBase = new THREE.Mesh(coneGeo, coneMat); cBase.position.y = 2; coneGroup.add(cBase);
+            const cStripe = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 1.1, 1, 16), stripeMat); cStripe.position.y = 2.5; coneGroup.add(cStripe);
+            
+            for(let i=0; i<30; i++) {
+                const clone = coneGroup.clone();
+                clone.position.set((Math.random()-0.5)*60, 0, 20 + Math.random()*1500);
+                clone.children.forEach(c => c.castShadow = true);
+                scene.add(clone);
+            }
+        }
+
+        function createRealisticDrone() {
+            droneGroup = new THREE.Group();
+
+            // 1. 真实的红色球形外骨骼 (五边形/六边形视觉交叉网格)
+            const cageMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 }); // 大红色防护罩
+            const tubeR = 0.08; 
+            const R = CONFIG.DRONE_RADIUS;
+            
+            // 水平赤道环
+            const hRing = new THREE.Mesh(new THREE.TorusGeometry(R, tubeR, 8, 32), cageMat);
+            hRing.rotation.x = Math.PI/2;
+            droneGroup.add(hRing);
+
+            // 垂直经线环 (4个交错)
+            for(let i=0; i<4; i++) {
+                const vRing = new THREE.Mesh(new THREE.TorusGeometry(R, tubeR, 8, 32), cageMat);
+                vRing.rotation.y = (Math.PI / 4) * i;
+                droneGroup.add(vRing);
+            }
+
+            // 纬线环 (上下加固圈，构成五边形/六边形观感)
+            const latRadius = R * Math.cos(Math.PI/4);
+            const latY = R * Math.sin(Math.PI/4);
+            const topRing = new THREE.Mesh(new THREE.TorusGeometry(latRadius, tubeR, 8, 32), cageMat);
+            topRing.position.y = latY; topRing.rotation.x = Math.PI/2;
+            droneGroup.add(topRing);
+            
+            const bottomRing = new THREE.Mesh(new THREE.TorusGeometry(latRadius, tubeR, 8, 32), cageMat);
+            bottomRing.position.y = -latY; bottomRing.rotation.x = Math.PI/2;
+            droneGroup.add(bottomRing);
+
+            // 2. 内部碳纤维机架与飞控核心
+            const frameMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.8 });
+            const crossGeo = new THREE.BoxGeometry(R*1.6, 0.08, 0.15);
+            const frame1 = new THREE.Mesh(crossGeo, frameMat); frame1.rotation.y = Math.PI/4; droneGroup.add(frame1);
+            const frame2 = new THREE.Mesh(crossGeo, frameMat); frame2.rotation.y = -Math.PI/4; droneGroup.add(frame2);
+
+            // 中央核心发光罩
+            const coreGeo = new THREE.SphereGeometry(0.35, 16, 16);
+            const coreMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6, emissive: 0x1d4ed8, emissiveIntensity: 0.5 });
+            const core = new THREE.Mesh(coreGeo, coreMat);
+            droneGroup.add(core);
+
+            // 3. 四个独立电机与白色螺旋桨
+            propellers = [];
+            const motorGeo = new THREE.CylinderGeometry(0.12, 0.12, 0.18, 16);
+            const propGeo = new THREE.BoxGeometry(1.2, 0.02, 0.12);
+            const propMat = new THREE.MeshStandardMaterial({ color: 0xffffff }); // 白色螺旋桨
+            
+            const pDist = R * 0.5;
+            const offsets = [[pDist, pDist], [-pDist, pDist], [pDist, -pDist], [-pDist, -pDist]];
+            
+            offsets.forEach(pos => {
+                const motor = new THREE.Mesh(motorGeo, frameMat);
+                motor.position.set(pos[0], 0.1, pos[1]);
+                droneGroup.add(motor);
+
+                const prop = new THREE.Mesh(propGeo, propMat);
+                prop.position.set(pos[0], 0.2, pos[1]);
+                droneGroup.add(prop);
+                propellers.push(prop);
+            });
+
+            // 机尾红灯 (辨别前后)
+            const tailLight = new THREE.Mesh(new THREE.SphereGeometry(0.15), new THREE.MeshBasicMaterial({color: 0xff0000}));
+            tailLight.position.set(0, 0, -R + 0.2);
+            droneGroup.add(tailLight);
+
+            droneGroup.traverse(child => { if(child.isMesh) { child.castShadow = true; } });
+            scene.add(droneGroup);
+        }
+
+        function generateRings() {
+            // [严格性能优化] 释放旧网格内存，防止卡顿
+            ringsList.forEach(r => {
+                if(r.mesh) {
+                    scene.remove(r.mesh);
+                    r.mesh.traverse(child => {
+                        if (child.isMesh) {
+                            if (child.geometry) child.geometry.dispose();
+                            if (child.material) {
+                                if (Array.isArray(child.material)) child.material.forEach(m => m.dispose());
+                                else child.material.dispose();
+                            }
+                        }
+                    });
+                }
+            });
+            ringsList = [];
+            
+            let currentZ = 40;
+
+            for (let i = 0; i < CONFIG.RINGS_PER_LEVEL; i++) {
+                currentZ += CONFIG.RING_SPACING;
+                const ringGroup = new THREE.Group();
+                const isFinal = (i === CONFIG.RINGS_PER_LEVEL - 1);
+
+                const color = isFinal ? 0xfacc15 : (i%2===0 ? 0xffffff : 0x38bdf8);
+                const torusGeo = new THREE.TorusGeometry(CONFIG.RING_RADIUS, 0.5, 12, 24);
+                const torusMat = new THREE.MeshStandardMaterial({ color: color, roughness: 0.3 });
+                const torus = new THREE.Mesh(torusGeo, torusMat);
+                torus.castShadow = true;
+                ringGroup.add(torus);
+
+                const innerGeo = new THREE.CircleGeometry(CONFIG.RING_RADIUS - 0.5, 24);
+                const innerMat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.15, side: THREE.DoubleSide });
+                const inner = new THREE.Mesh(innerGeo, innerMat);
+                ringGroup.add(inner);
+
+                let posX = (Math.random() - 0.5) * 20;
+                let posY = 5 + Math.random() * 10;
+
+                ringGroup.position.set(posX, posY, currentZ);
+                scene.add(ringGroup);
+
+                ringsList.push({
+                    mesh: ringGroup, torus: torus, inner: inner, passed: false, 
+                    index: i, initialPos: new THREE.Vector3(posX, posY, currentZ), isFinal: isFinal
+                });
+            }
+        }
+
+        function setupJoystick(elId, thumbId, stateObj) {
+            const el = document.getElementById(elId);
+            const thumb = document.getElementById(thumbId);
+            if(!el) return;
+
+            const resetJoystick = () => {
+                stateObj.active = false; stateObj.x = 0; stateObj.y = 0; stateObj.pointerId = null;
+                el.classList.remove('active');
+                thumb.style.transform = 'translate(-50%, -50%)';
+            };
+
+            const updatePos = (e) => {
+                const rect = el.getBoundingClientRect();
+                const r = rect.width/2 - 20;
+                let dx = e.clientX - (rect.left + rect.width/2);
+                let dy = e.clientY - (rect.top + rect.height/2);
+                const dist = Math.hypot(dx,dy);
+                if(dist>r) { dx = (dx/dist)*r; dy = (dy/dist)*r; }
+                
+                // 转换为 -1 到 1 的标准化坐标
+                stateObj.x = dx/r; stateObj.y = dy/r;
+                thumb.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+            };
+
+            // 使用 Pointer Events 彻底解决断触与多点触控冲突
+            el.addEventListener('pointerdown', (e) => {
+                if (stateObj.active) return; 
+                el.setPointerCapture(e.pointerId); // 锁定指针
+                stateObj.active = true;
+                stateObj.pointerId = e.pointerId;
+                el.classList.add('active'); // 增加发光反馈
+                updatePos(e);
+            });
+
+            el.addEventListener('pointermove', (e) => {
+                if (!stateObj.active || e.pointerId !== stateObj.pointerId) return;
+                e.preventDefault();
+                updatePos(e);
+            });
+
+            const endDrag = (e) => {
+                if (e.pointerId === stateObj.pointerId) {
+                    el.releasePointerCapture(e.pointerId);
+                    resetJoystick();
+                }
+            };
+
+            el.addEventListener('pointerup', endDrag);
+            el.addEventListener('pointercancel', endDrag);
+        }
+
+        // 初始化摇杆
+        setupJoystick('joystick-left', 'thumb-left', touchInput.left);
+        setupJoystick('joystick-right', 'thumb-right', touchInput.right);
+
+        let selectedModeIsFreshman = false;
+
+        function selectMode(isFreshman) {
+            selectedModeIsFreshman = isFreshman;
+            document.getElementById('card-freshman').classList.toggle('selected', isFreshman);
+            document.getElementById('card-full').classList.toggle('selected', !isFreshman);
+        }
+
+        document.getElementById('time-slider').addEventListener('input', (e) => {
+            const val = e.target.value;
+            document.getElementById('time-setting-display').textContent = val + ' 秒';
+            gameState.baseTimeLimit = parseInt(val);
+        });
+
+        document.getElementById('btn-start-game').addEventListener('click', () => {
+            const name = document.getElementById('player-name-input').value.trim();
+            if(!name) { document.getElementById('name-warning').classList.remove('hidden'); return; }
+            document.getElementById('name-warning').classList.add('hidden');
+            
+            gameState.playerName = name;
+            gameState.isFreshmanMode = selectedModeIsFreshman;
+            gameState.level = 1;
+            gameState.score = 0;
+            gameState.timeLeft = gameState.baseTimeLimit; 
+            gameState.active = true;
+            gameState.isPaused = false;
+            gameState.startTime = Date.now();
+            
+            document.getElementById('modal-overlay').classList.add('hidden');
+            sound.init();
+            
+            resetDrone();
+            generateRings();
+            updateHUD();
+        });
+
+        document.getElementById('btn-next-level').addEventListener('click', () => {
+            gameState.timeLeft = gameState.baseTimeLimit; 
+            gameState.active = true;
+            gameState.isPaused = false;
+            document.getElementById('modal-overlay').classList.add('hidden');
+            resetDrone();
+            generateRings();
+            updateHUD();
+        });
+
+        function togglePause() {
+            if(!gameState.active && !gameState.isPaused) return; // 不在游戏中不能暂停
+            gameState.isPaused = !gameState.isPaused;
+            document.getElementById('pause-overlay').classList.toggle('hidden', !gameState.isPaused);
+            document.getElementById('pause-overlay').classList.toggle('flex', gameState.isPaused);
+            
+            const pBtn = document.getElementById('btn-pause');
+            pBtn.innerHTML = gameState.isPaused ? '<i class="fa-solid fa-play text-yellow-400 text-xl"></i>' : '<i class="fa-solid fa-pause text-white text-xl"></i>';
+            pBtn.classList.toggle('border-t-yellow-400', gameState.isPaused);
+        }
+
+        document.getElementById('btn-pause').addEventListener('click', togglePause);
+        document.getElementById('btn-resume').addEventListener('click', togglePause);
+
+        function resetDrone() {
+            dronePhysics.pos.set(0, 5, 0); 
+            dronePhysics.vel.set(0,0,0);
+            dronePhysics.pitch = 0; dronePhysics.roll = 0;
+            dronePhysics.targetPitch = 0; dronePhysics.targetRoll = 0;
+            if(dronePhysics.isHovering) toggleHover();
+        }
+
+        function toggleHover() {
+            dronePhysics.isHovering = !dronePhysics.isHovering;
+            const btn = document.getElementById('btn-hover');
+            const icon = document.getElementById('hover-icon');
+            if(dronePhysics.isHovering) {
+                btn.classList.add('bg-pink-600/50', 'border-pink-400');
+                icon.classList.replace('fa-hand-paper', 'fa-play');
+                document.getElementById('hover-text').textContent = "解除悬停";
+            } else {
+                btn.classList.remove('bg-pink-600/50', 'border-pink-400');
+                icon.classList.replace('fa-play', 'fa-hand-paper');
+                document.getElementById('hover-text').textContent = "一键悬停 (Space)";
+            }
+        }
+
+        document.getElementById('btn-hover').addEventListener('click', toggleHover);
+        document.getElementById('btn-reset-pos').addEventListener('click', resetDrone);
+        document.getElementById('btn-audio').addEventListener('click', () => {
+            const muted = sound.toggleMute();
+            document.getElementById('audio-icon').className = muted ? 'fa-solid fa-volume-xmark text-slate-500 text-lg' : 'fa-solid fa-volume-high text-cyan-400 text-lg';
+        });
+
+        // 键盘事件
+        window.addEventListener('keydown', e => {
+            if(e.key.toLowerCase()==='w') keys.w=true; if(e.key.toLowerCase()==='s') keys.s=true;
+            if(e.key==='ArrowUp') keys.ArrowUp=true; if(e.key==='ArrowDown') keys.ArrowDown=true;
+            if(e.key==='ArrowLeft') keys.ArrowLeft=true; if(e.key==='ArrowRight') keys.ArrowRight=true;
+            if(e.key===' ') { e.preventDefault(); keys[' ']=true; toggleHover(); } // 阻止空格默认滚动
+            if(e.key.toLowerCase()==='r') resetDrone();
+            if(e.key.toLowerCase()==='p') togglePause();
+        });
+        window.addEventListener('keyup', e => {
+            if(e.key.toLowerCase()==='w') keys.w=false; if(e.key.toLowerCase()==='s') keys.s=false;
+            if(e.key==='ArrowUp') keys.ArrowUp=false; if(e.key==='ArrowDown') keys.ArrowDown=false;
+            if(e.key==='ArrowLeft') keys.ArrowLeft=false; if(e.key==='ArrowRight') keys.ArrowRight=false;
+            if(e.key===' ') keys[' ']=false;
+        });
+
+        function updatePhysics(delta) {
+            if(!gameState.active || gameState.isPaused) return;
+
+            // Timer
+            gameState.timeLeft -= delta;
+            const timeEl = document.getElementById('time-display');
+            timeEl.textContent = Math.max(0, gameState.timeLeft).toFixed(1) + 's';
+            timeEl.style.color = gameState.timeLeft <= 10 ? '#ef4444' : '#ffffff';
+            
+            if(gameState.timeLeft <= 0) { endGame(false); return; }
+            if(dronePhysics.hitTimer > 0) dronePhysics.hitTimer -= delta;
+
+            // 获取输入值 (合并键盘与摇杆)
+            let altInput = (keys.w?1:0) - (keys.s?1:0) - touchInput.left.y;
+            let pitchInput = (keys.ArrowUp?1:0) - (keys.ArrowDown?1:0) - touchInput.right.y;
+            let rollInput = (keys.ArrowRight?1:0) - (keys.ArrowLeft?1:0) + touchInput.right.x;
+
+            // 任意方向操作可自动解除悬停
+            if((Math.abs(altInput)>0.1 || Math.abs(pitchInput)>0.1 || Math.abs(rollInput)>0.1) && dronePhysics.isHovering) {
+                toggleHover();
+            }
+
+            const accel = 60 * delta; // 基础加速度倍率
+            
+            if(dronePhysics.isHovering) {
+                dronePhysics.vel.lerp(new THREE.Vector3(0,0,0), 0.1);
+                dronePhysics.targetPitch = THREE.MathUtils.lerp(dronePhysics.targetPitch, 0, 0.1);
+                dronePhysics.targetRoll = THREE.MathUtils.lerp(dronePhysics.targetRoll, 0, 0.1);
+            } else {
+                // 【核心修复】：移除所有自动往前的代码，完全依赖推杆 (pitchInput)
+                if(Math.abs(pitchInput) > 0.05) {
+                    dronePhysics.vel.z += pitchInput * accel * 1.8; // Z轴前后飞行
+                    dronePhysics.targetPitch = THREE.MathUtils.lerp(dronePhysics.targetPitch, 0.4 * pitchInput, 0.1);
+                } else {
+                    dronePhysics.targetPitch = THREE.MathUtils.lerp(dronePhysics.targetPitch, 0, 0.1);
+                }
+
+                if(Math.abs(rollInput) > 0.05) {
+                    dronePhysics.vel.x -= rollInput * accel * 1.5; // X轴左右横移
+                    dronePhysics.targetRoll = THREE.MathUtils.lerp(dronePhysics.targetRoll, 0.4 * rollInput, 0.1);
+                } else {
+                    dronePhysics.targetRoll = THREE.MathUtils.lerp(dronePhysics.targetRoll, 0, 0.1);
+                }
+
+                // 上下高度
+                dronePhysics.vel.y += altInput * accel * 1.5;
+            }
+
+            // 摩擦力 (空气阻力，让无人机慢慢停下)
+            dronePhysics.vel.multiplyScalar(0.94);
+            dronePhysics.pos.addScaledVector(dronePhysics.vel, delta);
+
+            // 物理边界限制
+            dronePhysics.pos.y = Math.max(0.5, Math.min(dronePhysics.pos.y, 40));
+            dronePhysics.pos.x = Math.max(-45, Math.min(dronePhysics.pos.x, 45));
+
+            dronePhysics.pitch += (dronePhysics.targetPitch - dronePhysics.pitch) * 0.1;
+            dronePhysics.roll += (dronePhysics.targetRoll - dronePhysics.roll) * 0.1;
+            
+            droneGroup.position.copy(dronePhysics.pos);
+            droneGroup.rotation.set(dronePhysics.pitch, 0, dronePhysics.roll);
+            propellers.forEach((p, idx) => p.rotation.y += (idx%2===0?1:-1)*1.0); // 螺旋桨高速旋转
+            
+            const speed = dronePhysics.vel.length();
+            gameState.speed = speed * 15;
+            const camOffset = new THREE.Vector3(0, 4, -15 - speed*0.1);
+            camera.position.lerp(dronePhysics.pos.clone().add(camOffset), 0.1);
+            camera.lookAt(dronePhysics.pos.clone().add(new THREE.Vector3(0,0,30)));
+            sound.updateEngine(Math.min(speed/30, 1));
+
+            document.getElementById('speed-display').textContent = Math.round(gameState.speed);
+            document.getElementById('alt-display').textContent = dronePhysics.pos.y.toFixed(1);
+
+            checkCollisions();
+        }
+
+        function checkCollisions() {
+            if(dronePhysics.hitTimer > 0) return;
+
+            ringsList.forEach(ring => {
+                if(!gameState.isFreshmanMode) {
+                    ring.mesh.position.x = ring.initialPos.x + Math.sin(Date.now()*0.002 + ring.index) * (gameState.level * 3);
+                }
+
+                if(ring.passed) return;
+
+                const distZ = Math.abs(dronePhysics.pos.z - ring.mesh.position.z);
+                const xyDist = Math.hypot(dronePhysics.pos.x - ring.mesh.position.x, dronePhysics.pos.y - ring.mesh.position.y);
+
+                if(distZ < 3.0) {
+                    if(xyDist < CONFIG.RING_RADIUS) {
+                        ring.passed = true;
+                        gameState.ringsCleared++;
+                        gameState.score += 100;
+                        ring.torus.material.color.setHex(0x4ade80); 
+                        ring.inner.material.opacity = 0.5;
+                        sound.playPassRing();
+                        updateHUD();
+
+                        if(gameState.ringsCleared >= CONFIG.RINGS_PER_LEVEL) levelComplete();
+                    } else if(xyDist < CONFIG.RING_RADIUS + 3.0) {
+                        sound.playHit();
+                        dronePhysics.hitTimer = 0.5;
+                        dronePhysics.vel.z = -15; // 弹开
+                        const angle = Math.atan2(dronePhysics.pos.y - ring.mesh.position.y, dronePhysics.pos.x - ring.mesh.position.x);
+                        dronePhysics.vel.x = Math.cos(angle) * 15;
+                        dronePhysics.vel.y = Math.sin(angle) * 15;
+                        
+                        const origC = ring.torus.material.color.getHex();
+                        ring.torus.material.color.setHex(0xff0000);
+                        setTimeout(() => { if(!ring.passed) ring.torus.material.color.setHex(origC); }, 300);
+                    }
+                }
+            });
+        }
+
+        function updateHUD() {
+            document.getElementById('score-display').textContent = gameState.score;
+            document.getElementById('rings-count').textContent = gameState.ringsCleared;
+            document.getElementById('ring-progress-bar').style.width = `${(gameState.ringsCleared/CONFIG.RINGS_PER_LEVEL)*100}%`;
+            document.getElementById('stage-display').textContent = `${gameState.level}/${gameState.isFreshmanMode ? 1 : 3}`;
+        }
+
+        function levelComplete() {
+            gameState.active = false;
+            sound.playLevelUp();
+            gameState.score += Math.floor(gameState.timeLeft) * 20; 
+            
+            if(gameState.isFreshmanMode || gameState.level >= 3) {
+                endGame(true);
+            } else {
+                gameState.level++;
+                gameState.ringsCleared = 0;
+                
+                const modal = document.getElementById('modal-overlay');
+                document.getElementById('setup-panel').classList.add('hidden');
+                document.getElementById('mode-select-container').classList.add('hidden');
+                document.getElementById('stats-panel').classList.add('hidden');
+                
+                document.getElementById('modal-title').textContent = `关卡 ${gameState.level-1} 突破完成！`;
+                document.getElementById('modal-subtitle').innerHTML = `获得时间奖励积分，准备进入更难的关卡 ${gameState.level}`;
+                
+                document.getElementById('btn-start-game').classList.add('hidden');
+                document.getElementById('btn-next-level').classList.remove('hidden');
+                modal.classList.remove('hidden');
+            }
+        }
+
+        function endGame(success) {
+            gameState.active = false;
+            if(!success) sound.playHit();
+            
+            const totalSecs = Math.floor((Date.now() - gameState.startTime)/1000);
+            
+            document.getElementById('stat-score').textContent = gameState.score;
+            document.getElementById('stat-time').textContent = `${Math.floor(totalSecs/60).toString().padStart(2,'0')}:${(totalSecs%60).toString().padStart(2,'0')}`;
+            document.getElementById('stat-stage').textContent = success ? "大满贯通关" : `折戟于关卡 ${gameState.level}`;
+
+            gameState.records.push({ name: gameState.playerName, score: gameState.score, status: success ? "胜利":"超时" });
+            gameState.records.sort((a,b) => b.score - a.score);
+            
+            const tbody = document.getElementById('leaderboard-list');
+            tbody.innerHTML = '';
+            gameState.records.slice(0,5).forEach((r,i) => {
+                const colors = ['text-yellow-400', 'text-slate-300', 'text-amber-600'];
+                const c = i<3 ? colors[i] : 'text-slate-500';
+                tbody.innerHTML += `<tr class="border-b border-slate-700/50 hover:bg-white/5"><td class="py-2.5 px-2 font-black ${c}">#${i+1}</td><td class="text-white font-bold tracking-wide">${r.name}</td><td class="text-slate-400 text-xs">${r.status}</td><td class="text-cyan-400 font-black text-right px-2">${r.score} PTS</td></tr>`;
+            });
+
+            const modal = document.getElementById('modal-overlay');
+            document.getElementById('modal-title').textContent = success ? '竞速挑战成功！' : '时间耗尽，行动失败';
+            document.getElementById('modal-title').className = success ? "text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 tracking-wider mb-2 drop-shadow-md" : "text-3xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-600 tracking-wider mb-2 drop-shadow-md";
+            document.getElementById('modal-subtitle').textContent = success ? '你展现了王牌飞行员的卓越技巧！' : '重整旗鼓，再次挑战极限吧！';
+            
+            document.getElementById('setup-panel').classList.remove('hidden');
+            document.getElementById('mode-select-container').classList.remove('hidden');
+            document.getElementById('stats-panel').classList.remove('hidden');
+            document.getElementById('stats-panel').classList.add('flex');
+            
+            document.getElementById('btn-start-game').classList.remove('hidden');
+            document.getElementById('btn-next-level').classList.add('hidden');
+            modal.classList.remove('hidden');
+            
+            if(success) confetti({particleCount: 150, spread: 80, origin: {y:0.6}, colors: ['#facc15', '#38bdf8', '#fb7185']});
+        }
+
+        function exportRecords() {
+            if(gameState.records.length===0) return alert("暂无成绩");
+            let csv = "data:text/csv;charset=utf-8,\uFEFF排名,飞行员代号,状态,积分\n";
+            gameState.records.forEach((r,i) => csv += `${i+1},${r.name},${r.status},${r.score}\n`);
+            const a = document.createElement('a'); a.href = encodeURI(csv); a.download = "无人机足球成绩单.csv";
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            updatePhysics(Math.min(clock.getDelta(), 0.1));
+            // 即使暂停，螺旋桨也保持轻微转动维持动感
+            if(gameState.isPaused && droneGroup) propellers.forEach((p, idx) => p.rotation.y += (idx%2===0?1:-1)*0.05); 
+            renderer.render(scene, camera);
+        }
+
+        window.onload = () => {
+            initThreeScene();
+            selectMode(false); 
+            animate();
+        };
+    </script>
+</body>
+</html>
