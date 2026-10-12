@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HARC无人机足球竞速挑战</title>
+    <title>无人机足球真实模拟挑战</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -460,8 +460,9 @@ unlockGameAudio();
         });
 
         const CONFIG = { RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
-        const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: true, playerName: "", score: 0, timeLeft: 60, baseTimeLimit: 60 };
-        //const leaderboard = [];
+        const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: true, playerName: "", score: 0, timeLeft: 60, let totalElapsed = 0, baseTimeLimit: 60  };
+       
+	   //const leaderboard = [];
 
 const LEADERBOARD_KEY = 'HARC_Drone_Leaderboard_v2';
 
@@ -784,13 +785,42 @@ function saveLeaderboard() {
             if(!name) { document.getElementById('name-warning').classList.remove('hidden'); return; }
             document.getElementById('name-warning').classList.add('hidden');
             
-            gameState.playerName = name; 
-            gameState.level = 1; gameState.score = 0; gameState.timeLeft = gameState.baseTimeLimit; 
+            
+gameState.playerName = name;
+
+// 每次开始新挑战，都必须完整重置比赛状态
+gameState.level = 1;
+gameState.ringsCleared = 0;
+gameState.score = 0;
+gameState.timeLeft = gameState.baseTimeLimit;
+gameState.active = true;
+gameState.isPaused = false;
+gameState.startTime = Date.now();
+totalElapsed = 0;
+
+// 清除残留的键盘控制状态
+Object.keys(keys).forEach(key => {
+    keys[key] = false;
+});
+
+// 清除残留的触屏摇杆状态
+[touchInput.left, touchInput.right].forEach(input => {
+    input.x = 0;
+    input.y = 0;
+    input.active = false;
+    input.ptrId = null;
+});
+
+// 重置飞行状态
+resetDrone();
+generateRings();
+updateHUD();
+
             //gameState.active = true; gameState.isPaused = false; gameState.startTime = Date.now();
-			gameState.active = true;
-            gameState.isPaused = false;
-            gameState.startTime = Date.now();
-            totalElapsed = 0;
+			//gameState.active = true;
+            //gameState.isPaused = false;
+            //gameState.startTime = Date.now();
+           // totalElapsed = 0;
             
             document.getElementById('modal-overlay').classList.add('hidden');
             
@@ -798,7 +828,7 @@ function saveLeaderboard() {
            // 在启动按钮的用户点击事件中主动解锁音频
 unlockGameAudio();
 
-            resetDrone(); generateRings(); updateHUD();
+            //resetDrone(); generateRings(); updateHUD();
         });
 
         function togglePause() {
@@ -1024,8 +1054,30 @@ unlockGameAudio();
             }
         }
 
-        function endGame(success) {
-            gameState.active = false; if(!success) sound.playHit();
+        
+function endGame(success) {
+
+    // 严格校验：没有完成规定的关卡，不允许判定通关
+    if (success) {
+        const passedCurrentLevel =
+            gameState.ringsCleared >= CONFIG.RINGS_PER_LEVEL;
+
+        const completedAllLevels =
+            gameState.isFreshmanMode ||
+            gameState.level >= CONFIG.TOTAL_LEVELS;
+
+        if (!passedCurrentLevel || !completedAllLevels) {
+            success = false;
+            showToast('挑战未完成！请通过规定的全部光环和关卡。');
+        }
+    }
+
+    gameState.active = false;
+
+    // 以下保留你原来 endGame 函数中的其他代码
+
+            gameState.active = false;
+if (!success) sound.playHit();
             // 强制将引擎声音渐弱归零，防止后台一直吵闹
             if(sound.engineGain && sound.ctx) sound.engineGain.gain.setTargetAtTime(0, sound.ctx.currentTime, 0.1);
             
