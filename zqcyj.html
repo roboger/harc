@@ -261,6 +261,16 @@
                         <input type="range" id="time-slider" min="30" max="180" value="60" step="10" class="w-full">
                     </div>
                 </div>
+                
+                <div class="flex-1 flex flex-col gap-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-300 uppercase flex justify-between tracking-widest">
+                        <span><i class="fa-solid fa-volume-high text-cyan-400 mr-2"></i> 游戏音量</span>
+                        <span id="volume-setting-display" class="text-cyan-400 font-mono text-base font-black">100%</span>
+                    </label>
+                    <div class="flex items-center h-full px-2 mt-2">
+                        <input type="range" id="volume-slider" min="0" max="100" value="100" step="5" class="w-full">
+                    </div>
+                </div>
             </div>
 
             <div id="mode-select-container" class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-6">
@@ -325,7 +335,8 @@
     <!-- MAIN GAME SCRIPT -->
     <script>
         class SoundEngine {
-            constructor() { this.ctx = null; this.isMuted = false; this.engineOsc = null; this.engineGain = null; }
+            // 修复：新增 masterVolume 属性
+            constructor() { this.ctx = null; this.isMuted = false; this.engineOsc = null; this.engineGain = null; this.masterVolume = 1.0; }
             init() {
                 if (!this.ctx) {
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -350,6 +361,19 @@
                 this.engineGain.gain.setValueAtTime(0, this.ctx.currentTime); // 初始化先设为静音0
                 this.engineOsc.start();
             }
+            
+            // 修复：新增 setVolume 方法处理音量滑块数据
+            setVolume(vol) {
+                this.masterVolume = vol;
+                if (vol <= 0) {
+                    this.isMuted = true;
+                    if (this.engineGain && this.ctx) this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
+                } else {
+                    this.isMuted = false;
+                }
+                document.getElementById('audio-icon').className = this.isMuted ? "fa-solid fa-volume-xmark text-slate-500 text-sm sm:text-lg" : "fa-solid fa-volume-high text-cyan-400 text-sm sm:text-lg";
+            }
+
             updateEngine(speedRatio) {
                 if (!this.ctx || this.isMuted || !gameState.active || gameState.isPaused) {
                     if (this.engineGain && this.ctx) this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
@@ -357,7 +381,8 @@
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
                 const baseFreq = 60 + speedRatio * 80;
-                const baseGain = 0.01 + speedRatio * 0.03;
+                // 修复：引擎音量乘以 masterVolume
+                const baseGain = (0.01 + speedRatio * 0.03) * this.masterVolume;
                 this.engineOsc.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.1);
                 this.engineGain.gain.setTargetAtTime(baseGain, this.ctx.currentTime, 0.1);
             }
@@ -367,7 +392,9 @@
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
                 osc.type = type; osc.frequency.setValueAtTime(freq, now);
-                gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(vol, now + 0.01);
+                // 修复：提示音量乘以 masterVolume
+                const finalVol = vol * this.masterVolume;
+                gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(finalVol, now + 0.01);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
                 osc.connect(gain); gain.connect(this.ctx.destination);
                 osc.start(now); osc.stop(now + duration + 0.1);
@@ -619,6 +646,14 @@
             gameState.baseTimeLimit = parseInt(e.target.value);
         });
 
+        // 新增：音量控制滑块事件，拖动时也会立刻激活声音！
+        document.getElementById('volume-slider').addEventListener('input', (e) => {
+            const volDisplay = e.target.value + '%';
+            document.getElementById('volume-setting-display').textContent = volDisplay;
+            sound.setVolume(parseInt(e.target.value) / 100);
+            unlockAudio(); // 强行解锁
+        });
+
         // 全屏与横屏锁定逻辑 (加入防报错 Toast 提示)
         document.getElementById('btn-fullscreen').addEventListener('click', async () => {
             const doc = document.documentElement;
@@ -645,7 +680,12 @@
             gameState.active = true; gameState.isPaused = false; gameState.startTime = Date.now();
             
             document.getElementById('modal-overlay').classList.add('hidden');
-            sound.init(); resetDrone(); generateRings(); updateHUD();
+            
+            // 终极解锁：在点击"开始游戏"按钮的回调函数内立刻初始化+resume，无视任何系统阻拦
+            sound.init(); 
+            if(sound.ctx && sound.ctx.state === 'suspended') sound.ctx.resume();
+
+            resetDrone(); generateRings(); updateHUD();
         });
 
         function togglePause() {
