@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HARC无人机足球真实模拟挑战</title>
+    <title>HARC无人机足球模拟挑战</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -226,9 +226,14 @@
         <div class="text-center bg-slate-900/90 p-8 sm:p-12 rounded-2xl border border-slate-600 shadow-2xl">
             <i class="fa-solid fa-pause text-4xl sm:text-6xl text-white mb-4 drop-shadow-lg"></i>
             <h2 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-slate-400 tracking-widest drop-shadow-lg">游戏已暂停</h2>
-            <button id="btn-resume" class="mt-8 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 text-white font-black text-xl px-8 py-3 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all transform hover:scale-105 border-2 border-cyan-300">
-                <i class="fa-solid fa-play mr-2"></i> 继续游戏
-            </button>
+            <div class="flex flex-col sm:flex-row gap-4 mt-8 justify-center">
+                <button id="btn-resume" class="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 text-white font-black text-lg sm:text-xl px-8 py-3 rounded-full shadow-[0_0_20px_rgba(6,182,212,0.6)] transition-all transform hover:scale-105 border-2 border-cyan-300 flex items-center justify-center">
+                    <i class="fa-solid fa-play mr-2"></i> 继续游戏
+                </button>
+                <button id="btn-quit" class="bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 text-white font-black text-lg sm:text-xl px-8 py-3 rounded-full shadow-[0_0_20px_rgba(225,29,72,0.6)] transition-all transform hover:scale-105 border-2 border-red-300 flex items-center justify-center">
+                    <i class="fa-solid fa-house mr-2"></i> 返回主菜单
+                </button>
+            </div>
         </div>
     </div>
 
@@ -236,7 +241,7 @@
     <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300 p-2 sm:p-4 pointer-events-auto overflow-y-auto">
         <div class="bg-slate-800 w-full max-w-4xl rounded-2xl border border-slate-600 shadow-2xl flex flex-col p-4 sm:p-8 relative my-auto modal-content">
             <div class="text-center mb-4 sm:mb-6">
-                <h1 id="modal-title" class="text-2xl sm:text-4xl font-black text-white tracking-wider mb-1 drop-shadow-md">HARC无人机足球真实模拟竞技</h1>
+                <h1 id="modal-title" class="text-2xl sm:text-4xl font-black text-white tracking-wider mb-1 drop-shadow-md">无人机足球真实模拟竞技</h1>
                 <p id="modal-subtitle" class="text-slate-400 text-xs sm:text-sm font-bold tracking-widest">设定车手信息与倒数时间，迎接终极竞速！</p>
             </div>
 
@@ -342,11 +347,15 @@
                 const filter = this.ctx.createBiquadFilter();
                 filter.type = 'lowpass'; filter.frequency.setValueAtTime(320, this.ctx.currentTime);
                 this.engineOsc.connect(filter); filter.connect(this.engineGain); this.engineGain.connect(this.ctx.destination);
-                this.engineGain.gain.setValueAtTime(0.01, this.ctx.currentTime);
+                this.engineGain.gain.setValueAtTime(0, this.ctx.currentTime); // 初始化先设为静音0
                 this.engineOsc.start();
             }
             updateEngine(speedRatio) {
-                if (!this.ctx || this.isMuted) return;
+                if (!this.ctx || this.isMuted || !gameState.active || gameState.isPaused) {
+                    if (this.engineGain && this.ctx) this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
+                    return;
+                }
+                if (this.ctx.state === 'suspended') this.ctx.resume();
                 const baseFreq = 60 + speedRatio * 80;
                 const baseGain = 0.01 + speedRatio * 0.03;
                 this.engineOsc.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.1);
@@ -354,6 +363,7 @@
             }
             playBeep(freq, type, duration, vol) {
                 if (!this.ctx || this.isMuted) return;
+                if (this.ctx.state === 'suspended') this.ctx.resume(); // 确保iOS不挂起音频
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
                 osc.type = type; osc.frequency.setValueAtTime(freq, now);
@@ -367,17 +377,23 @@
             playLevelUp() { [440, 554, 659, 880].forEach((f, i) => setTimeout(()=>this.playBeep(f, 'triangle', 0.5, 0.2), i*100)); }
             toggleMute() {
                 this.isMuted = !this.isMuted;
-                if (this.engineGain) this.engineGain.gain.setValueAtTime(this.isMuted ? 0 : 0.01, this.ctx.currentTime);
+                if (this.engineGain && this.ctx) this.engineGain.gain.setValueAtTime(this.isMuted ? 0 : 0.01, this.ctx.currentTime);
                 document.getElementById('audio-icon').className = this.isMuted ? "fa-solid fa-volume-xmark text-slate-500 text-sm sm:text-lg" : "fa-solid fa-volume-high text-cyan-400 text-sm sm:text-lg";
                 return this.isMuted;
             }
         }
         const sound = new SoundEngine();
 
-        // 绑定全局点击触摸事件来唤醒音频（iOS必备）
-        const unlockAudio = () => { if(sound && sound.ctx && sound.ctx.state === 'suspended') sound.ctx.resume(); };
-        document.body.addEventListener('touchstart', unlockAudio, { once: true });
-        document.body.addEventListener('click', unlockAudio, { once: true });
+        // 绑定全局点击触摸事件来唤醒音频（iOS必备的全局唤醒方案）
+        const unlockAudio = () => { 
+            if(sound && sound.ctx) {
+                if(sound.ctx.state === 'suspended') sound.ctx.resume(); 
+            } else {
+                sound.init(); 
+            }
+        };
+        document.body.addEventListener('touchstart', unlockAudio, { capture: true, once: true });
+        document.body.addEventListener('click', unlockAudio, { capture: true, once: true });
 
         const CONFIG = { RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
         const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: false, playerName: "", score: 0, timeLeft: 60, baseTimeLimit: 60 };
@@ -615,7 +631,7 @@
                 }
             } catch (err) {
                 console.warn('横屏锁定受阻:', err);
-                showToast('您的系统不支持自动翻转，请手动旋转手机！');
+                showToast('系统受限：请在手机控制中心关闭“方向锁定”，并手动横置手机以获得最佳体验！');
             }
         });
 
@@ -642,6 +658,31 @@
         document.getElementById('btn-pause').addEventListener('click', togglePause);
         document.getElementById('btn-resume').addEventListener('click', togglePause);
         document.getElementById('btn-audio').addEventListener('click', () => sound.toggleMute());
+
+        // 新增：返回主菜单（退出游戏）逻辑
+        document.getElementById('btn-quit').addEventListener('click', () => {
+            gameState.active = false;
+            gameState.isPaused = false;
+            if(sound.engineGain && sound.ctx) sound.engineGain.gain.setTargetAtTime(0, sound.ctx.currentTime, 0.1);
+            
+            document.getElementById('pause-overlay').classList.add('hidden');
+            document.getElementById('pause-overlay').classList.remove('flex');
+            
+            // 恢复主界面设置面板
+            document.getElementById('leaderboard-panel').classList.add('hidden');
+            document.getElementById('leaderboard-panel').classList.remove('flex');
+            document.getElementById('setup-panel').classList.remove('hidden');
+            document.getElementById('mode-select-container').classList.remove('hidden');
+            document.getElementById('btn-fullscreen').classList.remove('hidden');
+            document.getElementById('btn-start-game').innerHTML = '<i class="fa-solid fa-plane-departure mr-2"></i> 发射升空';
+            document.getElementById('btn-start-game').classList.remove('hidden');
+            document.getElementById('btn-back-setup').classList.add('hidden');
+            document.getElementById('modal-title').textContent = '无人机足球真实模拟竞技';
+            document.getElementById('modal-title').className = 'text-2xl sm:text-4xl font-black text-white tracking-wider mb-1 drop-shadow-md';
+            
+            document.getElementById('modal-overlay').classList.remove('hidden');
+            resetDrone();
+        });
 
         function resetDrone() {
             dronePhysics.pos.set(0, 5, 0); dronePhysics.vel.set(0,0,0);
