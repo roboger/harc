@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>HARC无人机足球模拟挑战</title>
+    <title>HARC无人机足球竞速挑战</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -396,7 +396,8 @@
                 if (this.ctx.state === 'suspended') this.ctx.resume();
                 const baseFreq = 60 + speedRatio * 80;
                 // 放大基准引擎声音，确保手机外放清晰
-                const baseGain = (0.2 + speedRatio * 0.8) * this.masterVolume;
+                const baseGain =
+    (0.04 + speedRatio * 0.12) * this.masterVolume;
                 this.engineOsc.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.1);
                 this.engineGain.gain.setTargetAtTime(baseGain, this.ctx.currentTime, 0.1);
             }
@@ -407,7 +408,11 @@
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
                 osc.type = type; osc.frequency.setValueAtTime(freq, now);
                 // 大幅提升提示音效增益
-                const finalVol = vol * this.masterVolume * 3.0;
+               // 避免提示音增益过大造成削波和刺耳的声音
+const finalVol = Math.min(
+    0.25,
+    vol * this.masterVolume * 0.12
+);
                 gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(finalVol, now + 0.01);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
                 osc.connect(gain); gain.connect(this.ctx.destination);
@@ -422,11 +427,33 @@
             }
         }
         const sound = new SoundEngine();
+		
+async function unlockGameAudio() {
+    try {
+        // 必须由真实的用户操作触发
+        if (!sound.ctx) sound.init();
+
+        if (sound.ctx && sound.ctx.state !== 'running') {
+            await sound.ctx.resume();
+        }
+
+        if (sound.ctx && sound.ctx.state === 'running') {
+            return true;
+        }
+
+        console.warn('音频上下文尚未进入运行状态');
+        return false;
+    } catch (error) {
+        console.warn('音频解锁失败：', error);
+        return false;
+    }
+}
+
 
         // 全局强制音频唤醒监听 (防断触)
         const globalUnlocker = () => { 
-            if (!sound.unlocked) sound.init();
-            else if (sound.ctx && sound.ctx.state === 'suspended') sound.ctx.resume();
+            // 在启动按钮的用户点击事件中主动解锁音频
+unlockGameAudio();
         };
         ['touchstart', 'touchend', 'click', 'keydown'].forEach(evt => {
             document.body.addEventListener(evt, globalUnlocker, { capture: true });
@@ -434,7 +461,50 @@
 
         const CONFIG = { RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
         const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: true, playerName: "", score: 0, timeLeft: 60, baseTimeLimit: 60 };
-        const leaderboard = [];
+        //const leaderboard = [];
+
+const LEADERBOARD_KEY = 'HARC_Drone_Leaderboard_v2';
+
+function loadLeaderboard() {
+    try {
+        const data = JSON.parse(
+            localStorage.getItem(LEADERBOARD_KEY) || '[]'
+        );
+        return Array.isArray(data) ? data.filter(item =>
+            item &&
+            typeof item.name === 'string' &&
+            Number.isFinite(Number(item.score)) &&
+            Number.isFinite(Number(item.time))
+        ) : [];
+    } catch (e) {
+        console.warn('读取排行榜失败：', e);
+        return [];
+    }
+}
+
+const leaderboard = loadLeaderboard();
+
+// 统一的排行榜规则：分数高者优先；同分时用时短者优先
+function sortLeaderboard() {
+    leaderboard.sort((a, b) =>
+        Number(b.score) - Number(a.score) ||
+        Number(a.time) - Number(b.time)
+    );
+}
+
+function saveLeaderboard() {
+    try {
+        sortLeaderboard();
+        // 保存最近 500 条成绩，避免本地存储无限增长
+        localStorage.setItem(
+            LEADERBOARD_KEY,
+            JSON.stringify(leaderboard.slice(0, 500))
+        );
+    } catch (e) {
+        console.warn('保存排行榜失败：', e);
+        showToast('成绩暂未保存，请检查浏览器存储设置');
+    }
+}
 
         function showToast(msg) {
             const container = document.getElementById('toast-container');
@@ -716,13 +786,17 @@
             
             gameState.playerName = name; 
             gameState.level = 1; gameState.score = 0; gameState.timeLeft = gameState.baseTimeLimit; 
-            gameState.active = true; gameState.isPaused = false; gameState.startTime = Date.now();
+            //gameState.active = true; gameState.isPaused = false; gameState.startTime = Date.now();
+			gameState.active = true;
+            gameState.isPaused = false;
+            gameState.startTime = Date.now();
+            totalElapsed = 0;
             
             document.getElementById('modal-overlay').classList.add('hidden');
             
             // 终极解锁：启动瞬间同步恢复 Audio
-            if (!sound.unlocked) sound.init();
-            else if (sound.ctx && sound.ctx.state === 'suspended') sound.ctx.resume();
+           // 在启动按钮的用户点击事件中主动解锁音频
+unlockGameAudio();
 
             resetDrone(); generateRings(); updateHUD();
         });
@@ -736,7 +810,26 @@
 
         document.getElementById('btn-pause').addEventListener('click', togglePause);
         document.getElementById('btn-resume').addEventListener('click', togglePause);
-        document.getElementById('btn-audio').addEventListener('click', () => sound.toggleMute());
+        document.getElementById('btn-audio').addEventListener('click', async () => {
+    if (sound.isMuted || !sound.unlocked) {
+        const restoredVolume =
+            Number(document.getElementById('volume-slider').value) / 100;
+
+        if (restoredVolume <= 0) {
+            showToast('请先将游戏音量滑块调高');
+            return;
+        }
+
+        sound.setVolume(restoredVolume);
+        const ok = await unlockGameAudio();
+
+        if (!ok) {
+            showToast('浏览器未允许播放声音，请再次点击声音按钮');
+        }
+    } else {
+        sound.setVolume(0);
+    }
+});
 
         document.getElementById('btn-quit').addEventListener('click', () => {
             gameState.active = false; gameState.isPaused = false;
@@ -797,8 +890,10 @@
         });
 
         function updatePhysics(delta) {
-            if(!gameState.active || gameState.isPaused) return;
+            //if(!gameState.active || gameState.isPaused) return;
+             if (!gameState.active || gameState.isPaused) return;
 
+            totalElapsed += delta;
             gameState.timeLeft -= delta;
             const timeEl = document.getElementById('time-display');
             timeEl.textContent = Math.max(0, gameState.timeLeft).toFixed(1) + 's';
@@ -934,9 +1029,20 @@
             // 强制将引擎声音渐弱归零，防止后台一直吵闹
             if(sound.engineGain && sound.ctx) sound.engineGain.gain.setTargetAtTime(0, sound.ctx.currentTime, 0.1);
             
-            const finalTime = (gameState.baseTimeLimit - Math.max(0, gameState.timeLeft)).toFixed(1);
-            leaderboard.push({ name: gameState.playerName, score: gameState.score, time: finalTime, status: success ? '通关' : '失败' });
-            leaderboard.sort((a, b) => b.score - a.score);
+            
+           const finalTime = totalElapsed.toFixed(1);
+
+           leaderboard.push({
+           name: gameState.playerName,
+           score: Math.max(0, Math.floor(gameState.score)),
+           time: Number(finalTime),
+           status: success ? '通关' : '失败',
+           date: new Date().toLocaleString('zh-CN')
+           });
+           saveLeaderboard();
+
+			
+			
 
             const modal = document.getElementById('modal-overlay');
             document.getElementById('modal-title').textContent = success ? '竞速挑战成功！' : '时间耗尽，行动失败';
@@ -947,21 +1053,52 @@
             document.getElementById('btn-fullscreen').classList.add('hidden');
             document.getElementById('btn-next-level').classList.add('hidden');
             
-            const tbody = document.getElementById('leaderboard-body');
-            tbody.innerHTML = '';
-            leaderboard.slice(0, 5).forEach((entry, idx) => {
-                const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1;
-                const statusColor = entry.status === '通关' ? 'text-green-400' : 'text-red-400';
-                tbody.innerHTML += `
-                    <tr class="border-b border-slate-700/50">
-                        <td class="py-2">${rank}</td>
-                        <td class="py-2 font-bold text-white">${entry.name}</td>
-                        <td class="py-2 text-yellow-400 font-mono">${entry.score}</td>
-                        <td class="py-2">${entry.time}s</td>
-                        <td class="py-2 ${statusColor}">${entry.status}</td>
-                    </tr>
-                `;
-            });
+           
+const tbody = document.getElementById('leaderboard-body');
+tbody.replaceChildren();
+
+sortLeaderboard();
+
+leaderboard.slice(0, 5).forEach((entry, idx) => {
+    const tr = document.createElement('tr');
+    tr.className = 'border-b border-slate-700/50';
+
+    const rank = idx === 0 ? '🥇'
+        : idx === 1 ? '🥈'
+        : idx === 2 ? '🥉'
+        : String(idx + 1);
+
+    const cells = [
+        rank,
+        entry.name,
+        String(entry.score),
+        `${Number(entry.time).toFixed(1)}s`,
+        entry.status
+    ];
+
+    cells.forEach((value, col) => {
+        const td = document.createElement('td');
+        td.className = 'py-2';
+        td.textContent = value;
+
+        if (col === 1) {
+            td.classList.add('font-bold', 'text-white');
+        } else if (col === 2) {
+            td.classList.add('text-yellow-400', 'font-mono');
+        } else if (col === 4) {
+            td.classList.add(
+                entry.status === '通关'
+                    ? 'text-green-400'
+                    : 'text-red-400'
+            );
+        }
+
+        tr.appendChild(td);
+    });
+
+    tbody.appendChild(tr);
+});
+
 
             document.getElementById('leaderboard-panel').classList.remove('hidden');
             document.getElementById('leaderboard-panel').classList.add('flex');
