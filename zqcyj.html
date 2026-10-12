@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>无人机足球真实模拟挑战</title>
+    <title>HARC无人机足球真实模拟挑战</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -118,9 +118,16 @@
             box-shadow: 0 6px 20px rgba(234, 179, 8, 0.4); transition: all 0.2s;
         }
         .gold-btn:active { transform: translateY(3px); box-shadow: 0 2px 5px rgba(234, 179, 8, 0.4); }
+        
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #38bdf8; border-radius: 4px; }
     </style>
 </head>
 <body class="w-screen h-screen overflow-hidden select-none relative">
+
+    <!-- Toast 通知容器 -->
+    <div id="toast-container" class="fixed top-10 left-1/2 transform -translate-x-1/2 z-[100] flex flex-col gap-2 pointer-events-none"></div>
 
     <div id="canvas-container" class="absolute inset-0 z-0"></div>
 
@@ -229,7 +236,7 @@
     <div id="modal-overlay" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/90 backdrop-blur-md transition-all duration-300 p-2 sm:p-4 pointer-events-auto overflow-y-auto">
         <div class="bg-slate-800 w-full max-w-4xl rounded-2xl border border-slate-600 shadow-2xl flex flex-col p-4 sm:p-8 relative my-auto modal-content">
             <div class="text-center mb-4 sm:mb-6">
-                <h1 id="modal-title" class="text-2xl sm:text-4xl font-black text-white tracking-wider mb-1 drop-shadow-md">无人机足球真实模拟竞技</h1>
+                <h1 id="modal-title" class="text-2xl sm:text-4xl font-black text-white tracking-wider mb-1 drop-shadow-md">HARC无人机足球真实模拟竞技</h1>
                 <p id="modal-subtitle" class="text-slate-400 text-xs sm:text-sm font-bold tracking-widest">设定车手信息与倒数时间，迎接终极竞速！</p>
             </div>
 
@@ -280,11 +287,29 @@
                 <button id="btn-fullscreen" type="button" class="w-full py-2 rounded-xl text-sm font-bold text-slate-300 bg-slate-700 hover:bg-slate-600 border border-slate-500 transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-mobile-screen-button"></i> 开启全屏 (沉浸横屏推荐)
                 </button>
-                <div class="flex justify-center mt-2">
-                    <button id="btn-start-game" class="gold-btn w-full sm:w-2/3 py-3 sm:py-4 rounded-xl text-lg sm:text-xl tracking-widest uppercase">
+                
+                <!-- 排行榜面板 (默认隐藏) -->
+                <div id="leaderboard-panel" class="hidden flex-col gap-4 bg-slate-900/80 p-4 rounded-xl border border-slate-700">
+                    <h3 class="text-xl font-black text-yellow-400 text-center tracking-widest"><i class="fa-solid fa-ranking-star"></i> 英雄排行榜</h3>
+                    <div class="overflow-y-auto max-h-48 custom-scrollbar">
+                        <table class="w-full text-sm text-center text-slate-300">
+                            <thead class="text-xs text-cyan-400 border-b border-slate-600">
+                                <tr><th class="pb-2">名次</th><th class="pb-2">代号</th><th class="pb-2">得分</th><th class="pb-2">耗时</th><th class="pb-2">状态</th></tr>
+                            </thead>
+                            <tbody id="leaderboard-body"></tbody>
+                        </table>
+                    </div>
+                    <button id="btn-export" class="w-full py-2 bg-green-600 hover:bg-green-500 text-white font-bold rounded-lg transition text-sm">
+                        <i class="fa-solid fa-file-csv mr-2"></i> 导出成绩单 (CSV)
+                    </button>
+                </div>
+
+                <div class="flex justify-center mt-2 gap-2 sm:gap-4">
+                    <button id="btn-back-setup" class="hidden w-1/3 py-3 sm:py-4 rounded-xl text-sm sm:text-lg font-bold tracking-widest bg-slate-600 hover:bg-slate-500 text-white transition">返回</button>
+                    <button id="btn-start-game" class="gold-btn flex-1 py-3 sm:py-4 rounded-xl text-lg sm:text-xl tracking-widest uppercase">
                         <i class="fa-solid fa-plane-departure mr-2"></i> 发射升空
                     </button>
-                    <button id="btn-next-level" class="hidden w-full sm:w-2/3 py-3 rounded-xl text-lg font-black tracking-widest bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                    <button id="btn-next-level" class="hidden flex-1 py-3 rounded-xl text-lg font-black tracking-widest bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_20px_rgba(6,182,212,0.4)]">
                         进入下一关 <i class="fa-solid fa-forward-fast ml-2"></i>
                     </button>
                 </div>
@@ -297,19 +322,18 @@
         class SoundEngine {
             constructor() { this.ctx = null; this.isMuted = false; this.engineOsc = null; this.engineGain = null; }
             init() {
-                if (this.ctx) {
-                    if (this.ctx.state === 'suspended') this.ctx.resume();
-                    return;
+                if (!this.ctx) {
+                    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioCtx();
                 }
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                this.ctx = new AudioCtx();
+                if (this.ctx.state === 'suspended') this.ctx.resume();
                 
-                // 移动端静音解锁黑科技 (播放一段静音缓冲)
+                // 移动端静音解锁黑科技 (强制在同步点击事件内播放缓冲)
                 const buffer = this.ctx.createBuffer(1, 1, 22050);
                 const source = this.ctx.createBufferSource();
                 source.buffer = buffer; source.connect(this.ctx.destination); source.start(0);
 
-                if (this.ctx.state === 'suspended') this.ctx.resume();
+                if (this.engineOsc) return; // 避免重复创建引擎声音
 
                 this.engineOsc = this.ctx.createOscillator();
                 this.engineGain = this.ctx.createGain();
@@ -357,6 +381,21 @@
 
         const CONFIG = { RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
         const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: false, playerName: "", score: 0, timeLeft: 60, baseTimeLimit: 60 };
+        const leaderboard = []; // 初始化排行榜数据源
+
+        // Toast 提示框功能
+        function showToast(msg) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'bg-slate-800 text-white px-6 py-3 rounded-full shadow-2xl border border-slate-600 text-sm font-bold opacity-0 transition-opacity duration-300';
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.style.opacity = '1', 10);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
         let scene, camera, renderer, droneGroup, propellers = [], ringsList = [];
         let clock = new THREE.Clock();
@@ -564,13 +603,19 @@
             gameState.baseTimeLimit = parseInt(e.target.value);
         });
 
-        // 全屏与横屏锁定逻辑
-        document.getElementById('btn-fullscreen').addEventListener('click', () => {
+        // 全屏与横屏锁定逻辑 (加入防报错 Toast 提示)
+        document.getElementById('btn-fullscreen').addEventListener('click', async () => {
             const doc = document.documentElement;
-            if (doc.requestFullscreen) doc.requestFullscreen();
-            else if (doc.webkitRequestFullscreen) doc.webkitRequestFullscreen();
-            if (screen.orientation && screen.orientation.lock) {
-                screen.orientation.lock('landscape').catch(err => console.log('横屏锁定失败:', err));
+            try {
+                if (doc.requestFullscreen) await doc.requestFullscreen();
+                else if (doc.webkitRequestFullscreen) await doc.webkitRequestFullscreen();
+                
+                if (screen.orientation && screen.orientation.lock) {
+                    await screen.orientation.lock('landscape');
+                }
+            } catch (err) {
+                console.warn('横屏锁定受阻:', err);
+                showToast('您的系统不支持自动翻转，请手动旋转手机！');
             }
         });
 
@@ -732,14 +777,17 @@
         function levelComplete() {
             gameState.active = false; sound.playLevelUp();
             gameState.score += Math.floor(gameState.timeLeft) * 20; 
-            if(gameState.isFreshmanMode || gameState.level >= 3) endGame(true);
-            else {
+            if(gameState.isFreshmanMode || gameState.level >= 3) {
+                endGame(true);
+            } else {
                 gameState.level++; gameState.ringsCleared = 0;
                 document.getElementById('setup-panel').classList.add('hidden');
                 document.getElementById('mode-select-container').classList.add('hidden');
+                document.getElementById('leaderboard-panel').classList.add('hidden');
                 document.getElementById('modal-title').textContent = `关卡 ${gameState.level-1} 突破完成！`;
                 document.getElementById('modal-subtitle').innerHTML = `获得时间奖励积分，准备进入更难的关卡 ${gameState.level}`;
                 document.getElementById('btn-start-game').classList.add('hidden');
+                document.getElementById('btn-back-setup').classList.add('hidden');
                 document.getElementById('btn-fullscreen').classList.add('hidden');
                 document.getElementById('btn-next-level').classList.remove('hidden');
                 document.getElementById('modal-overlay').classList.remove('hidden');
@@ -748,18 +796,80 @@
 
         function endGame(success) {
             gameState.active = false; if(!success) sound.playHit();
+            
+            // 结算并存入排行榜
+            const finalTime = (gameState.baseTimeLimit - Math.max(0, gameState.timeLeft)).toFixed(1);
+            leaderboard.push({ name: gameState.playerName, score: gameState.score, time: finalTime, status: success ? '通关' : '失败' });
+            leaderboard.sort((a, b) => b.score - a.score);
+
             const modal = document.getElementById('modal-overlay');
             document.getElementById('modal-title').textContent = success ? '竞速挑战成功！' : '时间耗尽，行动失败';
             document.getElementById('modal-title').className = success ? "text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600 tracking-wider mb-2 drop-shadow-md" : "text-2xl sm:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-rose-600 tracking-wider mb-2 drop-shadow-md";
             
-            document.getElementById('setup-panel').classList.remove('hidden');
-            document.getElementById('mode-select-container').classList.remove('hidden');
-            document.getElementById('btn-start-game').classList.remove('hidden');
-            document.getElementById('btn-fullscreen').classList.remove('hidden');
+            document.getElementById('setup-panel').classList.add('hidden');
+            document.getElementById('mode-select-container').classList.add('hidden');
+            document.getElementById('btn-fullscreen').classList.add('hidden');
             document.getElementById('btn-next-level').classList.add('hidden');
+            
+            // 渲染排行榜表格内容
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.innerHTML = '';
+            leaderboard.forEach((entry, idx) => {
+                const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : idx + 1;
+                const statusColor = entry.status === '通关' ? 'text-green-400' : 'text-red-400';
+                tbody.innerHTML += `
+                    <tr class="border-b border-slate-700/50">
+                        <td class="py-2">${rank}</td>
+                        <td class="py-2 font-bold text-white">${entry.name}</td>
+                        <td class="py-2 text-yellow-400 font-mono">${entry.score}</td>
+                        <td class="py-2">${entry.time}s</td>
+                        <td class="py-2 ${statusColor}">${entry.status}</td>
+                    </tr>
+                `;
+            });
+
+            // 展现排行榜与控制按钮
+            document.getElementById('leaderboard-panel').classList.remove('hidden');
+            document.getElementById('leaderboard-panel').classList.add('flex');
+            
+            document.getElementById('btn-start-game').innerHTML = '<i class="fa-solid fa-rotate-right mr-2"></i> 再次挑战';
+            document.getElementById('btn-start-game').classList.remove('hidden');
+            document.getElementById('btn-back-setup').classList.remove('hidden');
+
             modal.classList.remove('hidden');
             if(success) confetti({particleCount: 150, spread: 80, origin: {y:0.6}, colors: ['#facc15', '#38bdf8', '#fb7185']});
         }
+        
+        // 绑定返回设置按钮
+        document.getElementById('btn-back-setup').addEventListener('click', () => {
+            document.getElementById('leaderboard-panel').classList.add('hidden');
+            document.getElementById('leaderboard-panel').classList.remove('flex');
+            document.getElementById('setup-panel').classList.remove('hidden');
+            document.getElementById('mode-select-container').classList.remove('hidden');
+            document.getElementById('btn-fullscreen').classList.remove('hidden');
+            document.getElementById('btn-start-game').innerHTML = '<i class="fa-solid fa-plane-departure mr-2"></i> 发射升空';
+            document.getElementById('btn-back-setup').classList.add('hidden');
+            document.getElementById('modal-title').textContent = '无人机足球真实模拟竞技';
+            document.getElementById('modal-title').className = 'text-2xl sm:text-4xl font-black text-white tracking-wider mb-1 drop-shadow-md';
+        });
+
+        // 绑定成绩单导出功能
+        document.getElementById('btn-export').addEventListener('click', () => {
+            if(leaderboard.length === 0) return;
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; // 加入BOM头防中文乱码
+            csvContent += "排名,飞行员代号,总得分,耗时(秒),状态\n";
+            leaderboard.forEach((row, index) => {
+                csvContent += `${index + 1},${row.name},${row.score},${row.time},${row.status}\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "HARC_Drone_Leaderboard.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast("成绩单 CSV 已成功导出！");
+        });
         
         document.getElementById('btn-next-level').addEventListener('click', () => {
             gameState.timeLeft = gameState.baseTimeLimit;
