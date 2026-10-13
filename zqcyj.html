@@ -147,9 +147,16 @@
                         <span id="score-display" class="text-lg sm:text-2xl font-black text-yellow-400 font-mono leading-none">0</span>
                     </div>
                 </div>
-                <div class="hud-badge px-2 sm:px-3 py-1 flex items-center gap-1 sm:gap-2 w-max">
-                    <i class="fa-solid fa-ruler-vertical text-cyan-400 text-[10px] sm:text-sm"></i>
-                    <span class="text-[10px] sm:text-xs text-slate-300 font-bold tracking-wider">高度: <span id="alt-display" class="text-white font-mono text-xs sm:text-sm ml-1">0.0</span>m</span>
+                <!-- 实时排名与高度 -->
+                <div class="flex gap-2">
+                    <div class="hud-badge px-2 sm:px-3 py-1 flex items-center gap-1 sm:gap-2 w-max">
+                        <i class="fa-solid fa-ruler-vertical text-cyan-400 text-[10px] sm:text-sm"></i>
+                        <span class="text-[10px] sm:text-xs text-slate-300 font-bold tracking-wider">高度: <span id="alt-display" class="text-white font-mono text-xs sm:text-sm ml-1">0.0</span>m</span>
+                    </div>
+                    <div class="hud-badge px-2 sm:px-3 py-1 flex items-center gap-1 sm:gap-2 w-max">
+                        <i class="fa-solid fa-ranking-star text-yellow-400 text-[10px] sm:text-sm"></i>
+                        <span class="text-[10px] sm:text-xs text-slate-300 font-bold tracking-wider">实时排名: <span id="rank-display" class="text-white font-mono text-xs sm:text-sm ml-1">--</span></span>
+                    </div>
                 </div>
             </div>
 
@@ -157,7 +164,7 @@
                 <div class="flex items-center gap-1 sm:gap-2">
                     <div class="hud-badge px-3 sm:px-8 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-4 border-t-4 border-t-yellow-400 bg-slate-900/95">
                         <i class="fa-regular fa-clock text-xl sm:text-3xl text-slate-300"></i>
-                        <span id="time-display" class="text-2xl sm:text-4xl font-black text-white font-mono tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">60.0s</span>
+                        <span id="time-display" class="text-2xl sm:text-4xl font-black text-white font-mono tracking-widest drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">120.0s</span>
                     </div>
                     <button id="btn-pause" class="hud-badge w-10 h-10 sm:w-12 sm:h-12 flex items-center justify-center hover:bg-white/10 transition active:scale-95 border-t-white" title="暂停 (P)">
                         <i class="fa-solid fa-pause text-white text-base sm:text-xl"></i>
@@ -169,7 +176,7 @@
                     <div class="w-24 sm:w-32 bg-gray-800 h-1.5 sm:h-2.5 rounded-full overflow-hidden shadow-inner">
                         <div id="ring-progress-bar" class="bg-gradient-to-r from-cyan-400 to-blue-500 h-full w-0 transition-all duration-300"></div>
                     </div>
-                    <span class="text-xs sm:text-sm font-mono font-black text-white"><span id="rings-count">0</span><span class="text-slate-500 text-[10px] sm:text-xs">/10</span></span>
+                    <span class="text-xs sm:text-sm font-mono font-black text-white"><span id="rings-count">0</span><span class="text-slate-500 text-[10px] sm:text-xs" id="rings-total-count">/10</span></span>
                 </div>
             </div>
 
@@ -251,24 +258,34 @@
             </div>
 
             <!-- 参数设置板 -->
-            <div id="setup-panel" class="flex flex-col md:flex-row gap-4 sm:gap-6 mb-4 sm:mb-8 bg-slate-900/60 p-4 sm:p-5 rounded-xl border border-slate-700 shadow-inner">
-                <div class="flex-1 flex flex-col gap-2">
+            <div id="setup-panel" class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 mb-4 sm:mb-8 bg-slate-900/60 p-4 sm:p-5 rounded-xl border border-slate-700 shadow-inner">
+                <div class="flex flex-col gap-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-300 uppercase tracking-widest"><i class="fa-solid fa-user-astronaut text-cyan-400 mr-2"></i> 飞行员代号</label>
                     <input type="text" id="player-name-input" placeholder="输入您的名字..." class="custom-input rounded-lg px-3 py-2 font-bold text-base w-full text-center tracking-widest">
                     <p id="name-warning" class="text-red-400 text-xs hidden font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> 必须输入代号！</p>
                 </div>
                 
-                <div class="flex-1 flex flex-col gap-2">
+                <div class="flex flex-col gap-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-300 uppercase flex justify-between tracking-widest">
-                        <span><i class="fa-solid fa-stopwatch text-yellow-400 mr-2"></i> 关卡限制时间</span>
-                        <span id="time-setting-display" class="text-yellow-400 font-mono text-base font-black">60 秒</span>
+                        <span><i class="fa-solid fa-stopwatch text-yellow-400 mr-2"></i> 关卡总限制时间</span>
+                        <span id="time-setting-display" class="text-yellow-400 font-mono text-base font-black">120 秒</span>
                     </label>
                     <div class="flex items-center h-full px-2 mt-2">
-                        <input type="range" id="time-slider" min="30" max="180" value="60" step="10" class="w-full">
+                        <input type="range" id="time-slider" min="30" max="300" value="120" step="10" class="w-full">
                     </div>
                 </div>
 
-                <div class="flex-1 flex flex-col gap-2">
+                <div class="flex flex-col gap-2">
+                    <label class="text-xs sm:text-sm font-bold text-slate-300 uppercase flex justify-between tracking-widest">
+                        <span><i class="fa-solid fa-ring text-fuchsia-400 mr-2"></i> 每关圆环数量</span>
+                        <span id="rings-setting-display" class="text-fuchsia-400 font-mono text-base font-black">10 个</span>
+                    </label>
+                    <div class="flex items-center h-full px-2 mt-2">
+                        <input type="range" id="rings-slider" min="5" max="30" value="10" step="5" class="w-full">
+                    </div>
+                </div>
+
+                <div class="flex flex-col gap-2">
                     <label class="text-xs sm:text-sm font-bold text-slate-300 uppercase flex justify-between tracking-widest">
                         <span><i class="fa-solid fa-volume-high text-cyan-400 mr-2"></i> 游戏音量</span>
                         <span id="volume-setting-display" class="text-cyan-400 font-mono text-base font-black">100%</span>
@@ -299,7 +316,7 @@
                     </div>
                     <div class="p-4 flex-1">
                         <h3 class="text-xl font-black text-white mb-2">无人机足球竞技锦标赛</h3>
-                        <p class="text-sm text-slate-400">光环距离更远且会动态浮动。需要在限定时间内靠纯操作完成高难度穿越。</p>
+                        <p class="text-sm text-slate-400">光环距离更远且会动态浮动。需要在统一总时间内完成高难度穿越连击。</p>
                     </div>
                 </div>
             </div>
@@ -352,7 +369,6 @@
                     const AudioCtx = window.AudioContext || window.webkitAudioContext;
                     this.ctx = new AudioCtx();
                     
-                    // iOS 终极黑科技：创建一个静音 Buffer 并立刻播放，以此击穿苹果静音限制
                     const buffer = this.ctx.createBuffer(1, 1, 22050);
                     const source = this.ctx.createBufferSource();
                     source.buffer = buffer; source.connect(this.ctx.destination); source.start(0);
@@ -382,7 +398,6 @@
                     if (this.engineGain && this.ctx) this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
                 } else {
                     this.isMuted = false;
-                    // 滑动滑块时尝试强行唤醒音频
                     if (!this.unlocked) this.init();
                     else if (this.ctx && this.ctx.state === 'suspended') this.ctx.resume();
                 }
@@ -395,9 +410,7 @@
                 }
                 if (this.ctx.state === 'suspended') this.ctx.resume();
                 const baseFreq = 60 + speedRatio * 80;
-                // 放大基准引擎声音，确保手机外放清晰
-                const baseGain =
-    (0.04 + speedRatio * 0.12) * this.masterVolume;
+                const baseGain = (0.04 + speedRatio * 0.12) * this.masterVolume;
                 this.engineOsc.frequency.setTargetAtTime(baseFreq, this.ctx.currentTime, 0.1);
                 this.engineGain.gain.setTargetAtTime(baseGain, this.ctx.currentTime, 0.1);
             }
@@ -407,12 +420,7 @@
                 const now = this.ctx.currentTime;
                 const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
                 osc.type = type; osc.frequency.setValueAtTime(freq, now);
-                // 大幅提升提示音效增益
-               // 避免提示音增益过大造成削波和刺耳的声音
-const finalVol = Math.min(
-    0.25,
-    vol * this.masterVolume * 0.12
-);
+                const finalVol = Math.min(0.25, vol * this.masterVolume * 0.12);
                 gain.gain.setValueAtTime(0, now); gain.gain.linearRampToValueAtTime(finalVol, now + 0.01);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
                 osc.connect(gain); gain.connect(this.ctx.destination);
@@ -427,85 +435,49 @@ const finalVol = Math.min(
             }
         }
         const sound = new SoundEngine();
-		
-async function unlockGameAudio() {
-    try {
-        // 必须由真实的用户操作触发
-        if (!sound.ctx) sound.init();
 
-        if (sound.ctx && sound.ctx.state !== 'running') {
-            await sound.ctx.resume();
+        async function unlockGameAudio() {
+            try {
+                if (!sound.ctx) sound.init();
+                if (sound.ctx && sound.ctx.state !== 'running') await sound.ctx.resume();
+                if (sound.ctx && sound.ctx.state === 'running') return true;
+                return false;
+            } catch (error) { return false; }
         }
 
-        if (sound.ctx && sound.ctx.state === 'running') {
-            return true;
-        }
-
-        console.warn('音频上下文尚未进入运行状态');
-        return false;
-    } catch (error) {
-        console.warn('音频解锁失败：', error);
-        return false;
-    }
-}
-
-
-        // 全局强制音频唤醒监听 (防断触)
-        const globalUnlocker = () => { 
-            // 在启动按钮的用户点击事件中主动解锁音频
-unlockGameAudio();
-        };
+        const globalUnlocker = () => { unlockGameAudio(); };
         ['touchstart', 'touchend', 'click', 'keydown'].forEach(evt => {
             document.body.addEventListener(evt, globalUnlocker, { capture: true });
         });
 
-        const CONFIG = { RINGS_PER_LEVEL: 10, TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
-        const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, startTime: 0, speed: 0, isFreshmanMode: true, playerName: "", score: 0, timeLeft: 60,  baseTimeLimit: 60  };let totalElapsed = 0;
+        const CONFIG = { TOTAL_LEVELS: 3, RING_SPACING: 45, RING_RADIUS: 5.0, DRONE_RADIUS: 1.8 };
+        // gameState 中动态保存用户设定的时间与环数
+        const gameState = { active: false, isPaused: false, level: 1, ringsCleared: 0, ringsPerLevel: 10, startTime: 0, speed: 0, isFreshmanMode: true, playerName: "", score: 0, timeLeft: 120, baseTimeLimit: 120 };
+        let totalElapsed = 0;
        
-	   //const leaderboard = [];
+        const LEADERBOARD_KEY = 'HARC_Drone_Leaderboard_v2';
 
-const LEADERBOARD_KEY = 'HARC_Drone_Leaderboard_v2';
+        function loadLeaderboard() {
+            try {
+                const data = JSON.parse(localStorage.getItem(LEADERBOARD_KEY) || '[]');
+                return Array.isArray(data) ? data.filter(item => item && typeof item.name === 'string' && Number.isFinite(Number(item.score)) && Number.isFinite(Number(item.time))) : [];
+            } catch (e) { return []; }
+        }
 
-function loadLeaderboard() {
-    try {
-        const data = JSON.parse(
-            localStorage.getItem(LEADERBOARD_KEY) || '[]'
-        );
-        return Array.isArray(data) ? data.filter(item =>
-            item &&
-            typeof item.name === 'string' &&
-            Number.isFinite(Number(item.score)) &&
-            Number.isFinite(Number(item.time))
-        ) : [];
-    } catch (e) {
-        console.warn('读取排行榜失败：', e);
-        return [];
-    }
-}
+        const leaderboard = loadLeaderboard();
 
-const leaderboard = loadLeaderboard();
+        function sortLeaderboard() {
+            leaderboard.sort((a, b) => Number(b.score) - Number(a.score) || Number(a.time) - Number(b.time));
+        }
 
-// 统一的排行榜规则：分数高者优先；同分时用时短者优先
-function sortLeaderboard() {
-    leaderboard.sort((a, b) =>
-        Number(b.score) - Number(a.score) ||
-        Number(a.time) - Number(b.time)
-    );
-}
-
-function saveLeaderboard() {
-    try {
-        sortLeaderboard();
-        // 保存最近 500 条成绩，避免本地存储无限增长
-        localStorage.setItem(
-            LEADERBOARD_KEY,
-            JSON.stringify(leaderboard.slice(0, 500))
-        );
-    } catch (e) {
-        console.warn('保存排行榜失败：', e);
-        showToast('成绩暂未保存，请检查浏览器存储设置');
-    }
-}
+        function saveLeaderboard() {
+            try {
+                sortLeaderboard();
+                localStorage.setItem(LEADERBOARD_KEY, JSON.stringify(leaderboard.slice(0, 500)));
+            } catch (e) {
+                showToast('成绩暂未保存，请检查浏览器存储设置');
+            }
+        }
 
         function showToast(msg) {
             const container = document.getElementById('toast-container');
@@ -522,13 +494,11 @@ function saveLeaderboard() {
         const keys = { w:false, s:false, ' ':false, r:false, p:false, ArrowUp:false, ArrowDown:false, ArrowLeft:false, ArrowRight:false };
         
         const touchInput = { left: { x:0, y:0, active:false, ptrId:null }, right: { x:0, y:0, active:false, ptrId:null } };
-
         const dronePhysics = { pos: new THREE.Vector3(0, 5, 0), vel: new THREE.Vector3(0, 0, 0), pitch: 0, roll: 0, targetPitch: 0, targetRoll: 0, hitTimer: 0, isHovering: false };
 
         function initThreeScene() {
             const container = document.getElementById('canvas-container');
             scene = new THREE.Scene(); 
-            // 真实物理天空色
             scene.background = new THREE.Color(0x60a5fa); 
             scene.fog = new THREE.FogExp2(0x60a5fa, 0.001);
 
@@ -543,7 +513,6 @@ function saveLeaderboard() {
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.7); scene.add(ambientLight);
             const sunLight = new THREE.DirectionalLight(0xffffff, 1.0);
             sunLight.position.set(100, 200, -50); sunLight.castShadow = true;
-            // 降低阴影贴图分辨率，大幅度优化手机端卡顿
             sunLight.shadow.mapSize.width = 512; sunLight.shadow.mapSize.height = 512;
             sunLight.shadow.camera.near = 0.5; sunLight.shadow.camera.far = 500;
             const d = 80; sunLight.shadow.camera.left = -d; sunLight.shadow.camera.right = d; sunLight.shadow.camera.top = d; sunLight.shadow.camera.bottom = -d;
@@ -555,24 +524,21 @@ function saveLeaderboard() {
         }
 
         function createRealStadium() {
-            // 1. 真实足球场草皮
             const grassCanvas = document.createElement('canvas'); grassCanvas.width = 512; grassCanvas.height = 512;
             const ctx = grassCanvas.getContext('2d');
-            ctx.fillStyle = '#166534'; ctx.fillRect(0,0,512,512); // 深绿
-            ctx.fillStyle = '#15803d'; for(let i=0; i<512; i+=64) ctx.fillRect(0, i, 512, 32); // 浅绿交替
+            ctx.fillStyle = '#166534'; ctx.fillRect(0,0,512,512);
+            ctx.fillStyle = '#15803d'; for(let i=0; i<512; i+=64) ctx.fillRect(0, i, 512, 32); 
             ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 4;
-            // 场地白线与中圈
             ctx.strokeRect(32, 32, 448, 448);
             ctx.beginPath(); ctx.moveTo(32, 256); ctx.lineTo(480, 256); ctx.stroke();
             ctx.beginPath(); ctx.arc(256, 256, 60, 0, Math.PI*2); ctx.stroke();
             
             const grassTex = new THREE.CanvasTexture(grassCanvas); 
             grassTex.wrapS = THREE.RepeatWrapping; grassTex.wrapT = THREE.RepeatWrapping; 
-            grassTex.repeat.set(2, 40); // 赛道拉长
+            grassTex.repeat.set(2, 40); 
             const ground = new THREE.Mesh(new THREE.PlaneGeometry(100, 2000), new THREE.MeshStandardMaterial({ map: grassTex, roughness: 0.9 }));
             ground.rotation.x = -Math.PI/2; ground.position.z = 900; ground.receiveShadow = true; scene.add(ground);
 
-            // 2. 专业起飞停机坪 (H)
             const padCanvas = document.createElement('canvas'); padCanvas.width = 256; padCanvas.height = 256;
             const pCtx = padCanvas.getContext('2d');
             pCtx.fillStyle = '#1e293b'; pCtx.beginPath(); pCtx.arc(128, 128, 120, 0, Math.PI*2); pCtx.fill();
@@ -582,10 +548,9 @@ function saveLeaderboard() {
             const pad = new THREE.Mesh(new THREE.PlaneGeometry(12, 12), new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(padCanvas), transparent: true }));
             pad.rotation.x = -Math.PI/2; pad.position.set(0, 0.1, 0); pad.receiveShadow = true; scene.add(pad);
 
-            // 3. 两侧蓝白防撞网
             const netCanvas = document.createElement('canvas'); netCanvas.width = 64; netCanvas.height = 64;
             const netCtx = netCanvas.getContext('2d');
-            netCtx.clearRect(0,0,64,64); netCtx.strokeStyle = '#2563eb'; netCtx.lineWidth = 2; // 蓝色网线
+            netCtx.clearRect(0,0,64,64); netCtx.strokeStyle = '#2563eb'; netCtx.lineWidth = 2; 
             netCtx.beginPath(); netCtx.moveTo(0,0); netCtx.lineTo(64,64); netCtx.moveTo(64,0); netCtx.lineTo(0,64); netCtx.stroke();
             const netTex = new THREE.CanvasTexture(netCanvas); netTex.wrapS = netTex.wrapT = THREE.RepeatWrapping; netTex.repeat.set(500, 10);
             const netMat = new THREE.MeshBasicMaterial({ map: netTex, transparent: true, opacity: 0.6, side: THREE.DoubleSide });
@@ -593,7 +558,6 @@ function saveLeaderboard() {
             const leftNet = new THREE.Mesh(new THREE.PlaneGeometry(2000, 40), netMat); leftNet.position.set(-45, 20, 900); leftNet.rotation.y = Math.PI/2; scene.add(leftNet);
             const rightNet = new THREE.Mesh(new THREE.PlaneGeometry(2000, 40), netMat); rightNet.position.set(45, 20, 900); rightNet.rotation.y = -Math.PI/2; scene.add(rightNet);
 
-            // 4. 红蓝交替实体看台
             const standGeo = new THREE.BoxGeometry(20, 4, 2000);
             const redMat = new THREE.MeshStandardMaterial({ color: 0xef4444 });
             const blueMat = new THREE.MeshStandardMaterial({ color: 0x3b82f6 });
@@ -604,13 +568,12 @@ function saveLeaderboard() {
                 const rStand = new THREE.Mesh(standGeo, mat); rStand.position.set(offset, yPos, 900); scene.add(rStand);
             }
 
-            // 5. 高性能材质复用：HARC 广告墙
             const BILLBOARD_TEXTS = ["HARC无人机足球模拟竞速", "无人机模拟训练场欢迎您"];
             const adMaterials = BILLBOARD_TEXTS.map(text => {
                 const bCanvas = document.createElement('canvas'); bCanvas.width = 1024; bCanvas.height = 256;
                 const bCtx = bCanvas.getContext('2d');
-                bCtx.fillStyle = '#0f172a'; bCtx.fillRect(0,0,1024,256); // 黑底
-                bCtx.fillStyle = '#ffffff'; bCtx.font = '900 80px "Noto Sans SC"'; bCtx.textAlign = 'center'; bCtx.textBaseline = 'middle'; // 白字
+                bCtx.fillStyle = '#0f172a'; bCtx.fillRect(0,0,1024,256); 
+                bCtx.fillStyle = '#ffffff'; bCtx.font = '900 80px "Noto Sans SC"'; bCtx.textAlign = 'center'; bCtx.textBaseline = 'middle';
                 bCtx.fillText(text, 512, 128);
                 return new THREE.MeshStandardMaterial({ map: new THREE.CanvasTexture(bCanvas) });
             });
@@ -622,9 +585,8 @@ function saveLeaderboard() {
                 scene.add(board);
             }
 
-            // 6. 真实红白标志筒 (Cones)
             const coneGeo = new THREE.ConeGeometry(1.2, 3.5, 16);
-            const coneMat = new THREE.MeshStandardMaterial({ color: 0xff5500 }); // 橙红
+            const coneMat = new THREE.MeshStandardMaterial({ color: 0xff5500 }); 
             const coneWhiteMat = new THREE.MeshStandardMaterial({ color: 0xffffff });
             
             for(let i=0; i<25; i++) {
@@ -641,30 +603,24 @@ function saveLeaderboard() {
 
         function createSphericalDrone() {
             droneGroup = new THREE.Group();
-            // 醒目的红色外骨骼防护罩
             const cageMat = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.3 });
             const R = CONFIG.DRONE_RADIUS; const tubeR = 0.1;
             
-            // 纬线圈 (水平)
             const eqRing = new THREE.Mesh(new THREE.TorusGeometry(R, tubeR, 8, 32), cageMat); eqRing.rotation.x = Math.PI/2; droneGroup.add(eqRing);
             const latRadius = R * Math.cos(Math.PI/6); const latY = R * Math.sin(Math.PI/6);
             const topRing = new THREE.Mesh(new THREE.TorusGeometry(latRadius, tubeR, 8, 32), cageMat); topRing.position.y = latY; topRing.rotation.x = Math.PI/2; droneGroup.add(topRing);
             const bottomRing = new THREE.Mesh(new THREE.TorusGeometry(latRadius, tubeR, 8, 32), cageMat); bottomRing.position.y = -latY; bottomRing.rotation.x = Math.PI/2; droneGroup.add(bottomRing);
             
-            // 经线圈 (垂直)
             for(let i=0; i<4; i++) {
                 const vRing = new THREE.Mesh(new THREE.TorusGeometry(R, tubeR, 8, 32), cageMat); vRing.rotation.y = (Math.PI/4)*i; droneGroup.add(vRing);
             }
 
-            // 内部十字碳纤维机架
             const frameMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
             const frame1 = new THREE.Mesh(new THREE.BoxGeometry(R*1.7, 0.1, 0.2), frameMat); frame1.rotation.y = Math.PI/4; droneGroup.add(frame1);
             const frame2 = new THREE.Mesh(new THREE.BoxGeometry(R*1.7, 0.1, 0.2), frameMat); frame2.rotation.y = -Math.PI/4; droneGroup.add(frame2);
             
-            // 发光飞控核心
             const core = new THREE.Mesh(new THREE.SphereGeometry(0.5, 16, 16), new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0x38bdf8, emissiveIntensity: 0.5 })); droneGroup.add(core);
 
-            // 白色高速螺旋桨
             propellers = [];
             const propGeo = new THREE.BoxGeometry(1.4, 0.02, 0.15);
             const propMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.9 });
@@ -673,7 +629,6 @@ function saveLeaderboard() {
                 droneGroup.add(prop); propellers.push(prop);
             });
 
-            // 红色机头指示灯 (防止分不清前后)
             const headLight = new THREE.Mesh(new THREE.SphereGeometry(0.2), new THREE.MeshBasicMaterial({color: 0xff0000}));
             headLight.position.set(0, 0, R - 0.1); droneGroup.add(headLight);
             
@@ -681,28 +636,49 @@ function saveLeaderboard() {
             scene.add(droneGroup);
         }
 
+        // 生成星星 3D Sprite
+        function createStarSprite() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 64; canvas.height = 64;
+            const ctx = canvas.getContext('2d');
+            
+            ctx.shadowColor = '#facc15';
+            ctx.shadowBlur = 10;
+            ctx.fillStyle = '#facc15';
+            ctx.translate(32, 32);
+            ctx.beginPath();
+            // 绘制五角星
+            for(let i=0; i<5; i++){
+                ctx.lineTo(Math.cos((18+i*72)/180*Math.PI)*20, -Math.sin((18+i*72)/180*Math.PI)*20);
+                ctx.lineTo(Math.cos((54+i*72)/180*Math.PI)*8, -Math.sin((54+i*72)/180*Math.PI)*8);
+            }
+            ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.stroke();
+
+            const tex = new THREE.CanvasTexture(canvas);
+            const mat = new THREE.SpriteMaterial({ map: tex, color: 0xffffff, depthTest: false }); 
+            const sprite = new THREE.Sprite(mat);
+            sprite.scale.set(4, 4, 1);
+            return sprite;
+        }
+
         function generateRings() {
-            // 严谨的内存释放：防止卡顿
             ringsList.forEach(r => {
                 if(r.mesh) {
                     scene.remove(r.mesh);
                     r.mesh.traverse(child => { 
-                        if (child.isMesh) { 
-                            child.geometry.dispose(); 
-                            if(child.material.dispose) child.material.dispose(); 
-                        } 
+                        if (child.isMesh) { child.geometry.dispose(); if(child.material.dispose) child.material.dispose(); } 
                     });
                 }
             });
             ringsList = [];
             let currentZ = 40;
-            for (let i = 0; i < CONFIG.RINGS_PER_LEVEL; i++) {
+            for (let i = 0; i < gameState.ringsPerLevel; i++) {
                 currentZ += CONFIG.RING_SPACING;
                 const ringGroup = new THREE.Group();
-                const isFinal = (i === CONFIG.RINGS_PER_LEVEL - 1);
+                const isFinal = (i === gameState.ringsPerLevel - 1);
                 const color = isFinal ? 0xfacc15 : (i%2===0 ? 0xffffff : 0x38bdf8);
                 
-                // 降低多边形数量优化帧率
                 const torus = new THREE.Mesh(new THREE.TorusGeometry(CONFIG.RING_RADIUS, 0.5, 8, 16), new THREE.MeshStandardMaterial({ color: color }));
                 torus.castShadow = true; ringGroup.add(torus);
                 const inner = new THREE.Mesh(new THREE.CircleGeometry(CONFIG.RING_RADIUS - 0.5, 16), new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.15, side: THREE.DoubleSide }));
@@ -759,6 +735,12 @@ function saveLeaderboard() {
             gameState.baseTimeLimit = parseInt(e.target.value);
         });
 
+        document.getElementById('rings-slider').addEventListener('input', (e) => {
+            document.getElementById('rings-setting-display').textContent = e.target.value + ' 个';
+            gameState.ringsPerLevel = parseInt(e.target.value);
+            document.getElementById('rings-total-count').textContent = '/' + gameState.ringsPerLevel;
+        });
+
         document.getElementById('volume-slider').addEventListener('input', (e) => {
             const volDisplay = e.target.value + '%';
             document.getElementById('volume-setting-display').textContent = volDisplay;
@@ -775,7 +757,6 @@ function saveLeaderboard() {
                     await screen.orientation.lock('landscape');
                 }
             } catch (err) {
-                console.warn('横屏受阻:', err);
                 showToast('系统受限：苹果手机请下拉控制中心关闭“方向锁定”，并手动横置手机以获得完美体验！');
             }
         });
@@ -785,50 +766,25 @@ function saveLeaderboard() {
             if(!name) { document.getElementById('name-warning').classList.remove('hidden'); return; }
             document.getElementById('name-warning').classList.add('hidden');
             
-            
-gameState.playerName = name;
+            gameState.playerName = name;
+            gameState.level = 1;
+            gameState.ringsCleared = 0;
+            gameState.score = 0;
+            gameState.timeLeft = gameState.baseTimeLimit;
+            gameState.active = true;
+            gameState.isPaused = false;
+            gameState.startTime = Date.now();
+            totalElapsed = 0;
 
-// 每次开始新挑战，都必须完整重置比赛状态
-gameState.level = 1;
-gameState.ringsCleared = 0;
-gameState.score = 0;
-gameState.timeLeft = gameState.baseTimeLimit;
-gameState.active = true;
-gameState.isPaused = false;
-gameState.startTime = Date.now();
-totalElapsed = 0;
+            Object.keys(keys).forEach(key => keys[key] = false);
+            [touchInput.left, touchInput.right].forEach(input => { input.x = 0; input.y = 0; input.active = false; input.ptrId = null; });
 
-// 清除残留的键盘控制状态
-Object.keys(keys).forEach(key => {
-    keys[key] = false;
-});
-
-// 清除残留的触屏摇杆状态
-[touchInput.left, touchInput.right].forEach(input => {
-    input.x = 0;
-    input.y = 0;
-    input.active = false;
-    input.ptrId = null;
-});
-
-// 重置飞行状态
-resetDrone();
-generateRings();
-updateHUD();
-
-            //gameState.active = true; gameState.isPaused = false; gameState.startTime = Date.now();
-			//gameState.active = true;
-            //gameState.isPaused = false;
-            //gameState.startTime = Date.now();
-           // totalElapsed = 0;
+            resetDrone();
+            generateRings();
+            updateHUD();
             
             document.getElementById('modal-overlay').classList.add('hidden');
-            
-            // 终极解锁：启动瞬间同步恢复 Audio
-           // 在启动按钮的用户点击事件中主动解锁音频
-unlockGameAudio();
-
-            //resetDrone(); generateRings(); updateHUD();
+            unlockGameAudio();
         });
 
         function togglePause() {
@@ -841,25 +797,16 @@ unlockGameAudio();
         document.getElementById('btn-pause').addEventListener('click', togglePause);
         document.getElementById('btn-resume').addEventListener('click', togglePause);
         document.getElementById('btn-audio').addEventListener('click', async () => {
-    if (sound.isMuted || !sound.unlocked) {
-        const restoredVolume =
-            Number(document.getElementById('volume-slider').value) / 100;
-
-        if (restoredVolume <= 0) {
-            showToast('请先将游戏音量滑块调高');
-            return;
-        }
-
-        sound.setVolume(restoredVolume);
-        const ok = await unlockGameAudio();
-
-        if (!ok) {
-            showToast('浏览器未允许播放声音，请再次点击声音按钮');
-        }
-    } else {
-        sound.setVolume(0);
-    }
-});
+            if (sound.isMuted || !sound.unlocked) {
+                const restoredVolume = Number(document.getElementById('volume-slider').value) / 100;
+                if (restoredVolume <= 0) { showToast('请先将游戏音量滑块调高'); return; }
+                sound.setVolume(restoredVolume);
+                const ok = await unlockGameAudio();
+                if (!ok) showToast('浏览器未允许播放声音，请再次点击声音按钮');
+            } else {
+                sound.setVolume(0);
+            }
+        });
 
         document.getElementById('btn-quit').addEventListener('click', () => {
             gameState.active = false; gameState.isPaused = false;
@@ -920,8 +867,7 @@ unlockGameAudio();
         });
 
         function updatePhysics(delta) {
-            //if(!gameState.active || gameState.isPaused) return;
-             if (!gameState.active || gameState.isPaused) return;
+            if (!gameState.active || gameState.isPaused) return;
 
             totalElapsed += delta;
             gameState.timeLeft -= delta;
@@ -937,7 +883,6 @@ unlockGameAudio();
 
             if((Math.abs(altInput)>0.1 || Math.abs(pitchInput)>0.1 || Math.abs(rollInput)>0.1) && dronePhysics.isHovering) toggleHover();
 
-            // 彻底去除自动前进，完全依赖纯手动操作
             const accel = 60 * delta; 
             
             if(dronePhysics.isHovering) {
@@ -958,20 +903,17 @@ unlockGameAudio();
                 dronePhysics.vel.y += altInput * accel * 1.5;
             }
 
-            dronePhysics.vel.multiplyScalar(0.95); // 增加一点惯性滑行阻力
+            dronePhysics.vel.multiplyScalar(0.95);
             dronePhysics.pos.addScaledVector(dronePhysics.vel, delta);
             
-            // 地面碰撞检测与重置逻辑 (触地炸机)
             const groundLimit = CONFIG.DRONE_RADIUS;
             if (dronePhysics.pos.y <= groundLimit + 0.1) {
-                // 如果不是在悬停，或者下落速度过快，判定为坠毁炸机
                 if (!dronePhysics.isHovering || Math.abs(dronePhysics.vel.y) > 2) {
                     sound.playHit();
                     showToast("💥 警告：发生触地坠毁！已紧急重置回起飞点。");
                     resetDrone(); 
-                    return; // 终止本帧计算
+                    return; 
                 } else {
-                    // 平稳降落触地
                     dronePhysics.pos.y = groundLimit;
                     dronePhysics.vel.y = 0;
                 }
@@ -984,7 +926,7 @@ unlockGameAudio();
             
             droneGroup.position.copy(dronePhysics.pos);
             droneGroup.rotation.set(dronePhysics.pitch, 0, dronePhysics.roll);
-            propellers.forEach((p, idx) => p.rotation.y += (idx%2===0?1:-1)*2.0); // 提升螺旋桨转速观感
+            propellers.forEach((p, idx) => p.rotation.y += (idx%2===0?1:-1)*2.0); 
             
             const speed = dronePhysics.vel.length();
             gameState.speed = speed * 15;
@@ -1006,38 +948,82 @@ unlockGameAudio();
 
                 const distZ = Math.abs(dronePhysics.pos.z - ring.mesh.position.z);
                 const xyDist = Math.hypot(dronePhysics.pos.x - ring.mesh.position.x, dronePhysics.pos.y - ring.mesh.position.y);
+                
+                // 严谨的安全判定区域：确保机身完全在圆环内部 (5.0 - 1.8 = 3.2)
+                const safeRadius = CONFIG.RING_RADIUS - CONFIG.DRONE_RADIUS;
+                const hitMargin = CONFIG.RING_RADIUS + 1.0; 
 
-                if(distZ < 3.0) {
-                    if(xyDist < CONFIG.RING_RADIUS) {
-                        ring.passed = true; gameState.ringsCleared++; gameState.score += 100;
-                        ring.torus.material.color.setHex(0x4ade80); ring.inner.material.opacity = 0.5;
-                        sound.playPassRing(); updateHUD();
-                        if(gameState.ringsCleared >= CONFIG.RINGS_PER_LEVEL) levelComplete();
-                    } else if(xyDist < CONFIG.RING_RADIUS + 3.0) {
-                        sound.playHit(); dronePhysics.hitTimer = 0.5; dronePhysics.vel.z = -15; 
+                // 当飞机极其靠近圆环所在的 Z 轴平面时进行判定
+                if(distZ < 1.5) {
+                    if(xyDist < safeRadius) {
+                        // 确保Z轴越过了中心一定程度，并且在安全半径内，才算真正穿过
+                        if(distZ < 0.6 && !ring.passed) {
+                            ring.passed = true; 
+                            gameState.ringsCleared++; 
+                            gameState.score += 100;
+                            ring.torus.material.color.setHex(0x4ade80); 
+                            ring.inner.material.opacity = 0.5;
+                            
+                            // 显示过关星星
+                            const star = createStarSprite();
+                            star.position.set(0, CONFIG.RING_RADIUS + 1.5, 0);
+                            ring.mesh.add(star);
+
+                            sound.playPassRing(); 
+                            updateHUD();
+                            if(gameState.ringsCleared >= gameState.ringsPerLevel) levelComplete();
+                        }
+                    } 
+                    // 如果碰到了圆环的实体部分或外侧，则反弹，算作失败穿梭
+                    else if(xyDist >= safeRadius && xyDist <= hitMargin) {
+                        sound.playHit(); 
+                        dronePhysics.hitTimer = 0.5; 
+                        dronePhysics.vel.z = -15; 
                         const angle = Math.atan2(dronePhysics.pos.y - ring.mesh.position.y, dronePhysics.pos.x - ring.mesh.position.x);
-                        dronePhysics.vel.x = Math.cos(angle) * 15; dronePhysics.vel.y = Math.sin(angle) * 15;
-                        const origC = ring.torus.material.color.getHex(); ring.torus.material.color.setHex(0xff0000);
+                        dronePhysics.vel.x = Math.cos(angle) * 15; 
+                        dronePhysics.vel.y = Math.sin(angle) * 15;
+                        const origC = ring.torus.material.color.getHex(); 
+                        ring.torus.material.color.setHex(0xff0000);
                         setTimeout(() => { if(!ring.passed) ring.torus.material.color.setHex(origC); }, 300);
                     }
                 }
             });
         }
 
+        function updateRealtimeRank() {
+            if (!gameState.active) return;
+            let currentScore = Math.floor(gameState.score);
+            let currentTime = Number(totalElapsed.toFixed(1));
+            let rank = 1;
+            
+            for (let entry of leaderboard) {
+                let entryScore = Number(entry.score);
+                let entryTime = Number(entry.time);
+                if (entryScore > currentScore) {
+                    rank++;
+                } else if (entryScore === currentScore && entryTime < currentTime) {
+                    rank++;
+                }
+            }
+            document.getElementById('rank-display').textContent = rank;
+        }
+
         function updateHUD() {
             document.getElementById('score-display').textContent = gameState.score;
             document.getElementById('rings-count').textContent = gameState.ringsCleared;
-            document.getElementById('ring-progress-bar').style.width = `${(gameState.ringsCleared/CONFIG.RINGS_PER_LEVEL)*100}%`;
+            document.getElementById('rings-total-count').textContent = '/' + gameState.ringsPerLevel;
+            document.getElementById('ring-progress-bar').style.width = `${(gameState.ringsCleared/gameState.ringsPerLevel)*100}%`;
             document.getElementById('stage-display').textContent = `${gameState.level}/${gameState.isFreshmanMode ? 1 : 3}`;
+            updateRealtimeRank();
         }
 
         function levelComplete() {
             gameState.active = false; sound.playLevelUp();
-            // 强制将引擎声音渐弱归零，防止后台一直吵闹
             if(sound.engineGain && sound.ctx) sound.engineGain.gain.setTargetAtTime(0, sound.ctx.currentTime, 0.1);
             
-            gameState.score += Math.floor(gameState.timeLeft) * 20; 
             if(gameState.isFreshmanMode || gameState.level >= 3) {
+                // 所有阶段完成才计算时间分红
+                gameState.score += Math.floor(gameState.timeLeft) * 20; 
                 endGame(true);
             } else {
                 gameState.level++; gameState.ringsCleared = 0;
@@ -1045,7 +1031,7 @@ unlockGameAudio();
                 document.getElementById('mode-select-container').classList.add('hidden');
                 document.getElementById('leaderboard-panel').classList.add('hidden');
                 document.getElementById('modal-title').textContent = `阶段 ${gameState.level-1} 突破成功！`;
-                document.getElementById('modal-subtitle').innerHTML = `获得时间奖励积分，准备进入更难的阶段 ${gameState.level}`;
+                document.getElementById('modal-subtitle').innerHTML = `总倒计时依然在流逝，准备进入更难的阶段 ${gameState.level}`;
                 document.getElementById('btn-start-game').classList.add('hidden');
                 document.getElementById('btn-back-setup').classList.add('hidden');
                 document.getElementById('btn-fullscreen').classList.add('hidden');
@@ -1054,47 +1040,31 @@ unlockGameAudio();
             }
         }
 
-        
-function endGame(success) {
+        function endGame(success) {
+            if (success) {
+                const passedCurrentLevel = gameState.ringsCleared >= gameState.ringsPerLevel;
+                const completedAllLevels = gameState.isFreshmanMode || gameState.level >= CONFIG.TOTAL_LEVELS;
 
-    // 严格校验：没有完成规定的关卡，不允许判定通关
-    if (success) {
-        const passedCurrentLevel =
-            gameState.ringsCleared >= CONFIG.RINGS_PER_LEVEL;
-
-        const completedAllLevels =
-            gameState.isFreshmanMode ||
-            gameState.level >= CONFIG.TOTAL_LEVELS;
-
-        if (!passedCurrentLevel || !completedAllLevels) {
-            success = false;
-            showToast('挑战未完成！请通过规定的全部光环和关卡。');
-        }
-    }
-
-    gameState.active = false;
-
-    // 以下保留你原来 endGame 函数中的其他代码
+                if (!passedCurrentLevel || !completedAllLevels) {
+                    success = false;
+                    showToast('挑战未完成！请通过规定的全部光环和关卡。');
+                }
+            }
 
             gameState.active = false;
-if (!success) sound.playHit();
-            // 强制将引擎声音渐弱归零，防止后台一直吵闹
+            if (!success) sound.playHit();
             if(sound.engineGain && sound.ctx) sound.engineGain.gain.setTargetAtTime(0, sound.ctx.currentTime, 0.1);
             
-            
-           const finalTime = totalElapsed.toFixed(1);
+            const finalTime = totalElapsed.toFixed(1);
 
-           leaderboard.push({
-           name: gameState.playerName,
-           score: Math.max(0, Math.floor(gameState.score)),
-           time: Number(finalTime),
-           status: success ? '通关' : '失败',
-           date: new Date().toLocaleString('zh-CN')
-           });
-           saveLeaderboard();
-
-			
-			
+            leaderboard.push({
+                name: gameState.playerName,
+                score: Math.max(0, Math.floor(gameState.score)),
+                time: Number(finalTime),
+                status: success ? '通关' : '失败',
+                date: new Date().toLocaleString('zh-CN')
+            });
+            saveLeaderboard();
 
             const modal = document.getElementById('modal-overlay');
             document.getElementById('modal-title').textContent = success ? '竞速挑战成功！' : '时间耗尽，行动失败';
@@ -1105,52 +1075,25 @@ if (!success) sound.playHit();
             document.getElementById('btn-fullscreen').classList.add('hidden');
             document.getElementById('btn-next-level').classList.add('hidden');
             
-           
-const tbody = document.getElementById('leaderboard-body');
-tbody.replaceChildren();
+            const tbody = document.getElementById('leaderboard-body');
+            tbody.replaceChildren();
+            sortLeaderboard();
 
-sortLeaderboard();
+            leaderboard.slice(0, 5).forEach((entry, idx) => {
+                const tr = document.createElement('tr');
+                tr.className = 'border-b border-slate-700/50';
+                const rank = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : String(idx + 1);
 
-leaderboard.slice(0, 5).forEach((entry, idx) => {
-    const tr = document.createElement('tr');
-    tr.className = 'border-b border-slate-700/50';
-
-    const rank = idx === 0 ? '🥇'
-        : idx === 1 ? '🥈'
-        : idx === 2 ? '🥉'
-        : String(idx + 1);
-
-    const cells = [
-        rank,
-        entry.name,
-        String(entry.score),
-        `${Number(entry.time).toFixed(1)}s`,
-        entry.status
-    ];
-
-    cells.forEach((value, col) => {
-        const td = document.createElement('td');
-        td.className = 'py-2';
-        td.textContent = value;
-
-        if (col === 1) {
-            td.classList.add('font-bold', 'text-white');
-        } else if (col === 2) {
-            td.classList.add('text-yellow-400', 'font-mono');
-        } else if (col === 4) {
-            td.classList.add(
-                entry.status === '通关'
-                    ? 'text-green-400'
-                    : 'text-red-400'
-            );
-        }
-
-        tr.appendChild(td);
-    });
-
-    tbody.appendChild(tr);
-});
-
+                const cells = [rank, entry.name, String(entry.score), `${Number(entry.time).toFixed(1)}s`, entry.status];
+                cells.forEach((value, col) => {
+                    const td = document.createElement('td'); td.className = 'py-2'; td.textContent = value;
+                    if (col === 1) td.classList.add('font-bold', 'text-white');
+                    else if (col === 2) td.classList.add('text-yellow-400', 'font-mono');
+                    else if (col === 4) td.classList.add(entry.status === '通关' ? 'text-green-400' : 'text-red-400');
+                    tr.appendChild(td);
+                });
+                tbody.appendChild(tr);
+            });
 
             document.getElementById('leaderboard-panel').classList.remove('hidden');
             document.getElementById('leaderboard-panel').classList.add('flex');
@@ -1177,21 +1120,16 @@ leaderboard.slice(0, 5).forEach((entry, idx) => {
 
         document.getElementById('btn-export').addEventListener('click', () => {
             if(leaderboard.length === 0) return;
-            let csvContent = "data:text/csv;charset=utf-8,\uFEFF"; 
-            csvContent += "排名,飞行员代号,总得分,耗时(秒),状态\n";
-            leaderboard.forEach((row, index) => {
-                csvContent += `${index + 1},${row.name},${row.score},${row.time},${row.status}\n`;
-            });
-            const encodedUri = encodeURI(csvContent);
-            const link = document.createElement("a");
-            link.setAttribute("href", encodedUri);
+            let csvContent = "data:text/csv;charset=utf-8,\uFEFF排名,飞行员代号,总得分,耗时(秒),状态\n";
+            leaderboard.forEach((row, index) => csvContent += `${index + 1},${row.name},${row.score},${row.time},${row.status}\n`);
+            const link = document.createElement("a"); link.setAttribute("href", encodeURI(csvContent));
             link.setAttribute("download", "HARC_Drone_Leaderboard.csv");
             document.body.appendChild(link); link.click(); document.body.removeChild(link);
             showToast("成绩单 CSV 已成功导出！");
         });
         
         document.getElementById('btn-next-level').addEventListener('click', () => {
-            gameState.timeLeft = gameState.baseTimeLimit;
+            // 三关卡共享时间，不需要重新赋予 gameState.timeLeft
             gameState.active = true; gameState.isPaused = false;
             document.getElementById('modal-overlay').classList.add('hidden');
             resetDrone(); generateRings(); updateHUD();
