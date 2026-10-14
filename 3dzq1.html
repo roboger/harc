@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>无人机足球竞技场 — 攻击机</title>
+    <title>无人机足球竞技场 — 攻击机2</title>
     <script>
         // 触控设备检测（手机、平板；iPadOS 默认以桌面版 UA 打开，需靠 maxTouchPoints 判断）
         (function () {
@@ -67,14 +67,14 @@
 <body class="relative w-screen h-screen">
 
     <!-- 开场与加载画面 -->
-    <div id="startScreen" class="absolute inset-0 z-[70] flex flex-col items-center justify-center bg-slate-950/95 transition-all duration-700">
+    <div id="startScreen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/95 transition-all duration-700">
         <div class="max-w-2xl px-6 py-8 mx-4 text-center glassmorphism rounded-2xl border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.15)]">
             <h1 class="text-3xl md:text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-500 mb-2">
                 无人机足球竞技场
             </h1>
             <!-- 触控设备专用操作说明 -->
             <div class="touch-only mb-6 p-3 bg-slate-900/80 rounded-lg border border-slate-800 text-left text-xs md:text-sm text-slate-300">
-                <p class="font-bold text-emerald-400 mb-2"><i class="fa-solid fa-gamepad mr-2"></i>触控摇杆操控 (带震动反馈)</p>
+                <p class="font-bold text-emerald-400 mb-2"><i class="fa-solid fa-gamepad mr-2"></i>触控摇杆操控 (带震动反馈)测试后没有任何反应，也没有声音，增加一个 返回主界面的小按钮。手机版 进球得分提示有些大了。</p>
                 <ul class="space-y-1 text-slate-400 tech-font">
                     <li><span class="text-emerald-400 font-bold">左摇杆</span>：上推上升／下拉下降，左右推偏航旋转</li>
                     <li><span class="text-cyan-400 font-bold">右摇杆</span>：前后左右移动</li>
@@ -121,6 +121,13 @@
                 </div>
             </div>
             
+            <p class="text-xs text-slate-400 mb-3 tracking-wider uppercase tech-font">比赛时长 (分钟)</p>
+            <div class="flex items-center justify-center gap-6 mb-6 glassmorphism rounded-xl py-3 border border-slate-700/50">
+                <button id="btnTimeMinus" class="w-12 h-10 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition-all font-bold text-2xl border border-slate-600 shadow-md">-</button>
+                <span id="timeDisplay" class="text-3xl font-extrabold text-emerald-400 tech-font w-10 text-center drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]">3</span>
+                <button id="btnTimePlus" class="w-12 h-10 rounded-lg bg-slate-800/80 text-slate-300 hover:text-white hover:bg-slate-700 transition-all font-bold text-2xl border border-slate-600 shadow-md">+</button>
+            </div>
+            
             <p class="text-xs text-slate-400 mb-3 tracking-wider uppercase tech-font">选择你的队伍</p>
             <div class="flex gap-4 mb-6">
                 <div id="btnTeamRed" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/25 ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900 transition-all">
@@ -145,20 +152,20 @@
         <!-- 顶部信息条 -->
         <header class="w-full flex justify-between items-start pointer-events-auto">
             <!-- 左上角：任务状态与计分 -->
-            <div class="glassmorphism rounded-xl px-2 py-1.5 md:px-4 md:py-3 text-white flex flex-col min-w-[90px] md:min-w-[150px] shadow-lg origin-top-left scale-90 md:scale-100">
-                <span class="text-[9px] md:text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">进球得分</span>
-                <div class="flex items-baseline gap-1 md:gap-2 mt-0 md:mt-1">
-                    <span id="scoreText" class="text-xl md:text-2xl font-extrabold tech-font text-yellow-300">0</span>
-                    <span class="text-[9px] md:text-xs text-slate-400">球</span>
+            <div class="glassmorphism rounded-xl px-4 py-3 text-white flex flex-col min-w-[150px] shadow-lg">
+                <span class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">进球得分</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span id="scoreText" class="text-2xl font-extrabold tech-font text-yellow-300">0</span>
+                    <span class="text-xs text-slate-400">球</span>
                 </div>
-                <div class="hidden md:block text-[9px] text-slate-400 mt-1">仅穿越对方球门才计分，须回到中线才能再次得分。</div>
-                <div class="flex items-center gap-1 mt-1 md:mt-2 pt-1 md:pt-2 border-t border-slate-700/40">
-                    <span id="scoreStatusDot" class="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
-                    <span id="scoreStatusText" class="text-[8px] md:text-[10px] font-semibold tech-font text-emerald-300">可以得分</span>
+                <div class="text-[9px] text-slate-400 mt-1">仅穿越对方球门才计分，须回到中线才能再次得分。</div>
+                <div class="flex items-center gap-1.5 mt-2 pt-2 border-t border-slate-700/40">
+                    <span id="scoreStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
+                    <span id="scoreStatusText" class="text-[10px] font-semibold tech-font text-emerald-300">可以得分</span>
                 </div>
-                <div class="flex items-center gap-1 mt-1 md:mt-2 pt-1 md:pt-2 border-t border-slate-700/40">
-                    <span id="teamDot" class="w-2 h-2 md:w-2.5 md:h-2.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]"></span>
-                    <span id="teamLabel" class="text-[8px] md:text-[10px] text-slate-300 tech-font">红队 <span class="hidden md:inline">vs</span><span class="md:hidden">-</span> <span id="oppLabel" class="text-blue-400">蓝门</span></span>
+                <div class="flex items-center gap-1.5 mt-2 pt-2 border-t border-slate-700/40">
+                    <span id="teamDot" class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]"></span>
+                    <span id="teamLabel" class="text-[10px] text-slate-300 tech-font">红队 vs <span id="oppLabel" class="text-blue-400">蓝方球门</span></span>
                 </div>
             </div>
 
@@ -171,42 +178,29 @@
                 </div>
             </div>
 
-            <!-- 右上角：系统快捷控制 (含移动端下拉菜单) -->
-            <div class="flex gap-2 items-start relative z-50">
-                <!-- 始终显示的两个核心按键 -->
-                <button id="btnTakeoff" class="px-2 md:px-3.5 h-8 md:h-10 rounded-xl glassmorphism text-emerald-400 hover:text-emerald-300 hover:border-emerald-400/50 flex items-center justify-center gap-1 md:gap-1.5 transition-all cursor-pointer pointer-events-auto border border-emerald-500/20">
+            <!-- 右上角：系统快捷控制 -->
+            <div class="flex gap-2">
+                <button id="btnTakeoff" class="px-3.5 h-10 rounded-xl glassmorphism text-emerald-400 hover:text-emerald-300 hover:border-emerald-400/50 flex items-center justify-center gap-1.5 transition-all cursor-pointer pointer-events-auto border border-emerald-500/20">
                     <i class="fa-solid fa-plane-departure text-xs"></i>
-                    <span class="text-[9px] md:text-[10px] font-semibold tech-font">起飞<span class="kb-only"> (T)</span></span>
+                    <span class="text-[10px] font-semibold tech-font">起飞<span class="kb-only"> (T)</span></span>
                 </button>
-                <button id="btnLand" class="px-2 md:px-3.5 h-8 md:h-10 rounded-xl glassmorphism text-rose-400 hover:text-rose-300 hover:border-rose-400/50 flex items-center justify-center gap-1 md:gap-1.5 transition-all cursor-pointer pointer-events-auto border border-rose-500/20">
+                <button id="btnLand" class="px-3.5 h-10 rounded-xl glassmorphism text-rose-400 hover:text-rose-300 hover:border-rose-400/50 flex items-center justify-center gap-1.5 transition-all cursor-pointer pointer-events-auto border border-rose-500/20">
                     <i class="fa-solid fa-plane-arrival text-xs"></i>
-                    <span class="text-[9px] md:text-[10px] font-semibold tech-font">降落<span class="kb-only"> (L)</span></span>
+                    <span class="text-[10px] font-semibold tech-font">降落<span class="kb-only"> (L)</span></span>
                 </button>
-                
-                <!-- 响应式下拉菜单容器：桌面端横向展示，移动端绝对定位下拉 -->
-                <div id="actionMenu" class="hidden md:flex flex-col md:flex-row absolute md:relative right-0 top-10 md:top-0 gap-2 p-2 md:p-0 glassmorphism md:bg-transparent md:backdrop-filter-none md:border-none rounded-xl border border-slate-700/50 md:border-none shadow-2xl md:shadow-none w-32 md:w-auto origin-top-right">
-                    <button id="btnSound" class="w-full md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent md:glassmorphism text-slate-300 hover:text-white flex items-center justify-start md:justify-center gap-2 px-3 md:px-0 transition-all cursor-pointer pointer-events-auto border border-transparent md:border-slate-700/30">
-                        <i class="fa-solid fa-volume-high text-xs md:text-sm w-4 md:w-auto text-center"></i><span class="md:hidden text-xs tech-font">声音</span>
-                    </button>
-                    <button id="btnCam" class="w-full md:w-auto px-3 md:px-3.5 h-8 md:h-10 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent md:glassmorphism text-slate-300 hover:text-white flex items-center justify-start md:justify-center gap-2 transition-all cursor-pointer pointer-events-auto border border-transparent md:border-slate-700/30">
-                        <i class="fa-solid fa-camera text-xs md:text-sm w-4 md:w-auto text-center"></i>
-                        <span id="camText" class="text-xs md:text-xs font-semibold tech-font">追踪</span>
-                    </button>
-                    <button id="btnDifficulty" class="w-full md:w-auto px-3 md:px-3.5 h-8 md:h-10 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent md:glassmorphism text-yellow-300 hover:text-yellow-200 hover:border-yellow-400/50 flex items-center justify-start md:justify-center gap-2 transition-all cursor-pointer pointer-events-auto border border-transparent md:border-yellow-500/20">
-                        <i class="fa-solid fa-shield-halved text-xs md:text-sm w-4 md:w-auto text-center"></i>
-                        <span id="difficultyText" class="text-xs md:text-xs font-semibold tech-font">中等</span>
-                    </button>
-                    <button id="btnReset" class="w-full md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent md:glassmorphism text-slate-300 hover:text-rose-400 flex items-center justify-start md:justify-center gap-2 px-3 md:px-0 transition-all cursor-pointer pointer-events-auto border border-transparent md:border-slate-700/30">
-                        <i class="fa-solid fa-arrows-rotate text-xs md:text-sm w-4 md:w-auto text-center"></i><span class="md:hidden text-xs tech-font text-rose-400">重设</span>
-                    </button>
-                    <button id="btnHome" class="w-full md:w-10 h-8 md:h-10 rounded-lg md:rounded-xl bg-slate-800/50 md:bg-transparent md:glassmorphism text-slate-300 hover:text-cyan-400 flex items-center justify-start md:justify-center gap-2 px-3 md:px-0 transition-all cursor-pointer pointer-events-auto border border-transparent md:border-slate-700/30" title="返回主界面">
-                        <i class="fa-solid fa-house text-xs md:text-sm w-4 md:w-auto text-center"></i><span class="md:hidden text-xs tech-font text-cyan-400">返回主界</span>
-                    </button>
-                </div>
-                
-                <!-- 移动端呼出菜单按钮 -->
-                <button id="btnMobileMenuToggle" class="md:hidden w-8 h-8 rounded-xl glassmorphism text-slate-300 flex items-center justify-center border border-slate-700/30 shadow-lg pointer-events-auto">
-                    <i class="fa-solid fa-bars text-xs"></i>
+                <button id="btnSound" class="w-10 h-10 rounded-xl glassmorphism text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer pointer-events-auto border border-slate-700/30">
+                    <i class="fa-solid fa-volume-high text-sm"></i>
+                </button>
+                <button id="btnCam" class="px-3.5 h-10 rounded-xl glassmorphism text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer pointer-events-auto border border-slate-700/30">
+                    <i class="fa-solid fa-camera text-sm"></i>
+                    <span id="camText" class="text-xs font-semibold tech-font">追踪</span>
+                </button>
+                <button id="btnReset" class="w-10 h-10 rounded-xl glassmorphism text-slate-300 hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer pointer-events-auto border border-slate-700/30">
+                    <i class="fa-solid fa-arrows-rotate text-sm"></i>
+                </button>
+                <button id="btnDifficulty" class="px-3.5 h-10 rounded-xl glassmorphism text-yellow-300 hover:text-yellow-200 hover:border-yellow-400/50 flex items-center justify-center gap-2 transition-all cursor-pointer pointer-events-auto border border-yellow-500/20">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                    <span id="difficultyText" class="text-xs font-semibold tech-font">中等</span>
                 </button>
             </div>
         </header>
@@ -214,7 +208,7 @@
         <!-- 右下角：电子时钟 -->
         <div id="gameClockPanel" class="absolute bottom-4 right-4 z-20 glassmorphism rounded-xl px-4 py-2 flex flex-col items-center shadow-lg border border-cyan-500/20 pointer-events-none">
             <span class="text-[9px] text-cyan-300 uppercase tracking-widest font-semibold">比赛计时</span>
-            <span id="gameClockText" class="text-xl font-extrabold tech-font text-cyan-300 tracking-wider">00:00:00</span>
+            <span id="gameClockText" class="text-xl font-extrabold tech-font text-cyan-300 tracking-wider">03:00</span>
         </div>
 
         <!-- 底部大信息面板 -->
@@ -277,14 +271,16 @@
 
     <!-- 游戏完赛庆祝面板 -->
     <div id="victoryScreen" class="absolute inset-0 z-40 hidden flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md transition-all duration-500">
-        <div class="max-w-md px-6 py-8 mx-4 text-center glassmorphism rounded-2xl border border-yellow-500/40 shadow-[0_0_50px_rgba(234,179,8,0.2)]">
-            <div class="flex justify-center mb-4 text-yellow-400 text-5xl animate-bounce">
-                <i class="fa-solid fa-trophy"></i>
-            </div>
-            <h2 class="text-2xl font-extrabold text-yellow-300 tracking-wider mb-2">任务完成！</h2>
+        <div class="max-w-md px-8 py-10 mx-4 text-center glassmorphism rounded-2xl border border-yellow-500/40 shadow-[0_0_50px_rgba(234,179,8,0.2)]">
+            <h2 class="text-3xl font-extrabold text-yellow-300 tracking-wider mb-2">时间到！</h2>
+            <p class="text-slate-300 text-sm mb-4">最终进球数</p>
+            <div id="finalScoreDisplay" class="text-7xl font-extrabold tech-font text-emerald-400 mb-8 drop-shadow-[0_0_15px_rgba(52,211,153,0.8)]">0</div>
             <div class="flex gap-4 mt-6">
-                <button id="btnRestart" class="w-full py-3 text-xs md:text-sm font-bold text-slate-950 bg-yellow-400 rounded-lg shadow-lg hover:bg-yellow-300 transition-all duration-300 uppercase">
+                <button id="btnRestart" class="flex-1 py-3 text-xs md:text-sm font-bold text-slate-950 bg-yellow-400 rounded-lg shadow-[0_0_15px_rgba(250,204,21,0.5)] hover:bg-yellow-300 transition-all duration-300 uppercase">
                     再玩一次
+                </button>
+                <button id="btnEndHome" class="flex-1 py-3 text-xs md:text-sm font-bold text-slate-300 bg-slate-800 rounded-lg border border-slate-600 hover:bg-slate-700 transition-all duration-300 uppercase">
+                    返回主界
                 </button>
             </div>
         </div>
@@ -353,11 +349,14 @@
         
         let score = 0, particles = [], readyToScore = true, centerLinePrevSide = null;
         let matchSeconds = 0, matchTimerId = null;
+        let matchDurationMinutes = 3;
+        let isMatchActive = false;
 
         function formatMatchClock(totalSeconds) {
-            const hh = Math.floor(totalSeconds / 3600), mm = Math.floor((totalSeconds % 3600) / 60), ss = Math.floor(totalSeconds % 60);
+            const mm = Math.floor(totalSeconds / 60);
+            const ss = Math.floor(totalSeconds % 60);
             const pad = (n) => String(n).padStart(2, '0');
-            return `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
+            return `${pad(mm)}:${pad(ss)}`;
         }
         function updateMatchClockDisplay() {
             const el = document.getElementById('gameClockText');
@@ -365,12 +364,33 @@
         }
         function stopMatchClock() { if (matchTimerId) { clearInterval(matchTimerId); matchTimerId = null; } }
         function startMatchClock() {
-            stopMatchClock(); matchSeconds = 0; updateMatchClockDisplay();
+            stopMatchClock(); 
+            matchSeconds = matchDurationMinutes * 60; 
+            updateMatchClockDisplay();
+            isMatchActive = true;
             matchTimerId = setInterval(() => {
-                matchSeconds++;
-                if (matchSeconds >= 86400) { matchSeconds = 86399; stopMatchClock(); }
+                if (!isMatchActive) return;
+                matchSeconds--;
+                if (matchSeconds <= 0) { 
+                    matchSeconds = 0; 
+                    endMatch(); 
+                }
                 updateMatchClockDisplay();
             }, 1000);
+        }
+
+        function endMatch() {
+            stopMatchClock();
+            isMatchActive = false;
+            // 自动降落所有无人机，禁止操作
+            drone.targetAltitude = 0.1; drone.autoFlightState = 'landing';
+            aiDrones.forEach(a => { if (a.altitudeState !== 'grounded') a.altitudeState = 'landing'; });
+            
+            document.getElementById('finalScoreDisplay').innerText = score;
+            const vs = document.getElementById('victoryScreen');
+            vs.classList.remove('hidden');
+            vs.classList.add('flex');
+            showSystemNotification("比赛结束！");
         }
 
         let playerTeam = 'red';
@@ -427,28 +447,15 @@
         function setCameraFov(f) { if (camera.fov !== f) { camera.fov = f; camera.updateProjectionMatrix(); } }
 
         function initAudio() {
-            if (audioCtx) {
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-                return;
-            }
+            if (audioCtx) return;
             try {
-                const AudioContext = window.AudioContext || window.webkitAudioContext;
-                audioCtx = new AudioContext();
-                
-                // 核心修复：针对 iOS 等严格的移动端设备，必须在点击事件的同一调用栈内播放一段空音频来强行解锁 Context
-                const buffer = audioCtx.createBuffer(1, 1, 22050);
-                const source = audioCtx.createBufferSource();
-                source.buffer = buffer;
-                source.connect(audioCtx.destination);
-                if(source.noteOn) source.noteOn(0); else source.start(0);
-
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
                 const osc = audioCtx.createOscillator();
                 osc.type = 'sawtooth'; osc.frequency.value = 90;
                 const gain = audioCtx.createGain(); gain.gain.value = 0.0;
                 osc.connect(gain); gain.connect(audioCtx.destination);
                 osc.start(); droneSynth = { osc, gain };
-                if (audioCtx.state === 'suspended') audioCtx.resume();
-            } catch (e) { console.warn("音频初始化被拦截或不支持", e); }
+            } catch (e) {}
         }
 
         function updateDroneSound() {
@@ -503,13 +510,12 @@
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 100);
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // 视觉升级：提升移动端渲染像素比，消除严重锯齿，恢复清晰画质
-            const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window);
-            renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2.0));
+            // 降低移动端像素比例限制 (从2降为1.25)，大幅减少绘制像素量，提升帧率解决卡顿
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.15; // 略微增加曝光度，让画面色彩更通透
+            renderer.toneMappingExposure = 1.05;
             container.appendChild(renderer.domElement);
             orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
             orbitControls.enableDamping = true; orbitControls.dampingFactor = 0.05; orbitControls.maxPolarAngle = Math.PI / 2 - 0.02; orbitControls.enabled = false;
@@ -565,8 +571,7 @@
             const loader = new THREE.TextureLoader();
             loader.load('背景.png', function(tex) {
                 tex.wrapS = THREE.RepeatWrapping;
-                // 使用负数的 repeat 来实现贴图的水平翻转，抵消 BackSide 造成的镜像文字反转
-                tex.repeat.set(-4, 1);
+                tex.repeat.set(4, 1);
                 stadium.material.map = tex;
                 stadium.material.needsUpdate = true;
             }, undefined, function(err) {
@@ -574,7 +579,7 @@
             });
             
             stadiumTex.wrapS = THREE.RepeatWrapping;
-            stadiumTex.repeat.set(-4, 1); 
+            stadiumTex.repeat.set(4, 1); 
             const stadiumGeo = new THREE.CylinderGeometry(25, 25, 15, 32, 1, true);
             const stadiumMat = new THREE.MeshBasicMaterial({ map: stadiumTex, side: THREE.BackSide, color: 0xdddddd });
             const stadium = new THREE.Mesh(stadiumGeo, stadiumMat);
@@ -596,18 +601,23 @@
                 ctx.beginPath(); ctx.moveTo(0, i*25); ctx.lineTo(canvas.width, i*25 + 50); ctx.stroke();
             }
 
-            // 绘制横幅文字 (无需再用 scale 反转，由统一的 repeat(-4,1) 处理)
+            // 绘制横幅文字 (先将画布水平翻转，抵消贴在圆柱体内侧造成的镜像反转)
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 36px "Noto Sans SC", sans-serif'; 
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.shadowColor = '#10b981'; ctx.shadowBlur = 15; 
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.25, canvas.height / 2);
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.75, canvas.height / 2);
+            
+            ctx.restore();
 
             const bannerTex = new THREE.CanvasTexture(canvas);
             bannerTex.wrapS = THREE.RepeatWrapping;
-            // 使用负数的 repeat 来实现贴图的水平翻转
-            bannerTex.repeat.set(-4, 1);
+            bannerTex.repeat.set(4, 1);
 
             const bannerGeo = new THREE.CylinderGeometry(24.5, 24.5, 4, 32, 1, true);
             const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, side: THREE.BackSide });
@@ -618,27 +628,29 @@
 
         function createSoccerField() {
             const canvas = document.createElement('canvas');
-            canvas.width = 384; canvas.height = 768;
+            canvas.width = 512; canvas.height = 1024; // 提升贴图分辨率
             const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#115a20'; // 稍微加深底色，对比度更高
+            
+            // 视觉升级：更加柔和且深邃的翠绿色底色，保护眼睛且质感高级
+            ctx.fillStyle = '#064e3b'; 
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 视觉升级：绘制赛博科技感底纹网格
-            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-            ctx.lineWidth = 1;
-            for(let x = 0; x <= canvas.width; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
-            for(let y = 0; y <= canvas.height; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+            // 视觉升级：绘制赛博科技感底纹网格，降低亮度使其更舒适
+            ctx.strokeStyle = 'rgba(52, 211, 153, 0.08)';
+            ctx.lineWidth = 2;
+            for(let x = 0; x <= canvas.width; x += 128) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+            for(let y = 0; y <= canvas.height; y += 128) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
 
-            for (let i = 0; i < 2600; i++) {
-                ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.15)';
-                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 2);
+            for (let i = 0; i < 2000; i++) {
+                ctx.fillStyle = Math.random() < 0.5 ? 'rgba(52,211,153,0.05)' : 'rgba(0,0,0,0.15)';
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 2, 2);
             }
             const centerY = canvas.height / 2;
-            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6;
-            ctx.beginPath(); ctx.arc(canvas.width / 2, centerY, 80, 0, Math.PI * 2); ctx.stroke();
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)'; ctx.lineWidth = 8;
+            ctx.beginPath(); ctx.arc(canvas.width / 2, centerY, 100, 0, Math.PI * 2); ctx.stroke();
             ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); ctx.stroke();
             const texture = new THREE.CanvasTexture(canvas);
-            const field = new THREE.Mesh(new THREE.PlaneGeometry(3, 6), new THREE.MeshStandardMaterial({ map: texture, roughness: 0.85, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: 0.10, side: THREE.DoubleSide }));
+            const field = new THREE.Mesh(new THREE.PlaneGeometry(3, 6), new THREE.MeshStandardMaterial({ map: texture, roughness: 0.9, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: 0.15, side: THREE.DoubleSide }));
             field.rotation.x = -Math.PI / 2; field.receiveShadow = true; scene.add(field);
             
             const outer = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0x010204, roughness: 0.95, metalness: 0.5 }));
@@ -689,9 +701,8 @@
 
         function createDroneCage(radius, colorHex) {
             const group = new THREE.Group();
-            const mat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.15, metalness: 0.3, roughness: 0.2, transparent: true, opacity: 0.92 });
-            // 视觉升级：将细分级别从 1 提升为 2，恢复无人机圆润的科技球体造型，且性能消耗可控
-            const icoGeo = new THREE.IcosahedronGeometry(radius, 2);
+            const mat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.08, metalness: 0.15, roughness: 0.4, transparent: true, opacity: 0.92 });
+            const icoGeo = new THREE.IcosahedronGeometry(radius, 3);
             const edgesGeo = new THREE.EdgesGeometry(icoGeo, 1);
             const posAttr = edgesGeo.attributes.position;
             const rodGeos = [];
@@ -783,18 +794,9 @@
         }
         function buildAIDrones() { aiDrones.forEach(ai => buildAIDrone(ai)); }
 
-        const GOAL_RING_WHITE = 0xf6f1e7, GOAL_RING_GLOW = 0xfff6e6, GOAL_RING_GLOW_INTENSITY = 0.2, GOAL_FLASH_COLOR = 0x10b981;
+        const GOAL_RING_WHITE = 0xf6f1e7, GOAL_RING_GLOW = 0xfff6e6, GOAL_RING_GLOW_INTENSITY = 0.16, GOAL_FLASH_COLOR = 0x10b981;
         function setGoalVisible(r, v) { if(r.mesh) r.mesh.visible=v; if(r.display) r.display.group.visible=v; if(r.cables) r.cables.forEach(c=>c.visible=v); }
-        function setRingFlash(r, on, fC=GOAL_FLASH_COLOR) { 
-            const m = r.mesh.material; 
-            if(on){ 
-                m.color.setHex(fC); m.emissive.setHex(fC); m.emissiveIntensity=1.8; 
-                if(r.glowMesh) { r.glowMesh.material.color.setHex(fC); r.glowMesh.material.opacity = 0.5; } // 开启高亮光晕
-            }else{ 
-                m.color.setHex(GOAL_RING_WHITE); m.emissive.setHex(GOAL_RING_GLOW); m.emissiveIntensity=GOAL_RING_GLOW_INTENSITY; 
-                if(r.glowMesh) { r.glowMesh.material.color.setHex(GOAL_RING_GLOW); r.glowMesh.material.opacity = 0.12; } // 恢复微弱光晕
-            } 
-        }
+        function setRingFlash(r, on, fC=GOAL_FLASH_COLOR) { const m=r.mesh.material; if(on){ m.color.setHex(fC); m.emissive.setHex(fC); m.emissiveIntensity=1.4; }else{ m.color.setHex(GOAL_RING_WHITE); m.emissive.setHex(GOAL_RING_GLOW); m.emissiveIntensity=GOAL_RING_GLOW_INTENSITY; } }
         
         const GD_W=0.26, GD_H=0.12, GD_D=0.05, GD_BEZ=0.015, GD_EMB=0.03; const goalDisplayFlashUntil = { red: 0, blue: 0 };
         function drawGoalDisplay(r) {
@@ -827,16 +829,8 @@
 
         function setupTargetRings() {
             ringCourse.forEach(r => {
-                const mesh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 40, 120), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.15, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY }));
+                const mesh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 40, 120), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.08, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY }));
                 mesh.castShadow = mesh.receiveShadow = true; mesh.position.copy(r.pos); scene.add(mesh); r.mesh = mesh;
-                
-                // 视觉升级：添加基于 AdditiveBlending 的霓虹光晕壳，制造伪全局泛光(Bloom)效果，极其惊艳且不耗性能
-                const glowGeo = new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS * 1.8, 16, 64);
-                const glowMat = new THREE.MeshBasicMaterial({ color: GOAL_RING_GLOW, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false });
-                const glowMesh = new THREE.Mesh(glowGeo, glowMat);
-                mesh.add(glowMesh);
-                r.glowMesh = glowMesh;
-
                 const key = new THREE.SpotLight(0xfff4e0, 2.2, 6, Math.PI/5, 0.65, 1.4); key.position.set(r.pos.x+0.35, 2.95, r.pos.z+(r.pos.z>0?-1:1)*0.9); key.target.position.set(r.pos.x, 0, r.pos.z); 
                 key.castShadow = false; // 关闭球门光阴影，优化性能
                 scene.add(key); scene.add(key.target); r.keyLight = key;
@@ -870,9 +864,8 @@
 
         function createExplosion(p, c) {
             for(let i=0; i<30; i++) {
-                // 视觉升级：爆炸粒子使用 AdditiveBlending(叠加发光)，制造能量火花飞溅的科幻质感
-                const m = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), new THREE.MeshBasicMaterial({color:c, transparent:true, blending: THREE.AdditiveBlending, depthWrite: false})); m.position.copy(p);
-                scene.add(m); particles.push({ mesh: m, velocity: new THREE.Vector3((Math.random()-0.5)*7, (Math.random()-0.5)*7, (Math.random()-0.5)*7), life: 1.0, decay: 0.02+Math.random()*0.03 });
+                const m = new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6), new THREE.MeshBasicMaterial({color:c, transparent:true})); m.position.copy(p);
+                scene.add(m); particles.push({ mesh: m, velocity: new THREE.Vector3((Math.random()-0.5)*6, (Math.random()-0.5)*6, (Math.random()-0.5)*6), life: 1.0, decay: 0.02+Math.random()*0.03 });
             }
         }
         function updateParticles(dt) {
@@ -909,43 +902,41 @@
 
         function setupTouchControls() {
             const hj = (e, z, k, cb) => {
-                try { e.preventDefault(); } catch(err) {}
-                const t = (e.targetTouches && e.targetTouches.length > 0) ? e.targetTouches[0] : (e.touches && e.touches.length > 0 ? e.touches[0] : null);
-                if(!t) return;
-                const r=z.getBoundingClientRect(), cX=r.left+r.width/2, cY=r.top+r.height/2, dx=t.clientX-cX, dy=t.clientY-cY;
-                const maxDist = r.width/2;
-                const d=Math.min(maxDist, Math.hypot(dx,dy));
-                const a=Math.atan2(dy,dx);
-                const pX=Math.cos(a)*d/maxDist;
-                const pY=Math.sin(a)*d/maxDist;
-                k.style.transform=`translate(${pX*30}px, ${pY*30}px) scale(1.15)`; 
-                cb(pX, pY);
+                e.preventDefault(); const t = e.targetTouches?.[0]; if(!t) return;
+                const r=z.getBoundingClientRect(), cX=r.left+r.width/2, cY=r.top+r.height/2, dx=t.clientX-cX, dy=t.clientY-cY, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), pX=Math.cos(a)*d/(r.width/2), pY=Math.sin(a)*d/(r.height/2);
+                k.style.transform=`translate(${pX*30}px, ${pY*30}px)`; cb(pX, pY);
             };
-            const rj = (k, cb) => { k.style.transform='translate(0,0) scale(1)'; cb(0,0); };
+            const rj = (k, cb) => { k.style.transform='translate(0,0)'; cb(0,0); };
             const jl=document.getElementById('joyLeft'), kl=document.getElementById('knobLeft'), jr=document.getElementById('joyRight'), kr=document.getElementById('knobRight');
-            const touchStartHandler = () => triggerHaptic('light'); 
+            const touchStartHandler = () => triggerHaptic('light'); // 摇杆触碰震动
             
             jl.addEventListener('touchstart', e=>{ touchStartHandler(); drone.touchActiveLeft=true; hj(e,jl,kl, (x,y)=>{ drone.touchAltitudeInput=-Math.sign(y)*Math.pow(y,2); drone.input.yaw=x; }); }, {passive:false});
             jl.addEventListener('touchmove', e=>{ drone.touchActiveLeft=true; hj(e,jl,kl, (x,y)=>{ drone.touchAltitudeInput=-Math.sign(y)*Math.pow(y,2); drone.input.yaw=x; }); }, {passive:false});
-            jl.addEventListener('touchend', e=>{ try{e.preventDefault();}catch(err){} rj(kl, ()=>{drone.touchActiveLeft=false; drone.input.yaw=drone.touchAltitudeInput=0;}); }, {passive:false});
-            jl.addEventListener('touchcancel', e=>{ try{e.preventDefault();}catch(err){} rj(kl, ()=>{drone.touchActiveLeft=false; drone.input.yaw=drone.touchAltitudeInput=0;}); }, {passive:false});
+            jl.addEventListener('touchend', ()=>rj(kl, ()=>{drone.touchActiveLeft=false; drone.input.yaw=drone.touchAltitudeInput=0;}));
             
             jr.addEventListener('touchstart', e=>{ touchStartHandler(); drone.touchActive=true; hj(e,jr,kr, (x,y)=>{ drone.autoFlightState='none'; drone.input.pitch=-y; drone.input.roll=x; }); }, {passive:false});
             jr.addEventListener('touchmove', e=>{ drone.touchActive=true; hj(e,jr,kr, (x,y)=>{ drone.autoFlightState='none'; drone.input.pitch=-y; drone.input.roll=x; }); }, {passive:false});
-            jr.addEventListener('touchend', e=>{ try{e.preventDefault();}catch(err){} rj(kr, ()=>{drone.touchActive=false; drone.input.pitch=drone.input.roll=0;}); }, {passive:false});
-            jr.addEventListener('touchcancel', e=>{ try{e.preventDefault();}catch(err){} rj(kr, ()=>{drone.touchActive=false; drone.input.pitch=drone.input.roll=0;}); }, {passive:false});
+            jr.addEventListener('touchend', ()=>rj(kr, ()=>{drone.touchActive=false; drone.input.pitch=drone.input.roll=0;}));
         }
 
         function updateDronePhysics(dt) {
             if(!drone.mesh) return;
-            if(keys.w||keys.s||keys.a||keys.d||keys.arrowup||keys.arrowdown||keys.arrowleft||keys.arrowright||keys[' ']||keys.control) drone.autoFlightState='none';
-            if(Math.abs(drone.touchAltitudeInput)>0.03) { drone.targetAltitude = THREE.MathUtils.clamp(drone.targetAltitude+drone.touchAltitudeInput*dt*3.5, 0.1, 2.6); drone.autoFlightState='none'; }
-            if(keys.w||keys[' ']) { drone.targetAltitude=Math.min(2.6, drone.targetAltitude+0.7*dt); drone.autoFlightState='none'; }
-            if(keys.s||keys.control) { drone.targetAltitude=Math.max(0.1, drone.targetAltitude-0.7*dt); drone.autoFlightState='none'; }
             
-            if(keys.arrowup) drone.input.pitch=1; else if(keys.arrowdown) drone.input.pitch=-1; else if(!drone.touchActive) drone.input.pitch=0;
-            if(keys.arrowright) drone.input.roll=1; else if(keys.arrowleft) drone.input.roll=-1; else if(!drone.touchActive) drone.input.roll=0;
-            if(keys.d) drone.input.yaw=1; else if(keys.a) drone.input.yaw=-1; else if(!drone.touchActiveLeft) drone.input.yaw=0;
+            // 比赛结束后接管操作并强制降落
+            if (!isMatchActive) {
+                drone.input.pitch = 0; drone.input.roll = 0; drone.input.yaw = 0; drone.touchAltitudeInput = 0;
+                drone.targetAltitude = 0.1;
+                drone.autoFlightState = 'landing';
+            } else {
+                if(keys.w||keys.s||keys.a||keys.d||keys.arrowup||keys.arrowdown||keys.arrowleft||keys.arrowright||keys[' ']||keys.control) drone.autoFlightState='none';
+                if(Math.abs(drone.touchAltitudeInput)>0.03) { drone.targetAltitude = THREE.MathUtils.clamp(drone.targetAltitude+drone.touchAltitudeInput*dt*3.5, 0.1, 2.6); drone.autoFlightState='none'; }
+                if(keys.w||keys[' ']) { drone.targetAltitude=Math.min(2.6, drone.targetAltitude+0.7*dt); drone.autoFlightState='none'; }
+                if(keys.s||keys.control) { drone.targetAltitude=Math.max(0.1, drone.targetAltitude-0.7*dt); drone.autoFlightState='none'; }
+                
+                if(keys.arrowup) drone.input.pitch=1; else if(keys.arrowdown) drone.input.pitch=-1; else if(!drone.touchActive) drone.input.pitch=0;
+                if(keys.arrowright) drone.input.roll=1; else if(keys.arrowleft) drone.input.roll=-1; else if(!drone.touchActive) drone.input.roll=0;
+                if(keys.d) drone.input.yaw=1; else if(keys.a) drone.input.yaw=-1; else if(!drone.touchActiveLeft) drone.input.yaw=0;
+            }
 
             const tP=drone.input.pitch*drone.constants.maxTilt, tR=drone.input.roll*drone.constants.maxTilt, c=drone.constants;
             drone.currentPitch = THREE.MathUtils.lerp(drone.currentPitch, tP, dt*c.pitchRollSpeed*12);
@@ -1016,8 +1007,8 @@
                     const t=clock.getElapsedTime(); if(!rg.lastPassTime || t-rg.lastPassTime>1.5) {
                         rg.lastPassTime=t;
                         if(isOpp) {
-                            if(readyToScore) { score++; readyToScore=false; playChimeSound(); triggerHaptic('goal'); createExplosion(rg.pos,0x10b981); setRingFlash(rg,true); goalDisplayFlashUntil[rg.team]=performance.now()+1500; setTimeout(()=>setRingFlash(rg,false),800); showSystemNotification("进球得分！"); }
-                            else { playDeniedGoalSound(); triggerHaptic('error'); createExplosion(rg.pos,0x94a3b8); showSystemNotification("未回中线，进球无效"); }
+                            if(isMatchActive && readyToScore) { score++; readyToScore=false; playChimeSound(); triggerHaptic('goal'); createExplosion(rg.pos,0x10b981); setRingFlash(rg,true); goalDisplayFlashUntil[rg.team]=performance.now()+1500; setTimeout(()=>setRingFlash(rg,false),800); showSystemNotification("进球得分！"); }
+                            else if(isMatchActive) { playDeniedGoalSound(); triggerHaptic('error'); createExplosion(rg.pos,0x94a3b8); showSystemNotification("未回中线，进球无效"); }
                         } else showSystemNotification("己方球门不计分");
                     }
                 } else if(dC<iR && cP) showSystemNotification("反向穿越不计分");
@@ -1111,15 +1102,19 @@
 
         function resetGame() {
             drone.position.set(0,0.1,0); drone.velocity.set(0,0,0); drone.rotation.set(0,0,0); drone.currentPitch=drone.currentRoll=drone.currentYawRate=drone.input.throttle=0; drone.targetAltitude=0.1; drone.autoFlightState='none';
-            score=0; ringCourse.forEach(r=>{r.lastPassTime=0;r.prevSide=null;setRingFlash(r,false);}); readyToScore=true; centerLinePrevSide=null; startMatchClock(); configureMatch(playerTeam); updateHUD(); document.getElementById('victoryScreen').classList.add('hidden'); document.getElementById('victoryScreen').classList.remove('flex'); showSystemNotification("系统重设完成");
+            score=0; ringCourse.forEach(r=>{r.lastPassTime=0;r.prevSide=null;setRingFlash(r,false);}); readyToScore=true; centerLinePrevSide=null; startMatchClock(); configureMatch(playerTeam); updateHUD(); document.getElementById('victoryScreen').classList.add('hidden'); document.getElementById('victoryScreen').classList.remove('flex'); showSystemNotification("比赛重新开始");
         }
 
         function goHome() {
             stopMatchClock();
-            drone.autoFlightState='none';
+            isMatchActive = false;
+            drone.autoFlightState='landing';
             drone.input.throttle = 0;
             if(soundEnabled) toggleSound(); // 返回主页时自动静音
             
+            document.getElementById('victoryScreen').classList.add('hidden');
+            document.getElementById('victoryScreen').classList.remove('flex');
+
             const s = document.getElementById('startScreen');
             if (s) {
                 s.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
@@ -1140,23 +1135,16 @@
             
             const startF = () => {
                 const s = document.getElementById('startScreen'); 
-                if (!s || s.dataset.launched === 'true') return; 
+                if (!s || s.dataset.launched) return; 
                 s.dataset.launched = 'true';
                 
-                try { triggerHaptic('heavy'); } catch(e) {} 
+                triggerHaptic('heavy'); 
                 configureMatch(currentSelectedTeam); 
                 startMatchClock(); 
-                try {
-                    initAudio(); 
-                    soundEnabled = true; 
-                    const btn = document.getElementById('btnSound');
-                    if (btn) {
-                        btn.querySelector('i').className = 'fa-solid fa-volume-high text-xs md:text-sm w-4 md:w-auto text-center';
-                        btn.classList.add('text-emerald-400');
-                    }
-                } catch(e) { console.warn("音频初始化跳过", e); }
+                initAudio(); 
+                soundEnabled = true; 
                 s.classList.add('opacity-0', 'scale-95', 'pointer-events-none'); 
-                // 移除 setTimeout 删除元素逻辑，改为隐藏，以便支持返回主界面
+                setTimeout(() => s.remove(), 750);
                 showSystemNotification(`飞控系统上线 - ${currentSelectedTeam === 'red' ? "红" : "蓝"}队出击`);
             };
             
@@ -1193,9 +1181,8 @@
             btnRed.addEventListener('click', selectRed);
             btnBlue.addEventListener('click', selectBlue);
             
-            // 专门的独立开始按钮：改用直接赋值，防止事件冒泡被拦截导致手机端点不动
-            btnStart.onclick = function() { startF(); };
-            btnStart.ontouchend = function(e) { e.preventDefault(); startF(); };
+            // 专门的独立开始按钮
+            btnStart.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); startF(); });
             
             // 修复难度选项点击逻辑
             document.querySelectorAll('.difficulty-option').forEach(el=>el.addEventListener('click', e=>{
@@ -1214,36 +1201,28 @@
             document.getElementById('btnReset').addEventListener('click', resetGame); document.getElementById('btnRestart').addEventListener('click', resetGame);
             document.getElementById('btnDifficulty').addEventListener('click', cycleDifficulty);
             
+            // 增加时间设定逻辑
+            document.getElementById('btnTimeMinus').addEventListener('click', (e) => {
+                e.stopPropagation(); e.preventDefault();
+                if(matchDurationMinutes > 1) { 
+                    matchDurationMinutes--; 
+                    document.getElementById('timeDisplay').innerText = matchDurationMinutes; 
+                    triggerHaptic('light'); 
+                }
+            });
+            document.getElementById('btnTimePlus').addEventListener('click', (e) => {
+                e.stopPropagation(); e.preventDefault();
+                if(matchDurationMinutes < 9) { 
+                    matchDurationMinutes++; 
+                    document.getElementById('timeDisplay').innerText = matchDurationMinutes; 
+                    triggerHaptic('light'); 
+                }
+            });
+            
             const btnHome = document.getElementById('btnHome');
             if(btnHome) btnHome.addEventListener('click', goHome);
+            
+            const btnEndHome = document.getElementById('btnEndHome');
+            if(btnEndHome) btnEndHome.addEventListener('click', goHome);
 
             // 移动端下拉菜单逻辑
-            const btnMobileMenuToggle = document.getElementById('btnMobileMenuToggle');
-            const actionMenu = document.getElementById('actionMenu');
-            if (btnMobileMenuToggle && actionMenu) {
-                btnMobileMenuToggle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    actionMenu.classList.toggle('hidden');
-                    actionMenu.classList.toggle('flex');
-                });
-                // 点击菜单内的按钮后自动收起
-                actionMenu.addEventListener('click', (e) => {
-                    if (window.innerWidth < 768 && e.target.closest('button')) {
-                        actionMenu.classList.add('hidden');
-                        actionMenu.classList.remove('flex');
-                    }
-                });
-                // 点击空白处自动收起
-                document.addEventListener('click', (e) => {
-                    if (window.innerWidth < 768 && !actionMenu.classList.contains('hidden') && !e.target.closest('#btnMobileMenuToggle') && !e.target.closest('#actionMenu')) {
-                        actionMenu.classList.add('hidden');
-                        actionMenu.classList.remove('flex');
-                    }
-                });
-            }
-
-            animate();
-        });
-    </script>
-</body>
-</html>
