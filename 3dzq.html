@@ -122,17 +122,21 @@
             </div>
             
             <p class="text-xs text-slate-400 mb-3 tracking-wider uppercase tech-font">选择你的队伍</p>
-            <div class="flex gap-4 mb-2">
-                <div id="btnTeamRed" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/10 hover:bg-rose-500/25" style="border-color: rgba(239,68,68,0.5); background: rgba(239,68,68,0.12);">
-                    <p class="text-base md:text-lg font-bold text-rose-400 uppercase tracking-widest">以红队出战</p>
-                    <p class="text-[10px] text-slate-500 mt-1 tech-font">攻击蓝方球门</p>
+            <div class="flex gap-4 mb-6">
+                <div id="btnTeamRed" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/25 ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900 transition-all">
+                    <p class="text-base md:text-lg font-bold text-rose-400 uppercase tracking-widest">红队出战</p>
+                    <p class="text-[10px] text-slate-400 mt-1 tech-font">攻击蓝方球门</p>
                 </div>
-                <div id="btnTeamBlue" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button" style="border-color: rgba(59,130,246,0.5); background: rgba(59,130,246,0.12);">
-                    <p class="text-base md:text-lg font-bold text-blue-400 uppercase tracking-widest">以蓝队出战</p>
-                    <p class="text-[10px] text-slate-500 mt-1 tech-font">攻击红方球门</p>
+                <div id="btnTeamBlue" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-transparent opacity-60 hover:opacity-100 transition-all">
+                    <p class="text-base md:text-lg font-bold text-blue-400 uppercase tracking-widest">蓝队出战</p>
+                    <p class="text-[10px] text-slate-400 mt-1 tech-font">攻击红方球门</p>
                 </div>
             </div>
-            <p class="kb-only text-[11px] text-slate-500 mt-2 tech-font">或按任意键以红队开始游戏</p>
+            
+            <button id="btnStartMatch" class="w-full py-4 md:py-5 mt-2 text-base md:text-lg font-extrabold text-slate-900 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest cursor-pointer select-none">
+                <i class="fa-solid fa-plane-departure mr-2"></i>开始比赛 / START
+            </button>
+            <p class="kb-only text-[11px] text-slate-500 mt-3 tech-font">或按任意键以当前设置开始</p>
         </div>
     </div>
 
@@ -201,20 +205,20 @@
         </div>
 
         <!-- 底部大信息面板 -->
-        <footer class="w-full flex flex-col md:flex-row gap-4 items-end justify-between pointer-events-auto">
-            <div class="glassmorphism rounded-2xl p-4 text-white w-full md:w-auto md:min-w-[400px] shadow-2xl flex flex-col gap-3 border border-slate-800/40">
-                <div class="flex items-center justify-between border-b border-slate-800/60 pb-2">
-                    <span class="text-[11px] text-emerald-400 tracking-wider font-semibold uppercase flex items-center gap-1.5">
+        <footer class="w-full flex flex-col md:flex-row gap-4 items-end justify-between pointer-events-auto z-20">
+            <div class="glassmorphism rounded-2xl p-3 md:p-4 text-white w-full md:w-auto md:min-w-[360px] shadow-2xl flex flex-col gap-2 md:gap-3 border border-slate-800/40 mb-24 md:mb-0">
+                <div class="flex items-center justify-between border-b border-slate-800/60 pb-1.5 md:pb-2">
+                    <span class="text-[10px] md:text-[11px] text-emerald-400 tracking-wider font-semibold uppercase flex items-center gap-1.5">
                         <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span> 遥测状态
                     </span>
-                    <span id="flightMode" class="text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2 py-0.5 rounded-full tech-font">气压定高已开启</span>
+                    <span id="flightMode" class="text-[9px] md:text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2 py-0.5 rounded-full tech-font">气压定高已开启</span>
                 </div>
-                <div class="grid grid-cols-3 gap-4">
+                <div class="grid grid-cols-3 gap-3 md:gap-4">
                     <div class="flex flex-col">
                         <span class="text-[10px] text-slate-400 uppercase">速度</span>
                         <div class="flex items-baseline gap-1 mt-1">
-                            <span id="telemetrySpeed" class="text-2xl font-bold tech-font text-emerald-300">0.0</span>
-                            <span class="text-[10px] text-slate-500">m/s</span>
+                            <span id="telemetrySpeed" class="text-xl md:text-2xl font-bold tech-font text-emerald-300">0.0</span>
+                            <span class="text-[9px] md:text-[10px] text-slate-500">m/s</span>
                         </div>
                         <div class="w-full bg-slate-900 h-1 rounded-full mt-1.5 overflow-hidden">
                             <div id="speedBar" class="bg-emerald-400 h-full w-0 transition-all duration-200"></div>
@@ -223,8 +227,8 @@
                     <div class="flex flex-col">
                         <span class="text-[10px] text-slate-400 uppercase">高度</span>
                         <div class="flex items-baseline gap-1 mt-1">
-                            <span id="telemetryAlt" class="text-2xl font-bold tech-font text-cyan-300">0.10</span>
-                            <span class="text-[10px] text-slate-500">m</span>
+                            <span id="telemetryAlt" class="text-xl md:text-2xl font-bold tech-font text-cyan-300">0.10</span>
+                            <span class="text-[9px] md:text-[10px] text-slate-500">m</span>
                         </div>
                         <div class="w-full bg-slate-900 h-1 rounded-full mt-1.5 overflow-hidden">
                             <div id="altBar" class="bg-cyan-400 h-full w-[10%] transition-all duration-200"></div>
@@ -233,7 +237,7 @@
                     <div class="flex flex-col">
                         <span class="text-[10px] text-slate-400 uppercase">油门</span>
                         <div class="flex items-baseline gap-1 mt-1">
-                            <span id="telemetryThrottle" class="text-2xl font-bold tech-font text-yellow-300">0%</span>
+                            <span id="telemetryThrottle" class="text-xl md:text-2xl font-bold tech-font text-yellow-300">0%</span>
                         </div>
                         <div class="w-full bg-slate-900 h-1 rounded-full mt-1.5 overflow-hidden">
                             <div id="throttleBar" class="bg-yellow-400 h-full w-[0%] transition-all duration-200"></div>
@@ -243,17 +247,17 @@
             </div>
         </footer>
 
-        <!-- 触控摇杆区域 (固定在左右下角) -->
-        <div id="touchControls" class="absolute inset-0 pointer-events-none z-30">
+        <!-- 触控摇杆区域 (固定在左右下角，层级极高) -->
+        <div id="touchControls" class="absolute inset-0 pointer-events-none z-[60]">
             <!-- 左摇杆 (高度/偏航) -->
-            <div class="joystick-zone pointer-events-auto absolute left-6 md:left-12 bottom-10 md:bottom-16 w-28 h-28 rounded-full bg-slate-950/80 border border-emerald-500/30 flex items-center justify-center shadow-lg" id="joyLeft">
-                <div class="w-12 h-12 rounded-full bg-emerald-500/40 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)] absolute" id="knobLeft"></div>
-                <span class="absolute text-[10px] text-emerald-400/60 uppercase font-bold tracking-widest pointer-events-none text-center leading-tight">高度<br>偏航</span>
+            <div class="joystick-zone pointer-events-auto absolute left-4 md:left-12 bottom-4 md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-emerald-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] backdrop-blur-sm" id="joyLeft">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-500/40 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.5)] absolute" id="knobLeft"></div>
+                <span class="absolute text-[9px] md:text-[10px] text-emerald-400/80 uppercase font-bold tracking-widest pointer-events-none text-center leading-tight">高度<br>偏航</span>
             </div>
             <!-- 右摇杆 (移动) -->
-            <div class="joystick-zone pointer-events-auto absolute right-6 md:right-12 bottom-10 md:bottom-16 w-28 h-28 rounded-full bg-slate-950/80 border border-cyan-500/30 flex items-center justify-center shadow-lg" id="joyRight">
-                <div class="w-12 h-12 rounded-full bg-cyan-500/40 border border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.4)] absolute" id="knobRight"></div>
-                <span class="absolute text-[10px] text-cyan-400/60 uppercase font-bold tracking-widest pointer-events-none">移动</span>
+            <div class="joystick-zone pointer-events-auto absolute right-4 md:right-12 bottom-4 md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.15)] backdrop-blur-sm" id="joyRight">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-cyan-500/40 border border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.5)] absolute" id="knobRight"></div>
+                <span class="absolute text-[9px] md:text-[10px] text-cyan-400/80 uppercase font-bold tracking-widest pointer-events-none">移动</span>
             </div>
         </div>
     </div>
@@ -502,20 +506,41 @@
 
         // 创建外围看台环境与定制横幅
         function createStadiumEnvironment() {
-            // 1. 加载背景看台贴图
-            const loader = new THREE.TextureLoader();
-            const stadiumTex = loader.load('背景.png', undefined, undefined, function(err) {
-                console.warn("未能加载 背景.png，请确保文件存在。将使用纯色背景降级。");
-            });
-            if (stadiumTex) {
-                stadiumTex.wrapS = THREE.RepeatWrapping;
-                stadiumTex.repeat.set(4, 1); // 让看台在圆柱上重复拼接
-                const stadiumGeo = new THREE.CylinderGeometry(25, 25, 15, 32, 1, true);
-                const stadiumMat = new THREE.MeshBasicMaterial({ map: stadiumTex, side: THREE.BackSide, color: 0xeeeeee });
-                const stadium = new THREE.Mesh(stadiumGeo, stadiumMat);
-                stadium.position.y = 5; // 抬高看台，使下半部分露出来放置自定义横幅
-                scene.add(stadium);
+            // 1. 生成程序化彩色看台作为底图 (确保在无图片时也能看到彩色座位)
+            const fallbackCanvas = document.createElement('canvas');
+            fallbackCanvas.width = 1024; fallbackCanvas.height = 512;
+            const fCtx = fallbackCanvas.getContext('2d');
+            fCtx.fillStyle = '#050b14'; fCtx.fillRect(0, 0, 1024, 512);
+            // 绘制红蓝交替的彩色座位区
+            for(let y = 20; y < 350; y += 20) {
+                for(let x = 0; x < 1024; x += 16) {
+                    const isRed = Math.floor(x / 64 + y / 40) % 2 === 0;
+                    fCtx.fillStyle = isRed ? '#b91c1c' : '#1d4ed8'; 
+                    fCtx.fillRect(x + 2, y + 2, 12, 16);
+                }
             }
+            // 绘制底部广告黑墙区域
+            fCtx.fillStyle = '#020617'; fCtx.fillRect(0, 350, 1024, 162);
+            let stadiumTex = new THREE.CanvasTexture(fallbackCanvas);
+            
+            // 尝试加载用户背景看台贴图，如果成功则覆盖彩色底图
+            const loader = new THREE.TextureLoader();
+            loader.load('背景.png', function(tex) {
+                tex.wrapS = THREE.RepeatWrapping;
+                tex.repeat.set(4, 1);
+                stadium.material.map = tex;
+                stadium.material.needsUpdate = true;
+            }, undefined, function(err) {
+                console.warn("未能加载 背景.png，已降级使用程序化彩色看台。");
+            });
+            
+            stadiumTex.wrapS = THREE.RepeatWrapping;
+            stadiumTex.repeat.set(4, 1); 
+            const stadiumGeo = new THREE.CylinderGeometry(25, 25, 15, 32, 1, true);
+            const stadiumMat = new THREE.MeshBasicMaterial({ map: stadiumTex, side: THREE.BackSide, color: 0xdddddd });
+            const stadium = new THREE.Mesh(stadiumGeo, stadiumMat);
+            stadium.position.y = 5; 
+            scene.add(stadium);
 
             // 2. 创建自定义 "HARC无人机足球模拟赛" 环绕横幅
             const canvas = document.createElement('canvas');
@@ -532,11 +557,11 @@
                 ctx.beginPath(); ctx.moveTo(0, i*25); ctx.lineTo(canvas.width, i*25 + 50); ctx.stroke();
             }
 
-            // 绘制横幅文字
+            // 绘制横幅文字 (字体大幅调小以协调背景比例)
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 65px "Noto Sans SC", sans-serif'; // 将字体改小
+            ctx.font = 'bold 36px "Noto Sans SC", sans-serif'; 
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-            ctx.shadowColor = '#10b981'; ctx.shadowBlur = 15; // 绿色辉光
+            ctx.shadowColor = '#10b981'; ctx.shadowBlur = 15; 
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.25, canvas.height / 2);
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.75, canvas.height / 2);
 
@@ -544,7 +569,6 @@
             bannerTex.wrapS = THREE.RepeatWrapping;
             bannerTex.repeat.set(4, 1);
 
-            // 将横幅作为内圈圆柱放置在看台下方，刚好遮住原图底部的文字
             const bannerGeo = new THREE.CylinderGeometry(24.5, 24.5, 4, 32, 1, true);
             const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, side: THREE.BackSide });
             const banner = new THREE.Mesh(bannerGeo, bannerMat);
@@ -1020,26 +1044,61 @@
             createStadiumEnvironment(); // 添加外围看台场景
             buildInflatableCage(); buildDrone(); buildAIDrones(); setupTargetRings(); configureMatch(playerTeam); setupKeyboard(); setupTouchControls();
             
-            const startF = t => {
-                const s=document.getElementById('startScreen'); if(s.dataset.launched) return; s.dataset.launched='true';
-                triggerHaptic('medium'); configureMatch(t||'red'); startMatchClock(); initAudio(); soundEnabled=true; s.classList.add('opacity-0','scale-95'); setTimeout(()=>s.remove(),750);
-                showSystemNotification(`飞控系统上线 - ${(t||'red')==='red'?"红":"蓝"}队出击`);
+            let currentSelectedTeam = 'red'; // 记录当前选择的队伍
+            
+            const startF = () => {
+                const s = document.getElementById('startScreen'); 
+                if (s.dataset.launched) return; 
+                s.dataset.launched = 'true';
+                
+                triggerHaptic('heavy'); 
+                configureMatch(currentSelectedTeam); 
+                startMatchClock(); 
+                initAudio(); 
+                soundEnabled = true; 
+                s.classList.add('opacity-0', 'scale-95', 'pointer-events-none'); 
+                setTimeout(() => s.remove(), 750);
+                showSystemNotification(`飞控系统上线 - ${currentSelectedTeam === 'red' ? "红" : "蓝"}队出击`);
             };
             
-            // 优化移动端点击事件，确保手机端能够稳定点击启动
-            window.addEventListener('keydown', ()=>startF('red'), {once:true});
+            window.addEventListener('keydown', (e) => {
+                // 排除功能键避免冲突
+                if (e.key !== 'F12' && e.key !== 'F5') {
+                    startF();
+                }
+            }, {once:true});
+            
             const btnRed = document.getElementById('btnTeamRed');
             const btnBlue = document.getElementById('btnTeamBlue');
-            const startScr = document.getElementById('startScreen');
+            const btnStart = document.getElementById('btnStartMatch');
             
-            btnRed.addEventListener('click', e => { e.stopPropagation(); startF('red'); });
-            btnRed.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); startF('red'); });
+            // 选中红队 (仅样式高亮，不直接开始)
+            const selectRed = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                currentSelectedTeam = 'red';
+                btnRed.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/25 ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900 transition-all';
+                btnBlue.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-transparent opacity-60 hover:opacity-100 transition-all';
+                triggerHaptic('light');
+            };
             
-            btnBlue.addEventListener('click', e => { e.stopPropagation(); startF('blue'); });
-            btnBlue.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); startF('blue'); });
+            // 选中蓝队 (仅样式高亮，不直接开始)
+            const selectBlue = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                currentSelectedTeam = 'blue';
+                btnBlue.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-blue-500/50 bg-blue-500/25 ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-900 transition-all';
+                btnRed.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-transparent opacity-60 hover:opacity-100 transition-all';
+                triggerHaptic('light');
+            };
             
-            startScr.addEventListener('click', () => startF('red'));
-            startScr.addEventListener('touchend', (e) => { if(e.target === startScr) startF('red'); });
+            btnRed.addEventListener('click', selectRed);
+            btnRed.addEventListener('touchend', selectRed);
+            
+            btnBlue.addEventListener('click', selectBlue);
+            btnBlue.addEventListener('touchend', selectBlue);
+            
+            // 专门的独立开始按钮
+            btnStart.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); startF(); });
+            btnStart.addEventListener('touchend', (e) => { e.preventDefault(); e.stopPropagation(); startF(); });
             
             document.querySelectorAll('.difficulty-option').forEach(el=>el.addEventListener('click', e=>{e.stopPropagation();applyDifficulty(el.dataset.level);document.querySelectorAll('.difficulty-option').forEach(x=>{const a=x.dataset.level===el.dataset.level;x.style.borderColor=a?['rgba(16,185,129,0.6)','rgba(250,204,21,0.6)','rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'';x.style.background=a?['rgba(16,185,129,0.12)','rgba(250,204,21,0.12)','rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'';});}));
             document.getElementById('btnTakeoff').addEventListener('click', triggerTakeoff); document.getElementById('btnLand').addEventListener('click', triggerLanding);
