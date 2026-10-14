@@ -477,7 +477,8 @@
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 100);
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            // 降低移动端像素比例限制 (从2降为1.25)，大幅减少绘制像素量，提升帧率解决卡顿
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -491,15 +492,25 @@
         function setupLights() {
             scene.add(new THREE.AmbientLight(0x071510, 1.2));
             scene.add(new THREE.HemisphereLight(0x10b981, 0x010409, 0.5));
+            
+            // 新增一盏全局定向光专门负责生成主要阴影，减少多光源阴影计算量
+            const mainShadowLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            mainShadowLight.position.set(3, 8, 5);
+            mainShadowLight.castShadow = true;
+            mainShadowLight.shadow.mapSize.width = 1024;
+            mainShadowLight.shadow.mapSize.height = 1024;
+            scene.add(mainShadowLight);
+
             const corners = [ { x: -1.8, z: -3.3, color: 0xef4444 }, { x: 1.8, z: -3.3, color: 0xef4444 }, { x: -1.8, z: 3.3, color: 0x3b82f6 }, { x: 1.8, z: 3.3, color: 0x3b82f6 } ];
             corners.forEach(corner => {
                 const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 3.5, 8), new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.9, roughness: 0.1 }));
-                pole.position.set(corner.x, 1.75, corner.z); pole.castShadow = true; scene.add(pole);
+                pole.position.set(corner.x, 1.75, corner.z); scene.add(pole);
                 const head = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), new THREE.MeshBasicMaterial({ color: corner.color }));
                 head.position.set(corner.x, 3.5, corner.z); scene.add(head);
                 const spotLight = new THREE.SpotLight(corner.color, 3.5, 12, Math.PI / 4, 0.5, 1.2);
                 spotLight.position.set(corner.x, 3.5, corner.z); spotLight.target.position.set(corner.x * 0.4, 0, corner.z * 0.4);
-                spotLight.castShadow = true; spotLight.shadow.mapSize.width = 512; spotLight.shadow.mapSize.height = 512;
+                // 关闭角落装饰光的阴影投射，极大提升移动端性能
+                spotLight.castShadow = false; 
                 scene.add(spotLight); scene.add(spotLight.target);
             });
         }
@@ -557,13 +568,19 @@
                 ctx.beginPath(); ctx.moveTo(0, i*25); ctx.lineTo(canvas.width, i*25 + 50); ctx.stroke();
             }
 
-            // 绘制横幅文字 (字体大幅调小以协调背景比例)
+            // 绘制横幅文字 (先将画布水平翻转，抵消贴在圆柱体内侧造成的镜像反转)
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            
             ctx.fillStyle = '#ffffff';
             ctx.font = 'bold 36px "Noto Sans SC", sans-serif'; 
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.shadowColor = '#10b981'; ctx.shadowBlur = 15; 
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.25, canvas.height / 2);
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.75, canvas.height / 2);
+            
+            ctx.restore();
 
             const bannerTex = new THREE.CanvasTexture(canvas);
             bannerTex.wrapS = THREE.RepeatWrapping;
@@ -771,7 +788,9 @@
             ringCourse.forEach(r => {
                 const mesh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 40, 120), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.08, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY }));
                 mesh.castShadow = mesh.receiveShadow = true; mesh.position.copy(r.pos); scene.add(mesh); r.mesh = mesh;
-                const key = new THREE.SpotLight(0xfff4e0, 2.2, 6, Math.PI/5, 0.65, 1.4); key.position.set(r.pos.x+0.35, 2.95, r.pos.z+(r.pos.z>0?-1:1)*0.9); key.target.position.set(r.pos.x, 0, r.pos.z); key.castShadow=true; scene.add(key); scene.add(key.target); r.keyLight = key;
+                const key = new THREE.SpotLight(0xfff4e0, 2.2, 6, Math.PI/5, 0.65, 1.4); key.position.set(r.pos.x+0.35, 2.95, r.pos.z+(r.pos.z>0?-1:1)*0.9); key.target.position.set(r.pos.x, 0, r.pos.z); 
+                key.castShadow = false; // 关闭球门光阴影，优化性能
+                scene.add(key); scene.add(key.target); r.keyLight = key;
                 const cL = 3.0-r.pos.y, cY = r.pos.y+cL/2, cX = r.size/2+RING_TUBE_RADIUS*0.6, lMat = new THREE.MeshStandardMaterial({color:0x334155, metalness:0.6, roughness:0.4}), lGeo = new THREE.CylinderGeometry(0.006,0.006,cL,6);
                 const l1 = new THREE.Mesh(lGeo, lMat); l1.position.set(r.pos.x-cX, cY, r.pos.z); scene.add(l1);
                 const l2 = new THREE.Mesh(lGeo, lMat); l2.position.set(r.pos.x+cX, cY, r.pos.z); scene.add(l2); r.cables = [l1, l2];
@@ -1090,17 +1109,25 @@
                 triggerHaptic('light');
             };
             
+            // 移除 touchend 监听，统使用 click，避免移动端双重触发或浏览器拦截导致无法选中
             btnRed.addEventListener('click', selectRed);
-            btnRed.addEventListener('touchend', selectRed);
-            
             btnBlue.addEventListener('click', selectBlue);
-            btnBlue.addEventListener('touchend', selectBlue);
             
             // 专门的独立开始按钮
             btnStart.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); startF(); });
-            btnStart.addEventListener('touchend', (e) => { e.preventDefault(); e.stopPropagation(); startF(); });
             
-            document.querySelectorAll('.difficulty-option').forEach(el=>el.addEventListener('click', e=>{e.stopPropagation();applyDifficulty(el.dataset.level);document.querySelectorAll('.difficulty-option').forEach(x=>{const a=x.dataset.level===el.dataset.level;x.style.borderColor=a?['rgba(16,185,129,0.6)','rgba(250,204,21,0.6)','rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'';x.style.background=a?['rgba(16,185,129,0.12)','rgba(250,204,21,0.12)','rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'';});}));
+            // 修复难度选项点击逻辑
+            document.querySelectorAll('.difficulty-option').forEach(el=>el.addEventListener('click', e=>{
+                e.preventDefault(); e.stopPropagation();
+                applyDifficulty(el.dataset.level);
+                triggerHaptic('light');
+                document.querySelectorAll('.difficulty-option').forEach(x=>{
+                    const a = x.dataset.level === el.dataset.level;
+                    x.style.borderColor = a ? ['rgba(16,185,129,0.6)','rgba(250,204,21,0.6)','rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)] : 'rgba(51, 65, 85, 0.5)';
+                    x.style.background = a ? ['rgba(16,185,129,0.12)','rgba(250,204,21,0.12)','rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)] : 'rgba(59, 130, 246, 0.15)';
+                });
+            }));
+            
             document.getElementById('btnTakeoff').addEventListener('click', triggerTakeoff); document.getElementById('btnLand').addEventListener('click', triggerLanding);
             document.getElementById('btnSound').addEventListener('click', toggleSound); document.getElementById('btnCam').addEventListener('click', cycleCameraMode);
             document.getElementById('btnReset').addEventListener('click', resetGame); document.getElementById('btnRestart').addEventListener('click', resetGame);
