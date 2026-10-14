@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>无人机足球竞技场 — 攻击机2</title>
+    <script>
+        // 触控设备检测（手机、平板；iPadOS 默认以桌面版 UA 打开，需靠 maxTouchPoints 判断）
+        (function () {
+            var mq = function (q) { return window.matchMedia && window.matchMedia(q).matches; };
+            var isIPadDesktopUA = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1;
+            var isTouch = mq('(pointer: coarse)') || (mq('(hover: none)') && navigator.maxTouchPoints > 0) || isIPadDesktopUA ||
+                /Android|iPhone|iPad|iPod|Mobile|Tablet/i.test(navigator.userAgent);
+            if (isTouch) document.documentElement.classList.add('touch-device');
+        })();
+    </script>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            user-select: none;
+            -webkit-user-select: none; /* 禁用长按选词 */
+            touch-action: none; /* 彻底禁用移动端原生滑动和缩放，专为游戏服务 */
+            background-color: #020617;
+        }
+        .tech-font {
+            font-family: 'Share Tech Mono', monospace;
+        }
+        /* 玻璃拟态样式 */
+        .glassmorphism {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-button {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-button:hover {
+            background: rgba(59, 130, 246, 0.3);
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.5);
+            transform: translateY(-1px);
+        }
+        ::-webkit-scrollbar { display: none; }
+        .joystick-zone { touch-action: none; }
+        
+        /* 触控装置显示逻辑 */
+        #touchControls { display: none; }
+        @media (max-width: 1024px) {
+            #touchControls { display: block !important; }
+            .kb-only { display: none !important; }
+        }
+        html.touch-device #touchControls { display: block !important; }
+        html.touch-device .kb-only { display: none !important; }
+        html:not(.touch-device) .touch-only { display: none !important; }
+    </style>
+</head>
+<body class="relative w-screen h-screen">
+
+    <!-- 开场与加载画面 -->
+    <div id="startScreen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/95 transition-all duration-700">
+        <div class="max-w-2xl px-6 py-8 mx-4 text-center glassmorphism rounded-2xl border border-emerald-500/30 shadow-[0_0_50px_rgba(16,185,129,0.15)]">
+            <h1 class="text-3xl md:text-5xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-cyan-500 to-blue-500 mb-2">
+                无人机足球竞技场
+            </h1>
+            <!-- 触控设备专用操作说明 -->
+            <div class="touch-only mb-6 p-3 bg-slate-900/80 rounded-lg border border-slate-800 text-left text-xs md:text-sm text-slate-300">
+                <p class="font-bold text-emerald-400 mb-2"><i class="fa-solid fa-gamepad mr-2"></i>触控摇杆操控 (带震动反馈)</p>
+                <ul class="space-y-1 text-slate-400 tech-font">
+                    <li><span class="text-emerald-400 font-bold">左摇杆</span>：上推上升／下拉下降，左右推偏航旋转</li>
+                    <li><span class="text-cyan-400 font-bold">右摇杆</span>：前后左右移动</li>
+                    <li>上方按钮可一键起飞／降落；你离地后两台守门机会自动起飞</li>
+                </ul>
+            </div>
+            <!-- 键盘操作说明 -->
+            <div class="kb-only grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left text-xs md:text-sm text-slate-300">
+                <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800">
+                    <p class="font-bold text-emerald-400 mb-2"><i class="fa-solid fa-keyboard mr-2"></i>键盘操控</p>
+                    <ul class="space-y-1 text-slate-400 tech-font">
+                        <li><span class="text-emerald-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">W</span>：增加油门，按住上升</li>
+                        <li><span class="text-rose-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">S</span>：减少油门，按住下降</li>
+                        <li><span class="text-white bg-slate-800 px-1.5 py-0.5 rounded">A</span> / <span class="text-white bg-slate-800 px-1.5 py-0.5 rounded">D</span>：向左/右偏航旋转</li>
+                        <li><span class="text-white bg-slate-800 px-1.5 py-0.5 rounded">↑</span> / <span class="text-white bg-slate-800 px-1.5 py-0.5 rounded">↓</span>：向前俯冲 / 向后仰退</li>
+                        <li><span class="text-white bg-slate-800 px-1.5 py-0.5 rounded">←</span> / <span class="text-white bg-slate-800 px-1.5 py-0.5 rounded">→</span>：向左/右侧滚</li>
+                        <li><span class="text-cyan-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">C</span>：切换镜头视角</li>
+                        <li><span class="text-cyan-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">[</span> / <span class="text-cyan-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">]</span>：定中视野缩小／放大</li>
+                    </ul>
+                </div>
+                <div class="p-3 bg-slate-900/80 rounded-lg border border-slate-800 flex flex-col justify-between">
+                    <ul class="space-y-1 text-slate-400 text-[11px] tech-font">
+                        <li><span class="text-emerald-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">T</span> / <span class="text-rose-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">L</span>：三机同时起飞 / 降落</li>
+                        <li><span class="text-cyan-400 bg-slate-800 px-1.5 py-0.5 rounded font-bold">R</span>：重设无人机位置</li>
+                        <li><span class="text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded font-bold">M</span>：切换静音</li>
+                        <li><span class="text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded font-bold">Space</span> / <span class="text-slate-300 bg-slate-800 px-1.5 py-0.5 rounded font-bold">Ctrl</span>：备用高度升降</li>
+                    </ul>
+                </div>
+            </div>
+
+            <p class="text-xs text-slate-400 mb-3 tracking-wider uppercase tech-font">选择防守难度</p>
+            <div class="flex gap-2 mb-5">
+                <div id="btnDiffEasy" class="difficulty-option flex-1 py-2.5 text-center cursor-pointer select-none rounded-xl glass-button border-slate-700/50" data-level="easy">
+                    <p class="text-sm font-bold text-emerald-400 uppercase tracking-widest">简单</p>
+                    <p class="text-[9px] text-slate-500 mt-0.5 tech-font">反应慢、易失误</p>
+                </div>
+                <div id="btnDiffMedium" class="difficulty-option flex-1 py-2.5 text-center cursor-pointer select-none rounded-xl glass-button" data-level="medium" style="border-color: rgba(250,204,21,0.6); background: rgba(250,204,21,0.12);">
+                    <p class="text-sm font-bold text-yellow-400 uppercase tracking-widest">中等</p>
+                    <p class="text-[9px] text-slate-500 mt-0.5 tech-font">标准拦截反应</p>
+                </div>
+                <div id="btnDiffHard" class="difficulty-option flex-1 py-2.5 text-center cursor-pointer select-none rounded-xl glass-button border-slate-700/50" data-level="hard">
+                    <p class="text-sm font-bold text-rose-400 uppercase tracking-widest">困难</p>
+                    <p class="text-[9px] text-slate-500 mt-0.5 tech-font">角度覆盖＋补位战术</p>
+                </div>
+            </div>
+            
+            <p class="text-xs text-slate-400 mb-3 tracking-wider uppercase tech-font">选择你的队伍</p>
+            <div class="flex gap-4 mb-6">
+                <div id="btnTeamRed" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/25 ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900 transition-all">
+                    <p class="text-base md:text-lg font-bold text-rose-400 uppercase tracking-widest">红队出战</p>
+                    <p class="text-[10px] text-slate-400 mt-1 tech-font">攻击蓝方球门</p>
+                </div>
+                <div id="btnTeamBlue" class="flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-transparent opacity-60 hover:opacity-100 transition-all">
+                    <p class="text-base md:text-lg font-bold text-blue-400 uppercase tracking-widest">蓝队出战</p>
+                    <p class="text-[10px] text-slate-400 mt-1 tech-font">攻击红方球门</p>
+                </div>
+            </div>
+            
+            <button id="btnStartMatch" class="w-full py-4 md:py-5 mt-2 text-base md:text-lg font-extrabold text-slate-900 bg-gradient-to-r from-emerald-400 to-cyan-400 rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.4)] hover:shadow-[0_0_30px_rgba(16,185,129,0.6)] hover:scale-[1.02] active:scale-95 transition-all uppercase tracking-widest cursor-pointer select-none">
+                <i class="fa-solid fa-plane-departure mr-2"></i>开始比赛 / START
+            </button>
+            <p class="kb-only text-[11px] text-slate-500 mt-3 tech-font">或按任意键以当前设置开始</p>
+        </div>
+    </div>
+
+    <!-- 游戏主场景与 HUD -->
+    <div id="gameUI" class="absolute inset-0 z-10 pointer-events-none flex flex-col justify-between p-4 md:p-6 select-none">
+        <!-- 顶部信息条 -->
+        <header class="w-full flex justify-between items-start pointer-events-auto">
+            <!-- 左上角：任务状态与计分 -->
+            <div class="glassmorphism rounded-xl px-4 py-3 text-white flex flex-col min-w-[150px] shadow-lg">
+                <span class="text-[10px] text-emerald-400 uppercase tracking-wider font-semibold">进球得分</span>
+                <div class="flex items-baseline gap-2 mt-1">
+                    <span id="scoreText" class="text-2xl font-extrabold tech-font text-yellow-300">0</span>
+                    <span class="text-xs text-slate-400">球</span>
+                </div>
+                <div class="text-[9px] text-slate-400 mt-1">仅穿越对方球门才计分，须回到中线才能再次得分。</div>
+                <div class="flex items-center gap-1.5 mt-2 pt-2 border-t border-slate-700/40">
+                    <span id="scoreStatusDot" class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]"></span>
+                    <span id="scoreStatusText" class="text-[10px] font-semibold tech-font text-emerald-300">可以得分</span>
+                </div>
+                <div class="flex items-center gap-1.5 mt-2 pt-2 border-t border-slate-700/40">
+                    <span id="teamDot" class="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]"></span>
+                    <span id="teamLabel" class="text-[10px] text-slate-300 tech-font">红队 vs <span id="oppLabel" class="text-blue-400">蓝方球门</span></span>
+                </div>
+            </div>
+
+            <!-- 中间顶部：罗盘方位角 -->
+            <div class="hidden md:flex flex-col items-center glassmorphism text-white px-6 py-2 rounded-xl border border-slate-700/30">
+                <span class="text-[9px] text-slate-400 tracking-widest uppercase mb-1">航向</span>
+                <div class="flex items-center gap-1.5 tech-font text-lg font-bold">
+                    <span id="compassVal" class="text-emerald-300">000°</span>
+                    <span id="compassDir" class="text-xs text-slate-400">(N)</span>
+                </div>
+            </div>
+
+            <!-- 右上角：系统快捷控制 -->
+            <div class="flex gap-2">
+                <button id="btnTakeoff" class="px-3.5 h-10 rounded-xl glassmorphism text-emerald-400 hover:text-emerald-300 hover:border-emerald-400/50 flex items-center justify-center gap-1.5 transition-all cursor-pointer pointer-events-auto border border-emerald-500/20">
+                    <i class="fa-solid fa-plane-departure text-xs"></i>
+                    <span class="text-[10px] font-semibold tech-font">起飞<span class="kb-only"> (T)</span></span>
+                </button>
+                <button id="btnLand" class="px-3.5 h-10 rounded-xl glassmorphism text-rose-400 hover:text-rose-300 hover:border-rose-400/50 flex items-center justify-center gap-1.5 transition-all cursor-pointer pointer-events-auto border border-rose-500/20">
+                    <i class="fa-solid fa-plane-arrival text-xs"></i>
+                    <span class="text-[10px] font-semibold tech-font">降落<span class="kb-only"> (L)</span></span>
+                </button>
+                <button id="btnSound" class="w-10 h-10 rounded-xl glassmorphism text-slate-300 hover:text-white flex items-center justify-center transition-all cursor-pointer pointer-events-auto border border-slate-700/30">
+                    <i class="fa-solid fa-volume-high text-sm"></i>
+                </button>
+                <button id="btnCam" class="px-3.5 h-10 rounded-xl glassmorphism text-slate-300 hover:text-white flex items-center justify-center gap-2 transition-all cursor-pointer pointer-events-auto border border-slate-700/30">
+                    <i class="fa-solid fa-camera text-sm"></i>
+                    <span id="camText" class="text-xs font-semibold tech-font">追踪</span>
+                </button>
+                <button id="btnReset" class="w-10 h-10 rounded-xl glassmorphism text-slate-300 hover:text-rose-400 flex items-center justify-center transition-all cursor-pointer pointer-events-auto border border-slate-700/30">
+                    <i class="fa-solid fa-arrows-rotate text-sm"></i>
+                </button>
+                <button id="btnDifficulty" class="px-3.5 h-10 rounded-xl glassmorphism text-yellow-300 hover:text-yellow-200 hover:border-yellow-400/50 flex items-center justify-center gap-2 transition-all cursor-pointer pointer-events-auto border border-yellow-500/20">
+                    <i class="fa-solid fa-shield-halved text-sm"></i>
+                    <span id="difficultyText" class="text-xs font-semibold tech-font">中等</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- 右下角：电子时钟 -->
+        <div id="gameClockPanel" class="absolute bottom-4 right-4 z-20 glassmorphism rounded-xl px-4 py-2 flex flex-col items-center shadow-lg border border-cyan-500/20 pointer-events-none">
+            <span class="text-[9px] text-cyan-300 uppercase tracking-widest font-semibold">比赛计时</span>
+            <span id="gameClockText" class="text-xl font-extrabold tech-font text-cyan-300 tracking-wider">00:00:00</span>
+        </div>
+
+        <!-- 底部大信息面板 -->
+        <footer class="w-full flex flex-col md:flex-row gap-4 items-end justify-between pointer-events-auto z-20">
+            <div class="glassmorphism rounded-2xl p-3 md:p-4 text-white w-full md:w-auto md:min-w-[360px] shadow-2xl flex flex-col gap-2 md:gap-3 border border-slate-800/40 mb-24 md:mb-0">
+                <div class="flex items-center justify-between border-b border-slate-800/60 pb-1.5 md:pb-2">
+                    <span class="text-[10px] md:text-[11px] text-emerald-400 tracking-wider font-semibold uppercase flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span> 遥测状态
+                    </span>
+                    <span id="flightMode" class="text-[9px] md:text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-2 py-0.5 rounded-full tech-font">气压定高已开启</span>
+                </div>
+                <div class="grid grid-cols-3 gap-3 md:gap-4">
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 uppercase">速度</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="telemetrySpeed" class="text-xl md:text-2xl font-bold tech-font text-emerald-300">0.0</span>
+                            <span class="text-[9px] md:text-[10px] text-slate-500">m/s</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-1 rounded-full mt-1.5 overflow-hidden">
+                            <div id="speedBar" class="bg-emerald-400 h-full w-0 transition-all duration-200"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 uppercase">高度</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="telemetryAlt" class="text-xl md:text-2xl font-bold tech-font text-cyan-300">0.10</span>
+                            <span class="text-[9px] md:text-[10px] text-slate-500">m</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-1 rounded-full mt-1.5 overflow-hidden">
+                            <div id="altBar" class="bg-cyan-400 h-full w-[10%] transition-all duration-200"></div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="text-[10px] text-slate-400 uppercase">油门</span>
+                        <div class="flex items-baseline gap-1 mt-1">
+                            <span id="telemetryThrottle" class="text-xl md:text-2xl font-bold tech-font text-yellow-300">0%</span>
+                        </div>
+                        <div class="w-full bg-slate-900 h-1 rounded-full mt-1.5 overflow-hidden">
+                            <div id="throttleBar" class="bg-yellow-400 h-full w-[0%] transition-all duration-200"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+        <!-- 触控摇杆区域 (固定在左右下角，层级极高) -->
+        <div id="touchControls" class="absolute inset-0 pointer-events-none z-[60]">
+            <!-- 左摇杆 (高度/偏航) -->
+            <div class="joystick-zone pointer-events-auto absolute left-4 md:left-12 bottom-4 md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-emerald-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] backdrop-blur-sm" id="joyLeft">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-500/40 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.5)] absolute" id="knobLeft"></div>
+                <span class="absolute text-[9px] md:text-[10px] text-emerald-400/80 uppercase font-bold tracking-widest pointer-events-none text-center leading-tight">高度<br>偏航</span>
+            </div>
+            <!-- 右摇杆 (移动) -->
+            <div class="joystick-zone pointer-events-auto absolute right-4 md:right-12 bottom-4 md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.15)] backdrop-blur-sm" id="joyRight">
+                <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-cyan-500/40 border border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.5)] absolute" id="knobRight"></div>
+                <span class="absolute text-[9px] md:text-[10px] text-cyan-400/80 uppercase font-bold tracking-widest pointer-events-none">移动</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 游戏完赛庆祝面板 -->
+    <div id="victoryScreen" class="absolute inset-0 z-40 hidden flex-col items-center justify-center bg-slate-950/85 backdrop-blur-md transition-all duration-500">
+        <div class="max-w-md px-6 py-8 mx-4 text-center glassmorphism rounded-2xl border border-yellow-500/40 shadow-[0_0_50px_rgba(234,179,8,0.2)]">
+            <div class="flex justify-center mb-4 text-yellow-400 text-5xl animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h2 class="text-2xl font-extrabold text-yellow-300 tracking-wider mb-2">任务完成！</h2>
+            <div class="flex gap-4 mt-6">
+                <button id="btnRestart" class="w-full py-3 text-xs md:text-sm font-bold text-slate-950 bg-yellow-400 rounded-lg shadow-lg hover:bg-yellow-300 transition-all duration-300 uppercase">
+                    再玩一次
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3D 渲染画布容器 -->
+    <div id="canvas-container" class="absolute inset-0 w-full h-full z-0"></div>
+
+    <!-- 引入 Three.js 与 OrbitControls -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"></script>
+
+    <script>
+        // --- 触感反馈工具函数 (Haptics) ---
+        function triggerHaptic(type) {
+            if (!navigator.vibrate) return;
+            try {
+                switch(type) {
+                    case 'light': navigator.vibrate(15); break; // 轻触（按钮点击）
+                    case 'medium': navigator.vibrate(30); break; // 中等（回到中线）
+                    case 'heavy': navigator.vibrate([40, 20, 40]); break; // 重击（撞墙/碰撞）
+                    case 'goal': navigator.vibrate([50, 50, 100, 50, 150]); break; // 进球（连震庆祝）
+                    case 'error': navigator.vibrate([30, 50, 30]); break; // 错误（未回线进球）
+                    case 'engine': navigator.vibrate(20); break; // 引擎启动/关闭
+                }
+            } catch(e) {}
+        }
+
+        // 全局系统变量
+        let scene, camera, renderer, clock, orbitControls;
+        const container = document.getElementById('canvas-container');
+        let soundEnabled = false;
+        let audioCtx = null;
+        let droneSynth = null;
+
+        // 微型无人机物理与姿态状态
+        const drone = {
+            mesh: null, rotors: [], lights: [],
+            position: new THREE.Vector3(0, 0.1, 0),
+            velocity: new THREE.Vector3(0, 0, 0),
+            rotation: new THREE.Euler(0, 0, 0, 'YXZ'),
+            targetAltitude: 0.1, touchAltitudeInput: 0,
+            touchActive: false, touchActiveLeft: false,
+            autoFlightState: 'none', targetTakeoffHeight: 2.2,
+            input: { pitch: 0, roll: 0, yaw: 0, throttle: 0.0 },
+            // 优化响应速度：提升了俯仰、侧滚、偏航的速度系数
+            constants: {
+                mass: 0.4, maxThrottleThrust: 18.0, gravity: 9.8, linearDrag: 1.8,
+                pitchRollSpeed: 2.5, // 提升灵敏度 (原1.6)
+                yawSpeed: 2.2,       // 提升旋转速度 (原1.6)
+                yawRampSpeed: 8.0,   // 加快旋转响应 (原6.0)
+                maxTilt: 0.45,       // 增大最大倾角 (原0.40)
+                recoveryRate: 12.0,  // 加快回正
+            },
+            currentPitch: 0, currentRoll: 0, currentYawRate: 0,
+        };
+
+        const DRONE_CAGE_RADIUS = 0.10, RING_CLEAR_RADIUS = 0.30, RING_TUBE_RADIUS = 0.05;
+        const RING_CENTER_RADIUS = RING_CLEAR_RADIUS + RING_TUBE_RADIUS;
+        const GOAL_HEIGHT = 2.2;
+        const ringCourse = [
+            { pos: new THREE.Vector3(0, GOAL_HEIGHT, -2.25), color: 0xef4444, team: 'red', size: RING_CENTER_RADIUS * 2, lastPassTime: 0, forwardSign: -1, prevSide: null },
+            { pos: new THREE.Vector3(0, GOAL_HEIGHT, 2.25), color: 0x3b82f6, team: 'blue', size: RING_CENTER_RADIUS * 2, lastPassTime: 0, forwardSign: 1, prevSide: null }
+        ];
+        
+        let score = 0, particles = [], readyToScore = true, centerLinePrevSide = null;
+        let matchSeconds = 0, matchTimerId = null;
+
+        function formatMatchClock(totalSeconds) {
+            const hh = Math.floor(totalSeconds / 3600), mm = Math.floor((totalSeconds % 3600) / 60), ss = Math.floor(totalSeconds % 60);
+            const pad = (n) => String(n).padStart(2, '0');
+            return `${pad(hh)}:${pad(mm)}:${pad(ss)}`;
+        }
+        function updateMatchClockDisplay() {
+            const el = document.getElementById('gameClockText');
+            if (el) el.innerText = formatMatchClock(matchSeconds);
+        }
+        function stopMatchClock() { if (matchTimerId) { clearInterval(matchTimerId); matchTimerId = null; } }
+        function startMatchClock() {
+            stopMatchClock(); matchSeconds = 0; updateMatchClockDisplay();
+            matchTimerId = setInterval(() => {
+                matchSeconds++;
+                if (matchSeconds >= 86400) { matchSeconds = 86399; stopMatchClock(); }
+                updateMatchClockDisplay();
+            }, 1000);
+        }
+
+        let playerTeam = 'red';
+        const TEAM_COLORS = { red: 0xef4444, blue: 0x3b82f6 }, TAIL_BEACON_COLORS = { red: 0x2f6bff, blue: 0xff1a1a };
+        function getOpponentTeam(team) { return team === 'red' ? 'blue' : 'red'; }
+        function getOwnGoalRing() { return ringCourse.find(r => r.team === playerTeam); }
+        function getOpponentGoalRing() { return ringCourse.find(r => r.team === getOpponentTeam(playerTeam)); }
+
+        const DIFFICULTY_LEVELS = {
+            easy: { label: '简单', maxSpeed: 1.3, accel: 2.8, guardRadiusXY: 0.40, guardDepth: 0.10, reactionMin: 0.50, reactionMax: 0.90, aimError: 0.30, engageDistance: 1.6, engageChance: 0.15, tactics: { angleCoverage: false, predictiveIntercept: false, coverRotation: false } },
+            medium: { label: '中等', maxSpeed: 1.9, accel: 4.2, guardRadiusXY: 0.48, guardDepth: 0.26, reactionMin: 0.22, reactionMax: 0.55, aimError: 0.16, engageDistance: 2.4, engageChance: 0.78, tactics: { angleCoverage: false, predictiveIntercept: false, coverRotation: false } },
+            hard: { label: '困难', maxSpeed: 2.5, accel: 6.0, guardRadiusXY: 0.55, guardDepth: 0.34, reactionMin: 0.08, reactionMax: 0.20, aimError: 0.05, engageDistance: 3.0, engageChance: 0.92, tactics: { angleCoverage: true, predictiveIntercept: true, coverRotation: true } },
+        };
+        let aiDifficulty = 'medium';
+
+        function createAIDroneState(guardHomeOffsetX) {
+            return {
+                mesh: null, canopyRef: null, cageMatRef: null, warnRingRef: null, glowRef: null, rotors: [],
+                position: new THREE.Vector3(0, 0.10, 2.25), velocity: new THREE.Vector3(0, 0, 0),
+                team: 'blue', guardRing: null, guardHomeOffsetX: guardHomeOffsetX,
+                aimTarget: new THREE.Vector3(0, 0.10, 2.25), reactionTimer: 0, altitudeState: 'grounded',
+                constants: DIFFICULTY_LEVELS[aiDifficulty],
+            };
+        }
+        const aiDrones = [createAIDroneState(-0.22), createAIDroneState(0.22)];
+
+        function applyDifficulty(level) {
+            if (!DIFFICULTY_LEVELS[level]) return;
+            aiDifficulty = level;
+            aiDrones.forEach(aiState => { aiState.constants = DIFFICULTY_LEVELS[level]; aiState.reactionTimer = 0; });
+            document.getElementById('difficultyText').innerText = DIFFICULTY_LEVELS[aiDifficulty].label;
+            showSystemNotification(`防守难度已切换为：${DIFFICULTY_LEVELS[level].label}`);
+        }
+        function cycleDifficulty() {
+            triggerHaptic('light');
+            const order = ['easy', 'medium', 'hard'];
+            applyDifficulty(order[(order.indexOf(aiDifficulty) + 1) % order.length]);
+        }
+
+        const keys = { w: false, s: false, a: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false, ' ': false, control: false, t: false, l: false };
+        let cameraMode = 0;
+        const CAMERA_MODES_ZH = ['追踪', '座舱', '自由', '定中', '定左', '定右'];
+        const CAMERA_CYCLE_ORDER = [0, 3, 4, 5, 1, 2];
+        const PILOT_NET_Z = 3.0, PILOT_DIST_FROM_NET = 0.0, PILOT_NET_CLEARANCE = 0.06, PILOT_EYE_HEIGHT = 1.53;
+        let PILOT_FOV = 45;
+        const DEFAULT_FOV = 60, SIDE_EYE_HEIGHT = 1.65, SIDE_OFFSET_X = 0.9, SIDE_MIN_UP_DEG = 6;
+        const pilotLook = new THREE.Vector3(0, 1.2, 0);
+        const endNets = { neg: null, pos: null };
+        
+        function setEndNetsVisible(hideSide) {
+            if (endNets.neg) endNets.neg.visible = hideSide !== -1;
+            if (endNets.pos) endNets.pos.visible = hideSide !== 1;
+        }
+        function setCameraFov(f) { if (camera.fov !== f) { camera.fov = f; camera.updateProjectionMatrix(); } }
+
+        function initAudio() {
+            if (audioCtx) return;
+            try {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                osc.type = 'sawtooth'; osc.frequency.value = 90;
+                const gain = audioCtx.createGain(); gain.gain.value = 0.0;
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); droneSynth = { osc, gain };
+            } catch (e) {}
+        }
+
+        function updateDroneSound() {
+            if (!droneSynth) return;
+            const currentSpeed = drone.velocity.length();
+            droneSynth.osc.frequency.value = 70 + drone.input.throttle * 260 + currentSpeed * 3;
+            const armed = drone.input.throttle > 0.02;
+            droneSynth.gain.gain.value = soundEnabled ? (armed ? (0.015 + drone.input.throttle * 0.05) : 0) : 0;
+        }
+
+        function playChimeSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator(), osc2 = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                osc.type = 'sine'; osc2.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1174.66, audioCtx.currentTime + 0.12);
+                osc2.frequency.setValueAtTime(880.00, audioCtx.currentTime); osc2.frequency.exponentialRampToValueAtTime(1760.00, audioCtx.currentTime + 0.12);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+                osc.connect(gain); osc2.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc2.start(); osc.stop(audioCtx.currentTime + 0.4); osc2.stop(audioCtx.currentTime + 0.4);
+            } catch(e){}
+        }
+
+        function playDeniedGoalSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain(), filter = audioCtx.createBiquadFilter();
+                osc.type = 'sawtooth'; osc.frequency.setValueAtTime(160, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(70, audioCtx.currentTime + 0.35);
+                filter.type = 'lowpass'; filter.frequency.setValueAtTime(300, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.0001, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.22, audioCtx.currentTime + 0.03); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+                osc.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.45);
+            } catch(e){}
+        }
+
+        function playCenterLineSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
+                osc.type = 'triangle'; osc.frequency.setValueAtTime(392.00, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(523.25, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.0001, audioCtx.currentTime); gain.gain.exponentialRampToValueAtTime(0.14, audioCtx.currentTime + 0.02); gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.22);
+                osc.connect(gain); gain.connect(audioCtx.destination);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.25);
+            } catch(e){}
+        }
+
+        function initScene() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x010409);
+            scene.fog = new THREE.FogExp2(0x010409, 0.025);
+            clock = new THREE.Clock();
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 100);
+            renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // 降低移动端像素比例限制 (从2降为1.25)，大幅减少绘制像素量，提升帧率解决卡顿
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.toneMapping = THREE.ACESFilmicToneMapping;
+            renderer.toneMappingExposure = 1.1;
+            container.appendChild(renderer.domElement);
+            orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+            orbitControls.enableDamping = true; orbitControls.dampingFactor = 0.05; orbitControls.maxPolarAngle = Math.PI / 2 - 0.02; orbitControls.enabled = false;
+            window.addEventListener('resize', onWindowResize, false);
+        }
+
+        function setupLights() {
+            scene.add(new THREE.AmbientLight(0x071510, 1.2));
+            scene.add(new THREE.HemisphereLight(0x10b981, 0x010409, 0.5));
+            
+            // 新增一盏全局定向光专门负责生成主要阴影，减少多光源阴影计算量
+            const mainShadowLight = new THREE.DirectionalLight(0xffffff, 0.5);
+            mainShadowLight.position.set(3, 8, 5);
+            mainShadowLight.castShadow = true;
+            mainShadowLight.shadow.mapSize.width = 1024;
+            mainShadowLight.shadow.mapSize.height = 1024;
+            scene.add(mainShadowLight);
+
+            const corners = [ { x: -1.8, z: -3.3, color: 0xef4444 }, { x: 1.8, z: -3.3, color: 0xef4444 }, { x: -1.8, z: 3.3, color: 0x3b82f6 }, { x: 1.8, z: 3.3, color: 0x3b82f6 } ];
+            corners.forEach(corner => {
+                const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 3.5, 8), new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.9, roughness: 0.1 }));
+                pole.position.set(corner.x, 1.75, corner.z); scene.add(pole);
+                const head = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 12), new THREE.MeshBasicMaterial({ color: corner.color }));
+                head.position.set(corner.x, 3.5, corner.z); scene.add(head);
+                const spotLight = new THREE.SpotLight(corner.color, 3.5, 12, Math.PI / 4, 0.5, 1.2);
+                spotLight.position.set(corner.x, 3.5, corner.z); spotLight.target.position.set(corner.x * 0.4, 0, corner.z * 0.4);
+                // 关闭角落装饰光的阴影投射，极大提升移动端性能
+                spotLight.castShadow = false; 
+                scene.add(spotLight); scene.add(spotLight.target);
+            });
+        }
+
+        // 创建外围看台环境与定制横幅
+        function createStadiumEnvironment() {
+            // 1. 生成程序化彩色看台作为底图 (确保在无图片时也能看到彩色座位)
+            const fallbackCanvas = document.createElement('canvas');
+            fallbackCanvas.width = 1024; fallbackCanvas.height = 512;
+            const fCtx = fallbackCanvas.getContext('2d');
+            fCtx.fillStyle = '#050b14'; fCtx.fillRect(0, 0, 1024, 512);
+            // 绘制红蓝交替的彩色座位区
+            for(let y = 20; y < 350; y += 20) {
+                for(let x = 0; x < 1024; x += 16) {
+                    const isRed = Math.floor(x / 64 + y / 40) % 2 === 0;
+                    fCtx.fillStyle = isRed ? '#b91c1c' : '#1d4ed8'; 
+                    fCtx.fillRect(x + 2, y + 2, 12, 16);
+                }
+            }
+            // 绘制底部广告黑墙区域
+            fCtx.fillStyle = '#020617'; fCtx.fillRect(0, 350, 1024, 162);
+            let stadiumTex = new THREE.CanvasTexture(fallbackCanvas);
+            
+            // 尝试加载用户背景看台贴图，如果成功则覆盖彩色底图
+            const loader = new THREE.TextureLoader();
+            loader.load('背景.png', function(tex) {
+                tex.wrapS = THREE.RepeatWrapping;
+                tex.repeat.set(4, 1);
+                stadium.material.map = tex;
+                stadium.material.needsUpdate = true;
+            }, undefined, function(err) {
+                console.warn("未能加载 背景.png，已降级使用程序化彩色看台。");
+            });
+            
+            stadiumTex.wrapS = THREE.RepeatWrapping;
+            stadiumTex.repeat.set(4, 1); 
+            const stadiumGeo = new THREE.CylinderGeometry(25, 25, 15, 32, 1, true);
+            const stadiumMat = new THREE.MeshBasicMaterial({ map: stadiumTex, side: THREE.BackSide, color: 0xdddddd });
+            const stadium = new THREE.Mesh(stadiumGeo, stadiumMat);
+            stadium.position.y = 5; 
+            scene.add(stadium);
+
+            // 2. 创建自定义 "HARC无人机足球模拟赛" 环绕横幅
+            const canvas = document.createElement('canvas');
+            canvas.width = 2048; canvas.height = 256;
+            const ctx = canvas.getContext('2d');
+            
+            // 绘制黑色背景底纹
+            ctx.fillStyle = '#08080a';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            // 绘制一些科技感发光线条
+            ctx.strokeStyle = 'rgba(16, 185, 129, 0.15)';
+            ctx.lineWidth = 4;
+            for(let i=0; i<10; i++) {
+                ctx.beginPath(); ctx.moveTo(0, i*25); ctx.lineTo(canvas.width, i*25 + 50); ctx.stroke();
+            }
+
+            // 绘制横幅文字 (先将画布水平翻转，抵消贴在圆柱体内侧造成的镜像反转)
+            ctx.save();
+            ctx.translate(canvas.width, 0);
+            ctx.scale(-1, 1);
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 36px "Noto Sans SC", sans-serif'; 
+            ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+            ctx.shadowColor = '#10b981'; ctx.shadowBlur = 15; 
+            ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.25, canvas.height / 2);
+            ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.75, canvas.height / 2);
+            
+            ctx.restore();
+
+            const bannerTex = new THREE.CanvasTexture(canvas);
+            bannerTex.wrapS = THREE.RepeatWrapping;
+            bannerTex.repeat.set(4, 1);
+
+            const bannerGeo = new THREE.CylinderGeometry(24.5, 24.5, 4, 32, 1, true);
+            const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, side: THREE.BackSide });
+            const banner = new THREE.Mesh(bannerGeo, bannerMat);
+            banner.position.y = 2.0; 
+            scene.add(banner);
+        }
+
+        function createSoccerField() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 384; canvas.height = 768;
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#156a25'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < 2600; i++) {
+                ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,40,0,0.07)';
+                ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 2);
+            }
+            const centerY = canvas.height / 2;
+            ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 6;
+            ctx.beginPath(); ctx.arc(canvas.width / 2, centerY, 80, 0, Math.PI * 2); ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(0, centerY); ctx.lineTo(canvas.width, centerY); ctx.stroke();
+            const texture = new THREE.CanvasTexture(canvas);
+            const field = new THREE.Mesh(new THREE.PlaneGeometry(3, 6), new THREE.MeshStandardMaterial({ map: texture, roughness: 0.85, emissive: 0xffffff, emissiveMap: texture, emissiveIntensity: 0.10, side: THREE.DoubleSide }));
+            field.rotation.x = -Math.PI / 2; field.receiveShadow = true; scene.add(field);
+            
+            const outer = new THREE.Mesh(new THREE.PlaneGeometry(60, 60), new THREE.MeshStandardMaterial({ color: 0x010204, roughness: 0.95, metalness: 0.5 }));
+            outer.rotation.x = -Math.PI / 2; outer.position.y = -0.02; outer.receiveShadow = true; scene.add(outer);
+        }
+
+        function createNetTexture() {
+            const canvas = document.createElement('canvas');
+            canvas.width = 128; canvas.height = 128; const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, 128, 128); ctx.strokeStyle = '#10b981'; ctx.lineWidth = 4; ctx.strokeRect(0, 0, 128, 128);
+            const tex = new THREE.CanvasTexture(canvas); tex.wrapS = tex.wrapT = THREE.RepeatWrapping; return tex;
+        }
+
+        function buildInflatableCage() {
+            const cageGroup = new THREE.Group();
+            const netMat = new THREE.MeshBasicMaterial({ map: createNetTexture(), transparent: true, opacity: 0.38, side: THREE.DoubleSide, depthWrite: false });
+            const W = 3.0, L = 6.0, H = 3.0;
+
+            const addNet = (w, h, x, y, z, rotY, rotX, repX, repY, saveAs) => {
+                const mesh = new THREE.Mesh(new THREE.PlaneGeometry(w, h), netMat.clone());
+                mesh.position.set(x, y, z); mesh.rotation.y = rotY; mesh.rotation.x = rotX;
+                mesh.material.map.repeat.set(repX, repY); cageGroup.add(mesh);
+                if(saveAs) endNets[saveAs] = mesh;
+            };
+            addNet(L, H, -W/2, H/2, 0, Math.PI/2, 0, 12, 6);
+            addNet(L, H, W/2, H/2, 0, Math.PI/2, 0, 12, 6);
+            addNet(W, H, 0, H/2, -L/2, 0, 0, 8, 6, 'neg');
+            addNet(W, H, 0, H/2, L/2, 0, 0, 8, 6, 'pos');
+            addNet(W, L, 0, H, 0, 0, Math.PI/2, 8, 12);
+
+            const tmW = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.15, metalness: 0.1, bumpScale: 0.05 });
+            const tmR = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.15, metalness: 0.1 });
+            const tmB = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.15, metalness: 0.1 });
+            const r = 0.15, vGeo = new THREE.CylinderGeometry(r, r, H, 16);
+
+            const addPillar = (geo, mat, x, y, z, rx=0, rz=0) => {
+                const p = new THREE.Mesh(geo, mat); p.position.set(x, y, z); p.rotation.set(rx, 0, rz); p.castShadow = true; cageGroup.add(p); return p;
+            };
+            addPillar(vGeo, tmR, -W/2, H/2, -L/2); addPillar(vGeo, tmR, W/2, H/2, -L/2);
+            addPillar(vGeo, tmB, -W/2, H/2, L/2); addPillar(vGeo, tmB, W/2, H/2, L/2);
+            const hLGeo = new THREE.CylinderGeometry(r, r, L, 16), hSGeo = new THREE.CylinderGeometry(r, r, W, 16);
+            addPillar(hLGeo, tmW, -W/2, r, 0, Math.PI/2, 0); addPillar(hLGeo, tmW, W/2, r, 0, Math.PI/2, 0);
+            addPillar(hLGeo, tmW, -W/2, H-r/2, 0, Math.PI/2, 0); addPillar(hLGeo, tmW, W/2, H-r/2, 0, Math.PI/2, 0);
+            addPillar(hSGeo, tmR, 0, r, -L/2, 0, Math.PI/2); addPillar(hSGeo, tmR, 0, H-r/2, -L/2, 0, Math.PI/2);
+            addPillar(hSGeo, tmB, 0, r, L/2, 0, Math.PI/2); addPillar(hSGeo, tmB, 0, H-r/2, L/2, 0, Math.PI/2);
+            scene.add(cageGroup);
+        }
+
+        function createDroneCage(radius, colorHex) {
+            const group = new THREE.Group();
+            const mat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.08, metalness: 0.15, roughness: 0.4, transparent: true, opacity: 0.92 });
+            const icoGeo = new THREE.IcosahedronGeometry(radius, 3);
+            const edgesGeo = new THREE.EdgesGeometry(icoGeo, 1);
+            const posAttr = edgesGeo.attributes.position;
+            const rodGeos = [];
+            const p1 = new THREE.Vector3(), p2 = new THREE.Vector3(), dir = new THREE.Vector3(), mid = new THREE.Vector3(), quat = new THREE.Quaternion(), m = new THREE.Matrix4(), up = new THREE.Vector3(0, 1, 0);
+            for (let i = 0; i < posAttr.count; i += 2) {
+                p1.fromBufferAttribute(posAttr, i); p2.fromBufferAttribute(posAttr, i + 1); dir.subVectors(p2, p1);
+                if (dir.length() < 1e-6) continue;
+                mid.addVectors(p1, p2).multiplyScalar(0.5); quat.setFromUnitVectors(up, dir.clone().normalize()); m.compose(mid, quat, new THREE.Vector3(1, 1, 1));
+                const g = new THREE.CylinderGeometry(radius*0.01, radius*0.01, dir.length(), 5, 1); g.applyMatrix4(m); rodGeos.push(g);
+            }
+            if (THREE.BufferGeometryUtils && rodGeos.length) {
+                const mesh = new THREE.Mesh(THREE.BufferGeometryUtils.mergeBufferGeometries(rodGeos, false), mat); mesh.castShadow = true; group.add(mesh); rodGeos.forEach(g=>g.dispose());
+            } else { rodGeos.forEach(g => { const m = new THREE.Mesh(g, mat); m.castShadow = true; group.add(m); }); }
+            icoGeo.dispose(); edgesGeo.dispose(); return { group, material: mat };
+        }
+
+        function createTailBeacon() {
+            const group = new THREE.Group();
+            const fin = new THREE.Mesh(new THREE.BoxGeometry(0.014, 0.014, 0.07), new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.6, roughness: 0.45 }));
+            fin.position.set(0, 0.02, -0.035); fin.castShadow = true; group.add(fin);
+            const bPos = new THREE.Vector3(0, 0.02, -0.07);
+            const bMat = new THREE.MeshBasicMaterial({ color: 0xff1a1a }); bMat.userData.baseColor = new THREE.Color(0xff1a1a);
+            const b = new THREE.Mesh(new THREE.SphereGeometry(0.022/3, 12, 12), bMat); b.position.copy(bPos); group.add(b);
+            const hMats = [];
+            [{s:2.4,o:0.4}, {s:4.0,o:0.2}, {s:6.0,o:0.09}].forEach(l => {
+                const hMat = new THREE.MeshBasicMaterial({ color: 0xff1a1a, transparent: true, opacity: l.o, blending: THREE.AdditiveBlending, depthWrite: false });
+                const h = new THREE.Mesh(new THREE.SphereGeometry((0.022/3)*l.s, 10, 10), hMat); h.position.copy(bPos); group.add(h); hMats.push(hMat);
+            });
+            bMat.userData.haloMats = hMats;
+            const bLight = new THREE.PointLight(0xff1a1a, 2.2, 1.1, 2); bLight.position.copy(bPos); group.add(bLight);
+            return { group, beaconMat: bMat, beaconLight: bLight };
+        }
+
+        function setTailBeaconColor(bMat, bLight, colorHex) {
+            if(!bMat) return; const c = new THREE.Color(colorHex);
+            bMat.userData.baseColor = c; bMat.color.copy(c);
+            if(bMat.userData.haloMats) bMat.userData.haloMats.forEach(m => m.color.copy(c));
+            if(bLight) bLight.color.copy(c);
+        }
+        function updateTailBeacon(bMat, bLight) { if(bMat) bMat.color.copy(bMat.userData.baseColor); if(bLight) bLight.intensity = 1.2; }
+
+        function buildDrone() {
+            const g = new THREE.Group(), iG = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.24), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9, roughness: 0.1 })); body.castShadow = true; iG.add(body);
+            const cGeo = new THREE.SphereGeometry(0.09, 16, 16); cGeo.scale(1, 0.5, 1.2);
+            const canopy = new THREE.Mesh(cGeo, new THREE.MeshStandardMaterial({ color: 0x10b981, emissive: 0x047857, roughness: 0.05, metalness: 0.9 })); canopy.position.set(0, 0.06, 0.015); canopy.castShadow = true; iG.add(canopy); drone.canopyRef = canopy;
+            const lens = new THREE.Mesh(new THREE.SphereGeometry(0.035, 12, 12), new THREE.MeshBasicMaterial({ color: 0x10b981 })); lens.position.set(0, 0, 0.135); iG.add(lens);
+
+            const aA = Math.PI/4, aD = 0.28;
+            [{x:Math.sin(aA)*aD,z:Math.cos(aA)*aD,c:0x10b981},{x:-Math.sin(aA)*aD,z:Math.cos(aA)*aD,c:0x10b981},{x:Math.sin(aA)*aD,z:-Math.cos(aA)*aD,c:0xef4444},{x:-Math.sin(aA)*aD,z:-Math.cos(aA)*aD,c:0xef4444}].forEach((p, i) => {
+                const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, aD, 8), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.95, roughness: 0.1 }));
+                arm.rotation.z = Math.PI/2; arm.rotation.y = (i===0||i===3) ? -aA : aA; arm.position.set(p.x/2, 0, p.z/2); arm.castShadow = true; iG.add(arm);
+                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.08, 8), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 })); motor.position.set(p.x, 0.02, p.z); motor.castShadow = true; iG.add(motor);
+                const rG = new THREE.Group(); rG.position.set(p.x, 0.05, p.z);
+                rG.add(new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, 0.03, 8), new THREE.MeshStandardMaterial({ color: 0x000000 })));
+                const blade = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.003, 0.22), new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.85 })); blade.castShadow = true; rG.add(blade);
+                iG.add(rG); drone.rotors.push(rG);
+                const led = new THREE.Mesh(new THREE.SphereGeometry(0.02, 8, 8), new THREE.MeshBasicMaterial({ color: p.c })); led.position.set(p.x, -0.02, p.z); iG.add(led); drone.lights.push({ mesh: led, originalColor: p.c });
+            });
+            iG.scale.setScalar(0.23); g.add(iG);
+            const cage = createDroneCage(DRONE_CAGE_RADIUS, 0x10b981); g.add(cage.group); drone.cageMatRef = cage.material;
+            const tail = createTailBeacon(); tail.group.position.set(0, 0, -0.045); g.add(tail.group); drone.tailBeaconMat = tail.beaconMat; drone.tailBeaconLight = tail.beaconLight;
+            
+            const bLight = new THREE.SpotLight(0x00ffcc, 5.0, 4, Math.PI/6, 0.4, 0.9); bLight.position.set(0, -DRONE_CAGE_RADIUS*0.9, 0); bLight.castShadow = true;
+            const t = new THREE.Object3D(); t.position.set(0, -3, 0); bLight.add(t); bLight.target = t; g.add(bLight);
+            const bGlow = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), new THREE.MeshBasicMaterial({ color: 0x00ffcc })); bGlow.position.set(0, -DRONE_CAGE_RADIUS*0.9, 0); g.add(bGlow); drone.glowRef = bGlow;
+            
+            g.position.copy(drone.position); scene.add(g); drone.mesh = g;
+        }
+
+        function buildAIDrone(ai) {
+            const g = new THREE.Group(), iG = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.08, 0.24), new THREE.MeshStandardMaterial({ color: 0x1e1b2e, metalness: 0.85, roughness: 0.2 })); body.castShadow = true; iG.add(body);
+            const canopy = new THREE.Mesh(new THREE.SphereGeometry(0.09, 16, 16).scale(1,0.5,1.2), new THREE.MeshStandardMaterial({ color: 0x3b82f6, emissive: 0x1d4ed8, roughness: 0.05, metalness: 0.9 })); canopy.position.set(0, 0.06, 0.015); canopy.castShadow = true; iG.add(canopy); ai.canopyRef = canopy;
+            const aA = Math.PI/4, aD = 0.28;
+            [{x:Math.sin(aA)*aD,z:Math.cos(aA)*aD},{x:-Math.sin(aA)*aD,z:Math.cos(aA)*aD},{x:Math.sin(aA)*aD,z:-Math.cos(aA)*aD},{x:-Math.sin(aA)*aD,z:-Math.cos(aA)*aD}].forEach((p, i) => {
+                const arm = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.018, aD, 8), new THREE.MeshStandardMaterial({ color: 0x2b2440, metalness: 0.9, roughness: 0.15 }));
+                arm.rotation.z = Math.PI/2; arm.rotation.y = (i===0||i===3)?-aA:aA; arm.position.set(p.x/2, 0, p.z/2); arm.castShadow = true; iG.add(arm);
+                const motor = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.08, 8), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 })); motor.position.set(p.x, 0.02, p.z); iG.add(motor);
+                const rG = new THREE.Group(); rG.position.set(p.x, 0.05, p.z);
+                rG.add(new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.003, 0.22), new THREE.MeshStandardMaterial({ color: 0xcbd5e1, transparent: true, opacity: 0.8 }))); iG.add(rG); ai.rotors.push(rG);
+            });
+            iG.scale.setScalar(0.23); g.add(iG);
+            const cage = createDroneCage(DRONE_CAGE_RADIUS, 0x3b82f6); g.add(cage.group); ai.cageMatRef = cage.material;
+            const tail = createTailBeacon(); tail.group.position.set(0, 0, -0.045); g.add(tail.group); ai.tailBeaconMat = tail.beaconMat; ai.tailBeaconLight = tail.beaconLight;
+            const warnRing = new THREE.Mesh(new THREE.TorusGeometry(DRONE_CAGE_RADIUS*1.15, 0.006, 8, 24), new THREE.MeshBasicMaterial({ color: 0xfacc15, transparent: true, opacity: 0.55 })); warnRing.rotation.x = Math.PI/2; g.add(warnRing); ai.warnRingRef = warnRing;
+            const bGlow = new THREE.Mesh(new THREE.SphereGeometry(0.015, 8, 8), new THREE.MeshBasicMaterial({ color: 0x3b82f6 })); bGlow.position.set(0, -DRONE_CAGE_RADIUS*0.9, 0); g.add(bGlow); ai.glowRef = bGlow;
+            g.position.copy(ai.position); scene.add(g); ai.mesh = g;
+        }
+        function buildAIDrones() { aiDrones.forEach(ai => buildAIDrone(ai)); }
+
+        const GOAL_RING_WHITE = 0xf6f1e7, GOAL_RING_GLOW = 0xfff6e6, GOAL_RING_GLOW_INTENSITY = 0.16, GOAL_FLASH_COLOR = 0x10b981;
+        function setGoalVisible(r, v) { if(r.mesh) r.mesh.visible=v; if(r.display) r.display.group.visible=v; if(r.cables) r.cables.forEach(c=>c.visible=v); }
+        function setRingFlash(r, on, fC=GOAL_FLASH_COLOR) { const m=r.mesh.material; if(on){ m.color.setHex(fC); m.emissive.setHex(fC); m.emissiveIntensity=1.4; }else{ m.color.setHex(GOAL_RING_WHITE); m.emissive.setHex(GOAL_RING_GLOW); m.emissiveIntensity=GOAL_RING_GLOW_INTENSITY; } }
+        
+        const GD_W=0.26, GD_H=0.12, GD_D=0.05, GD_BEZ=0.015, GD_EMB=0.03; const goalDisplayFlashUntil = { red: 0, blue: 0 };
+        function drawGoalDisplay(r) {
+            const gd = r.display; if(!gd) return;
+            const isOpp = r.team !== playerTeam; const goals = isOpp ? score : 0; const flashing = performance.now() < goalDisplayFlashUntil[r.team];
+            const key = [r.team, playerTeam, goals, isOpp&&readyToScore, flashing].join('|'); if(gd.key === key) return; gd.key = key;
+            const c = gd.canvas, g = gd.ctx, W = c.width, H = c.height, teamHex = r.team==='red'?'#ef4444':'#3b82f6', teamName = r.team==='red'?'红方球门':'蓝方球门';
+            g.clearRect(0,0,W,H); g.fillStyle='#05080f'; g.fillRect(0,0,W,H); g.fillStyle='rgba(255,255,255,0.025)'; for(let y=0;y<H;y+=4) g.fillRect(0,y,W,1);
+            g.fillStyle = teamHex; g.fillRect(0,0,W,54); g.fillStyle='#fff'; g.font='bold 34px "Noto Sans SC",sans-serif'; g.textAlign='left'; g.textBaseline='middle'; g.fillText(teamName, 22, 28);
+            g.textAlign='right'; g.font='bold 26px "Share Tech Mono",monospace'; g.fillText(isOpp?'对方球门':'己方球门', W-22, 29);
+            if(flashing){ g.fillStyle='#10b981'; g.shadowColor='#34d399'; g.shadowBlur=24; g.font='bold 120px "Share Tech Mono",monospace'; g.textAlign='center'; g.fillText('GOAL!', W/2, 150); g.shadowBlur=0; }
+            else { g.fillStyle='#facc15'; g.shadowColor='#facc15'; g.shadowBlur=18; g.font='bold 140px "Share Tech Mono",monospace'; g.textAlign='center'; g.fillText(String(goals).padStart(2,'0'), W/2, 152); g.shadowBlur=0; }
+            g.fillStyle='rgba(148,163,184,0.15)'; g.fillRect(0,H-40,W,40); g.font='bold 22px "Noto Sans SC",sans-serif'; g.textAlign='center';
+            if(!isOpp){ g.fillStyle='#94a3b8'; g.fillText('防守中・穿越不计分', W/2, H-20); } else if(readyToScore){ g.fillStyle='#34d399'; g.fillText('● 可以得分', W/2, H-20); } else { g.fillStyle='#fbbf24'; g.fillText('● 回到中线后才能再得分', W/2, H-20); }
+            gd.texture.needsUpdate = true;
+        }
+        function updateGoalDisplays() { ringCourse.forEach(drawGoalDisplay); }
+
+        function buildGoalDisplay(r) {
+            const canvas = document.createElement('canvas'); canvas.width = 512; canvas.height = 240; const tex = new THREE.CanvasTexture(canvas); tex.anisotropy=4;
+            const group = new THREE.Group();
+            const shell = new THREE.Mesh(new THREE.BoxGeometry(GD_W+GD_BEZ*2, GD_H+GD_BEZ*2, GD_D), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.32, clearcoat: 1, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY })); shell.castShadow = shell.receiveShadow = true; group.add(shell);
+            const sMat = new THREE.MeshBasicMaterial({ map: tex, toneMapped: false }), sGeo = new THREE.PlaneGeometry(GD_W, GD_H);
+            const f = new THREE.Mesh(sGeo, sMat); f.position.z = GD_D/2+0.001; group.add(f);
+            const b = new THREE.Mesh(sGeo, sMat); b.position.z = -GD_D/2-0.001; b.rotation.y = Math.PI; group.add(b);
+            const rT = r.pos.y + RING_CENTER_RADIUS + RING_TUBE_RADIUS, sHH = (GD_H+GD_BEZ*2)/2;
+            group.position.set(r.pos.x, rT - GD_EMB + sHH, r.pos.z); group.rotation.y = r.pos.z > 0 ? Math.PI : 0; scene.add(group);
+            r.display = { canvas, ctx: canvas.getContext('2d'), texture: tex, group, key: null, center: group.position.clone(), half: new THREE.Vector3((GD_W+GD_BEZ*2)/2, sHH, GD_D/2) }; drawGoalDisplay(r);
+        }
+
+        function setupTargetRings() {
+            ringCourse.forEach(r => {
+                const mesh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 40, 120), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.08, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY }));
+                mesh.castShadow = mesh.receiveShadow = true; mesh.position.copy(r.pos); scene.add(mesh); r.mesh = mesh;
+                const key = new THREE.SpotLight(0xfff4e0, 2.2, 6, Math.PI/5, 0.65, 1.4); key.position.set(r.pos.x+0.35, 2.95, r.pos.z+(r.pos.z>0?-1:1)*0.9); key.target.position.set(r.pos.x, 0, r.pos.z); 
+                key.castShadow = false; // 关闭球门光阴影，优化性能
+                scene.add(key); scene.add(key.target); r.keyLight = key;
+                const cL = 3.0-r.pos.y, cY = r.pos.y+cL/2, cX = r.size/2+RING_TUBE_RADIUS*0.6, lMat = new THREE.MeshStandardMaterial({color:0x334155, metalness:0.6, roughness:0.4}), lGeo = new THREE.CylinderGeometry(0.006,0.006,cL,6);
+                const l1 = new THREE.Mesh(lGeo, lMat); l1.position.set(r.pos.x-cX, cY, r.pos.z); scene.add(l1);
+                const l2 = new THREE.Mesh(lGeo, lMat); l2.position.set(r.pos.x+cX, cY, r.pos.z); scene.add(l2); r.cables = [l1, l2];
+                buildGoalDisplay(r);
+            });
+        }
+
+        function applyTeamColor(obj, hex) {
+            if(obj.canopyRef) { obj.canopyRef.material.color.setHex(hex); obj.canopyRef.material.emissive.setHex(hex); }
+            if(obj.glowRef) obj.glowRef.material.color.setHex(hex);
+            if(obj.cageMatRef) { obj.cageMatRef.color.setHex(hex); obj.cageMatRef.emissive.setHex(hex); }
+            setTailBeaconColor(obj.tailBeaconMat, obj.tailBeaconLight, hex === TEAM_COLORS.red ? TAIL_BEACON_COLORS.red : TAIL_BEACON_COLORS.blue);
+        }
+        function updateTeamHUD() {
+            const isR = playerTeam === 'red';
+            document.getElementById('teamDot').className = `w-2.5 h-2.5 rounded-full ${isR ? 'bg-rose-500 shadow-[0_0_6px_rgba(239,68,68,0.8)]' : 'bg-blue-500 shadow-[0_0_6px_rgba(59,130,246,0.8)]'}`;
+            document.getElementById('teamLabel').innerHTML = `${isR?'红队':'蓝队'} vs <span class="${isR?'text-blue-400':'text-rose-400'}">${isR?'蓝方球门':'红方球门'}</span>`;
+        }
+        function configureMatch(team) {
+            playerTeam = team; applyTeamColor(drone, TEAM_COLORS[team]); drone.rotation.y = team==='red'?0:Math.PI;
+            const opp = getOpponentTeam(team), gR = getOpponentGoalRing();
+            aiDrones.forEach(ai => {
+                ai.team = opp; ai.guardRing = gR; applyTeamColor(ai, TEAM_COLORS[opp]);
+                if(gR) { ai.position.set(gR.pos.x+ai.guardHomeOffsetX, 0.10, gR.pos.z); ai.velocity.set(0,0,0); ai.aimTarget.copy(ai.position); ai.reactionTimer=0; ai.altitudeState='grounded'; if(ai.mesh){ ai.mesh.position.copy(ai.position); ai.mesh.rotation.y=team==='red'?Math.PI:0; } }
+            });
+            updateTeamHUD();
+        }
+
+        function createExplosion(p, c) {
+            for(let i=0; i<30; i++) {
+                const m = new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6), new THREE.MeshBasicMaterial({color:c, transparent:true})); m.position.copy(p);
+                scene.add(m); particles.push({ mesh: m, velocity: new THREE.Vector3((Math.random()-0.5)*6, (Math.random()-0.5)*6, (Math.random()-0.5)*6), life: 1.0, decay: 0.02+Math.random()*0.03 });
+            }
+        }
+        function updateParticles(dt) {
+            for(let i=particles.length-1; i>=0; i--){
+                const p=particles[i]; p.mesh.position.addScaledVector(p.velocity, dt); p.life-=p.decay; p.mesh.material.opacity=p.life; p.mesh.scale.setScalar(p.life);
+                if(p.life<=0){ scene.remove(p.mesh); p.mesh.geometry.dispose(); p.mesh.material.dispose(); particles.splice(i,1); }
+            }
+        }
+
+        function toggleSound() {
+            soundEnabled = !soundEnabled; const btn = document.getElementById('btnSound'), i = btn.querySelector('i');
+            triggerHaptic('light');
+            if(soundEnabled){ initAudio(); if(audioCtx?.state==='suspended') audioCtx.resume(); i.className='fa-solid fa-volume-high text-sm'; btn.classList.add('text-emerald-400'); showSystemNotification("马达音效：开启"); }
+            else { i.className='fa-solid fa-volume-xmark text-sm'; btn.classList.remove('text-emerald-400'); showSystemNotification("马达音效：静音"); }
+        }
+
+        function setupKeyboard() {
+            window.addEventListener('keydown', e => {
+                const k = e.key.toLowerCase(); if(k in keys){ keys[k]=true; if([' ','control'].includes(k) || k.startsWith('arrow')) e.preventDefault(); }
+                if(k==='w'&&!e.repeat) showSystemNotification("按住 W 上升"); if(k==='s'&&!e.repeat) showSystemNotification("按住 S 下降");
+                if(k==='c') cycleCameraMode(); if(k==='t') triggerTakeoff(); if(k==='l') triggerLanding(); if(k==='r') resetGame(); if(k==='m') toggleSound();
+            });
+            window.addEventListener('keyup', e => { const k = e.key.toLowerCase(); if(k in keys) { keys[k]=false; if(k==='control') e.preventDefault(); } });
+        }
+
+        function triggerTakeoff() {
+            triggerHaptic('engine');
+            if(drone.position.y < 0.15) { drone.targetAltitude = GOAL_HEIGHT; drone.autoFlightState = 'takingoff'; aiDrones.forEach(a=>{if(a.altitudeState==='grounded') a.altitudeState='takingoff';}); showSystemNotification("自动爬升至球门高度"); }
+        }
+        function triggerLanding() {
+            triggerHaptic('engine');
+            if(drone.position.y > 0.15) { drone.targetAltitude = 0.1; drone.autoFlightState = 'landing'; aiDrones.forEach(a=>{if(a.altitudeState!=='grounded') a.altitudeState='landing';}); showSystemNotification("自动降落并关停"); }
+        }
+
+        function setupTouchControls() {
+            const hj = (e, z, k, cb) => {
+                e.preventDefault(); const t = e.targetTouches?.[0]; if(!t) return;
+                const r=z.getBoundingClientRect(), cX=r.left+r.width/2, cY=r.top+r.height/2, dx=t.clientX-cX, dy=t.clientY-cY, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), pX=Math.cos(a)*d/(r.width/2), pY=Math.sin(a)*d/(r.height/2);
+                k.style.transform=`translate(${pX*30}px, ${pY*30}px)`; cb(pX, pY);
+            };
+            const rj = (k, cb) => { k.style.transform='translate(0,0)'; cb(0,0); };
+            const jl=document.getElementById('joyLeft'), kl=document.getElementById('knobLeft'), jr=document.getElementById('joyRight'), kr=document.getElementById('knobRight');
+            const touchStartHandler = () => triggerHaptic('light'); // 摇杆触碰震动
+            
+            jl.addEventListener('touchstart', e=>{ touchStartHandler(); drone.touchActiveLeft=true; hj(e,jl,kl, (x,y)=>{ drone.touchAltitudeInput=-Math.sign(y)*Math.pow(y,2); drone.input.yaw=x; }); }, {passive:false});
+            jl.addEventListener('touchmove', e=>{ drone.touchActiveLeft=true; hj(e,jl,kl, (x,y)=>{ drone.touchAltitudeInput=-Math.sign(y)*Math.pow(y,2); drone.input.yaw=x; }); }, {passive:false});
+            jl.addEventListener('touchend', ()=>rj(kl, ()=>{drone.touchActiveLeft=false; drone.input.yaw=drone.touchAltitudeInput=0;}));
+            
+            jr.addEventListener('touchstart', e=>{ touchStartHandler(); drone.touchActive=true; hj(e,jr,kr, (x,y)=>{ drone.autoFlightState='none'; drone.input.pitch=-y; drone.input.roll=x; }); }, {passive:false});
+            jr.addEventListener('touchmove', e=>{ drone.touchActive=true; hj(e,jr,kr, (x,y)=>{ drone.autoFlightState='none'; drone.input.pitch=-y; drone.input.roll=x; }); }, {passive:false});
+            jr.addEventListener('touchend', ()=>rj(kr, ()=>{drone.touchActive=false; drone.input.pitch=drone.input.roll=0;}));
+        }
+
+        function updateDronePhysics(dt) {
+            if(!drone.mesh) return;
+            if(keys.w||keys.s||keys.a||keys.d||keys.arrowup||keys.arrowdown||keys.arrowleft||keys.arrowright||keys[' ']||keys.control) drone.autoFlightState='none';
+            if(Math.abs(drone.touchAltitudeInput)>0.03) { drone.targetAltitude = THREE.MathUtils.clamp(drone.targetAltitude+drone.touchAltitudeInput*dt*3.5, 0.1, 2.6); drone.autoFlightState='none'; }
+            if(keys.w||keys[' ']) { drone.targetAltitude=Math.min(2.6, drone.targetAltitude+0.7*dt); drone.autoFlightState='none'; }
+            if(keys.s||keys.control) { drone.targetAltitude=Math.max(0.1, drone.targetAltitude-0.7*dt); drone.autoFlightState='none'; }
+            
+            if(keys.arrowup) drone.input.pitch=1; else if(keys.arrowdown) drone.input.pitch=-1; else if(!drone.touchActive) drone.input.pitch=0;
+            if(keys.arrowright) drone.input.roll=1; else if(keys.arrowleft) drone.input.roll=-1; else if(!drone.touchActive) drone.input.roll=0;
+            if(keys.d) drone.input.yaw=1; else if(keys.a) drone.input.yaw=-1; else if(!drone.touchActiveLeft) drone.input.yaw=0;
+
+            const tP=drone.input.pitch*drone.constants.maxTilt, tR=drone.input.roll*drone.constants.maxTilt, c=drone.constants;
+            drone.currentPitch = THREE.MathUtils.lerp(drone.currentPitch, tP, dt*c.pitchRollSpeed*12);
+            drone.currentRoll = THREE.MathUtils.lerp(drone.currentRoll, tR, dt*c.pitchRollSpeed*12);
+            drone.currentYawRate = THREE.MathUtils.lerp(drone.currentYawRate, drone.input.yaw*c.yawSpeed, dt*c.yawRampSpeed);
+            drone.rotation.y -= drone.currentYawRate*dt;
+
+            const aE = drone.targetAltitude-drone.position.y, cR=drone.velocity.y, kp=15, kd=8, hT=c.gravity*c.mass;
+            let tF = hT + aE*kp - cR*kd; if(drone.autoFlightState==='takingoff' && tF<hT*0.9) tF=hT*1.15;
+            drone.input.throttle = THREE.MathUtils.clamp(tF/c.maxThrottleThrust, 0, 1);
+            if(drone.targetAltitude<=0.15 && drone.position.y<=0.11) drone.input.throttle=0;
+
+            const up = new THREE.Vector3(0,1,0).applyEuler(new THREE.Euler(drone.currentPitch, 0, drone.currentRoll, 'YXZ')).applyAxisAngle(new THREE.Vector3(0,1,0), drone.rotation.y);
+            const fT = up.multiplyScalar(drone.input.throttle*c.maxThrottleThrust), fG = new THREE.Vector3(0,-c.gravity*c.mass,0), fD = drone.velocity.clone().multiplyScalar(-c.linearDrag);
+            drone.velocity.addScaledVector(fT.add(fG).add(fD).divideScalar(c.mass), dt);
+            drone.position.addScaledVector(drone.velocity, dt);
+
+            // Boundary collision
+            let bounced = false;
+            if(drone.position.y<0.1) { drone.position.y=0.1; drone.velocity.y=0; drone.velocity.multiplyScalar(0.5); }
+            if(drone.position.y>2.75) { drone.position.y=2.75; drone.velocity.y=-0.1; bounced=true; }
+            const xL=1.5-DRONE_CAGE_RADIUS, zL=3.0-DRONE_CAGE_RADIUS, wR=0.4;
+            if(drone.position.x<-xL) { drone.position.x=-xL; if(drone.velocity.x<0) drone.velocity.x*=-wR; bounced=true; }
+            else if(drone.position.x>xL) { drone.position.x=xL; if(drone.velocity.x>0) drone.velocity.x*=-wR; bounced=true; }
+            if(drone.position.z<-zL) { drone.position.z=-zL; if(drone.velocity.z<0) drone.velocity.z*=-wR; bounced=true; }
+            else if(drone.position.z>zL) { drone.position.z=zL; if(drone.velocity.z>0) drone.velocity.z*=-wR; bounced=true; }
+            
+            if(bounced && Math.random() < 0.1) triggerHaptic('heavy'); // 触墙轻微震动反馈
+
+            drone.mesh.position.copy(drone.position); drone.mesh.rotation.set(drone.currentPitch, drone.rotation.y, drone.currentRoll, 'YXZ');
+            const sS = drone.input.throttle>0.02 ? 8+drone.input.throttle*90 : 0;
+            drone.rotors.forEach((r,i) => r.rotation.y += (i===0||i===3?1:-1)*sS*dt);
+        }
+
+        function checkCenterLineCrossing() {
+            if(!drone.mesh) return;
+            const rS = drone.position.z, cS = rS!==0 ? Math.sign(rS) : (centerLinePrevSide||1);
+            if(centerLinePrevSide===null) { centerLinePrevSide=cS; return; }
+            if(centerLinePrevSide!==cS && !readyToScore) { readyToScore=true; playCenterLineSound(); triggerHaptic('medium'); showSystemNotification("已回到中线 - 可再次得分"); }
+            centerLinePrevSide = cS;
+        }
+
+        function checkRingCollisions() {
+            if(!drone.mesh) return; const R=RING_CENTER_RADIUS, r=RING_TUBE_RADIUS, tCT=r+DRONE_CAGE_RADIUS;
+            ringCourse.forEach(rg => {
+                if(rg.display) {
+                    const c=rg.display.center, h=rg.display.half, cx=THREE.MathUtils.clamp(drone.position.x,c.x-h.x,c.x+h.x), cy=THREE.MathUtils.clamp(drone.position.y,c.y-h.y,c.y+h.y), cz=THREE.MathUtils.clamp(drone.position.z,c.z-h.z,c.z+h.z), dx=drone.position.x-cx, dy=drone.position.y-cy, dz=drone.position.z-cz, d=Math.hypot(dx,dy,dz);
+                    if(d<DRONE_CAGE_RADIUS && d>1e-4) {
+                        const nx=dx/d, ny=dy/d, nz=dz/d, dot=drone.velocity.dot(new THREE.Vector3(nx,ny,nz));
+                        drone.position.add(new THREE.Vector3(nx,ny,nz).multiplyScalar(DRONE_CAGE_RADIUS-d));
+                        if(dot<0) { drone.velocity.sub(new THREE.Vector3(nx,ny,nz).multiplyScalar(1.6*dot)); createExplosion(drone.position,0xfacc15); triggerHaptic('heavy'); showSystemNotification("撞到显示器！"); }
+                    }
+                }
+                const px=drone.position.x-rg.pos.x, py=drone.position.y-rg.pos.y, pz=drone.position.z-rg.pos.z, dxy=Math.hypot(px,py);
+                if(dxy>0.01) {
+                    const vx=px-R*(px/dxy), vy=py-R*(py/dxy), tD=Math.hypot(vx,vy,pz);
+                    if(tD<tCT) {
+                        const nx=vx/tD, ny=vy/tD, nz=pz/tD, dot=drone.velocity.dot(new THREE.Vector3(nx,ny,nz));
+                        drone.position.add(new THREE.Vector3(nx,ny,nz).multiplyScalar(tCT-tD));
+                        if(dot<0) { drone.velocity.sub(new THREE.Vector3(nx,ny,nz).multiplyScalar((1+0.7)*dot)); createExplosion(drone.position,0xfacc15); triggerHaptic('heavy'); showSystemNotification("撞到光环！"); }
+                        return;
+                    }
+                }
+                const dC=drone.position.distanceTo(rg.pos), iR=R-r-0.05, cS=Math.sign(drone.position.z-rg.pos.z)||rg.forwardSign*-1;
+                if(rg.prevSide===null) rg.prevSide=cS;
+                const cP=rg.prevSide!==cS, isF=cP&&cS===rg.forwardSign, isOpp=rg.team!==playerTeam;
+                if(dC<iR && isF) {
+                    const t=clock.getElapsedTime(); if(!rg.lastPassTime || t-rg.lastPassTime>1.5) {
+                        rg.lastPassTime=t;
+                        if(isOpp) {
+                            if(readyToScore) { score++; readyToScore=false; playChimeSound(); triggerHaptic('goal'); createExplosion(rg.pos,0x10b981); setRingFlash(rg,true); goalDisplayFlashUntil[rg.team]=performance.now()+1500; setTimeout(()=>setRingFlash(rg,false),800); showSystemNotification("进球得分！"); }
+                            else { playDeniedGoalSound(); triggerHaptic('error'); createExplosion(rg.pos,0x94a3b8); showSystemNotification("未回中线，进球无效"); }
+                        } else showSystemNotification("己方球门不计分");
+                    }
+                } else if(dC<iR && cP) showSystemNotification("反向穿越不计分");
+                rg.prevSide=cS;
+            });
+        }
+
+        function updateAIDrone(dt) {
+            if(drone.position.y>0.3 && drone.autoFlightState!=='landing') aiDrones.forEach(a=>{if(a.altitudeState==='grounded') a.altitudeState='takingoff';});
+            aiDrones.forEach(a => {
+                if(!a.mesh||!a.guardRing||!drone.mesh) return; const r=a.guardRing, c=a.constants, hY=r.pos.y, hZ=r.pos.z; let hX=r.pos.x+a.guardHomeOffsetX;
+                if(c.tactics.coverRotation) { const p=aiDrones.find(x=>x!==a); if(p&&p.altitudeState==='flying') hX=r.pos.x+a.guardHomeOffsetX*(1-THREE.MathUtils.clamp(Math.abs(p.position.z-p.guardRing.pos.z)/(c.guardDepth+0.05),0,1)*0.5); }
+                if(a.altitudeState==='grounded') { a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*8*dt); return; }
+                if(a.altitudeState==='takingoff') { a.position.y=THREE.MathUtils.lerp(a.position.y,hY,dt*1.8); a.mesh.position.copy(a.position); if(Math.abs(a.position.y-hY)<0.05){a.position.y=hY;a.altitudeState='flying';a.reactionTimer=0;} a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*50*dt); return; }
+                if(a.altitudeState==='landing') { a.velocity.multiplyScalar(0.8); a.position.x=THREE.MathUtils.lerp(a.position.x,hX,dt*1.5); a.position.z=THREE.MathUtils.lerp(a.position.z,hZ,dt*1.5); a.position.y=THREE.MathUtils.lerp(a.position.y,0.1,dt*2); a.mesh.position.copy(a.position); if(a.position.y<0.12){a.position.y=0.1;a.altitudeState='grounded';} a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*30*dt); return; }
+                
+                a.reactionTimer-=dt;
+                if(a.reactionTimer<=0) {
+                    a.reactionTimer=c.reactionMin+Math.random()*(c.reactionMax-c.reactionMin);
+                    let pH=0.25; if(c.tactics.predictiveIntercept && Math.abs(drone.velocity.z)>0.05) { const tT=Math.abs(hZ-drone.position.z)/Math.abs(drone.velocity.z); if(tT>0&&tT<1.5) pH=tT; }
+                    const pV=drone.velocity.clone().multiplyScalar(pH), dR=Math.abs(drone.position.z-hZ), eD=(dR<c.engageDistance&&Math.random()<c.engageChance)?Math.min(c.guardDepth,dR*0.35):0;
+                    let tX=drone.position.x+(Math.random()-0.5)*2*c.aimError+pV.x*0.4; if(c.tactics.angleCoverage&&c.guardDepth>0) tX=THREE.MathUtils.lerp(tX,r.pos.x,THREE.MathUtils.clamp(eD/c.guardDepth,0,1)*0.6);
+                    a.aimTarget.set(THREE.MathUtils.clamp(tX,hX-c.guardRadiusXY,hX+c.guardRadiusXY), THREE.MathUtils.clamp(drone.position.y+(Math.random()-0.5)*0.2+pV.y*0.2,hY-0.35,hY+0.35), hZ-r.forwardSign*eD);
+                }
+                const to=a.aimTarget.clone().sub(a.position), d=to.length();
+                if(d>0.02) { a.velocity.add(to.normalize().multiplyScalar(Math.min(c.maxSpeed,d*3)).sub(a.velocity).multiplyScalar(Math.min(1,c.accel*dt))); if(a.velocity.length()>c.maxSpeed) a.velocity.setLength(c.maxSpeed); } else a.velocity.multiplyScalar(0.9);
+                a.position.addScaledVector(a.velocity,dt);
+                a.position.x=THREE.MathUtils.clamp(a.position.x,hX-c.guardRadiusXY,hX+c.guardRadiusXY); a.position.y=THREE.MathUtils.clamp(a.position.y,hY-0.4,hY+0.4); a.position.z=THREE.MathUtils.clamp(a.position.z,hZ<0?hZ-0.05:hZ-(c.guardDepth+0.05),hZ<0?hZ+(c.guardDepth+0.05):hZ+0.05);
+                a.mesh.position.copy(a.position); const lD=drone.position.clone().sub(a.position); if(lD.length()>0.05) a.mesh.rotation.y=Math.atan2(lD.x,lD.z);
+                if(a.warnRingRef) a.warnRingRef.material.opacity=0.4+Math.sin(clock.getElapsedTime()*6)*0.25;
+                a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*40*dt);
+            });
+            if(aiDrones.length===2&&aiDrones[0].mesh&&aiDrones[1].mesh) {
+                const [a,b]=aiDrones, diff=a.position.clone().sub(b.position), dist=diff.length(), cR=DRONE_CAGE_RADIUS*2.2;
+                if(dist<cR&&dist>0) { const n=diff.normalize(), o=cR-dist; a.position.addScaledVector(n,o*0.5); b.position.addScaledVector(n,-o*0.5); a.mesh.position.copy(a.position); b.mesh.position.copy(b.position); }
+            }
+        }
+        function checkDroneVsDroneCollision() {
+            aiDrones.forEach(a => {
+                if(!drone.mesh||!a.mesh||a.altitudeState!=='flying') return;
+                const d=drone.position.clone().sub(a.position), l=d.length(), cR=DRONE_CAGE_RADIUS*2;
+                if(l<cR&&l>0) {
+                    const n=d.normalize(), o=cR-l; drone.position.addScaledVector(n,o*0.85); a.position.addScaledVector(n,-o*0.15);
+                    const rV=drone.velocity.dot(n); if(rV<0) drone.velocity.addScaledVector(n,-(1+1.1)*rV); else drone.velocity.addScaledVector(n,1.5);
+                    a.velocity.addScaledVector(n,-0.6); createExplosion(drone.position,0xfacc15); triggerHaptic('heavy'); showSystemNotification("被守门机拦截！");
+                }
+            });
+        }
+
+        function cycleCameraMode() {
+            triggerHaptic('light');
+            cameraMode = CAMERA_CYCLE_ORDER[(CAMERA_CYCLE_ORDER.indexOf(cameraMode)+1)%CAMERA_CYCLE_ORDER.length];
+            orbitControls.enabled = cameraMode===2; if(cameraMode===2) orbitControls.target.copy(drone.position);
+            document.getElementById('camText').innerText = CAMERA_MODES_ZH[cameraMode]; showSystemNotification(`镜头：${CAMERA_MODES_ZH[cameraMode]}`);
+        }
+        function updateCamera() {
+            if(!drone.mesh) return; setCameraFov(cameraMode===3?PILOT_FOV:DEFAULT_FOV); setEndNetsVisible(0); ringCourse.forEach(r=>setGoalVisible(r,true));
+            const sD=Math.max(PILOT_DIST_FROM_NET,PILOT_NET_CLEARANCE), oG=getOwnGoalRing(), eS=oG&&oG.pos.z>0?1:-1;
+            if(cameraMode>=3&&sD<0.3&&oG) setGoalVisible(oG,false);
+            if(cameraMode===0) { drone.mesh.visible=true; camera.position.lerp(drone.position.clone().add(new THREE.Vector3(0,0.55,-1.6).applyAxisAngle(new THREE.Vector3(0,1,0),drone.rotation.y)),0.12); camera.lookAt(drone.position.clone().add(new THREE.Vector3(0,0.1,0))); }
+            else if(cameraMode===1) { drone.mesh.visible=false; camera.position.copy(drone.position.clone().add(new THREE.Vector3(0,0.04,0.1).applyAxisAngle(new THREE.Vector3(0,1,0),drone.rotation.y))); camera.lookAt(camera.position.clone().add(new THREE.Vector3(0,0,1).applyEuler(new THREE.Euler(drone.currentPitch,drone.rotation.y,0,'YXZ')))); }
+            else if(cameraMode===2) { drone.mesh.visible=true; orbitControls.target.lerp(drone.position,0.1); orbitControls.update(); }
+            else if(cameraMode===3) { drone.mesh.visible=true; const t=getOpponentGoalRing(); camera.position.set(0,PILOT_EYE_HEIGHT,eS*(PILOT_NET_Z+sD)); pilotLook.copy(t?t.pos:new THREE.Vector3(0,PILOT_EYE_HEIGHT,-eS*3)); camera.lookAt(pilotLook); if(sD<0.3) setEndNetsVisible(eS); }
+            else if(cameraMode===4||cameraMode===5) { drone.mesh.visible=true; const l=cameraMode===4?-1:1; camera.position.lerp(new THREE.Vector3(l*eS*SIDE_OFFSET_X,SIDE_EYE_HEIGHT,eS*(PILOT_NET_Z+sD)),0.15); camera.lookAt(drone.position.x,Math.max(drone.position.y,camera.position.y+Math.max(0.5,Math.hypot(drone.position.x-camera.position.x,drone.position.z-camera.position.z))*Math.tan(THREE.MathUtils.degToRad(SIDE_MIN_UP_DEG))),drone.position.z); if(sD<0.3) setEndNetsVisible(eS); }
+        }
+
+        function updateHUD() {
+            document.getElementById('scoreText').innerText = score; updateGoalDisplays();
+            const sD=document.getElementById('scoreStatusDot'), sT=document.getElementById('scoreStatusText');
+            if(sD&&sT) { if(readyToScore){sD.className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_6px_rgba(52,211,153,0.8)]";sT.className="text-[10px] font-semibold tech-font text-emerald-300";sT.innerText="可以得分";}else{sD.className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_6px_rgba(251,191,36,0.8)] animate-pulse";sT.className="text-[10px] font-semibold tech-font text-amber-300";sT.innerText="请回中线";} }
+            const sM=drone.velocity.length(); document.getElementById('telemetrySpeed').innerText=sM.toFixed(1); document.getElementById('speedBar').style.width=`${Math.min(sM*10,100)}%`;
+            const cA=drone.position.y; document.getElementById('telemetryAlt').innerText=cA.toFixed(2); document.getElementById('altBar').style.width=`${Math.min(cA/3*100,100)}%`;
+            const tP=Math.round(drone.input.throttle*100); document.getElementById('telemetryThrottle').innerText=`${tP}%`; document.getElementById('throttleBar').style.width=`${tP}%`;
+            const fM=document.getElementById('flightMode'); if(drone.autoFlightState==='takingoff'){fM.innerText="自动起飞中";fM.className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full tech-font animate-pulse";}else if(drone.autoFlightState==='landing'){fM.innerText="自动降落中";fM.className="text-[10px] bg-rose-500/20 text-rose-300 border border-rose-500/40 px-2 py-0.5 rounded-full tech-font animate-pulse";}else{fM.innerText="定高已开启";fM.className="text-[10px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full tech-font";}
+            let d=(drone.rotation.y*(180/Math.PI))%360; if(d<0) d+=360; document.getElementById('compassVal').innerText=`${String(Math.round(d)).padStart(3,'0')}°`;
+            let dS='N'; if(d>=337.5||d<22.5)dS='N';else if(d>=22.5&&d<67.5)dS='NE';else if(d>=67.5&&d<112.5)dS='E';else if(d>=112.5&&d<157.5)dS='SE';else if(d>=157.5&&d<202.5)dS='S';else if(d>=202.5&&d<247.5)dS='SW';else if(d>=247.5&&d<292.5)dS='W';else if(d>=292.5&&d<337.5)dS='NW'; document.getElementById('compassDir').innerText=`(${dS})`;
+        }
+
+        function showSystemNotification(t) {
+            document.getElementById('sysNotification')?.remove();
+            const n=document.createElement('div'); n.id='sysNotification'; n.className='absolute top-20 left-1/2 -translate-x-1/2 glassmorphism text-emerald-300 font-bold px-4 py-2 rounded-lg text-xs tracking-wider border border-emerald-500/30 shadow-md z-30 transition-all duration-300 transform -translate-y-2 opacity-0 pointer-events-none uppercase tech-font'; n.innerText=t; document.body.appendChild(n);
+            requestAnimationFrame(()=>n.classList.remove('-translate-y-2','opacity-0')); setTimeout(()=>{n.classList.add('-translate-y-2','opacity-0');setTimeout(()=>n.remove(),300);},1600);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate); const dt=Math.min(clock.getDelta(),0.1);
+            updateDronePhysics(dt); updateAIDrone(dt); checkCenterLineCrossing(); checkRingCollisions(); checkDroneVsDroneCollision(); updateParticles(dt); updateCamera(); updateDroneSound(); updateHUD();
+            updateTailBeacon(drone.tailBeaconMat, drone.tailBeaconLight); aiDrones.forEach(a=>updateTailBeacon(a.tailBeaconMat,a.tailBeaconLight));
+            renderer.render(scene, camera);
+        }
+
+        function resetGame() {
+            drone.position.set(0,0.1,0); drone.velocity.set(0,0,0); drone.rotation.set(0,0,0); drone.currentPitch=drone.currentRoll=drone.currentYawRate=drone.input.throttle=0; drone.targetAltitude=0.1; drone.autoFlightState='none';
+            score=0; ringCourse.forEach(r=>{r.lastPassTime=0;r.prevSide=null;setRingFlash(r,false);}); readyToScore=true; centerLinePrevSide=null; startMatchClock(); configureMatch(playerTeam); updateHUD(); document.getElementById('victoryScreen').classList.add('hidden'); document.getElementById('victoryScreen').classList.remove('flex'); showSystemNotification("系统重设完成");
+        }
+
+        function onWindowResize() { camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); }
+
+        // 使用 DOMContentLoaded 替代 window.onload，解决部分手机浏览器背景图加载慢导致卡无法开始的问题
+        document.addEventListener('DOMContentLoaded', function() {
+            initScene(); setupLights(); 
+            createSoccerField(); 
+            createStadiumEnvironment(); // 添加外围看台场景
+            buildInflatableCage(); buildDrone(); buildAIDrones(); setupTargetRings(); configureMatch(playerTeam); setupKeyboard(); setupTouchControls();
+            
+            let currentSelectedTeam = 'red'; // 记录当前选择的队伍
+            
+            const startF = () => {
+                const s = document.getElementById('startScreen'); 
+                if (!s || s.dataset.launched) return; 
+                s.dataset.launched = 'true';
+                
+                triggerHaptic('heavy'); 
+                configureMatch(currentSelectedTeam); 
+                startMatchClock(); 
+                initAudio(); 
+                soundEnabled = true; 
+                s.classList.add('opacity-0', 'scale-95', 'pointer-events-none'); 
+                setTimeout(() => s.remove(), 750);
+                showSystemNotification(`飞控系统上线 - ${currentSelectedTeam === 'red' ? "红" : "蓝"}队出击`);
+            };
+            
+            window.addEventListener('keydown', (e) => {
+                // 排除功能键避免冲突
+                if (e.key !== 'F12' && e.key !== 'F5') {
+                    startF();
+                }
+            }, {once:true});
+            
+            const btnRed = document.getElementById('btnTeamRed');
+            const btnBlue = document.getElementById('btnTeamBlue');
+            const btnStart = document.getElementById('btnStartMatch');
+            
+            // 选中红队 (仅样式高亮，不直接开始)
+            const selectRed = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                currentSelectedTeam = 'red';
+                btnRed.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/25 ring-2 ring-rose-500 ring-offset-2 ring-offset-slate-900 transition-all';
+                btnBlue.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-transparent opacity-60 hover:opacity-100 transition-all';
+                triggerHaptic('light');
+            };
+            
+            // 选中蓝队 (仅样式高亮，不直接开始)
+            const selectBlue = (e) => {
+                e.preventDefault(); e.stopPropagation();
+                currentSelectedTeam = 'blue';
+                btnBlue.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-blue-500/50 bg-blue-500/25 ring-2 ring-blue-500 ring-offset-2 ring-offset-slate-900 transition-all';
+                btnRed.className = 'flex-1 py-4 text-center cursor-pointer select-none rounded-xl glass-button border-transparent opacity-60 hover:opacity-100 transition-all';
+                triggerHaptic('light');
+            };
+            
+            // 移除 touchend 监听，统使用 click，避免移动端双重触发或浏览器拦截导致无法选中
+            btnRed.addEventListener('click', selectRed);
+            btnBlue.addEventListener('click', selectBlue);
+            
+            // 专门的独立开始按钮
+            btnStart.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); startF(); });
+            
+            // 修复难度选项点击逻辑
+            document.querySelectorAll('.difficulty-option').forEach(el=>el.addEventListener('click', e=>{
+                e.preventDefault(); e.stopPropagation();
+                applyDifficulty(el.dataset.level);
+                triggerHaptic('light');
+                document.querySelectorAll('.difficulty-option').forEach(x=>{
+                    const a = x.dataset.level === el.dataset.level;
+                    x.style.borderColor = a ? ['rgba(16,185,129,0.6)','rgba(250,204,21,0.6)','rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)] : 'rgba(51, 65, 85, 0.5)';
+                    x.style.background = a ? ['rgba(16,185,129,0.12)','rgba(250,204,21,0.12)','rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)] : 'rgba(59, 130, 246, 0.15)';
+                });
+            }));
+            
+            document.getElementById('btnTakeoff').addEventListener('click', triggerTakeoff); document.getElementById('btnLand').addEventListener('click', triggerLanding);
+            document.getElementById('btnSound').addEventListener('click', toggleSound); document.getElementById('btnCam').addEventListener('click', cycleCameraMode);
+            document.getElementById('btnReset').addEventListener('click', resetGame); document.getElementById('btnRestart').addEventListener('click', resetGame);
+            document.getElementById('btnDifficulty').addEventListener('click', cycleDifficulty);
+            animate();
+        });
+    </script>
+</body>
+</html>
