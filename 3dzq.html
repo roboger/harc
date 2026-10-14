@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>无人机足球竞技场 — 攻击机</title>
+    <title>无人机足球竞技场 — 攻击机2</title>
     <script>
         // 触控设备检测（手机、平板；iPadOS 默认以桌面版 UA 打开，需靠 maxTouchPoints 判断）
         (function () {
@@ -1067,7 +1067,7 @@
             
             const startF = () => {
                 const s = document.getElementById('startScreen'); 
-                if (s.dataset.launched) return; 
+                if (!s || s.dataset.launched) return; 
                 s.dataset.launched = 'true';
                 
                 triggerHaptic('heavy'); 
