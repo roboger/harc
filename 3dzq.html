@@ -26,6 +26,8 @@
             font-family: 'Inter', sans-serif;
             overflow: hidden;
             user-select: none;
+            -webkit-user-select: none; /* 禁用长按选词 */
+            touch-action: none; /* 彻底禁用移动端原生滑动和缩放，专为游戏服务 */
             background-color: #020617;
         }
         .tech-font {
@@ -52,25 +54,14 @@
         .joystick-zone { touch-action: none; }
         
         /* 触控装置显示逻辑 */
-        html.touch-device #touchControls { display: flex !important; }
+        #touchControls { display: none; }
+        @media (max-width: 1024px) {
+            #touchControls { display: block !important; }
+            .kb-only { display: none !important; }
+        }
+        html.touch-device #touchControls { display: block !important; }
         html.touch-device .kb-only { display: none !important; }
         html:not(.touch-device) .touch-only { display: none !important; }
-        
-        /* 平板摇杆放大 */
-        @media (min-width: 768px) {
-            html.touch-device #touchControls {
-                max-width: none;
-                padding-left: 2.5rem;
-                padding-right: 2.5rem;
-                bottom: calc(env(safe-area-inset-bottom, 0px) + 170px) !important;
-            }
-            html.touch-device #touchControls .joystick-zone { width: 8rem; height: 8rem; }
-        }
-        #touchControls { bottom: clamp(28px, calc(env(safe-area-inset-bottom, 0px) + 6vh + 14px), 120px); }
-        @media (max-height: 480px) {
-            #touchControls { bottom: clamp(10px, calc(env(safe-area-inset-bottom, 0px) + 2vh + 8px), 60px); }
-            #touchControls .joystick-zone { width: 4.5rem; height: 4.5rem; }
-        }
     </style>
 </head>
 <body class="relative w-screen h-screen">
@@ -252,15 +243,17 @@
             </div>
         </footer>
 
-        <!-- 触控摇杆区域 -->
-        <div id="touchControls" class="absolute left-1/2 -translate-x-1/2 flex justify-between w-full max-w-[500px] px-4 pointer-events-none md:hidden">
-            <div class="joystick-zone pointer-events-auto relative w-24 h-24 rounded-full bg-slate-950/80 border border-emerald-500/30 flex items-center justify-center shadow-lg" id="joyLeft">
-                <div class="w-10 h-10 rounded-full bg-emerald-500/40 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)] absolute" id="knobLeft"></div>
-                <span class="absolute text-[7px] text-emerald-400/50 uppercase font-semibold tracking-widest pointer-events-none">偏航 / 高度</span>
+        <!-- 触控摇杆区域 (固定在左右下角) -->
+        <div id="touchControls" class="absolute inset-0 pointer-events-none z-30">
+            <!-- 左摇杆 (高度/偏航) -->
+            <div class="joystick-zone pointer-events-auto absolute left-6 md:left-12 bottom-10 md:bottom-16 w-28 h-28 rounded-full bg-slate-950/80 border border-emerald-500/30 flex items-center justify-center shadow-lg" id="joyLeft">
+                <div class="w-12 h-12 rounded-full bg-emerald-500/40 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.4)] absolute" id="knobLeft"></div>
+                <span class="absolute text-[10px] text-emerald-400/60 uppercase font-bold tracking-widest pointer-events-none text-center leading-tight">高度<br>偏航</span>
             </div>
-            <div class="joystick-zone pointer-events-auto relative w-24 h-24 rounded-full bg-slate-950/80 border border-cyan-500/30 flex items-center justify-center shadow-lg" id="joyRight">
-                <div class="w-10 h-10 rounded-full bg-cyan-500/40 border border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.4)] absolute" id="knobRight"></div>
-                <span class="absolute text-[7px] text-cyan-400/50 uppercase font-semibold tracking-widest pointer-events-none">移动</span>
+            <!-- 右摇杆 (移动) -->
+            <div class="joystick-zone pointer-events-auto absolute right-6 md:right-12 bottom-10 md:bottom-16 w-28 h-28 rounded-full bg-slate-950/80 border border-cyan-500/30 flex items-center justify-center shadow-lg" id="joyRight">
+                <div class="w-12 h-12 rounded-full bg-cyan-500/40 border border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.4)] absolute" id="knobRight"></div>
+                <span class="absolute text-[10px] text-cyan-400/60 uppercase font-bold tracking-widest pointer-events-none">移动</span>
             </div>
         </div>
     </div>
@@ -541,7 +534,7 @@
 
             // 绘制横幅文字
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 110px "Noto Sans SC", sans-serif';
+            ctx.font = 'bold 65px "Noto Sans SC", sans-serif'; // 将字体改小
             ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
             ctx.shadowColor = '#10b981'; ctx.shadowBlur = 15; // 绿色辉光
             ctx.fillText('HARC无人机足球模拟赛', canvas.width * 0.25, canvas.height / 2);
@@ -1020,7 +1013,8 @@
 
         function onWindowResize() { camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); }
 
-        window.onload = function() {
+        // 使用 DOMContentLoaded 替代 window.onload，解决部分手机浏览器背景图加载慢导致卡无法开始的问题
+        document.addEventListener('DOMContentLoaded', function() {
             initScene(); setupLights(); 
             createSoccerField(); 
             createStadiumEnvironment(); // 添加外围看台场景
@@ -1031,17 +1025,29 @@
                 triggerHaptic('medium'); configureMatch(t||'red'); startMatchClock(); initAudio(); soundEnabled=true; s.classList.add('opacity-0','scale-95'); setTimeout(()=>s.remove(),750);
                 showSystemNotification(`飞控系统上线 - ${(t||'red')==='red'?"红":"蓝"}队出击`);
             };
+            
+            // 优化移动端点击事件，确保手机端能够稳定点击启动
             window.addEventListener('keydown', ()=>startF('red'), {once:true});
-            document.getElementById('btnTeamRed').addEventListener('click', e=>{e.stopPropagation();startF('red');}, {once:true});
-            document.getElementById('btnTeamBlue').addEventListener('click', e=>{e.stopPropagation();startF('blue');}, {once:true});
-            document.getElementById('startScreen').addEventListener('click', ()=>startF('red'), {once:true});
+            const btnRed = document.getElementById('btnTeamRed');
+            const btnBlue = document.getElementById('btnTeamBlue');
+            const startScr = document.getElementById('startScreen');
+            
+            btnRed.addEventListener('click', e => { e.stopPropagation(); startF('red'); });
+            btnRed.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); startF('red'); });
+            
+            btnBlue.addEventListener('click', e => { e.stopPropagation(); startF('blue'); });
+            btnBlue.addEventListener('touchend', e => { e.preventDefault(); e.stopPropagation(); startF('blue'); });
+            
+            startScr.addEventListener('click', () => startF('red'));
+            startScr.addEventListener('touchend', (e) => { if(e.target === startScr) startF('red'); });
+            
             document.querySelectorAll('.difficulty-option').forEach(el=>el.addEventListener('click', e=>{e.stopPropagation();applyDifficulty(el.dataset.level);document.querySelectorAll('.difficulty-option').forEach(x=>{const a=x.dataset.level===el.dataset.level;x.style.borderColor=a?['rgba(16,185,129,0.6)','rgba(250,204,21,0.6)','rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'';x.style.background=a?['rgba(16,185,129,0.12)','rgba(250,204,21,0.12)','rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'';});}));
             document.getElementById('btnTakeoff').addEventListener('click', triggerTakeoff); document.getElementById('btnLand').addEventListener('click', triggerLanding);
             document.getElementById('btnSound').addEventListener('click', toggleSound); document.getElementById('btnCam').addEventListener('click', cycleCameraMode);
             document.getElementById('btnReset').addEventListener('click', resetGame); document.getElementById('btnRestart').addEventListener('click', resetGame);
             document.getElementById('btnDifficulty').addEventListener('click', cycleDifficulty);
             animate();
-        };
+        });
     </script>
 </body>
 </html>
