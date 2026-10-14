@@ -503,13 +503,13 @@
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 100);
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            // 强制移动端像素比为1.0，大幅减少绘制像素量，确保手机端体验丝滑流畅不卡顿
+            // 视觉升级：提升移动端渲染像素比，消除严重锯齿，恢复清晰画质
             const isMobile = window.innerWidth <= 1024 || ('ontouchstart' in window);
-            renderer.setPixelRatio(isMobile ? 1.0 : Math.min(window.devicePixelRatio, 1.5));
+            renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 1.5) : Math.min(window.devicePixelRatio, 2.0));
             renderer.shadowMap.enabled = true;
             renderer.shadowMap.type = THREE.PCFSoftShadowMap;
             renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1.1;
+            renderer.toneMappingExposure = 1.15; // 略微增加曝光度，让画面色彩更通透
             container.appendChild(renderer.domElement);
             orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
             orbitControls.enableDamping = true; orbitControls.dampingFactor = 0.05; orbitControls.maxPolarAngle = Math.PI / 2 - 0.02; orbitControls.enabled = false;
@@ -620,9 +620,17 @@
             const canvas = document.createElement('canvas');
             canvas.width = 384; canvas.height = 768;
             const ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#156a25'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#115a20'; // 稍微加深底色，对比度更高
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 视觉升级：绘制赛博科技感底纹网格
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+            ctx.lineWidth = 1;
+            for(let x = 0; x <= canvas.width; x += 32) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke(); }
+            for(let y = 0; y <= canvas.height; y += 32) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke(); }
+
             for (let i = 0; i < 2600; i++) {
-                ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255,255,255,0.05)' : 'rgba(0,40,0,0.07)';
+                ctx.fillStyle = Math.random() < 0.5 ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.15)';
                 ctx.fillRect(Math.random() * canvas.width, Math.random() * canvas.height, 1, 2);
             }
             const centerY = canvas.height / 2;
@@ -681,9 +689,9 @@
 
         function createDroneCage(radius, colorHex) {
             const group = new THREE.Group();
-            const mat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.08, metalness: 0.15, roughness: 0.4, transparent: true, opacity: 0.92 });
-            // 将细分级别从 3 降为 1，几何体顶点数减少90%，彻底解决手机端发热卡顿问题
-            const icoGeo = new THREE.IcosahedronGeometry(radius, 1);
+            const mat = new THREE.MeshStandardMaterial({ color: colorHex, emissive: colorHex, emissiveIntensity: 0.15, metalness: 0.3, roughness: 0.2, transparent: true, opacity: 0.92 });
+            // 视觉升级：将细分级别从 1 提升为 2，恢复无人机圆润的科技球体造型，且性能消耗可控
+            const icoGeo = new THREE.IcosahedronGeometry(radius, 2);
             const edgesGeo = new THREE.EdgesGeometry(icoGeo, 1);
             const posAttr = edgesGeo.attributes.position;
             const rodGeos = [];
@@ -775,9 +783,18 @@
         }
         function buildAIDrones() { aiDrones.forEach(ai => buildAIDrone(ai)); }
 
-        const GOAL_RING_WHITE = 0xf6f1e7, GOAL_RING_GLOW = 0xfff6e6, GOAL_RING_GLOW_INTENSITY = 0.16, GOAL_FLASH_COLOR = 0x10b981;
+        const GOAL_RING_WHITE = 0xf6f1e7, GOAL_RING_GLOW = 0xfff6e6, GOAL_RING_GLOW_INTENSITY = 0.2, GOAL_FLASH_COLOR = 0x10b981;
         function setGoalVisible(r, v) { if(r.mesh) r.mesh.visible=v; if(r.display) r.display.group.visible=v; if(r.cables) r.cables.forEach(c=>c.visible=v); }
-        function setRingFlash(r, on, fC=GOAL_FLASH_COLOR) { const m=r.mesh.material; if(on){ m.color.setHex(fC); m.emissive.setHex(fC); m.emissiveIntensity=1.4; }else{ m.color.setHex(GOAL_RING_WHITE); m.emissive.setHex(GOAL_RING_GLOW); m.emissiveIntensity=GOAL_RING_GLOW_INTENSITY; } }
+        function setRingFlash(r, on, fC=GOAL_FLASH_COLOR) { 
+            const m = r.mesh.material; 
+            if(on){ 
+                m.color.setHex(fC); m.emissive.setHex(fC); m.emissiveIntensity=1.8; 
+                if(r.glowMesh) { r.glowMesh.material.color.setHex(fC); r.glowMesh.material.opacity = 0.5; } // 开启高亮光晕
+            }else{ 
+                m.color.setHex(GOAL_RING_WHITE); m.emissive.setHex(GOAL_RING_GLOW); m.emissiveIntensity=GOAL_RING_GLOW_INTENSITY; 
+                if(r.glowMesh) { r.glowMesh.material.color.setHex(GOAL_RING_GLOW); r.glowMesh.material.opacity = 0.12; } // 恢复微弱光晕
+            } 
+        }
         
         const GD_W=0.26, GD_H=0.12, GD_D=0.05, GD_BEZ=0.015, GD_EMB=0.03; const goalDisplayFlashUntil = { red: 0, blue: 0 };
         function drawGoalDisplay(r) {
@@ -810,8 +827,16 @@
 
         function setupTargetRings() {
             ringCourse.forEach(r => {
-                const mesh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 40, 120), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.28, clearcoat: 1, clearcoatRoughness: 0.08, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY }));
+                const mesh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 40, 120), new THREE.MeshPhysicalMaterial({ color: GOAL_RING_WHITE, roughness: 0.15, metalness: 0.2, clearcoat: 1, clearcoatRoughness: 0.05, emissive: GOAL_RING_GLOW, emissiveIntensity: GOAL_RING_GLOW_INTENSITY }));
                 mesh.castShadow = mesh.receiveShadow = true; mesh.position.copy(r.pos); scene.add(mesh); r.mesh = mesh;
+                
+                // 视觉升级：添加基于 AdditiveBlending 的霓虹光晕壳，制造伪全局泛光(Bloom)效果，极其惊艳且不耗性能
+                const glowGeo = new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS * 1.8, 16, 64);
+                const glowMat = new THREE.MeshBasicMaterial({ color: GOAL_RING_GLOW, transparent: true, opacity: 0.12, blending: THREE.AdditiveBlending, depthWrite: false });
+                const glowMesh = new THREE.Mesh(glowGeo, glowMat);
+                mesh.add(glowMesh);
+                r.glowMesh = glowMesh;
+
                 const key = new THREE.SpotLight(0xfff4e0, 2.2, 6, Math.PI/5, 0.65, 1.4); key.position.set(r.pos.x+0.35, 2.95, r.pos.z+(r.pos.z>0?-1:1)*0.9); key.target.position.set(r.pos.x, 0, r.pos.z); 
                 key.castShadow = false; // 关闭球门光阴影，优化性能
                 scene.add(key); scene.add(key.target); r.keyLight = key;
@@ -845,8 +870,9 @@
 
         function createExplosion(p, c) {
             for(let i=0; i<30; i++) {
-                const m = new THREE.Mesh(new THREE.SphereGeometry(0.03,6,6), new THREE.MeshBasicMaterial({color:c, transparent:true})); m.position.copy(p);
-                scene.add(m); particles.push({ mesh: m, velocity: new THREE.Vector3((Math.random()-0.5)*6, (Math.random()-0.5)*6, (Math.random()-0.5)*6), life: 1.0, decay: 0.02+Math.random()*0.03 });
+                // 视觉升级：爆炸粒子使用 AdditiveBlending(叠加发光)，制造能量火花飞溅的科幻质感
+                const m = new THREE.Mesh(new THREE.SphereGeometry(0.035, 6, 6), new THREE.MeshBasicMaterial({color:c, transparent:true, blending: THREE.AdditiveBlending, depthWrite: false})); m.position.copy(p);
+                scene.add(m); particles.push({ mesh: m, velocity: new THREE.Vector3((Math.random()-0.5)*7, (Math.random()-0.5)*7, (Math.random()-0.5)*7), life: 1.0, decay: 0.02+Math.random()*0.03 });
             }
         }
         function updateParticles(dt) {
