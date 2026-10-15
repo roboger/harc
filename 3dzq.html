@@ -29,7 +29,6 @@
         }
         .tech-font { font-family: 'Share Tech Mono', monospace; }
         
-        /* 恢复清爽高级的玻璃拟态风格 */
         .glassmorphism {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(16px);
@@ -65,15 +64,15 @@
 </head>
 <body class="relative w-screen h-screen">
 
-    <!-- 开场与加载画面 (恢复优美卡片风格) -->
-    <div id="startScreen" class="absolute inset-0 z-50 flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm transition-all duration-700">
+    <!-- 开场与加载画面 -->
+    <div id="startScreen" class="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm transition-all duration-700">
         <div class="w-11/12 max-w-2xl px-6 py-8 mx-auto text-center glassmorphism rounded-2xl shadow-[0_0_40px_rgba(16,185,129,0.15)] max-h-[95vh] overflow-y-auto">
             
             <h1 class="text-3xl md:text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500 mb-6 drop-shadow-sm">
                 无人机足球竞技场
             </h1>
 
-            <!-- 设置参数区：姓名与倒计时融合在统一的视觉风格中 -->
+            <!-- 设置参数区：姓名与倒计时 -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5 text-left">
                 <!-- 学员姓名 -->
                 <div class="bg-slate-900/50 border border-slate-700/50 rounded-xl p-3">
@@ -122,11 +121,10 @@
                 </div>
             </div>
 
-            <!-- 操作说明 (根据设备类型隐藏不必要的信息) -->
             <div class="touch-only text-left text-xs text-slate-400 mb-6 p-3 bg-slate-900/50 border border-slate-800 rounded-lg">
                 <p class="text-emerald-400 font-bold mb-1.5"><i class="fa-solid fa-gamepad mr-1"></i> 触控摇杆操作：</p>
-                <p class="mb-1"><span class="text-white font-semibold">左摇杆</span>：上下推升降高度，左右推旋转方向。</p>
-                <p><span class="text-white font-semibold">右摇杆</span>：控制机身前后左右水平移动。</p>
+                <p class="mb-1"><span class="text-white font-semibold">左摇杆</span>：上下推升降高度，左右推偏航旋转。</p>
+                <p><span class="text-white font-semibold">右摇杆</span>：前后左右水平移动。</p>
             </div>
             
             <div class="kb-only text-left text-xs text-slate-400 mb-6 p-3 bg-slate-900/50 border border-slate-800 rounded-lg flex flex-wrap gap-x-4 gap-y-2">
@@ -138,11 +136,11 @@
                 <p><span class="bg-slate-800 px-1 rounded text-emerald-400 font-bold">T/L</span> 一键起/降</p>
             </div>
 
-            <!-- 开始大按钮 -->
-            <button id="btnStartMatch" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-lg rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all transform hover:scale-[1.02] cursor-pointer">
+            <!-- 开始按钮 -->
+            <button id="btnStartMatch" class="w-full py-4 bg-gradient-to-r from-emerald-500 to-cyan-500 hover:from-emerald-400 hover:to-cyan-400 text-slate-950 font-extrabold text-lg rounded-xl shadow-[0_0_20px_rgba(16,185,129,0.3)] transition-all transform hover:scale-[1.02] cursor-pointer relative z-50">
                 开始比赛 <i class="fa-solid fa-play ml-1"></i>
             </button>
-            <p class="kb-only text-[10px] text-slate-500 mt-3">或按任意键以当前设置快速开始</p>
+            <p class="kb-only text-[10px] text-slate-500 mt-3">或按任意键以当前设置开始</p>
         </div>
     </div>
 
@@ -181,7 +179,7 @@
                     <i class="fa-solid fa-plane-arrival text-xs"></i><span class="text-[10px] font-bold tech-font">降落</span>
                 </button>
                 
-                <!-- 移动端隐藏入下拉菜单，PC横向展示 -->
+                <!-- 移动端下拉菜单，PC横向展示 -->
                 <div id="actionMenu" class="hidden md:flex flex-col md:flex-row absolute md:relative right-0 top-11 md:top-0 gap-2 p-1.5 md:p-0 glassmorphism md:bg-transparent md:backdrop-filter-none md:border-none rounded-xl border border-slate-700/50 shadow-xl md:shadow-none min-w-[100px] md:min-w-0 origin-top-right">
                     <button id="btnCam" class="w-full md:w-auto px-3 h-9 rounded-lg md:glassmorphism text-slate-300 hover:text-white flex items-center justify-start md:justify-center gap-2 cursor-pointer pointer-events-auto border border-transparent md:border-slate-700/30">
                         <i class="fa-solid fa-camera text-xs w-4"></i><span id="camText" class="text-[10px] font-bold tech-font">追踪</span>
@@ -206,7 +204,7 @@
             </div>
         </header>
 
-        <!-- 倒计时 (移动端屏幕正下方，摇杆之间；PC端右下角) -->
+        <!-- 倒计时 (移动端屏幕正下方，摇杆之间) -->
         <div id="gameClockPanel" class="absolute bottom-5 left-1/2 -translate-x-1/2 md:bottom-6 md:left-auto md:right-6 md:translate-x-0 z-[65] glassmorphism rounded-xl px-5 py-2 flex flex-col items-center shadow-lg border border-cyan-500/30 pointer-events-none">
             <span class="text-[8px] text-cyan-300 uppercase tracking-widest font-bold mb-0.5">比赛倒计时</span>
             <span id="gameClockText" class="text-xl font-extrabold tech-font text-white tracking-wider drop-shadow-md">00:00</span>
@@ -294,10 +292,18 @@
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/utils/BufferGeometryUtils.js"></script>
 
     <script>
-        // 确保不会因为找不到元素而抛出致命报错的安全绑定助手
+        // 安全异常捕获助手，防止因为沙盒环境错误导致白屏
+        window.onerror = function(msg, url, lineNo, columnNo, error) {
+            console.warn("Caught Error: ", msg);
+            return false;
+        };
+
         const addClick = (id, fn) => {
             const el = document.getElementById(id);
-            if(el) el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); fn(e); });
+            if(el) {
+                // 兼容手机端点击
+                el.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); fn(e); });
+            }
         };
 
         function triggerHaptic(type) {
@@ -314,14 +320,15 @@
             } catch(e) {}
         }
 
+        // 全局变量
         let scene, camera, renderer, clock, orbitControls;
         const container = document.getElementById('canvas-container');
-        let soundEnabled = true; // 默认准备好，点击开始后正式发声
+        let soundEnabled = true; 
         let audioCtx = null;
         let droneSynth = null;
-        
         let currentPlayerName = "匿名学员";
 
+        // 无人机状态对象
         const drone = {
             mesh: null, rotors: [], lights: [],
             position: new THREE.Vector3(0, 0.1, 0), velocity: new THREE.Vector3(0, 0, 0), rotation: new THREE.Euler(0, 0, 0, 'YXZ'),
@@ -338,6 +345,7 @@
         ];
         
         let score = 0, particles = [], readyToScore = true, centerLinePrevSide = null;
+        
         let matchSeconds = 0, matchTimerId = null, matchDurationMinutes = 3, isMatchActive = false; 
 
         function formatMatchClock(totalSeconds) {
@@ -359,13 +367,15 @@
             }, 1000);
         }
 
-        // Leaderboard (加了彻底的 Try-Catch 保护，防沙盒报错白屏)
+        // Leaderboard Logic (With robust fallback for Sandbox environments)
         const STORAGE_KEY = 'droneSoccerLeaderboard';
+        let inMemoryBoard = []; // Fallback if localStorage throws SecurityError
+        
         function getLocalBoard() {
-            try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return []; }
+            try { return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return inMemoryBoard; }
         }
         function saveBoard(board) {
-            try { localStorage.setItem(STORAGE_KEY, JSON.stringify(board)); } catch(e) { console.warn("沙盒环境无法保存本地排行榜", e); }
+            try { window.localStorage.setItem(STORAGE_KEY, JSON.stringify(board)); } catch(e) { inMemoryBoard = board; }
         }
         function renderLeaderboard(boardData) {
             const tbody = document.getElementById('leaderboardBody');
@@ -448,9 +458,6 @@
             aiDrones.forEach(a => { a.constants = DIFFICULTY_LEVELS[level]; a.reactionTimer = 0; });
             const t = document.getElementById('difficultyText'); if(t) t.innerText = DIFFICULTY_LEVELS[level].label;
             showSystemNotification(`防守难度：${DIFFICULTY_LEVELS[level].label}`);
-        }
-        function cycleDifficulty() {
-            triggerHaptic('light'); const order = ['easy', 'medium', 'hard']; applyDifficulty(order[(order.indexOf(aiDifficulty) + 1) % order.length]);
         }
 
         const keys = { w: false, s: false, a: false, d: false, arrowup: false, arrowdown: false, arrowleft: false, arrowright: false, ' ': false, control: false, t: false, l: false };
@@ -675,8 +682,6 @@
                 a.team = opp; a.guardRing = gR; applyTeamColor(a, TEAM_COLORS[opp]);
                 if(gR) { a.position.set(gR.pos.x+a.guardHomeOffsetX, 0.1, gR.pos.z); a.velocity.set(0,0,0); a.aimTarget.copy(a.position); a.reactionTimer=0; a.altitudeState='grounded'; if(a.mesh){a.mesh.position.copy(a.position); a.mesh.rotation.y=tm==='red'?Math.PI:0;} }
             });
-            const tD = document.getElementById('teamDot'), tL = document.getElementById('teamLabel');
-            if(tD && tL) { tD.className = `w-2.5 h-2.5 rounded-full ${tm==='red'?'bg-rose-500':'bg-blue-500'}`; tL.innerHTML = `${tm==='red'?'红队':'蓝队'} vs <span class="${tm==='red'?'text-blue-400':'text-rose-400'}">${tm==='red'?'蓝方球门':'红方球门'}</span>`; }
         }
 
         function createExplosion(p, c) {
@@ -812,8 +817,6 @@
             const tt=document.getElementById('telemetryThrottle'); if(tt) { tt.innerText=`${thr}%`; document.getElementById('throttleBar').style.width=`${thr}%`; }
             
             const ms=document.getElementById('telSpdMob'); if(ms) { ms.innerText=spd.toFixed(1); document.getElementById('telAltMob').innerText=alt.toFixed(2); document.getElementById('telThrMob').innerText=`${thr}%`; }
-            
-            let d=(drone.rotation.y*(180/Math.PI))%360; if(d<0) d+=360; const cv=document.getElementById('compassVal'); if(cv){ cv.innerText=`${String(Math.round(d)).padStart(3,'0')}°`; let dS='N'; if(d>=337.5||d<22.5)dS='N';else if(d>=22.5&&d<67.5)dS='NE';else if(d>=67.5&&d<112.5)dS='E';else if(d>=112.5&&d<157.5)dS='SE';else if(d>=157.5&&d<202.5)dS='S';else if(d>=202.5&&d<247.5)dS='SW';else if(d>=247.5&&d<292.5)dS='W';else if(d>=292.5&&d<337.5)dS='NW'; document.getElementById('compassDir').innerText=`(${dS})`; }
         }
 
         function showSystemNotification(t) {
@@ -841,16 +844,15 @@
             renderer.render(scene, camera);
         }
 
-        // 核心交互与生命周期
         document.addEventListener('DOMContentLoaded', () => {
             initScene(); setupLights(); createSoccerField(); createStadiumEnvironment(); buildInflatableCage(); buildDrone(); buildAIDrones(); setupTargetRings(); configureMatch('red'); setupKeyboard();
             
-            // 解决触摸冲突的兼容方法
+            // 触控防呆绑定
             const touchZone = (id, outX, outY) => {
-                const z=document.getElementById(id), k=z.children[0];
-                const mv = (e) => { e.preventDefault(); const t=e.targetTouches?.[0]; if(!t)return; const r=z.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=t.clientX-cx, dy=t.clientY-cy, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), px=Math.cos(a)*d/(r.width/2), py=Math.sin(a)*d/(r.height/2); k.style.transform=`translate(${px*25}px, ${py*25}px) scale(1.15)`; outX(px); outY(py); };
+                const z=document.getElementById(id); if(!z) return; const k=z.children[0];
+                const mv = (e) => { try{e.preventDefault();}catch(e){} const t=e.targetTouches?.[0]||e.touches[0]; if(!t)return; const r=z.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=t.clientX-cx, dy=t.clientY-cy, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), px=Math.cos(a)*d/(r.width/2), py=Math.sin(a)*d/(r.height/2); k.style.transform=`translate(${px*25}px, ${py*25}px) scale(1.15)`; outX(px); outY(py); };
                 const ed = () => { k.style.transform='translate(0,0) scale(1)'; outX(0); outY(0); };
-                if(z) { z.addEventListener('touchstart', e=>{ triggerHaptic('light'); outX(0); outY(0); mv(e); }, {passive:false}); z.addEventListener('touchmove', mv, {passive:false}); z.addEventListener('touchend', ed); z.addEventListener('touchcancel', ed); }
+                z.addEventListener('touchstart', e=>{ triggerHaptic('light'); outX(0); outY(0); mv(e); }, {passive:false}); z.addEventListener('touchmove', mv, {passive:false}); z.addEventListener('touchend', ed); z.addEventListener('touchcancel', ed);
             };
             touchZone('joyLeft', (x)=>{ drone.touchActiveLeft=true; drone.input.yaw=x; if(x===0&&drone.touchAltitudeInput===0) drone.touchActiveLeft=false; }, (y)=>{ drone.touchActiveLeft=true; drone.touchAltitudeInput=-Math.sign(y)*Math.pow(y,2); if(y===0&&drone.input.yaw===0) drone.touchActiveLeft=false; });
             touchZone('joyRight', (x)=>{ drone.touchActive=true; drone.input.roll=x; if(x===0&&drone.input.pitch===0) drone.touchActive=false; }, (y)=>{ drone.touchActive=true; drone.input.pitch=-y; if(y===0&&drone.input.roll===0) drone.touchActive=false; drone.autoFlightState='none'; });
@@ -874,7 +876,11 @@
                 s.classList.add('opacity-0', 'scale-95', 'pointer-events-none'); setTimeout(() => s.classList.add('hidden'), 700);
                 showSystemNotification(`系统启动 - 倒计时 ${matchDurationMinutes} 分钟`);
             };
-            addClick('btnStartMatch', startF);
+            // 支持点击和移动端触摸直接启动
+            const btnSt = document.getElementById('btnStartMatch');
+            if(btnSt) { btnSt.addEventListener('click', startF); btnSt.addEventListener('touchend', e => { e.preventDefault(); startF(); }); }
+            
+            // 安全绑定键盘，避免在输入框打字时触发
             window.addEventListener('keydown', e => { if(e.key!=='F12' && e.key!=='F5' && (!document.activeElement||document.activeElement.tagName!=='INPUT')) startF(); }, {once:true});
 
             addClick('btnTakeoff', () => { if(isMatchActive) { triggerHaptic('engine'); if(drone.position.y<0.15){drone.targetAltitude=GOAL_HEIGHT; drone.autoFlightState='takingoff'; aiDrones.forEach(a=>{if(a.altitudeState==='grounded') a.altitudeState='takingoff';});} } });
@@ -891,7 +897,7 @@
 
             addClick('btnMobileMenuToggle', () => { const m = document.getElementById('actionMenu'); if(m) { m.classList.toggle('hidden'); m.classList.toggle('flex'); } });
             addClick('btnExportLeaderboard', exportLeaderboardCSV);
-            addClick('btnClearLeaderboard', () => { const b=document.getElementById('btnClearLeaderboard'); if(b.dataset.c!=='1') { b.innerHTML='<i class="fa-solid fa-triangle-exclamation mr-1"></i>确认清空?'; b.classList.replace('bg-rose-600/20','bg-rose-600/60'); b.dataset.c='1'; setTimeout(()=>{if(b.dataset.c==='1'){b.innerHTML='<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60','bg-rose-600/20'); b.dataset.c='0';}},3000); } else { try{localStorage.removeItem(STORAGE_KEY);}catch(e){} renderLeaderboard([]); b.innerHTML='<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60','bg-rose-600/20'); b.dataset.c='0'; showSystemNotification("已清空排行榜"); } });
+            addClick('btnClearLeaderboard', () => { const b=document.getElementById('btnClearLeaderboard'); if(b.dataset.c!=='1') { b.innerHTML='<i class="fa-solid fa-triangle-exclamation mr-1"></i>确认清空?'; b.classList.replace('bg-rose-600/20','bg-rose-600/60'); b.dataset.c='1'; setTimeout(()=>{if(b.dataset.c==='1'){b.innerHTML='<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60','bg-rose-600/20'); b.dataset.c='0';}},3000); } else { try{window.localStorage.removeItem(STORAGE_KEY);}catch(e){} inMemoryBoard=[]; renderLeaderboard([]); b.innerHTML='<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60','bg-rose-600/20'); b.dataset.c='0'; showSystemNotification("已清空排行榜"); } });
 
             animate();
         });
