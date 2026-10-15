@@ -50,6 +50,7 @@
         ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 4px; }
         .joystick-zone { touch-action: none; }
+        .safe-bottom-joy { bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem); } /* 抬高摇杆防遮挡 */
         
         /* 移动端与桌面端的显隐控制 */
         #touchControls { display: none; }
@@ -157,20 +158,20 @@
                         <span class="text-[10px] text-slate-400">球</span>
                     </div>
                     <div class="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-slate-700/50">
-                        <span id="scoreStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.8)]"></span>
-                        <span id="scoreStatusText" class="text-[9px] font-bold tech-font text-emerald-300">可以得分</span>
-                    </div>
-                </div>
-                
-                <!-- 手机专属：左上角超迷你透明遥测窗 -->
-                <div class="md:hidden glassmorphism rounded-lg px-2 py-1.5 border border-slate-700/30 flex flex-col gap-0.5 backdrop-blur-md">
-                    <div class="flex justify-between gap-3 text-[9px] tech-font"><span class="text-slate-400">SPD</span><span id="telSpdMob" class="text-emerald-300 font-bold">0.0</span></div>
-                    <div class="flex justify-between gap-3 text-[9px] tech-font"><span class="text-slate-400">ALT</span><span id="telAltMob" class="text-cyan-300 font-bold">0.10</span></div>
-                    <div class="flex justify-between gap-3 text-[9px] tech-font"><span class="text-slate-400">THR</span><span id="telThrMob" class="text-yellow-300 font-bold">0%</span></div>
+                    <span id="scoreStatusDot" class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.8)]"></span>
+                    <span id="scoreStatusText" class="text-[9px] font-bold tech-font text-emerald-300">可以得分</span>
                 </div>
             </div>
+            
+            <!-- 手机专属：极简血条式遥测 (不挡视线) -->
+            <div class="md:hidden mt-2 flex flex-col gap-1.5 w-[110px] pointer-events-none drop-shadow-md">
+                <div class="flex items-center gap-1.5"><span class="text-[8px] text-emerald-300/90 font-bold tech-font w-5 text-right">SPD</span><div class="flex-1 h-1.5 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50"><div id="mobBarSpd" class="h-full bg-emerald-400 rounded-full transition-all duration-100" style="width:0%"></div></div></div>
+                <div class="flex items-center gap-1.5"><span class="text-[8px] text-cyan-300/90 font-bold tech-font w-5 text-right">ALT</span><div class="flex-1 h-1.5 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50"><div id="mobBarAlt" class="h-full bg-cyan-400 rounded-full transition-all duration-100" style="width:10%"></div></div></div>
+                <div class="flex items-center gap-1.5"><span class="text-[8px] text-yellow-300/90 font-bold tech-font w-5 text-right">THR</span><div class="flex-1 h-1.5 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50"><div id="mobBarThr" class="h-full bg-yellow-400 rounded-full transition-all duration-100" style="width:0%"></div></div></div>
+            </div>
+        </div>
 
-            <!-- 右上角：快捷操作栏 (下拉/展开) -->
+        <!-- 右上角：快捷操作栏 (下拉/展开) -->
             <div class="flex gap-2 items-start relative z-50">
                 <button id="btnTakeoff" class="px-2.5 h-9 rounded-lg glassmorphism text-emerald-400 hover:text-emerald-300 border border-emerald-500/20 flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto">
                     <i class="fa-solid fa-plane-departure text-xs"></i><span class="text-[10px] font-bold tech-font">起飞</span>
@@ -227,11 +228,11 @@
 
         <!-- 触控摇杆 -->
         <div id="touchControls" class="absolute inset-0 pointer-events-none z-[60]">
-            <div class="joystick-zone pointer-events-auto absolute left-4 md:left-12 bottom-4 md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-emerald-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] backdrop-blur-sm" id="joyLeft">
+            <div class="joystick-zone pointer-events-auto absolute left-4 md:left-12 safe-bottom-joy md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-emerald-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(16,185,129,0.15)] backdrop-blur-sm" id="joyLeft">
                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-emerald-500/40 border border-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.5)] absolute transition-transform duration-75" id="knobLeft"></div>
                 <span class="absolute text-[9px] text-emerald-400/80 uppercase font-bold tracking-widest pointer-events-none text-center">高度<br>偏航</span>
             </div>
-            <div class="joystick-zone pointer-events-auto absolute right-4 md:right-12 bottom-4 md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.15)] backdrop-blur-sm" id="joyRight">
+            <div class="joystick-zone pointer-events-auto absolute right-4 md:right-12 safe-bottom-joy md:bottom-16 w-24 h-24 md:w-28 md:h-28 rounded-full bg-slate-950/80 border border-cyan-500/40 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.15)] backdrop-blur-sm" id="joyRight">
                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-cyan-500/40 border border-cyan-400 shadow-[0_0_12px_rgba(6,182,212,0.5)] absolute transition-transform duration-75" id="knobRight"></div>
                 <span class="absolute text-[9px] text-cyan-400/80 uppercase font-bold tracking-widest pointer-events-none">移动</span>
             </div>
@@ -816,7 +817,9 @@
             const ta=document.getElementById('telemetryAlt'); if(ta) { ta.innerText=alt.toFixed(2); document.getElementById('altBar').style.width=`${Math.min(alt/3*100,100)}%`; }
             const tt=document.getElementById('telemetryThrottle'); if(tt) { tt.innerText=`${thr}%`; document.getElementById('throttleBar').style.width=`${thr}%`; }
             
-            const ms=document.getElementById('telSpdMob'); if(ms) { ms.innerText=spd.toFixed(1); document.getElementById('telAltMob').innerText=alt.toFixed(2); document.getElementById('telThrMob').innerText=`${thr}%`; }
+            const mbSpd=document.getElementById('mobBarSpd'); if(mbSpd) mbSpd.style.width=`${Math.min(spd*10,100)}%`;
+            const mbAlt=document.getElementById('mobBarAlt'); if(mbAlt) mbAlt.style.width=`${Math.min(alt/3*100,100)}%`;
+            const mbThr=document.getElementById('mobBarThr'); if(mbThr) mbThr.style.width=`${thr}%`;
         }
 
         function showSystemNotification(t) {
