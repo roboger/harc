@@ -134,7 +134,6 @@ body{background:radial-gradient(ellipse at 50% -10%,#0a2a55 0%,#030b1c 55%,#0106
   border-left-color:var(--gold)}
 .rank-item.me .name{color:#ffe9ab}
 .rank-item.me .val{color:var(--gold)}
-/* 演示数据样式 */
 .rank-item.demo{
   opacity:.55;
   border-left-style:dashed;
@@ -231,6 +230,9 @@ body{background:radial-gradient(ellipse at 50% -10%,#0a2a55 0%,#030b1c 55%,#0106
 .v-spot-name{font-size:11px;color:var(--dim);padding:3px 10px;
   border-radius:12px;background:rgba(0,120,255,.14);border:1px solid rgba(0,180,255,.25);
   white-space:nowrap;max-width:200px;overflow:hidden;text-overflow:ellipsis}
+.v-spot-name.fallback{
+  color:#ffd76e;border-color:rgba(255,215,110,.5);
+  background:rgba(255,215,110,.1)}
 .v-stats{margin-left:auto;display:flex;gap:18px;flex-wrap:wrap;align-items:center}
 .v-stats .vs{text-align:right;white-space:nowrap}
 .v-stats .vs b{display:block;font-size:14px;color:#39e0ff;font-family:Consolas,monospace}
@@ -274,6 +276,13 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
   background:rgba(0,20,45,.7);border:1px dashed rgba(0,180,255,.5);
   border-radius:10px;padding:18px 26px}
 .book-hint b{display:block;font-size:14px;color:rgba(120,200,255,.95);margin-bottom:6px}
+/* 全景兜底提示条 */
+.pano-fallback-tip{
+  position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
+  z-index:25;padding:6px 16px;border-radius:16px;font-size:11px;letter-spacing:.5px;
+  color:#ffe9ab;background:rgba(60,40,0,.85);border:1px solid rgba(255,215,110,.6);
+  box-shadow:0 0 18px rgba(255,215,110,.35);
+  white-space:nowrap;pointer-events:none;animation:fade .3s ease}
 #dragGhost{position:fixed;pointer-events:none;z-index:99998;
   width:100px;height:100px;border-radius:9px;overflow:hidden;
   border:2px solid #fff;box-shadow:0 0 30px rgba(0,212,255,1);opacity:.88;display:none}
@@ -289,6 +298,8 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
 .chip:hover{border-color:var(--cyan);color:#fff}
 .chip.on{background:linear-gradient(135deg,rgba(0,180,255,.45),rgba(0,90,255,.35));
   border-color:var(--cyan);color:#fff}
+.chip.fallback{
+  color:#ffe9ab;border-color:rgba(255,215,110,.5);background:rgba(255,215,110,.12)}
 .v-tip{margin-left:auto;font-size:10.5px;color:var(--dim);
   flex:0 0 auto;padding-left:14px;white-space:nowrap}
 .modal-mask{position:fixed;inset:0;z-index:90;display:none;
@@ -401,6 +412,9 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
 .d-note{font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:10px}
 .d-note code{background:rgba(0,180,255,.14);padding:1px 6px;border-radius:3px;
   color:#7fd8ff;font-family:Consolas,monospace;font-size:10.5px}
+.d-fallback-note{font-size:10.5px;color:#ffd76e;line-height:1.7;margin-bottom:8px;
+  padding:7px 10px;border-radius:5px;
+  background:rgba(255,215,110,.08);border:1px dashed rgba(255,215,110,.4)}
 .cloud-box{background:linear-gradient(180deg,rgba(0,180,255,.14),rgba(0,90,255,.04));
   border:1px solid rgba(0,180,255,.4);border-radius:8px;padding:14px}
 .cloud-status{font-size:11.5px;color:var(--dim);line-height:1.8;margin-bottom:10px;
@@ -607,6 +621,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
   .up-row{padding:9px 10px;gap:9px}
   .up-av{width:34px;height:34px;font-size:14px}
   .uaf-row input{min-width:100%}
+  .pano-fallback-tip{font-size:10px;padding:5px 12px}
 }
 </style>
 </head>
@@ -721,12 +736,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
           <option value="四年级">四年级</option>
           <option value="五年级">五年级</option>
           <option value="六年级">六年级</option>
-          <option value="初一">初一</option>
-          <option value="初二">初二</option>
-          <option value="初三">初三</option>
-          <option value="高一">高一</option>
-          <option value="高二">高二</option>
-          <option value="高三">高三</option>
+       
         </select>
         <select id="selClassNum">
           <option value="">选择班级</option>
@@ -740,16 +750,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
           <option value="8">8 班</option>
           <option value="9">9 班</option>
           <option value="10">10 班</option>
-          <option value="11">11 班</option>
-          <option value="12">12 班</option>
-          <option value="13">13 班</option>
-          <option value="14">14 班</option>
-          <option value="15">15 班</option>
-          <option value="16">16 班</option>
-          <option value="17">17 班</option>
-          <option value="18">18 班</option>
-          <option value="19">19 班</option>
-          <option value="20">20 班</option>
+        
         </select>
       </div>
     </div>
@@ -784,7 +785,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
       <button class="btn" id="btnAdminCancel">取消</button>
       <button class="btn primary" id="btnAdminSubmit">验证进入</button>
     </div>
-   
+  
   </div>
 </div>
 
@@ -840,7 +841,12 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
       <option value="四年级">四年级</option>
       <option value="五年级">五年级</option>
       <option value="六年级">六年级</option>
-      
+      <option value="初一">初一</option>
+      <option value="初二">初二</option>
+      <option value="初三">初三</option>
+      <option value="高一">高一</option>
+      <option value="高二">高二</option>
+      <option value="高三">高三</option>
     </select>
     <select class="up-select" id="upSort">
       <option value="recent">最近活跃</option>
@@ -864,7 +870,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
         <option value="四年级">四年级</option>
         <option value="五年级">五年级</option>
         <option value="六年级">六年级</option>
-       
+        
       </select>
       <select id="upAddClassNum">
         <option value="">选择班级</option>
@@ -878,7 +884,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
         <option value="8">8 班</option>
         <option value="9">9 班</option>
         <option value="10">10 班</option>
-     
+   
       </select>
       <button class="btn primary" id="upAddConfirm">确认添加</button>
       <button class="btn" id="upAddCancel">取消</button>
@@ -995,7 +1001,67 @@ function imgWithFallback(el, src){
 }
 
 /* =========================================================
-   ★ 演示排行榜数据（数据不足时填充，让界面充实）
+   ★ 全景图默认在线图片
+   ---------------------------------------------------------
+   当用户没有上传全景图、或图片加载失败时，自动切换到这些
+   在线全景图，保证界面永远不为空。
+   ========================================================= */
+const ONLINE_PANOS = [
+  'https://pannellum.org/images/alma.jpg',
+  'https://pannellum.org/images/bma-1.jpg',
+  'https://pannellum.org/images/cerro-toco-0.jpg',
+  'https://pannellum.org/images/jfk.jpg',
+  'https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg'
+];
+/* 根据字符串稳定地选一张在线全景图，避免每次随机变化 */
+function pickOnlinePano(seed){
+  const s = String(seed || 'default');
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
+  return ONLINE_PANOS[h % ONLINE_PANOS.length];
+}
+
+/* 检测图片是否可加载 */
+function checkImageLoadable(url){
+  return new Promise(resolve => {
+    if (!url){ resolve(false); return; }
+    // 已经是可用格式
+    if (/^https?:\/\//i.test(url) || /^data:image\//i.test(url)){
+      // 在线图快速返回成功，避免不必要的等待
+      // 但仍做一次真实加载检测（带超时）
+      const img = new Image();
+      let settled = false;
+      const timer = setTimeout(() => {
+        if (!settled){ settled = true; resolve(false); }
+      }, 3500);
+      img.onload = () => {
+        if (!settled){ settled = true; clearTimeout(timer); resolve(true); }
+      };
+      img.onerror = () => {
+        if (!settled){ settled = true; clearTimeout(timer); resolve(false); }
+      };
+      img.crossOrigin = 'anonymous';
+      img.src = url;
+      return;
+    }
+    // 相对路径也做检测
+    const img = new Image();
+    let settled = false;
+    const timer = setTimeout(() => {
+      if (!settled){ settled = true; resolve(false); }
+    }, 3500);
+    img.onload = () => {
+      if (!settled){ settled = true; clearTimeout(timer); resolve(true); }
+    };
+    img.onerror = () => {
+      if (!settled){ settled = true; clearTimeout(timer); resolve(false); }
+    };
+    img.src = url;
+  });
+}
+
+/* =========================================================
+   演示排行榜数据
    ========================================================= */
 const DEMO_RANK = [
   { name:'林小语', cls:'五(2)班',  count:23 },
@@ -1210,11 +1276,12 @@ adminModal.addEventListener('click', e => {
    默认数据
    ========================================================= */
 const DEFAULT_BOOK_IMG = 'images/book-default.jpg';
-const DEFAULT_PANO = 'images/pano-library.jpg';
+/* 默认全景图 —— 用在线图，确保所有电脑都能看到 */
+const DEFAULT_PANO = 'https://pannellum.org/images/alma.jpg';
 const DEFAULT_MAP = 'images/campus-map.jpg';
 
 const DEFAULT_CONFIG = {
-  title: '淮安市通甫路小学 · 云逛校园图书馆可视化大屏',
+  title: '淮安市通甫路小学 · 云逛校园图书馆',
   subtitle: 'SMART CAMPUS READING SPACE · VISUALIZATION PLATFORM',
   paperBooks: 32800,
   ebookBase: 12000,
@@ -1283,8 +1350,8 @@ const DEFAULT_CONFIG = {
   books: {}
 };
 
-const STORE_KEY = 'campus-lib-v10';
-const CLOUD_KEY = 'campus-lib-cloud-v3';
+const STORE_KEY = 'campus-lib-v11';
+const CLOUD_KEY = 'campus-lib-cloud-v4';
 
 let CLOUD = {
   token: '',
@@ -1293,7 +1360,6 @@ let CLOUD = {
   lastSync: 0
 };
 
-/* 拉取到真实数据标记 */
 let cloudRealDataLoaded = false;
 
 function loadCloud(){
@@ -1328,6 +1394,8 @@ function migrate(){
     }
     sc.spots.forEach((sp) => {
       if (!sp.sid) sp.sid = uid('sp');
+      // 空全景图使用默认在线图
+      if (!sp.pano) sp.pano = DEFAULT_PANO;
       validSids.add(sp.sid);
     });
   });
@@ -1384,9 +1452,7 @@ function save(){
   }
 }
 
-/* =========================================================
-   数据合并
-   ========================================================= */
+/* 数据合并 */
 function mergeVisits(a, b){
   const seen = new Set();
   const out = [];
@@ -1430,9 +1496,7 @@ function mergeUsers(local, remote){
   return out;
 }
 
-/* =========================================================
-   云同步
-   ========================================================= */
+/* 云同步 */
 let cloudPushTimer = null;
 let syncBusy = false;
 
@@ -1477,10 +1541,7 @@ async function pullFromCloud(silent){
     if (data.users && typeof data.users === 'object'){
       const remoteUserCount = Object.keys(data.users).length;
       S.users = mergeUsers(S.users, data.users);
-      if (remoteUserCount > 0){
-        // 拉取到真实数据
-        cloudRealDataLoaded = true;
-      }
+      if (remoteUserCount > 0) cloudRealDataLoaded = true;
     }
     if (data.config){
       const localHasConfig = S.config && S.config.title;
@@ -1666,15 +1727,6 @@ function renderStats(){
     requestAnimationFrame(step);
   });
 }
-
-/* =========================================================
-   ★ 本月榜：真实数据 + 演示数据混合渲染
-   ---------------------------------------------------------
-   规则：
-   1. 有真实数据（云端拉取成功 或 本机有用户）→ 优先展示
-   2. 真实条目不足 10 条 → 用演示数据补足，视觉上弱化
-   3. 一旦拉取到正确 Token 对应 Gist 里的真实数据 → 完全覆盖
-   ========================================================= */
 function renderRank(){
   const realList = getMonthlyRank().filter(r => r.count > 0);
   const hasAnyUser = Object.keys(S.users).length > 0;
@@ -1684,26 +1736,23 @@ function renderRank(){
   const hint = $('#rankHint');
   const tail = $('#rankTail');
 
-  /* 完全无真实数据的场景：全部用演示数据填充 */
   if (!hasReal && !cloudRealDataLoaded){
     const demoList = DEMO_RANK.slice(0, 10);
     box.innerHTML = demoList.map((r, i) => `
       <div class="rank-item demo">
         <span class="no">${i+1}</span>
         <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-        <span class="demo-tag">演示</span>
+        <span class="demo-tag">*</span>
         <span class="val">${r.count}</span>
       </div>`).join('');
     tail.textContent = '演示数据';
     hint.style.display = 'flex';
-    hint.innerHTML = '<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖';
+    hint.innerHTML = '<span class="hi-ico">💡</span>读万卷书，行万里路';
     return;
   }
 
-  /* 已有部分真实数据：真实优先 + 演示补足到 10 条 */
   const meKey = S.currentUser;
   let realTop = realList.slice(0, 10);
-  // 若自己不在前列，也插入进来展示
   if (meKey && !realTop.some(r => r.key === meKey) && S.users[meKey]){
     const mk = monthKey(Date.now());
     let n = 0;
@@ -1712,24 +1761,17 @@ function renderRank(){
       const all = getMonthlyRank();
       const rank = all.findIndex(r => r.key === meKey) + 1;
       realTop.push({
-        key: meKey,
-        name: S.users[meKey].name,
-        cls: S.users[meKey].cls,
-        count: n,
-        isMe: true,
-        rank: rank || '-'
+        key: meKey, name: S.users[meKey].name, cls: S.users[meKey].cls,
+        count: n, isMe: true, rank: rank || '-'
       });
     }
   }
 
-  // 演示补足
   const needDemo = Math.max(0, 10 - realTop.length);
   const usedNames = new Set(realTop.map(r => r.name));
   const demoFill = DEMO_RANK.filter(d => !usedNames.has(d.name)).slice(0, needDemo);
 
   let html = '';
-
-  // 真实条目
   realTop.forEach((r, i) => {
     const isMe = r.key === meKey || r.isMe;
     const no = r.isMe ? r.rank : (i + 1);
@@ -1740,38 +1782,33 @@ function renderRank(){
         <span class="val">${r.count}</span>
       </div>`;
   });
-
-  // 演示条目补齐
   demoFill.forEach((r, i) => {
     const no = realTop.length + i + 1;
     html += `
       <div class="rank-item demo">
         <span class="no">${no}</span>
         <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-        <span class="demo-tag">*</span>
+        <span class="demo-tag">演示</span>
         <span class="val">${r.count}</span>
       </div>`;
   });
-
   box.innerHTML = html;
 
-  // 提示
   if (demoFill.length > 0){
     tail.textContent = 'TOP 10';
     hint.style.display = 'flex';
     if (cloudRealDataLoaded){
-      hint.innerHTML = '<span class="hi-ico">☁️</span>已同步云端真实数据（本机浏览器缓存）';
+      hint.innerHTML = '<span class="hi-ico">☁️</span>已同步云端真实数据';
     } else if (CLOUD.token && CLOUD.gistId){
       hint.innerHTML = '<span class="hi-ico">☁️</span>已配置云同步，正在等待真实数据…';
     } else {
-      hint.innerHTML = '<span class="hi-ico">💡</span>读书破万卷，下笔如有神';
+      hint.innerHTML = '<span class="hi-ico">💡</span>读万卷书，行万里路';
     }
   } else {
     tail.textContent = 'TOP 10';
     hint.style.display = 'none';
   }
 }
-
 function renderEntries(){
   $('#entries').innerHTML = S.config.scenes.map((s, i) => `
     <div class="entry" data-idx="${i}">
@@ -1933,7 +1970,6 @@ function doLogin(){
   userModal.classList.remove('on');
   renderAll();
   toast(isNew ? `欢迎新同学，${n}！` : `欢迎回来，${n}！已载入你的浏览数据`);
-  // 登录后自动拉取云端，把真实数据拉回来
   if (CLOUD.gistId){
     setTimeout(() => { pullFromCloud(true); }, 800);
   }
@@ -2112,6 +2148,8 @@ let panoViewer = null;
 let curSceneIdx = 0;
 let curSpotIdx = 0;
 let bookEditMode = false;
+/* 当前全景是否使用兜底图 */
+let curPanoIsFallback = false;
 
 function currentScene(){ return S.config.scenes[curSceneIdx] || null; }
 function currentSpot(){
@@ -2148,6 +2186,7 @@ function openViewer(sceneIdx, spotIdx){
   $('#btnBookEdit').classList.remove('on');
   $('#btnBookEdit').textContent = '✎ 编辑图书';
   removeBookModeTip();
+  removePanoFallbackTip();
   const s = currentScene();
   if (!s) return;
   $('#vTitle').textContent = s.name;
@@ -2165,17 +2204,59 @@ function openViewer(sceneIdx, spotIdx){
   viewerEl.classList.add('on');
   loadSpot(curSpotIdx);
 }
-function loadSpot(i){
+
+/* ★ 智能加载全景：优先用户图片，失败则用在线默认图 */
+async function loadSpot(i){
   const s = currentScene();
   if (!s) return;
   const spot = (s.spots || [])[i];
   if (!spot) return;
   curSpotIdx = i;
   $('#vSpotName').textContent = spot.name;
-  spotsEl.querySelectorAll('.chip').forEach((el, k) => el.classList.toggle('on', k === i));
+  $('#vSpotName').classList.remove('fallback');
+  spotsEl.querySelectorAll('.chip').forEach((el, k) => {
+    el.classList.toggle('on', k === i);
+    el.classList.remove('fallback');
+  });
+  removePanoFallbackTip();
+
   if (panoViewer){ try{ panoViewer.destroy(); }catch(e){} panoViewer = null; }
   panoEl.innerHTML = '';
   removeBookHint();
+
+  /* 显示加载提示 */
+  panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;' +
+    'justify-content:center;color:#6fa8d0;font-size:13px;letter-spacing:2px">' +
+    '全景加载中…</div>';
+
+  /* 用户配置的图片 */
+  const userPano = spot.pano || '';
+  let finalPano = userPano;
+  let isFallback = false;
+
+  /* 如果用户没填，直接用默认在线图 */
+  if (!userPano){
+    finalPano = pickOnlinePano(spot.sid || spot.name || 'default');
+    isFallback = true;
+  } else {
+    /* 有填写，尝试加载；失败则用默认在线图 */
+    const loadable = await checkImageLoadable(userPano);
+    if (!loadable){
+      finalPano = pickOnlinePano(spot.sid || spot.name || 'default');
+      isFallback = true;
+    }
+  }
+
+  /* 记录状态 */
+  curPanoIsFallback = isFallback;
+  if (isFallback){
+    $('#vSpotName').classList.add('fallback');
+    const chip = spotsEl.querySelectorAll('.chip')[i];
+    if (chip) chip.classList.add('fallback');
+    showPanoFallbackTip();
+  }
+
+  /* 渲染全景 */
   requestAnimationFrame(() => {
     if (typeof pannellum === 'undefined'){
       panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;' +
@@ -2191,10 +2272,11 @@ function loadSpot(i){
       type: 'info',
       cssClass: 'book-spot'
     }));
+    panoEl.innerHTML = '';
     try{
       panoViewer = pannellum.viewer('pano', {
         type: 'equirectangular',
-        panorama: spot.pano || DEFAULT_PANO,
+        panorama: finalPano,
         autoLoad: true,
         autoRotate: -1.2,
         hfov: 105, minHfov: 60, maxHfov: 120,
@@ -2208,16 +2290,40 @@ function loadSpot(i){
         setTimeout(() => injectBookContent(), 320);
       });
     }catch(err){
+      /* 极端情况：连在线图也失败，显示提示 */
       panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;' +
         'justify-content:center;color:#6fa8d0;font-size:13px;text-align:center;' +
         'line-height:2;padding:20px">全景图加载失败<br>' +
-        '请确认 images/' + (spot.pano || '').split('/').pop() + ' 已上传到仓库</div>';
+        '已尝试使用在线默认图，仍失败<br>请检查网络连接</div>';
       return;
     }
     setTimeout(() => injectBookContent(), 260);
     setTimeout(() => injectBookContent(), 700);
   });
 }
+
+/* 兜底提示条 */
+function showPanoFallbackTip(){
+  removePanoFallbackTip();
+  const d = document.createElement('div');
+  d.className = 'pano-fallback-tip';
+  d.id = 'panoFallbackTip';
+  d.textContent = '⚠️ 该点位未配置全景图，当前显示在线示例图';
+  panoWrap.appendChild(d);
+  /* 4 秒后淡出 */
+  setTimeout(() => {
+    if (d && d.parentNode){
+      d.style.transition = 'opacity .5s';
+      d.style.opacity = '0';
+      setTimeout(() => d.remove(), 600);
+    }
+  }, 4000);
+}
+function removePanoFallbackTip(){
+  const d = document.getElementById('panoFallbackTip');
+  if (d) d.remove();
+}
+
 function injectBookContent(){
   if (!panoViewer) return;
   const sid = currentSid();
@@ -2440,6 +2546,8 @@ function closeViewer(){
   document.body.classList.remove('book-editing');
   removeBookModeTip();
   removeBookHint();
+  removePanoFallbackTip();
+  curPanoIsFallback = false;
   dragGhost.style.display = 'none';
   if (panoViewer){ try{ panoViewer.destroy(); }catch(e){} panoViewer = null; }
 }
@@ -2615,6 +2723,9 @@ function renderDrawer(){
         <button class="mini" id="btnAddScene">＋ 添加场景</button>
       </span>
     </div>
+    <div class="d-fallback-note">
+      💡 全景图留空或加载失败时，会自动使用在线示例图，界面不会空白
+    </div>
     <div class="d-note">全景图请填写 <code>images/xxx.jpg</code> 格式，先上传到仓库</div>`;
 
   S.config.scenes.forEach((s, i) => {
@@ -2654,7 +2765,7 @@ function renderDrawer(){
         </div>
         <div class="d-row">
           <span class="spot-label">全景图</span>
-          <input data-path="scenes.${i}.spots.${k}.pano" value="${escapeAttr(sp.pano)}" placeholder="images/tsg01.jpg">
+          <input data-path="scenes.${i}.spots.${k}.pano" value="${escapeAttr(sp.pano)}" placeholder="留空则用在线示例图">
         </div>
       </div>`;
     });
@@ -2770,12 +2881,10 @@ function bindDrawerEvents(){
       '四、其他电脑\n' +
       '1. 填同样的 Token 和 Gist ID，保存\n' +
       '2. 点「拉取」即可拿到所有电脑的数据\n\n' +
-      '【本月榜说明】\n' +
-      '· 未配置 Token → 显示演示数据（界面充实）\n' +
-      '· 填写正确 Token 并上传后 → 用真实数据覆盖\n\n' +
-      '【注意】\n' +
-      '· Token 保存在浏览器本地，不要分享\n' +
-      '· 建议使用 Fine-grained Token，仅 gist 权限'
+      '【全景图兜底说明】\n' +
+      '· 点位没填全景图 → 自动用在线示例图\n' +
+      '· 填了但加载失败 → 也会自动切换到在线图\n' +
+      '· 界面永远不会出现空白全景'
     );
   };
 
@@ -2804,10 +2913,10 @@ function bindDrawerEvents(){
         { label:'开放时间', value:'08:00-18:00' },
         { label:'特　色', value:'自定义' }
       ],
-      spots: [ { sid: uid('sp'), name:'全景 · 主视角', pano: 'images/pano-default.jpg' } ]
+      spots: [ { sid: uid('sp'), name:'全景 · 主视角', pano:'' } ]
     });
     save(); renderAll(); renderDrawer();
-    toast('已添加场景');
+    toast('已添加场景（全景图留空自动用示例图）');
   };
 
   const selScene = $('#selBookScene');
@@ -2895,11 +3004,10 @@ $('#drawerBody').addEventListener('click', e => {
     if (!sc) return;
     if (!Array.isArray(sc.spots)) sc.spots = [];
     const newSid = uid('sp');
-    const defPano = sc.spots[0] ? sc.spots[0].pano : 'images/pano-default.jpg';
-    sc.spots.push({ sid: newSid, name: '新点位 ' + (sc.spots.length + 1), pano: defPano });
+    sc.spots.push({ sid: newSid, name: '新点位 ' + (sc.spots.length + 1), pano: '' });
     S.config.books[newSid] = [];
     save(); renderAll(); renderDrawer();
-    toast('已添加点位');
+    toast('已添加点位（全景图留空自动用示例图）');
     return;
   }
   const rmSpot = e.target.closest('[data-rmspot]');
