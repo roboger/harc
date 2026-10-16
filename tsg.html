@@ -4,12 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>淮安市通甫路小学 · 云逛校园图书馆 · 可视化数据大屏</title>
+<title>云逛校园图书馆 · 可视化数据大屏</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 <style>
-/* 样式与上一版一致，此处省略。完整样式请使用上一版本。 */
 :root{--cyan:#00d4ff;--blue:#0a84ff;--panel-a:rgba(10,42,84,.66);--panel-b:rgba(5,20,45,.55);--line:rgba(0,180,255,.28);--text:#cfe9ff;--dim:#6fa8d0;--gold:#ffd76e;--h:100vh;--h:100dvh}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 html,body{height:100%}
@@ -45,7 +44,7 @@ body{background:radial-gradient(ellipse at 50% -10%,#0a2a55 0%,#030b1c 55%,#0106
 .col-left{display:grid;grid-template-rows:auto 1fr;gap:12px;min-height:0}
 .col-right{display:grid;grid-template-rows:1fr 1fr;gap:12px;min-height:0}
 .center{display:flex;flex-direction:column;gap:12px;min-height:0}
-.panel{position:relative;background:linear-gradient(180deg,var(--panel-a),var(--panel-b));border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;min-height:0;box-shadow:inset 0 0 44px rgba(0,120,255,.08)}
+.panel{position:relative;background:linear-gradient(180deg,var(--panel-a),var(--panel-b));border:1px solid var(--line);border-radius:6px;padding:12px 14px;display:flex;flex-direction:column;min-height:0}
 .panel::before,.panel::after{content:"";position:absolute;width:13px;height:13px;border:2px solid var(--cyan);opacity:.85;pointer-events:none}
 .panel::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
 .panel::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
@@ -61,9 +60,7 @@ body{background:radial-gradient(ellipse at 50% -10%,#0a2a55 0%,#030b1c 55%,#0106
 .stat .lab{font-size:10.5px;color:var(--dim);margin-top:6px}
 .stat .note{font-size:9px;color:#3d7ba8;margin-top:3px}
 .rank{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:7px;min-height:0;padding-right:3px}
-.rank::-webkit-scrollbar{width:4px}
-.rank::-webkit-scrollbar-thumb{background:rgba(0,180,255,.4);border-radius:2px}
-.rank-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:5px;background:linear-gradient(90deg,rgba(0,120,255,.14),rgba(0,120,255,.02));border-left:2px solid rgba(0,180,255,.5);font-size:12.5px;flex:0 0 auto;position:relative}
+.rank-item{display:flex;align-items:center;gap:8px;padding:7px 9px;border-radius:5px;background:linear-gradient(90deg,rgba(0,120,255,.14),rgba(0,120,255,.02));border-left:2px solid rgba(0,180,255,.5);font-size:12.5px;flex:0 0 auto}
 .rank-item .no{width:19px;height:19px;line-height:19px;text-align:center;border-radius:4px;font-size:10.5px;font-weight:700;background:rgba(0,180,255,.18);color:#7fd8ff;flex:0 0 auto}
 .rank-item:nth-child(1) .no{background:linear-gradient(135deg,#ffd76e,#ff9d2e);color:#3a2200}
 .rank-item:nth-child(2) .no{background:linear-gradient(135deg,#d8e6f5,#9fb6cc);color:#26333f}
@@ -145,7 +142,7 @@ body.book-editing .book-spot .bk-del{display:block}
 .user-card>p{font-size:12px;color:var(--dim);line-height:1.8;margin-bottom:24px}
 .uc-field{text-align:left;margin-bottom:14px}
 .uc-field label{display:block;font-size:11px;color:#7fb6e0;margin-bottom:7px;padding-left:2px}
-.uc-field input,.uc-field textarea{width:100%;font-family:inherit;font-size:15px;color:#eaf7ff;background:rgba(0,60,120,.35);border:1px solid rgba(0,180,255,.3);border-radius:8px;padding:12px 14px;outline:none;-webkit-appearance:none}
+.uc-field input{width:100%;font-family:inherit;font-size:15px;color:#eaf7ff;background:rgba(0,60,120,.35);border:1px solid rgba(0,180,255,.3);border-radius:8px;padding:12px 14px;outline:none;-webkit-appearance:none}
 .uc-field input:focus{border-color:var(--cyan)}
 .uc-class-row{display:flex;gap:10px}
 .uc-class-row select{flex:1;font-family:inherit;font-size:14px;color:#eaf7ff;background:rgba(0,60,120,.35);border:1px solid rgba(0,180,255,.3);border-radius:8px;padding:12px;outline:none;-webkit-appearance:none;cursor:pointer}
@@ -233,8 +230,6 @@ body.book-editing .book-spot .bk-del{display:block}
 .uaf-tip.err{color:#ff8a8a}
 .uaf-tip.warn{color:#ffb74d}
 .up-list-wrap{overflow-y:auto;min-height:0;padding-right:4px;display:flex;flex-direction:column;gap:7px}
-.up-list-wrap::-webkit-scrollbar{width:6px}
-.up-list-wrap::-webkit-scrollbar-thumb{background:rgba(0,180,255,.35);border-radius:3px}
 .up-row{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:8px;background:linear-gradient(90deg,rgba(0,120,255,.11),rgba(0,120,255,.02));border:1px solid rgba(0,180,255,.16)}
 .up-row.me{background:linear-gradient(90deg,rgba(255,215,110,.18),rgba(255,215,110,.03));border-color:rgba(255,215,110,.4)}
 .up-row.sel{background:linear-gradient(90deg,rgba(0,200,255,.22),rgba(0,120,255,.08));border-color:var(--cyan)}
@@ -243,7 +238,7 @@ body.book-editing .book-spot .bk-del{display:block}
 .up-row.me .up-av{background:linear-gradient(135deg,#ffd76e,#ff9d2e)}
 .up-info{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px}
 .up-info b{font-size:13.5px;color:#eaf7ff;font-weight:600;display:flex;align-items:center;gap:6px}
-.up-info b .tag-me{font-size:9.5px;font-weight:400;padding:2px 7px;border-radius:8px;color:#3a2200;background:linear-gradient(135deg,#ffd76e,#ff9d2e)}
+.up-info b .tag-me{font-size:9.5px;padding:2px 7px;border-radius:8px;color:#3a2200;background:linear-gradient(135deg,#ffd76e,#ff9d2e)}
 .up-info span{font-size:11.5px;color:var(--dim)}
 .up-count{text-align:right;min-width:56px}
 .up-count b{display:block;font-size:16px;color:#39e0ff;font-family:Consolas,monospace;font-weight:700;line-height:1}
@@ -262,8 +257,7 @@ body.book-editing .book-spot .bk-del{display:block}
 .up-pager .pg-btn:disabled{opacity:.35;cursor:not-allowed}
 .up-pager .pg-info{font-size:12px;color:var(--dim);font-family:Consolas,monospace}
 .up-pager .pg-info b{color:#39e0ff}
-.toast{position:fixed;left:50%;bottom:46px;transform:translateX(-50%);z-index:99;padding:10px 24px;border-radius:24px;font-size:12.5px;color:#eaf7ff;background:rgba(0,60,130,.96);border:1px solid var(--cyan);box-shadow:0 0 30px rgba(0,180,255,.6);max-width:88vw;text-align:center;animation:toastIn .3s ease}
-@keyframes toastIn{from{opacity:0;transform:translate(-50%,14px)}to{opacity:1;transform:translate(-50%,0)}}
+.toast{position:fixed;left:50%;bottom:46px;transform:translateX(-50%);z-index:99;padding:10px 24px;border-radius:24px;font-size:12.5px;color:#eaf7ff;background:rgba(0,60,130,.96);border:1px solid var(--cyan);box-shadow:0 0 30px rgba(0,180,255,.6);max-width:88vw;text-align:center}
 @media(max-width:1440px){.main{grid-template-columns:280px 1fr 280px}}
 @media(max-width:1200px){.main{grid-template-columns:250px 1fr 250px}}
 @media(max-width:980px){.main{grid-template-columns:1fr}.col-left,.col-right{grid-template-columns:1fr 1fr;grid-template-rows:none}.center{min-height:520px}}
@@ -275,28 +269,17 @@ body.book-editing .book-spot .bk-del{display:block}
 
 <div class="stage">
   <header class="topbar">
-    <div class="left">
-      <button class="btn locked" id="btnManage">🔒 管理</button>
-    </div>
+    <div class="left"><button class="btn locked" id="btnManage">🔒 管理</button></div>
     <div class="center title-wrap">
       <h1 id="mainTitle" contenteditable="true" spellcheck="false"></h1>
       <p id="mainSub" contenteditable="true" spellcheck="false"></p>
     </div>
     <div class="right">
-      <div class="user-chip" id="userChip" title="点击更换用户">
-        <div class="av" id="userAv">?</div>
-        <div class="ui">
-          <b id="userName">未登录</b>
-          <span id="userClass">点击设置</span>
-        </div>
-      </div>
-      <div class="clock">
-        <span id="time">--:--:--</span>
-        <span id="date">加载中…</span>
-      </div>
+      <div class="user-chip" id="userChip"><div class="av" id="userAv">?</div>
+        <div class="ui"><b id="userName">未登录</b><span id="userClass">点击设置</span></div></div>
+      <div class="clock"><span id="time">--:--:--</span><span id="date">加载中…</span></div>
     </div>
   </header>
-
   <main class="main">
     <aside class="col-left">
       <section class="panel">
@@ -309,11 +292,9 @@ body.book-editing .book-spot .bk-del{display:block}
         <div class="rank-hint" id="rankHint" style="display:none"></div>
       </section>
     </aside>
-
     <section class="center">
       <div class="panel map-panel">
-        <div class="panel-title">
-          校园阅读空间分布
+        <div class="panel-title">校园阅读空间分布
           <span class="tail">
             <span class="visit-badge">总浏览 <b id="totalVisits">0</b> 次</span>
             <button class="mini" id="btnUpload">🖼 更换平面图</button>
@@ -322,25 +303,15 @@ body.book-editing .book-spot .bk-del{display:block}
         </div>
         <div class="map" id="map">
           <div class="map-bg" id="mapBg"></div>
-          <div class="map-hint" id="mapHint">
-            <b>正在加载平面图…</b>
-            请将 campus-map.jpg 放入仓库 images/ 目录
-          </div>
+          <div class="map-hint" id="mapHint"><b>正在加载平面图…</b>请将 campus-map.jpg 放入仓库 images/ 目录</div>
           <div id="hotspotLayer"></div>
         </div>
       </div>
       <div class="entries" id="entries"></div>
     </section>
-
     <aside class="col-right">
-      <section class="panel">
-        <div class="panel-title">本周借阅趋势<span class="tail"><small style="color:var(--dim);font-size:10px">册 / 天</small></span></div>
-        <div class="chart" id="c-trend"></div>
-      </section>
-      <section class="panel">
-        <div class="panel-title">馆藏分类占比<span class="tail"><small style="color:var(--dim);font-size:10px">CATEGORY</small></span></div>
-        <div class="chart" id="c-pie"></div>
-      </section>
+      <section class="panel"><div class="panel-title">本周借阅趋势<span class="tail"><small style="color:var(--dim);font-size:10px">册 / 天</small></span></div><div class="chart" id="c-trend"></div></section>
+      <section class="panel"><div class="panel-title">馆藏分类占比<span class="tail"><small style="color:var(--dim);font-size:10px">CATEGORY</small></span></div><div class="chart" id="c-pie"></div></section>
     </aside>
   </main>
 </div>
@@ -353,9 +324,7 @@ body.book-editing .book-spot .bk-del{display:block}
     <div class="v-stats" id="vStats"></div>
     <button class="btn mini" id="btnBookEdit" style="flex:0 0 auto">✎ 编辑图书</button>
   </div>
-  <div class="pano-wrap" id="panoWrap">
-    <div id="pano"></div>
-  </div>
+  <div class="pano-wrap" id="panoWrap"><div id="pano"></div></div>
   <div class="v-foot" id="vSpots"></div>
 </div>
 
@@ -364,41 +333,11 @@ body.book-editing .book-spot .bk-del{display:block}
     <div class="uc-logo">📚</div>
     <h2>欢迎来到云逛校园图书馆</h2>
     <p>请输入你的姓名与班级<br>系统会自动记录你的浏览数据</p>
-    <div class="uc-field">
-      <label>姓　名</label>
-      <input id="inpName" placeholder="如：林小语" maxlength="12" autocomplete="off">
-    </div>
-    <div class="uc-field">
-      <label>班　级</label>
+    <div class="uc-field"><label>姓　名</label><input id="inpName" placeholder="如：林小语" maxlength="12" autocomplete="off"></div>
+    <div class="uc-field"><label>班　级</label>
       <div class="uc-class-row">
-        <select id="selGrade">
-          <option value="">选择年级</option>
-          <option value="一年级">一年级</option>
-          <option value="二年级">二年级</option>
-          <option value="三年级">三年级</option>
-          <option value="四年级">四年级</option>
-          <option value="五年级">五年级</option>
-          <option value="六年级">六年级</option>
-          <option value="初一">初一</option>
-          <option value="初二">初二</option>
-          <option value="初三">初三</option>
-          <option value="高一">高一</option>
-          <option value="高二">高二</option>
-          <option value="高三">高三</option>
-        </select>
-        <select id="selClassNum">
-          <option value="">选择班级</option>
-          <option value="1">1 班</option>
-          <option value="2">2 班</option>
-          <option value="3">3 班</option>
-          <option value="4">4 班</option>
-          <option value="5">5 班</option>
-          <option value="6">6 班</option>
-          <option value="7">7 班</option>
-          <option value="8">8 班</option>
-          <option value="9">9 班</option>
-          <option value="10">10 班</option>
-        </select>
+        <select id="selGrade"><option value="">选择年级</option><option value="一年级">一年级</option><option value="二年级">二年级</option><option value="三年级">三年级</option><option value="四年级">四年级</option><option value="五年级">五年级</option><option value="六年级">六年级</option><option value="初一">初一</option><option value="初二">初二</option><option value="初三">初三</option><option value="高一">高一</option><option value="高二">高二</option><option value="高三">高三</option></select>
+        <select id="selClassNum"><option value="">选择班级</option><option value="1">1 班</option><option value="2">2 班</option><option value="3">3 班</option><option value="4">4 班</option><option value="5">5 班</option><option value="6">6 班</option><option value="7">7 班</option><option value="8">8 班</option><option value="9">9 班</option><option value="10">10 班</option></select>
       </div>
     </div>
     <button class="btn primary uc-btn" id="btnLogin">进入大屏</button>
@@ -411,27 +350,12 @@ body.book-editing .book-spot .bk-del{display:block}
     <div class="ac-logo" id="adminIcon">🔒</div>
     <h2 id="adminTitle">管理员验证</h2>
     <p id="adminDesc">数据管理仅对管理员开放，请输入账号密码</p>
-    <div class="uc-field" id="grpUser">
-      <label>管理员账号</label>
-      <input id="inpAdminUser" placeholder="默认 admin" autocomplete="off">
-    </div>
-    <div class="uc-field" id="grpPass">
-      <label id="lbPass">管理员密码</label>
-      <input id="inpAdminPass" type="password" placeholder="默认 admin123" autocomplete="new-password">
-    </div>
-    <div class="uc-field" id="grpNew" style="display:none">
-      <label>新密码</label>
-      <input id="inpAdminNew" type="password" placeholder="至少 6 位">
-    </div>
-    <div class="uc-field" id="grpNew2" style="display:none">
-      <label>确认新密码</label>
-      <input id="inpAdminNew2" type="password" placeholder="再次输入新密码">
-    </div>
+    <div class="uc-field" id="grpUser"><label>管理员账号</label><input id="inpAdminUser" placeholder="默认 admin" autocomplete="off"></div>
+    <div class="uc-field" id="grpPass"><label id="lbPass">管理员密码</label><input id="inpAdminPass" type="password" placeholder="默认 admin123" autocomplete="new-password"></div>
+    <div class="uc-field" id="grpNew" style="display:none"><label>新密码</label><input id="inpAdminNew" type="password" placeholder="至少 6 位"></div>
+    <div class="uc-field" id="grpNew2" style="display:none"><label>确认新密码</label><input id="inpAdminNew2" type="password" placeholder="再次输入新密码"></div>
     <div class="uc-tip" id="adminTip"></div>
-    <div class="admin-btns">
-      <button class="btn" id="btnAdminCancel">取消</button>
-      <button class="btn primary" id="btnAdminSubmit">验证进入</button>
-    </div>
+    <div class="admin-btns"><button class="btn" id="btnAdminCancel">取消</button><button class="btn primary" id="btnAdminSubmit">验证进入</button></div>
     <div class="ac-secure">默认账号 admin · 默认密码 admin123</div>
   </div>
 </div>
@@ -441,10 +365,7 @@ body.book-editing .book-spot .bk-del{display:block}
     <div class="ac-logo">🗺️</div>
     <h2>更换学校平面图</h2>
     <p>推荐将图片放入仓库 images/ 目录，填相对路径</p>
-    <div class="uc-field">
-      <label>图片地址</label>
-      <input id="inpMapUrl" placeholder="images/campus-map.jpg" autocomplete="off">
-    </div>
+    <div class="uc-field"><label>图片地址</label><input id="inpMapUrl" placeholder="images/campus-map.jpg" autocomplete="off"></div>
     <div style="display:flex;gap:10px;margin-top:6px">
       <button class="btn" id="btnMapUpload" style="flex:1">📁 本地上传</button>
       <button class="btn primary" id="btnMapApply" style="flex:1">🔗 应用地址</button>
@@ -467,53 +388,24 @@ body.book-editing .book-spot .bk-del{display:block}
       <div class="up-stat"><b id="upTodayActive">0</b><span>今日活跃</span></div>
     </div>
   </div>
-
   <div class="up-toolbar">
-    <div class="up-search-wrap">
-      <input class="up-search" id="upSearch" placeholder="搜索姓名 / 班级..." autocomplete="off">
-    </div>
-    <select class="up-select" id="upSort">
-      <option value="recent">最近活跃</option>
-      <option value="visits">浏览最多</option>
-      <option value="name">按姓名</option>
-    </select>
+    <div class="up-search-wrap"><input class="up-search" id="upSearch" placeholder="搜索姓名 / 班级..." autocomplete="off"></div>
+    <select class="up-select" id="upSort"><option value="recent">最近活跃</option><option value="visits">浏览最多</option><option value="name">按姓名</option></select>
     <button class="btn primary" id="upAddBtn">＋ 添加用户</button>
     <button class="btn" id="upImportBtn">📥 导入</button>
     <button class="btn" id="upExportBtn">📤 导出</button>
   </div>
-
   <div class="up-add-form" id="upAddForm" style="display:none">
     <div class="uaf-row">
       <input id="upAddName" placeholder="姓名" maxlength="12" autocomplete="off">
-      <select id="upAddGrade">
-        <option value="">选择年级</option>
-        <option value="一年级">一年级</option>
-        <option value="二年级">二年级</option>
-        <option value="三年级">三年级</option>
-        <option value="四年级">四年级</option>
-        <option value="五年级">五年级</option>
-        <option value="六年级">六年级</option>
-        <option value="初一">初一</option>
-        <option value="初二">初二</option>
-        <option value="初三">初三</option>
-      </select>
-      <select id="upAddClassNum">
-        <option value="">选择班级</option>
-        <option value="1">1 班</option>
-        <option value="2">2 班</option>
-        <option value="3">3 班</option>
-        <option value="4">4 班</option>
-        <option value="5">5 班</option>
-        <option value="6">6 班</option>
-      </select>
+      <select id="upAddGrade"><option value="">选择年级</option><option value="一年级">一年级</option><option value="二年级">二年级</option><option value="三年级">三年级</option><option value="四年级">四年级</option><option value="五年级">五年级</option><option value="六年级">六年级</option></select>
+      <select id="upAddClassNum"><option value="">选择班级</option><option value="1">1 班</option><option value="2">2 班</option><option value="3">3 班</option><option value="4">4 班</option><option value="5">5 班</option><option value="6">6 班</option></select>
       <button class="btn primary" id="upAddConfirm">确认添加</button>
       <button class="btn" id="upAddCancel">取消</button>
     </div>
     <div class="uaf-tip" id="upAddTip"></div>
   </div>
-
   <div class="up-list-wrap" id="upListWrap"></div>
-
   <div class="up-foot">
     <div class="up-batch" id="upBatch" style="display:none">
       <span>已选 <b id="upSelCount">0</b> 项</span>
@@ -547,567 +439,272 @@ body.book-editing .book-spot .bk-del{display:block}
 <div id="dragGhost"><img id="dragGhostImg" alt=""></div>
 
 <script>
-/* =========================================================
-   工具函数
-   ========================================================= */
-const $  = s => document.querySelector(s);
-const $$ = s => [...document.querySelectorAll(s)];
-const clone = o => JSON.parse(JSON.stringify(o));
-
-function deepMerge(base, over){
-  if (Array.isArray(base)) return Array.isArray(over) ? over : base;
-  if (base && typeof base === 'object'){
-    const out = { ...base };
-    if (over && typeof over === 'object'){
-      for (const k in over) out[k] = (k in base) ? deepMerge(base[k], over[k]) : over[k];
-    }
+/* ================= 工具 ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const clone=o=>JSON.parse(JSON.stringify(o));
+function deepMerge(base,over){
+  if(Array.isArray(base))return Array.isArray(over)?over:base;
+  if(base&&typeof base==='object'){
+    const out={...base};
+    if(over&&typeof over==='object')for(const k in over)out[k]=(k in base)?deepMerge(base[k],over[k]):over[k];
     return out;
   }
-  return over === undefined ? base : over;
+  return over===undefined?base:over;
 }
-function setPath(o, p, v){
-  const ks = p.split('.'); const last = ks.pop();
-  let t = o;
-  for (const k of ks){ if (t[k] == null) t[k] = {}; t = t[k]; }
-  t[last] = v;
-}
-function dayKey(ts){ const d = new Date(ts); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
-function monthKey(ts){ const d = new Date(ts); return d.getFullYear()+'-'+(d.getMonth()+1); }
-function uid(p){ return (p||'id')+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function toast(msg){
-  const t = document.createElement('div');
-  t.className = 'toast'; t.textContent = msg;
-  document.body.appendChild(t);
-  setTimeout(()=>{ t.style.transition='.3s'; t.style.opacity='0'; }, 1900);
-  setTimeout(()=> t.remove(), 2300);
-}
-function escapeHtml(s){
-  return String(s == null ? '' : s).replace(/[&<>"']/g, c => (
-    { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]
-  ));
-}
-function escapeAttr(s){
-  return String(s == null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-function relativeTime(ts){
-  if (!ts) return '—';
-  const diff = Date.now() - ts;
-  if (diff < 60000) return '刚刚';
-  if (diff < 3600000) return Math.floor(diff/60000)+' 分钟前';
-  if (diff < 86400000) return Math.floor(diff/3600000)+' 小时前';
-  if (diff < 86400000*30) return Math.floor(diff/86400000)+' 天前';
-  const d = new Date(ts);
-  return `${d.getMonth()+1}月${d.getDate()}日`;
-}
+function setPath(o,p,v){const ks=p.split('.');const last=ks.pop();let t=o;for(const k of ks){if(t[k]==null)t[k]={};t=t[k];}t[last]=v;}
+function dayKey(ts){const d=new Date(ts);return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();}
+function monthKey(ts){const d=new Date(ts);return d.getFullYear()+'-'+(d.getMonth()+1);}
+function uid(p){return (p||'id')+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);}
+function toast(msg){const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(()=>{t.style.transition='.3s';t.style.opacity='0';},1900);setTimeout(()=>t.remove(),2300);}
+function escapeHtml(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function escapeAttr(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function relativeTime(ts){if(!ts)return '—';const diff=Date.now()-ts;if(diff<60000)return '刚刚';if(diff<3600000)return Math.floor(diff/60000)+' 分钟前';if(diff<86400000)return Math.floor(diff/3600000)+' 小时前';if(diff<86400000*30)return Math.floor(diff/86400000)+' 天前';const d=new Date(ts);return `${d.getMonth()+1}月${d.getDate()}日`;}
 
-/* =========================================================
-   SVG 图片生成
-   ========================================================= */
-function svgEscape(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
-}
-function makeBookCover(name, hue){
-  const h = (hue % 360 + 360) % 360;
-  const name1 = svgEscape(String(name || '').slice(0, 5));
-  const svg = '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">' +
-    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
-    '<stop offset="0" stop-color="hsl(' + h + ',65%,42%)"/>' +
-    '<stop offset="1" stop-color="hsl(' + ((h+50)%360) + ',60%,18%)"/></linearGradient></defs>' +
-    '<rect width="200" height="200" fill="url(#g)"/>' +
-    '<rect x="24" y="30" width="152" height="140" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.45)" stroke-width="2"/>' +
-    '<line x1="60" y1="30" x2="60" y2="170" stroke="rgba(255,255,255,.4)" stroke-width="2"/>' +
-    '<text x="114" y="100" text-anchor="middle" font-size="22" font-weight="bold" fill="#ffffff" font-family="sans-serif">' + name1 + '</text>' +
+/* ================= 图片 ================= */
+function svgEscape(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+function makeBookCover(name,hue){
+  const h=(hue%360+360)%360;const name1=svgEscape(String(name||'').slice(0,5));
+  const svg='<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">'+
+    '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">'+
+    '<stop offset="0" stop-color="hsl('+h+',65%,42%)"/><stop offset="1" stop-color="hsl('+((h+50)%360)+',60%,18%)"/></linearGradient></defs>'+
+    '<rect width="200" height="200" fill="url(#g)"/>'+
+    '<rect x="24" y="30" width="152" height="140" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.45)" stroke-width="2"/>'+
+    '<line x1="60" y1="30" x2="60" y2="170" stroke="rgba(255,255,255,.4)" stroke-width="2"/>'+
+    '<text x="114" y="100" text-anchor="middle" font-size="22" font-weight="bold" fill="#ffffff" font-family="sans-serif">'+name1+'</text>'+
     '<text x="114" y="128" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.65)" font-family="sans-serif">校园图书馆</text></svg>';
-  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+  return 'data:image/svg+xml;utf8,'+encodeURIComponent(svg);
 }
-const FALLBACK_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
-  '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
-  '<rect width="200" height="200" fill="#0e5aa8"/>' +
-  '<text x="100" y="105" text-anchor="middle" font-size="16" fill="#7fd8ff" font-family="sans-serif">图片加载中…</text></svg>'
-);
-function imgWithFallback(el, src){
-  el.onerror = null;
-  el.src = src;
-  el.onerror = () => { el.onerror = null; el.src = FALLBACK_IMG; };
-}
+const FALLBACK_IMG='data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"><rect width="200" height="200" fill="#0e5aa8"/><text x="100" y="105" text-anchor="middle" font-size="16" fill="#7fd8ff">图片加载中…</text></svg>');
+function imgWithFallback(el,src){el.onerror=null;el.src=src;el.onerror=()=>{el.onerror=null;el.src=FALLBACK_IMG;};}
 
-/* 在线全景图池 */
-const ONLINE_PANOS = [
-  'https://pannellum.org/images/alma.jpg',
-  'https://pannellum.org/images/bma-1.jpg',
-  'https://pannellum.org/images/cerro-toco-0.jpg',
-  'https://pannellum.org/images/jfk.jpg',
-  'https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg'
-];
-function pickOnlinePano(seed){
-  const s = String(seed || 'default');
-  let h = 0;
-  for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
-  return ONLINE_PANOS[h % ONLINE_PANOS.length];
-}
-function checkImageLoadable(url){
-  return new Promise(resolve => {
-    if (!url){ resolve(false); return; }
-    const img = new Image();
-    let settled = false;
-    const timer = setTimeout(() => { if (!settled){ settled = true; resolve(false); } }, 3500);
-    img.onload = () => { if (!settled){ settled = true; clearTimeout(timer); resolve(true); } };
-    img.onerror = () => { if (!settled){ settled = true; clearTimeout(timer); resolve(false); } };
-    img.src = url;
-  });
-}
+const ONLINE_PANOS=['https://pannellum.org/images/alma.jpg','https://pannellum.org/images/bma-1.jpg','https://pannellum.org/images/cerro-toco-0.jpg','https://pannellum.org/images/jfk.jpg','https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg'];
+function pickOnlinePano(seed){const s=String(seed||'default');let h=0;for(let i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return ONLINE_PANOS[h%ONLINE_PANOS.length];}
+function checkImageLoadable(url){return new Promise(resolve=>{if(!url){resolve(false);return;}const img=new Image();let settled=false;const timer=setTimeout(()=>{if(!settled){settled=true;resolve(false);}},3500);img.onload=()=>{if(!settled){settled=true;clearTimeout(timer);resolve(true);}};img.onerror=()=>{if(!settled){settled=true;clearTimeout(timer);resolve(false);}};img.src=url;});}
 
-/* =========================================================
-   默认基础图书
-   ========================================================= */
+/* ================= 默认基础图书 ================= */
 function buildDefaultBooks(){
-  const mk = (name, title, pitch, yaw, hue) => ({
-    name, title, img: makeBookCover(name, hue), url: '', pitch, yaw
-  });
+  const mk=(name,title,pitch,yaw,hue)=>({name,title,img:makeBookCover(name,hue),url:'',pitch,yaw});
   return {
-    'lib-s1': [
-      mk('图书馆导览', '图书馆使用指南', -5, -60, 200),
-      mk('读者手册', '借阅规则与服务说明', 2, 20, 220),
-      mk('馆藏分布', '图书馆楼层索引', -8, 90, 180),
-      mk('新书推荐', '本月精选新书', 0, 150, 260)
-    ],
-    'lib-s2': [
-      mk('安徒生童话', '经典童话全集', -5, -100, 320),
-      mk('格林童话', '德国民间故事集', 0, -30, 300),
-      mk('小王子', '圣埃克苏佩里', 5, 40, 280),
-      mk('十万个为什么', '少儿科普百科', -3, 120, 260)
-    ],
-    'lib-s3': [
-      mk('唐诗三百首', '古典诗词精选', -8, -130, 30),
-      mk('论语解读', '孔子与儒家思想', 0, -50, 40),
-      mk('中学作文精选', '优秀范文合集', 5, 30, 20),
-      mk('英语单词速记', '高效记忆法', -2, 110, 200)
-    ],
-    'sun-s1': [
-      mk('窗边的小豆豆', '黑柳彻子', -5, -110, 340),
-      mk('城南旧事', '林海音', 0, -40, 15),
-      mk('朝花夕拾', '鲁迅散文集', 5, 40, 30),
-      mk('边城', '沈从文', -3, 130, 190)
-    ],
-    'sun-s2': [
-      mk('散文精选', '中国现代散文选', -5, -80, 210),
-      mk('现代诗集', '现当代诗歌选集', 0, 0, 230),
-      mk('名家随笔', '文学大家的随笔', 5, 80, 250)
-    ],
-    'sun-s3': [
-      mk('猜猜我有多爱你', '山姆·麦克布雷尼', -5, -70, 340),
-      mk('好饿的毛毛虫', '艾瑞·卡尔', 0, 0, 100),
-      mk('花婆婆', '芭芭拉·库尼', 5, 70, 290)
-    ],
-    'cor-s1': [
-      mk('昆虫记', '法布尔', -5, -90, 80),
-      mk('海底两万里', '儒勒·凡尔纳', 0, -20, 200),
-      mk('童年', '高尔基', 5, 60, 20),
-      mk('稻草人', '叶圣陶', -3, 130, 40)
-    ],
-    'cor-s2': [
-      mk('名人传', '罗曼·罗兰', -5, -100, 30),
-      mk('钢铁是怎样炼成的', '奥斯特洛夫斯基', 0, -30, 0),
-      mk('骆驼祥子', '老舍', 5, 50, 15),
-      mk('边城', '沈从文', -2, 120, 200)
-    ],
-    'cor-s3': [
-      mk('科学百科', '青少年科普读物', -5, -90, 200),
-      mk('中国历史故事', '上下五千年', 0, -20, 30),
-      mk('世界地理', '环球国家地理', 5, 60, 180),
-      mk('万物简史', '比尔·布莱森', -3, 130, 260)
-    ]
+    'lib-s1':[mk('图书馆导览','图书馆使用指南',-5,-60,200),mk('读者手册','借阅规则与服务说明',2,20,220),mk('馆藏分布','图书馆楼层索引',-8,90,180),mk('新书推荐','本月精选新书',0,150,260)],
+    'lib-s2':[mk('安徒生童话','经典童话全集',-5,-100,320),mk('格林童话','德国民间故事集',0,-30,300),mk('小王子','圣埃克苏佩里',5,40,280),mk('十万个为什么','少儿科普百科',-3,120,260)],
+    'lib-s3':[mk('唐诗三百首','古典诗词精选',-8,-130,30),mk('论语解读','孔子与儒家思想',0,-50,40),mk('中学作文精选','优秀范文合集',5,30,20),mk('英语单词速记','高效记忆法',-2,110,200)],
+    'sun-s1':[mk('窗边的小豆豆','黑柳彻子',-5,-110,340),mk('城南旧事','林海音',0,-40,15),mk('朝花夕拾','鲁迅散文集',5,40,30),mk('边城','沈从文',-3,130,190)],
+    'sun-s2':[mk('散文精选','中国现代散文选',-5,-80,210),mk('现代诗集','现当代诗歌选集',0,0,230),mk('名家随笔','文学大家的随笔',5,80,250)],
+    'sun-s3':[mk('猜猜我有多爱你','山姆·麦克布雷尼',-5,-70,340),mk('好饿的毛毛虫','艾瑞·卡尔',0,0,100),mk('花婆婆','芭芭拉·库尼',5,70,290)],
+    'cor-s1':[mk('昆虫记','法布尔',-5,-90,80),mk('海底两万里','儒勒·凡尔纳',0,-20,200),mk('童年','高尔基',5,60,20),mk('稻草人','叶圣陶',-3,130,40)],
+    'cor-s2':[mk('名人传','罗曼·罗兰',-5,-100,30),mk('钢铁是怎样炼成的','奥斯特洛夫斯基',0,-30,0),mk('骆驼祥子','老舍',5,50,15),mk('边城','沈从文',-2,120,200)],
+    'cor-s3':[mk('科学百科','青少年科普读物',-5,-90,200),mk('中国历史故事','上下五千年',0,-20,30),mk('世界地理','环球国家地理',5,60,180),mk('万物简史','比尔·布莱森',-3,130,260)]
   };
 }
 
-/* 演示排行榜 */
-const DEMO_RANK = [
-  { name:'林小语', cls:'五(2)班', count:23 },
-  { name:'陈子轩', cls:'三(1)班', count:19 },
-  { name:'王思远', cls:'六(3)班', count:17 },
-  { name:'张一诺', cls:'四(4)班', count:15 },
-  { name:'刘佳怡', cls:'二(2)班', count:14 },
-  { name:'赵明宇', cls:'五(1)班', count:12 },
-  { name:'周雨桐', cls:'六(1)班', count:11 },
-  { name:'李梓涵', cls:'四(2)班', count:10 },
-  { name:'吴欣怡', cls:'三(3)班', count:9 },
-  { name:'郑子涵', cls:'二(1)班', count:8 }
+const DEMO_RANK=[
+  {name:'林小语',cls:'五(2)班',count:23},{name:'陈子轩',cls:'三(1)班',count:19},{name:'王思远',cls:'六(3)班',count:17},
+  {name:'张一诺',cls:'四(4)班',count:15},{name:'刘佳怡',cls:'二(2)班',count:14},{name:'赵明宇',cls:'五(1)班',count:12},
+  {name:'周雨桐',cls:'六(1)班',count:11},{name:'李梓涵',cls:'四(2)班',count:10},{name:'吴欣怡',cls:'三(3)班',count:9},{name:'郑子涵',cls:'二(1)班',count:8}
 ];
 
-/* =========================================================
-   管理员
-   ========================================================= */
-const ADMIN_DEFAULT = {
-  user: 'admin',
-  hash: '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'
-};
-const ADMIN_OVERRIDE_KEY = 'campus-lib-admin-override-v1';
-const SESSION_KEY = 'campus-lib-session-v2';
-const SESSION_TTL = 60 * 60 * 1000;
-
-let adminAuthed = false;
-let adminMode = 'verify';
-let adminFails = 0;
-let adminLockUntil = 0;
-let pendingAdminAction = null;
+/* ================= 管理员 ================= */
+const ADMIN_DEFAULT={user:'admin',hash:'240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9'};
+const ADMIN_OVERRIDE_KEY='campus-lib-admin-override-v1';
+const SESSION_KEY='campus-lib-session-v2';
+const SESSION_TTL=60*60*1000;
+let adminAuthed=false,adminMode='verify',adminFails=0,adminLockUntil=0,pendingAdminAction=null;
 
 async function sha256(str){
-  if (window.crypto && crypto.subtle){
-    try{
-      const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
-      return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2,'0')).join('');
-    }catch(e){}
-  }
-  let h = 2166136261 >>> 0;
-  for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0; }
-  return 'fb-' + h.toString(16).padStart(8,'0');
+  if(window.crypto&&crypto.subtle){try{const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(str));return[...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,'0')).join('');}catch(e){}}
+  let h=2166136261>>>0;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return 'fb-'+h.toString(16).padStart(8,'0');
 }
-function getActiveAdmin(){
-  try{
-    const raw = localStorage.getItem(ADMIN_OVERRIDE_KEY);
-    if (raw){ const o = JSON.parse(raw); if (o && o.user && o.hash) return o; }
-  }catch(e){}
-  return ADMIN_DEFAULT;
-}
-async function verifyAdmin(user, pass){
-  const cred = getActiveAdmin();
-  if (user !== cred.user) return false;
-  const h = await sha256(pass);
-  return h === cred.hash;
-}
-function checkAdminSession(){
-  try{ const t = +sessionStorage.getItem(SESSION_KEY) || 0; return t > 0 && (Date.now() - t) < SESSION_TTL; }catch(e){ return false; }
-}
-function setAdminSession(){ try{ sessionStorage.setItem(SESSION_KEY, String(Date.now())); }catch(e){} }
-function updateManageBtn(){
-  const b = $('#btnManage');
-  if (adminAuthed){ b.textContent = '🔓 管理'; b.classList.remove('locked'); b.classList.add('unlocked'); }
-  else { b.textContent = '🔒 管理'; b.classList.add('locked'); b.classList.remove('unlocked'); }
-}
-function requireAdmin(onGranted){
-  if (adminAuthed || checkAdminSession()){
-    adminAuthed = true; updateManageBtn();
-    if (onGranted) onGranted();
-    return true;
-  }
-  pendingAdminAction = onGranted || null;
-  openAdminModal('verify');
-  toast('该操作需要管理员权限');
-  return false;
-}
+function getActiveAdmin(){try{const raw=localStorage.getItem(ADMIN_OVERRIDE_KEY);if(raw){const o=JSON.parse(raw);if(o&&o.user&&o.hash)return o;}}catch(e){}return ADMIN_DEFAULT;}
+async function verifyAdmin(user,pass){const cred=getActiveAdmin();if(user!==cred.user)return false;const h=await sha256(pass);return h===cred.hash;}
+function checkAdminSession(){try{const t=+sessionStorage.getItem(SESSION_KEY)||0;return t>0&&(Date.now()-t)<SESSION_TTL;}catch(e){return false;}}
+function setAdminSession(){try{sessionStorage.setItem(SESSION_KEY,String(Date.now()));}catch(e){}}
+function updateManageBtn(){const b=$('#btnManage');if(adminAuthed){b.textContent='🔓 管理';b.classList.remove('locked');b.classList.add('unlocked');}else{b.textContent='🔒 管理';b.classList.add('locked');b.classList.remove('unlocked');}}
+function requireAdmin(onGranted){if(adminAuthed||checkAdminSession()){adminAuthed=true;updateManageBtn();if(onGranted)onGranted();return true;}pendingAdminAction=onGranted||null;openAdminModal('verify');toast('该操作需要管理员权限');return false;}
 
-const adminModal = $('#adminModal');
+const adminModal=$('#adminModal');
 function openAdminModal(mode){
-  adminMode = mode || 'verify';
-  const isChange = adminMode === 'change';
-  $('#adminIcon').textContent = isChange ? '🔑' : '🔒';
-  $('#adminTitle').textContent = isChange ? '修改管理员密码' : '管理员验证';
-  $('#adminDesc').textContent = isChange ? '修改后只影响本机浏览器' : '数据管理仅对管理员开放，请输入账号与密码。';
-  $('#grpUser').style.display = isChange ? 'none' : '';
-  $('#grpPass').style.display = '';
-  $('#grpNew').style.display = isChange ? '' : 'none';
-  $('#grpNew2').style.display = isChange ? '' : 'none';
-  $('#lbPass').textContent = isChange ? '当前密码' : '管理员密码';
-  $('#btnAdminSubmit').textContent = isChange ? '确认修改' : '验证进入';
-  $('#inpAdminPass').value = ''; $('#inpAdminNew').value = ''; $('#inpAdminNew2').value = '';
-  $('#adminTip').textContent = ''; $('#adminTip').className = 'uc-tip';
-  if (!isChange){
-    let lastUser = '';
-    try { lastUser = localStorage.getItem('campus-lib-lastadmin') || ''; } catch(e){}
-    $('#inpAdminUser').value = lastUser || 'admin';
-  }
-  adminModal.classList.add('on');
-  setTimeout(() => { if (adminLockUntil > Date.now()) return; $('#inpAdminPass').focus(); }, 200);
+  adminMode=mode||'verify';const isChange=adminMode==='change';
+  $('#adminIcon').textContent=isChange?'🔑':'🔒';
+  $('#adminTitle').textContent=isChange?'修改管理员密码':'管理员验证';
+  $('#adminDesc').textContent=isChange?'修改后只影响本机浏览器':'数据管理仅对管理员开放，请输入账号与密码。';
+  $('#grpUser').style.display=isChange?'none':'';$('#grpPass').style.display='';
+  $('#grpNew').style.display=isChange?'':'none';$('#grpNew2').style.display=isChange?'':'none';
+  $('#lbPass').textContent=isChange?'当前密码':'管理员密码';
+  $('#btnAdminSubmit').textContent=isChange?'确认修改':'验证进入';
+  $('#inpAdminPass').value='';$('#inpAdminNew').value='';$('#inpAdminNew2').value='';
+  $('#adminTip').textContent='';$('#adminTip').className='uc-tip';
+  if(!isChange){let lastUser='';try{lastUser=localStorage.getItem('campus-lib-lastadmin')||'';}catch(e){} $('#inpAdminUser').value=lastUser||'admin';}
+  adminModal.classList.add('on');setTimeout(()=>{if(adminLockUntil>Date.now())return;$('#inpAdminPass').focus();},200);
 }
-function closeAdminModal(){
-  adminModal.classList.remove('on');
-  $('#inpAdminPass').value = ''; $('#inpAdminNew').value = ''; $('#inpAdminNew2').value = '';
-}
+function closeAdminModal(){adminModal.classList.remove('on');$('#inpAdminPass').value='';$('#inpAdminNew').value='';$('#inpAdminNew2').value='';}
 async function submitAdmin(){
-  const tip = $('#adminTip');
-  const isChange = adminMode === 'change';
-  const user = $('#inpAdminUser').value.trim();
-  const pass = $('#inpAdminPass').value;
-  const newP = $('#inpAdminNew').value;
-  const newP2 = $('#inpAdminNew2').value;
-  tip.className = 'uc-tip';
-  if (adminLockUntil > Date.now()){ const s = Math.ceil((adminLockUntil - Date.now()) / 1000); tip.textContent = `尝试次数过多，请 ${s} 秒后再试`; tip.className = 'uc-tip err'; return; }
-  if (isChange){
-    if (!pass){ tip.textContent = '请输入当前密码'; tip.className = 'uc-tip err'; return; }
-    if (!newP){ tip.textContent = '请输入新密码'; tip.className = 'uc-tip err'; return; }
-    if (newP.length < 6){ tip.textContent = '新密码至少 6 位'; tip.className = 'uc-tip err'; return; }
-    if (newP !== newP2){ tip.textContent = '两次输入的新密码不一致'; tip.className = 'uc-tip err'; return; }
-    tip.textContent = '正在校验…';
-    const cred = getActiveAdmin();
-    const ok = await verifyAdmin(cred.user, pass);
-    if (!ok){ tip.textContent = '当前密码不正确'; tip.className = 'uc-tip err'; $('#inpAdminPass').value = ''; return; }
-    const h = await sha256(newP);
-    try{ localStorage.setItem(ADMIN_OVERRIDE_KEY, JSON.stringify({ user: cred.user, hash: h })); }catch(e){}
-    closeAdminModal();
-    toast('密码已修改（仅本机生效）');
-    return;
+  const tip=$('#adminTip');const isChange=adminMode==='change';
+  const user=$('#inpAdminUser').value.trim(),pass=$('#inpAdminPass').value,newP=$('#inpAdminNew').value,newP2=$('#inpAdminNew2').value;
+  tip.className='uc-tip';
+  if(adminLockUntil>Date.now()){const s=Math.ceil((adminLockUntil-Date.now())/1000);tip.textContent=`尝试次数过多，请 ${s} 秒后再试`;tip.className='uc-tip err';return;}
+  if(isChange){
+    if(!pass){tip.textContent='请输入当前密码';tip.className='uc-tip err';return;}
+    if(!newP){tip.textContent='请输入新密码';tip.className='uc-tip err';return;}
+    if(newP.length<6){tip.textContent='新密码至少 6 位';tip.className='uc-tip err';return;}
+    if(newP!==newP2){tip.textContent='两次输入的新密码不一致';tip.className='uc-tip err';return;}
+    const cred=getActiveAdmin();const ok=await verifyAdmin(cred.user,pass);
+    if(!ok){tip.textContent='当前密码不正确';tip.className='uc-tip err';$('#inpAdminPass').value='';return;}
+    const h=await sha256(newP);try{localStorage.setItem(ADMIN_OVERRIDE_KEY,JSON.stringify({user:cred.user,hash:h}));}catch(e){}
+    closeAdminModal();toast('密码已修改');return;
   }
-  if (!user){ tip.textContent = '请输入管理员账号'; tip.className = 'uc-tip err'; return; }
-  if (!pass){ tip.textContent = '请输入管理员密码'; tip.className = 'uc-tip err'; return; }
-  tip.textContent = '正在验证…';
-  const ok = await verifyAdmin(user, pass);
-  if (!ok){
-    adminFails++;
-    if (adminFails >= 5){ adminLockUntil = Date.now() + 60000; adminFails = 0; tip.textContent = '尝试次数过多，已锁定 60 秒'; tip.className = 'uc-tip err'; }
-    else { tip.textContent = `账号或密码错误（还可尝试 ${5 - adminFails} 次）`; tip.className = 'uc-tip err'; }
-    $('#inpAdminPass').value = '';
-    return;
-  }
-  adminFails = 0;
-  adminAuthed = true;
-  setAdminSession();
-  try { localStorage.setItem('campus-lib-lastadmin', user); } catch(e){}
-  updateManageBtn();
-  closeAdminModal();
-  toast('验证通过');
-  if (pendingAdminAction){
-    const a = pendingAdminAction;
-    pendingAdminAction = null;
-    try{ a(); }catch(e){}
-  }
+  if(!user){tip.textContent='请输入管理员账号';tip.className='uc-tip err';return;}
+  if(!pass){tip.textContent='请输入管理员密码';tip.className='uc-tip err';return;}
+  const ok=await verifyAdmin(user,pass);
+  if(!ok){adminFails++;if(adminFails>=5){adminLockUntil=Date.now()+60000;adminFails=0;tip.textContent='尝试次数过多，已锁定 60 秒';tip.className='uc-tip err';}else{tip.textContent=`账号或密码错误（还可尝试 ${5-adminFails} 次）`;tip.className='uc-tip err';}$('#inpAdminPass').value='';return;}
+  adminFails=0;adminAuthed=true;setAdminSession();try{localStorage.setItem('campus-lib-lastadmin',user);}catch(e){}
+  updateManageBtn();closeAdminModal();toast('验证通过');
+  if(pendingAdminAction){const a=pendingAdminAction;pendingAdminAction=null;try{a();}catch(e){}}
 }
-$('#btnAdminCancel').onclick = () => { pendingAdminAction = null; closeAdminModal(); };
-$('#btnAdminSubmit').onclick = submitAdmin;
-['inpAdminUser','inpAdminPass','inpAdminNew','inpAdminNew2'].forEach(id => {
-  const el = document.getElementById(id);
-  if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter'){ e.preventDefault(); submitAdmin(); } });
-});
-adminModal.addEventListener('click', e => { if (e.target === adminModal && adminMode === 'verify'){ pendingAdminAction = null; closeAdminModal(); } });
+$('#btnAdminCancel').onclick=()=>{pendingAdminAction=null;closeAdminModal();};
+$('#btnAdminSubmit').onclick=submitAdmin;
+['inpAdminUser','inpAdminPass','inpAdminNew','inpAdminNew2'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();submitAdmin();}});});
+adminModal.addEventListener('click',e=>{if(e.target===adminModal&&adminMode==='verify'){pendingAdminAction=null;closeAdminModal();}});
 
-/* =========================================================
-   默认配置
-   ========================================================= */
-const DEFAULT_BOOK_IMG = 'images/book-default.jpg';
-const DEFAULT_PANO = 'https://pannellum.org/images/alma.jpg';
-const DEFAULT_MAP = 'images/campus-map.jpg';
-const DEFAULT_BOOKS = buildDefaultBooks();
+/* ================= 默认数据 ================= */
+const DEFAULT_BOOK_IMG='images/book-default.jpg';
+const DEFAULT_PANO='https://pannellum.org/images/alma.jpg';
+const DEFAULT_MAP='images/campus-map.jpg';
+const DEFAULT_BOOKS=buildDefaultBooks();
 
-const DEFAULT_CONFIG = {
-  title: 'XX学校 · 云逛校园图书馆',
-  subtitle: 'SMART CAMPUS READING SPACE · VISUALIZATION PLATFORM',
-  paperBooks: 32800,
-  ebookBase: 12000,
-  ebookAuto: true,
-  seats: 260,
-  mapImage: '',
-  mapImageUrl: DEFAULT_MAP,
-  updatedAt: 0,
-  booksDirty: false,
-  scenes: [
-    { id:'library', name:'图书馆', icon:'📚', desc:'主馆 3 层 · 全景漫游', x:50, y:33,
-      stats:[
-        { label:'藏书总量', value:'32,800 册' }, { label:'阅览座位', value:'260 个' },
-        { label:'今日到馆', value:'实时统计' }, { label:'开放时间', value:'08:00-20:00' }
-      ],
-      spots:[
-        { sid:'lib-s1', name:'一层 · 服务大厅', pano:'images/tsg01.jpg' },
-        { sid:'lib-s2', name:'二层 · 少儿阅览区', pano:'images/tsg02.jpg' },
-        { sid:'lib-s3', name:'三层 · 自习区', pano:'images/tsg03.jpg' }
-      ]
-    },
-    { id:'sunroom', name:'阳光书房', icon:'☀️', desc:'玻璃幕墙 · 阳光阅读区', x:23, y:72,
-      stats:[
-        { label:'书房面积', value:'180 ㎡' }, { label:'藏书量', value:'4,200 册' },
-        { label:'座位数', value:'48 个' }, { label:'特　色', value:'自然光阅读' }
-      ],
-      spots:[
-        { sid:'sun-s1', name:'书房 · 全景', pano:'images/ygsf01.jpg' },
-        { sid:'sun-s2', name:'落地窗阅读区', pano:'images/ygsf02.jpg' },
-        { sid:'sun-s3', name:'亲子共读区', pano:'images/ygsf03.jpg' }
-      ]
-    },
-    { id:'corner', name:'读书角', icon:'🪑', desc:'楼层走廊 · 微阅读空间', x:76, y:73,
-      stats:[
-        { label:'图书角数量', value:'6 个' }, { label:'藏书量', value:'3,600 册' },
-        { label:'覆盖楼层', value:'1-3 层' }, { label:'月均借阅', value:'420 册' }
-      ],
-      spots:[
-        { sid:'cor-s1', name:'一楼走廊读书角', pano:'images/dsj01.jpg' },
-        { sid:'cor-s2', name:'二楼连廊读书角', pano:'images/dsj02.jpg' },
-        { sid:'cor-s3', name:'三楼平台读书角', pano:'images/dsj03.jpg' }
-      ]
-    }
+const DEFAULT_CONFIG={
+  title:'XX学校 · 云逛校园图书馆',
+  subtitle:'SMART CAMPUS READING SPACE · VISUALIZATION PLATFORM',
+  paperBooks:32800,ebookBase:12000,ebookAuto:true,seats:260,
+  mapImage:'',mapImageUrl:DEFAULT_MAP,updatedAt:0,booksDirty:false,
+  scenes:[
+    {id:'library',name:'图书馆',icon:'📚',desc:'主馆 3 层 · 全景漫游',x:50,y:33,
+      stats:[{label:'藏书总量',value:'32,800 册'},{label:'阅览座位',value:'260 个'},{label:'今日到馆',value:'实时统计'},{label:'开放时间',value:'08:00-20:00'}],
+      spots:[{sid:'lib-s1',name:'一层 · 服务大厅',pano:'images/tsg01.jpg'},{sid:'lib-s2',name:'二层 · 少儿阅览区',pano:'images/tsg02.jpg'},{sid:'lib-s3',name:'三层 · 自习区',pano:'images/tsg03.jpg'}]},
+    {id:'sunroom',name:'阳光书房',icon:'☀️',desc:'玻璃幕墙 · 阳光阅读区',x:23,y:72,
+      stats:[{label:'书房面积',value:'180 ㎡'},{label:'藏书量',value:'4,200 册'},{label:'座位数',value:'48 个'},{label:'特　色',value:'自然光阅读'}],
+      spots:[{sid:'sun-s1',name:'书房 · 全景',pano:'images/ygsf01.jpg'},{sid:'sun-s2',name:'落地窗阅读区',pano:'images/ygsf02.jpg'},{sid:'sun-s3',name:'亲子共读区',pano:'images/ygsf03.jpg'}]},
+    {id:'corner',name:'读书角',icon:'🪑',desc:'楼层走廊 · 微阅读空间',x:76,y:73,
+      stats:[{label:'图书角数量',value:'6 个'},{label:'藏书量',value:'3,600 册'},{label:'覆盖楼层',value:'1-3 层'},{label:'月均借阅',value:'420 册'}],
+      spots:[{sid:'cor-s1',name:'一楼走廊读书角',pano:'images/dsj01.jpg'},{sid:'cor-s2',name:'二楼连廊读书角',pano:'images/dsj02.jpg'},{sid:'cor-s3',name:'三楼平台读书角',pano:'images/dsj03.jpg'}]}
   ],
-  trend: { labels: ['周一','周二','周三','周四','周五','周六','周日'], values: [120,180,150,220,260,190,160] },
-  pie: [
-    { name:'文学类', value:10480 }, { name:'科普类', value:7200 },
-    { name:'教辅类', value:5600 }, { name:'绘本类', value:4300 }, { name:'其他', value:5220 }
-  ],
-  books: clone(DEFAULT_BOOKS)
+  trend:{labels:['周一','周二','周三','周四','周五','周六','周日'],values:[120,180,150,220,260,190,160]},
+  pie:[{name:'文学类',value:10480},{name:'科普类',value:7200},{name:'教辅类',value:5600},{name:'绘本类',value:4300},{name:'其他',value:5220}],
+  books:clone(DEFAULT_BOOKS)
 };
 
-const STORE_KEY = 'campus-lib-v14';
-const CLOUD_KEY = 'campus-lib-cloud-v7';
+const STORE_KEY='campus-lib-v15';
+const CLOUD_KEY='campus-lib-cloud-v8';
 
-let CLOUD = { token:'', gistId:'', autoSync:false, lastSync:0 };
-let cloudRealDataLoaded = false;
+let CLOUD={token:'',gistId:'',autoSync:false,lastSync:0};
+let cloudRealDataLoaded=false;
 
-function loadCloud(){
-  try{
-    const raw = localStorage.getItem(CLOUD_KEY);
-    if (raw){ const o = JSON.parse(raw); if (o && typeof o === 'object'){ CLOUD = { ...CLOUD, ...o }; } }
-  }catch(e){}
-}
-function saveCloud(){ try{ localStorage.setItem(CLOUD_KEY, JSON.stringify(CLOUD)); }catch(e){} }
+function loadCloud(){try{const raw=localStorage.getItem(CLOUD_KEY);if(raw){const o=JSON.parse(raw);if(o&&typeof o==='object'){CLOUD={...CLOUD,...o};}}}catch(e){}}
+function saveCloud(){try{localStorage.setItem(CLOUD_KEY,JSON.stringify(CLOUD));}catch(e){}}
 
-let S = { config: clone(DEFAULT_CONFIG), users: {}, currentUser: null };
+let S={config:clone(DEFAULT_CONFIG),users:{},currentUser:null};
 
 function migrate(){
-  if (!S.config.books || typeof S.config.books !== 'object') S.config.books = {};
-  if (S.config.mapImageUrl == null) S.config.mapImageUrl = '';
-  if (S.config.updatedAt == null) S.config.updatedAt = 0;
-  if (S.config.booksDirty == null) S.config.booksDirty = false;
-  const validSids = new Set();
-  (S.config.scenes || []).forEach((sc) => {
-    if (!Array.isArray(sc.spots)) sc.spots = [];
-    if (!sc.spots.length) sc.spots.push({ sid: uid('sp'), name:'默认点位', pano: DEFAULT_PANO });
-    sc.spots.forEach((sp) => { if (!sp.sid) sp.sid = uid('sp'); if (!sp.pano) sp.pano = DEFAULT_PANO; validSids.add(sp.sid); });
+  if(!S.config.books||typeof S.config.books!=='object')S.config.books={};
+  if(S.config.mapImageUrl==null)S.config.mapImageUrl='';
+  if(S.config.updatedAt==null)S.config.updatedAt=0;
+  if(S.config.booksDirty==null)S.config.booksDirty=false;
+  const validSids=new Set();
+  (S.config.scenes||[]).forEach(sc=>{
+    if(!Array.isArray(sc.spots))sc.spots=[];
+    if(!sc.spots.length)sc.spots.push({sid:uid('sp'),name:'默认点位',pano:DEFAULT_PANO});
+    sc.spots.forEach(sp=>{if(!sp.sid)sp.sid=uid('sp');if(!sp.pano)sp.pano=DEFAULT_PANO;validSids.add(sp.sid);});
   });
-  Object.keys(S.config.books).forEach(k => {
-    const sc = (S.config.scenes || []).find(s => s.id === k);
-    if (sc){
-      const targetSid = sc.spots[0] ? sc.spots[0].sid : null;
-      const arr = S.config.books[k];
-      if (targetSid && Array.isArray(arr) && arr.length){
-        if (!S.config.books[targetSid]) S.config.books[targetSid] = [];
-        S.config.books[targetSid] = S.config.books[targetSid].concat(arr);
-      }
-      delete S.config.books[k];
-    }
+  Object.keys(S.config.books).forEach(k=>{
+    const sc=(S.config.scenes||[]).find(s=>s.id===k);
+    if(sc){const targetSid=sc.spots[0]?sc.spots[0].sid:null;const arr=S.config.books[k];if(targetSid&&Array.isArray(arr)&&arr.length){if(!S.config.books[targetSid])S.config.books[targetSid]=[];S.config.books[targetSid]=S.config.books[targetSid].concat(arr);}delete S.config.books[k];}
   });
-  Object.keys(S.config.books).forEach(k => { if (!validSids.has(k)) delete S.config.books[k]; });
-  validSids.forEach(sid => {
-    if (!Array.isArray(S.config.books[sid])){
-      S.config.books[sid] = DEFAULT_BOOKS[sid] ? clone(DEFAULT_BOOKS[sid]) : [];
-    }
-    S.config.books[sid].forEach(b => {
-      if (b.pitch == null){
-        if (b.x != null){ b.yaw = +(((b.x - 50) * 1.5)).toFixed(2); b.pitch = +(((50 - b.y) * 0.8)).toFixed(2); }
-        else { b.pitch = 0; b.yaw = 0; }
-      }
-      if (b.yaw == null) b.yaw = 0;
-      if (!b.img) b.img = DEFAULT_BOOK_IMG;
-      if (b.name == null) b.name = '图书';
-      if (b.title == null) b.title = '';
-      if (b.url == null) b.url = '';
+  Object.keys(S.config.books).forEach(k=>{if(!validSids.has(k))delete S.config.books[k];});
+  validSids.forEach(sid=>{
+    if(!Array.isArray(S.config.books[sid]))S.config.books[sid]=DEFAULT_BOOKS[sid]?clone(DEFAULT_BOOKS[sid]):[];
+    S.config.books[sid].forEach(b=>{
+      if(b.pitch==null){if(b.x!=null){b.yaw=+(((b.x-50)*1.5)).toFixed(2);b.pitch=+(((50-b.y)*0.8)).toFixed(2);}else{b.pitch=0;b.yaw=0;}}
+      if(b.yaw==null)b.yaw=0;
+      if(!b.img)b.img=DEFAULT_BOOK_IMG;
+      if(b.name==null)b.name='图书';
+      if(b.title==null)b.title='';
+      if(b.url==null)b.url='';
     });
   });
 }
 function load(){
-  let raw = null;
-  try { raw = JSON.parse(localStorage.getItem(STORE_KEY)); } catch(e){}
-  if (raw && typeof raw === 'object'){
-    S = deepMerge({ config: clone(DEFAULT_CONFIG), users: {}, currentUser: null }, raw);
-  }
-  S.config = S.config || clone(DEFAULT_CONFIG);
-  S.users = S.users || {};
-  Object.values(S.users).forEach(u => { u.visits = u.visits || []; });
+  let raw=null;try{raw=JSON.parse(localStorage.getItem(STORE_KEY));}catch(e){}
+  if(raw&&typeof raw==='object')S=deepMerge({config:clone(DEFAULT_CONFIG),users:{},currentUser:null},raw);
+  S.config=S.config||clone(DEFAULT_CONFIG);
+  S.users=S.users||{};
+  Object.values(S.users).forEach(u=>{u.visits=u.visits||[];});
   migrate();
 }
-function saveWithoutSync(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
-function save(){
-  saveWithoutSync();
-  if (CLOUD.autoSync && CLOUD.token && CLOUD.gistId) scheduleCloudPush();
-}
+function saveWithoutSync(){try{localStorage.setItem(STORE_KEY,JSON.stringify(S));}catch(e){}}
+function save(){saveWithoutSync();if(CLOUD.autoSync&&CLOUD.token&&CLOUD.gistId)scheduleCloudPush();}
 
-/* 数据合并 */
-function mergeVisits(a, b){
-  const seen = new Set(); const out = [];
-  const list = [...(a || []), ...(b || [])];
-  for (const v of list){
-    if (!v || typeof v.t !== 'number' || !v.s) continue;
-    const key = v.t + '|' + v.s;
-    if (seen.has(key)) continue;
-    seen.add(key);
-    out.push({ t: v.t, s: v.s });
-  }
-  out.sort((x, y) => x.t - y.t);
-  return out.length > 2000 ? out.slice(-2000) : out;
+function mergeVisits(a,b){
+  const seen=new Set();const out=[];const list=[...(a||[]),...(b||[])];
+  for(const v of list){if(!v||typeof v.t!=='number'||!v.s)continue;const key=v.t+'|'+v.s;if(seen.has(key))continue;seen.add(key);out.push({t:v.t,s:v.s});}
+  out.sort((x,y)=>x.t-y.t);return out.length>2000?out.slice(-2000):out;
 }
-function mergeUsers(local, remote){
-  const out = { ...(local || {}) };
-  for (const k in (remote || {})){
-    const r = remote[k];
-    if (!r || typeof r !== 'object' || !r.name || !r.cls) continue;
-    if (out[k]){
-      out[k] = { key: k, name: r.name || out[k].name, cls: r.cls || out[k].cls,
-        visits: mergeVisits(out[k].visits, r.visits),
-        createdAt: Math.min(out[k].createdAt || r.createdAt || Date.now(), r.createdAt || out[k].createdAt || Date.now()) };
-    } else {
-      out[k] = { key: k, name: r.name, cls: r.cls, visits: mergeVisits([], r.visits), createdAt: r.createdAt || Date.now() };
-    }
+function mergeUsers(local,remote){
+  const out={...(local||{})};
+  for(const k in (remote||{})){
+    const r=remote[k];if(!r||typeof r!=='object'||!r.name||!r.cls)continue;
+    if(out[k]){out[k]={key:k,name:r.name||out[k].name,cls:r.cls||out[k].cls,visits:mergeVisits(out[k].visits,r.visits),createdAt:Math.min(out[k].createdAt||r.createdAt||Date.now(),r.createdAt||out[k].createdAt||Date.now())};}
+    else{out[k]={key:k,name:r.name,cls:r.cls,visits:mergeVisits([],r.visits),createdAt:r.createdAt||Date.now()};}
   }
   return out;
 }
 
-/* =========================================================
-   云同步
-   ========================================================= */
-let cloudPushTimer = null;
-let syncBusy = false;
+/* ================= 云同步 ================= */
+let cloudPushTimer=null,syncBusy=false;
 
-function scheduleCloudPush(){
-  clearTimeout(cloudPushTimer);
-  cloudPushTimer = setTimeout(() => { pushToCloud(true); }, 2500);
-}
-function cloudStatusEl(){ return { dot: $('#cloudDot'), txt: $('#cloudTxt') }; }
-function setCloudStatus(state, txt){
-  const { dot, txt: t } = cloudStatusEl();
-  if (!dot || !t) return;
-  dot.className = 'dot ' + state;
-  t.textContent = txt;
-}
+function scheduleCloudPush(){clearTimeout(cloudPushTimer);cloudPushTimer=setTimeout(()=>{pushToCloud(true);},2500);}
+function cloudStatusEl(){return{dot:$('#cloudDot'),txt:$('#cloudTxt')};}
+function setCloudStatus(state,txt){const{dot,txt:t}=cloudStatusEl();if(!dot||!t)return;dot.className='dot '+state;t.textContent=txt;}
 async function fetchFromCloud(){
-  if (!CLOUD.gistId) throw new Error('未配置 Gist ID');
-  const r = await fetch('https://api.github.com/gists/' + CLOUD.gistId + '?_=' + Date.now(), {
-    headers: CLOUD.token ? { 'Authorization': 'token ' + CLOUD.token } : {}
-  });
-  if (!r.ok){
-    if (r.status === 404) throw new Error('Gist 不存在');
-    if (r.status === 401 || r.status === 403) throw new Error('Token 无效或权限不足');
-    throw new Error('HTTP ' + r.status);
-  }
-  const j = await r.json();
-  const files = j.files || {};
-  const fileName = Object.keys(files).find(n => n.endsWith('.json')) || Object.keys(files)[0];
-  if (!fileName) throw new Error('Gist 中没有 JSON 文件');
+  if(!CLOUD.gistId)throw new Error('未配置 Gist ID');
+  const r=await fetch('https://api.github.com/gists/'+CLOUD.gistId+'?_='+Date.now(),{headers:CLOUD.token?{Authorization:'token '+CLOUD.token}:{}});
+  if(!r.ok){if(r.status===404)throw new Error('Gist 不存在');if(r.status===401||r.status===403)throw new Error('Token 无效或权限不足');throw new Error('HTTP '+r.status);}
+  const j=await r.json();const files=j.files||{};
+  const fileName=Object.keys(files).find(n=>n.endsWith('.json'))||Object.keys(files)[0];
+  if(!fileName)throw new Error('Gist 中没有 JSON 文件');
   return JSON.parse(files[fileName].content);
 }
 
-/* 拉取云端数据 —— 合并用户；配置以云端最新为准 */
+/* ★ 拉取：以云端为准，直接替换（解决"其他电脑看不到新图书"问题） */
 async function pullFromCloud(silent){
-  if (syncBusy){ if (!silent) toast('同步进行中，请稍候…'); return; }
-  if (!CLOUD.gistId){ if (!silent) toast('尚未配置 Gist ID'); return; }
-  syncBusy = true;
+  if(syncBusy){if(!silent)toast('同步进行中，请稍候…');return;}
+  if(!CLOUD.gistId){if(!silent)toast('尚未配置 Gist ID');return;}
+  syncBusy=true;
   try{
-    setCloudStatus('sync', '⬇️ 正在拉取云端…');
-    const data = await fetchFromCloud();
-    if (!data){ syncBusy = false; return; }
+    setCloudStatus('sync','⬇️ 正在拉取云端…');
+    const data=await fetchFromCloud();
+    if(!data){syncBusy=false;return;}
 
-    if (data.users && typeof data.users === 'object'){
-      const remoteUserCount = Object.keys(data.users).length;
-      S.users = mergeUsers(S.users, data.users);
-      if (remoteUserCount > 0) cloudRealDataLoaded = true;
+    if(data.users&&typeof data.users==='object'){
+      const remoteUserCount=Object.keys(data.users).length;
+      S.users=mergeUsers(S.users,data.users);
+      if(remoteUserCount>0)cloudRealDataLoaded=true;
     }
 
-    /* 配置：以云端为准（不管本机 booksDirty 状态）
-       因为拉取代表"想看最新版本"，以云端为主 */
-    if (data.config && typeof data.config === 'object'){
-      const remoteAt = data.config.updatedAt || 0;
-      const localAt = S.config.updatedAt || 0;
-      if (remoteAt > localAt){
-        const keepCurrentUser = S.currentUser;
-        const keepMapImage = S.config.mapImage;
-        S.config = deepMerge(clone(DEFAULT_CONFIG), data.config);
-        if (keepMapImage && !S.config.mapImage) S.config.mapImage = keepMapImage;
-        S.currentUser = keepCurrentUser;
-        S.config.booksDirty = false;  // 拉取后清除本地标记
-        console.log('[拉取] 云端配置更新，已覆盖本地');
+    /* ★ 关键改动：直接替换 config，不用 deepMerge
+       这样云端的新图书能完整同步过来，本机旧数据不会干扰 */
+    if(data.config&&typeof data.config==='object'){
+      const remoteAt=data.config.updatedAt||0;
+      const localAt=S.config.updatedAt||0;
+      if(remoteAt>localAt||!localAt){
+        const keepCurrentUser=S.currentUser;
+        const keepMapImage=S.config.mapImage;
+        S.config=clone(data.config);
+        if(keepMapImage&&!S.config.mapImage)S.config.mapImage=keepMapImage;
+        S.currentUser=keepCurrentUser;
+        S.config.booksDirty=false;
+        console.log('[拉取] 已用云端配置覆盖本机');
+        console.log('[拉取] 图书分布:',Object.keys(S.config.books||{}).map(k=>k+':'+(S.config.books[k]?.length||0)).join(', '));
+      }else{
+        console.log('[拉取] 跳过（本机更新或相同）');
       }
     }
 
@@ -1115,795 +712,385 @@ async function pullFromCloud(silent){
     saveWithoutSync();
     renderAll();
     renderUserBadge();
-    if (drawer.classList.contains('on')) renderDrawer();
-    if (usersPage.classList.contains('on')) renderUsersPage();
-    CLOUD.lastSync = Date.now();
+    if(drawer.classList.contains('on'))renderDrawer();
+    if(usersPage.classList.contains('on'))renderUsersPage();
+    CLOUD.lastSync=Date.now();
     saveCloud();
-    setCloudStatus('on', '☁️ 已同步 · ' + relativeTime(CLOUD.lastSync));
-    if (!silent) toast('已从云端合并数据');
+    setCloudStatus('on','☁️ 已同步 · '+relativeTime(CLOUD.lastSync));
+    if(!silent)toast('已从云端合并数据');
   }catch(e){
-    setCloudStatus('err', '❌ ' + e.message);
-    if (!silent) toast('拉取失败：' + e.message);
-  }finally{
-    syncBusy = false;
-  }
+    setCloudStatus('err','❌ '+e.message);
+    if(!silent)toast('拉取失败：'+e.message);
+  }finally{syncBusy=false;}
 }
 
-/* ★ 上传：核心逻辑重写
-   - 用户数据始终合并双方
-   - config 合并策略：
-     · 如果本机 booksDirty = true（管理员刚改过图书）→ 用本机 config
-     · 否则 → 用云端的 config（避免本机覆盖云端）
-   - 上传成功后清除 booksDirty 标记 */
+/* ★ 上传：本机有修改时用本机；否则用云端避免覆盖 */
 async function pushToCloud(silent){
-  if (syncBusy){ if (!silent) toast('同步进行中，请稍候…'); return; }
-  if (!CLOUD.token){ if (!silent) toast('尚未配置 Token'); return; }
-  if (!CLOUD.gistId){ if (!silent) toast('尚未配置 Gist ID'); return; }
-  syncBusy = true;
+  if(syncBusy){if(!silent)toast('同步进行中，请稍候…');return;}
+  if(!CLOUD.token){if(!silent)toast('尚未配置 Token');return;}
+  if(!CLOUD.gistId){if(!silent)toast('尚未配置 Gist ID');return;}
+  syncBusy=true;
   try{
-    setCloudStatus('sync', '🔄 同步中…');
-    let needUpdateTimestamp = false;
-
+    setCloudStatus('sync','🔄 同步中…');
+    let needUpload=true;
     try{
-      const remote = await fetchFromCloud();
-      if (remote){
-        // 合并用户数据（双方都保留）
-        if (remote.users && typeof remote.users === 'object'){
-          const remoteUserCount = Object.keys(remote.users).length;
-          S.users = mergeUsers(S.users, remote.users);
-          if (remoteUserCount > 0) cloudRealDataLoaded = true;
+      const remote=await fetchFromCloud();
+      if(remote){
+        if(remote.users&&typeof remote.users==='object'){
+          const remoteUserCount=Object.keys(remote.users).length;
+          S.users=mergeUsers(S.users,remote.users);
+          if(remoteUserCount>0)cloudRealDataLoaded=true;
         }
-
-        // 合并配置
-        if (remote.config && typeof remote.config === 'object'){
-          const remoteAt = remote.config.updatedAt || 0;
-          const localAt = S.config.updatedAt || 0;
-
-          if (S.config.booksDirty){
-            /* 本机有未上传的图书修改，用本机 config（管理员权威） */
-            needUpdateTimestamp = true;
-            console.log('[推送] 本机有图书修改，以本机为准上传');
-          } else if (remoteAt > localAt){
-            /* 云端配置更新，用云端的（避免本机旧版本覆盖） */
-            const keepCurrentUser = S.currentUser;
-            const keepMapImage = S.config.mapImage;
-            S.config = deepMerge(clone(DEFAULT_CONFIG), remote.config);
-            if (keepMapImage && !S.config.mapImage) S.config.mapImage = keepMapImage;
-            S.currentUser = keepCurrentUser;
-            S.config.booksDirty = false;
-            console.log('[推送] 采用云端最新配置上传');
+        if(remote.config&&typeof remote.config==='object'){
+          if(S.config.booksDirty){
+            /* 本机有未上传的图书修改 → 用本机，更新时间戳 */
+            S.config.updatedAt=Date.now();
+            console.log('[推送] 本机有修改，用本机 config 上传');
+          }else{
+            /* 本机没修改 → 用云端 config 避免覆盖 */
+            const keepCurrentUser=S.currentUser;
+            const keepMapImage=S.config.mapImage;
+            S.config=clone(remote.config);
+            if(keepMapImage&&!S.config.mapImage)S.config.mapImage=keepMapImage;
+            S.currentUser=keepCurrentUser;
+            console.log('[推送] 本机无修改，用云端 config 上传');
           }
-          /* else: 本地和云端一致，保持本地 */
-        } else {
-          /* 云端没有 config，本机作为首个上传者 */
-          needUpdateTimestamp = true;
+        }else{
+          S.config.updatedAt=Date.now();
         }
-      } else {
-        needUpdateTimestamp = true;
       }
-    }catch(e){
-      console.warn('拉取失败，直接上传当前数据', e);
-      if (S.config.booksDirty) needUpdateTimestamp = true;
-    }
+    }catch(e){console.warn('[推送] 拉取失败:',e);if(S.config.booksDirty)S.config.updatedAt=Date.now();}
 
-    if (needUpdateTimestamp){
-      S.config.updatedAt = Date.now();
-    }
-
-    const payload = {
-      config: S.config,
-      users: S.users,
-      exportedAt: Date.now()
-    };
-
-    setCloudStatus('sync', '⬆️ 正在上传…');
-    const r = await fetch('https://api.github.com/gists/' + CLOUD.gistId, {
-      method: 'PATCH',
-      headers: { 'Authorization': 'token ' + CLOUD.token, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ files: { 'campus-data.json': { content: JSON.stringify(payload, null, 2) } } })
+    const payload={config:S.config,users:S.users,exportedAt:Date.now()};
+    setCloudStatus('sync','⬆️ 正在上传…');
+    const r=await fetch('https://api.github.com/gists/'+CLOUD.gistId,{
+      method:'PATCH',
+      headers:{Authorization:'token '+CLOUD.token,'Content-Type':'application/json'},
+      body:JSON.stringify({files:{'campus-data.json':{content:JSON.stringify(payload,null,2)}}})
     });
-    if (!r.ok){
-      if (r.status === 401 || r.status === 403) throw new Error('Token 无效或权限不足');
-      throw new Error('HTTP ' + r.status);
-    }
+    if(!r.ok){if(r.status===401||r.status===403)throw new Error('Token 无效或权限不足');throw new Error('HTTP '+r.status);}
 
-    // 上传成功后清除 booksDirty 标记
-    S.config.booksDirty = false;
+    S.config.booksDirty=false;
     saveWithoutSync();
     renderAll();
-    CLOUD.lastSync = Date.now();
+    CLOUD.lastSync=Date.now();
     saveCloud();
-    setCloudStatus('on', '☁️ 已同步 · ' + relativeTime(CLOUD.lastSync));
-    if (!silent) toast('已上传到云端');
+    setCloudStatus('on','☁️ 已同步 · '+relativeTime(CLOUD.lastSync));
+    console.log('[推送] 上传成功，图书分布:',Object.keys(S.config.books||{}).map(k=>k+':'+(S.config.books[k]?.length||0)).join(', '));
+    if(!silent)toast('已上传到云端');
   }catch(e){
-    setCloudStatus('err', '❌ ' + e.message);
-    if (!silent) toast('上传失败：' + e.message);
-  }finally{
-    syncBusy = false;
-  }
+    setCloudStatus('err','❌ '+e.message);
+    if(!silent)toast('上传失败：'+e.message);
+  }finally{syncBusy=false;}
 }
 
-/* =========================================================
-   统计
-   ========================================================= */
+/* ================= 统计 ================= */
 function getBooks(sid){
-  if (!sid) return [];
-  if (!S.config.books) S.config.books = {};
-  if (!S.config.books[sid]){
-    S.config.books[sid] = DEFAULT_BOOKS[sid] ? clone(DEFAULT_BOOKS[sid]) : [];
-  }
+  if(!sid)return[];
+  if(!S.config.books)S.config.books={};
+  if(!S.config.books[sid])S.config.books[sid]=DEFAULT_BOOKS[sid]?clone(DEFAULT_BOOKS[sid]):[];
   return S.config.books[sid];
 }
-function getTotalBooks(){
-  const b = S.config.books || {};
-  return Object.values(b).reduce((s, a) => s + (a ? a.length : 0), 0);
-}
-function getAllVisits(){ let n = 0; for (const u of Object.values(S.users)) n += (u.visits || []).length; return n; }
-function getTodayVisits(){
-  const k = dayKey(Date.now()); let n = 0;
-  for (const u of Object.values(S.users)){ for (const v of (u.visits || [])) if (dayKey(v.t) === k) n++; }
-  return n;
-}
-function getTodayActiveUsers(){
-  const k = dayKey(Date.now()); let n = 0;
-  for (const u of Object.values(S.users)){ if ((u.visits || []).some(v => dayKey(v.t) === k)) n++; }
-  return n;
-}
-function getSceneVisits(sceneId){
-  let n = 0;
-  for (const u of Object.values(S.users)){ for (const v of (u.visits || [])) if (v.s === sceneId) n++; }
-  return n;
-}
-function getMonthlyRank(){
-  const mk = monthKey(Date.now());
-  const arr = Object.values(S.users).map(u => {
-    let n = 0;
-    for (const v of (u.visits || [])) if (monthKey(v.t) === mk) n++;
-    return { key: u.key, name: u.name, cls: u.cls, count: n };
-  });
-  arr.sort((a,b) => b.count - a.count || String(a.name).localeCompare(String(b.name), 'zh'));
-  return arr;
-}
+function getTotalBooks(){const b=S.config.books||{};return Object.values(b).reduce((s,a)=>s+(a?a.length:0),0);}
+function getAllVisits(){let n=0;for(const u of Object.values(S.users))n+=(u.visits||[]).length;return n;}
+function getTodayVisits(){const k=dayKey(Date.now());let n=0;for(const u of Object.values(S.users)){for(const v of(u.visits||[]))if(dayKey(v.t)===k)n++;}return n;}
+function getTodayActiveUsers(){const k=dayKey(Date.now());let n=0;for(const u of Object.values(S.users)){if((u.visits||[]).some(v=>dayKey(v.t)===k))n++;}return n;}
+function getSceneVisits(id){let n=0;for(const u of Object.values(S.users)){for(const v of(u.visits||[]))if(v.s===id)n++;}return n;}
+function getMonthlyRank(){const mk=monthKey(Date.now());const arr=Object.values(S.users).map(u=>{let n=0;for(const v of(u.visits||[]))if(monthKey(v.t)===mk)n++;return{key:u.key,name:u.name,cls:u.cls,count:n};});arr.sort((a,b)=>b.count-a.count||String(a.name).localeCompare(String(b.name),'zh'));return arr;}
 
-/* =========================================================
-   渲染
-   ========================================================= */
-function renderTitle(){ $('#mainTitle').textContent = S.config.title; $('#mainSub').textContent = S.config.subtitle; }
-function renderUserBadge(){
-  const u = S.users[S.currentUser];
-  if (!u){ $('#userName').textContent = '未登录'; $('#userClass').textContent = '点击设置'; $('#userAv').textContent = '?'; return; }
-  $('#userName').textContent = u.name;
-  $('#userClass').textContent = u.cls;
-  $('#userAv').textContent = (u.name || '?').slice(0, 1);
-}
+/* ================= 渲染 ================= */
+function renderTitle(){$('#mainTitle').textContent=S.config.title;$('#mainSub').textContent=S.config.subtitle;}
+function renderUserBadge(){const u=S.users[S.currentUser];if(!u){$('#userName').textContent='未登录';$('#userClass').textContent='点击设置';$('#userAv').textContent='?';return;}$('#userName').textContent=u.name;$('#userClass').textContent=u.cls;$('#userAv').textContent=(u.name||'?').slice(0,1);}
 function renderStats(){
-  const totalBooks = getTotalBooks();
-  const ebooks = S.config.ebookAuto ? (Number(S.config.ebookBase) || 0) + totalBooks : (Number(S.config.ebookBase) || 0);
-  const today = getTodayVisits();
-  const syncNote = CLOUD.gistId ? (CLOUD.lastSync ? '已同步' : '待同步') : '本机统计';
-  const cells = [
-    { lab:'纸质藏书', val:Number(S.config.paperBooks)||0, unit:'册', note:'' },
-    { lab:'电子资源', val:ebooks, unit:'册', note: S.config.ebookAuto ? `含全景图书 ${totalBooks} 册` : '手动设置' },
-    { lab:'阅览座位', val:Number(S.config.seats)||0, unit:'个', note:'' },
-    { lab:'今日到馆', val:today, unit:'人', note: CLOUD.gistId ? `跨电脑 · ${syncNote}` : '实时统计' }
+  const totalBooks=getTotalBooks();
+  const ebooks=S.config.ebookAuto?(Number(S.config.ebookBase)||0)+totalBooks:(Number(S.config.ebookBase)||0);
+  const today=getTodayVisits();
+  const syncNote=CLOUD.gistId?(CLOUD.lastSync?'已同步':'待同步'):'本机统计';
+  const cells=[
+    {lab:'纸质藏书',val:Number(S.config.paperBooks)||0,unit:'册',note:''},
+    {lab:'电子资源',val:ebooks,unit:'册',note:S.config.ebookAuto?`含全景图书 ${totalBooks} 册`:'手动设置'},
+    {lab:'阅览座位',val:Number(S.config.seats)||0,unit:'个',note:''},
+    {lab:'今日到馆',val:today,unit:'人',note:CLOUD.gistId?`跨电脑 · ${syncNote}`:'实时统计'}
   ];
-  $('#statGrid').innerHTML = cells.map(c => `
-    <div class="stat"><div class="num"><span data-count="${c.val}">0</span><i>${c.unit}</i></div>
-    <div class="lab">${c.lab}</div>${c.note ? `<div class="note">${c.note}</div>` : ''}</div>`).join('');
-  $$('#statGrid [data-count]').forEach(el => {
-    const target = +el.dataset.count;
-    const dur = 700; const st = performance.now();
-    function step(now){
-      const p = Math.min(1, (now - st) / dur);
-      const e = 1 - Math.pow(1 - p, 3);
-      el.textContent = Math.floor(target * e).toLocaleString();
-      if (p < 1) requestAnimationFrame(step);
-      else el.textContent = target.toLocaleString();
-    }
-    requestAnimationFrame(step);
-  });
+  $('#statGrid').innerHTML=cells.map(c=>`<div class="stat"><div class="num"><span data-count="${c.val}">0</span><i>${c.unit}</i></div><div class="lab">${c.lab}</div>${c.note?`<div class="note">${c.note}</div>`:''}</div>`).join('');
+  $$('#statGrid [data-count]').forEach(el=>{const target=+el.dataset.count;const dur=700;const st=performance.now();function step(now){const p=Math.min(1,(now-st)/dur);const e=1-Math.pow(1-p,3);el.textContent=Math.floor(target*e).toLocaleString();if(p<1)requestAnimationFrame(step);else el.textContent=target.toLocaleString();}requestAnimationFrame(step);});
 }
 function renderRank(){
-  const realList = getMonthlyRank().filter(r => r.count > 0);
-  const hasAnyUser = Object.keys(S.users).length > 0;
-  const hasReal = realList.length > 0 || hasAnyUser;
-  const box = $('#rankList'); const hint = $('#rankHint'); const tail = $('#rankTail');
-  if (!hasReal && !cloudRealDataLoaded){
-    box.innerHTML = DEMO_RANK.slice(0, 10).map((r, i) => `
-      <div class="rank-item demo"><span class="no">${i+1}</span>
-      <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-      <span class="demo-tag">演示</span><span class="val">${r.count}</span></div>`).join('');
-    tail.textContent = '演示数据';
-    hint.style.display = 'flex';
-    hint.innerHTML = '<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖';
-    return;
+  const realList=getMonthlyRank().filter(r=>r.count>0);
+  const hasAnyUser=Object.keys(S.users).length>0;
+  const hasReal=realList.length>0||hasAnyUser;
+  const box=$('#rankList'),hint=$('#rankHint'),tail=$('#rankTail');
+  if(!hasReal&&!cloudRealDataLoaded){
+    box.innerHTML=DEMO_RANK.slice(0,10).map((r,i)=>`<div class="rank-item demo"><span class="no">${i+1}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span><span class="demo-tag">演示</span><span class="val">${r.count}</span></div>`).join('');
+    tail.textContent='演示数据';hint.style.display='flex';hint.innerHTML='<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖';return;
   }
-  const meKey = S.currentUser;
-  let realTop = realList.slice(0, 10);
-  if (meKey && !realTop.some(r => r.key === meKey) && S.users[meKey]){
-    const mk = monthKey(Date.now()); let n = 0;
-    for (const v of (S.users[meKey].visits || [])) if (monthKey(v.t) === mk) n++;
-    if (n > 0){
-      const all = getMonthlyRank();
-      const rank = all.findIndex(r => r.key === meKey) + 1;
-      realTop.push({ key: meKey, name: S.users[meKey].name, cls: S.users[meKey].cls, count: n, isMe: true, rank: rank || '-' });
-    }
-  }
-  const needDemo = Math.max(0, 10 - realTop.length);
-  const usedNames = new Set(realTop.map(r => r.name));
-  const demoFill = DEMO_RANK.filter(d => !usedNames.has(d.name)).slice(0, needDemo);
-  let html = '';
-  realTop.forEach((r, i) => {
-    const isMe = r.key === meKey || r.isMe;
-    const no = r.isMe ? r.rank : (i + 1);
-    html += `<div class="rank-item ${isMe ? 'me' : ''}"><span class="no">${no}</span>
-      <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}${isMe && r.isMe ? ' · 我' : ''}</em></span>
-      <span class="val">${r.count}</span></div>`;
-  });
-  demoFill.forEach((r, i) => {
-    const no = realTop.length + i + 1;
-    html += `<div class="rank-item demo"><span class="no">${no}</span>
-      <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-      <span class="demo-tag">演示</span><span class="val">${r.count}</span></div>`;
-  });
-  box.innerHTML = html;
-  if (demoFill.length > 0){
-    tail.textContent = '真实 + 演示';
-    hint.style.display = 'flex';
-    if (cloudRealDataLoaded) hint.innerHTML = '<span class="hi-ico">☁️</span>已同步云端真实数据';
-    else if (CLOUD.token && CLOUD.gistId) hint.innerHTML = '<span class="hi-ico">☁️</span>已配置云同步，正在等待真实数据…';
-    else hint.innerHTML = '<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖';
-  } else { tail.textContent = 'TOP 10'; hint.style.display = 'none'; }
+  const meKey=S.currentUser;let realTop=realList.slice(0,10);
+  if(meKey&&!realTop.some(r=>r.key===meKey)&&S.users[meKey]){const mk=monthKey(Date.now());let n=0;for(const v of(S.users[meKey].visits||[]))if(monthKey(v.t)===mk)n++;if(n>0){const all=getMonthlyRank();const rank=all.findIndex(r=>r.key===meKey)+1;realTop.push({key:meKey,name:S.users[meKey].name,cls:S.users[meKey].cls,count:n,isMe:true,rank:rank||'-'});}}
+  const needDemo=Math.max(0,10-realTop.length);const usedNames=new Set(realTop.map(r=>r.name));
+  const demoFill=DEMO_RANK.filter(d=>!usedNames.has(d.name)).slice(0,needDemo);
+  let html='';
+  realTop.forEach((r,i)=>{const isMe=r.key===meKey||r.isMe;const no=r.isMe?r.rank:(i+1);html+=`<div class="rank-item ${isMe?'me':''}"><span class="no">${no}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}${isMe&&r.isMe?' · 我':''}</em></span><span class="val">${r.count}</span></div>`;});
+  demoFill.forEach((r,i)=>{const no=realTop.length+i+1;html+=`<div class="rank-item demo"><span class="no">${no}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span><span class="demo-tag">演示</span><span class="val">${r.count}</span></div>`;});
+  box.innerHTML=html;
+  if(demoFill.length>0){tail.textContent='真实 + 演示';hint.style.display='flex';hint.innerHTML=cloudRealDataLoaded?'<span class="hi-ico">☁️</span>已同步云端真实数据':(CLOUD.token&&CLOUD.gistId?'<span class="hi-ico">☁️</span>已配置云同步，正在等待真实数据…':'<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖');}
+  else{tail.textContent='TOP 10';hint.style.display='none';}
 }
 function renderEntries(){
-  $('#entries').innerHTML = S.config.scenes.map((s, i) => `
-    <div class="entry" data-idx="${i}"><div class="ico">${s.icon || '📖'}</div>
-    <div class="txt"><h3>${escapeHtml(s.name)}</h3>
-    <p>${escapeHtml(s.desc || '')} · ${(s.spots||[]).length} 个点位</p></div>
-    <div class="stat-mini"><b>${getSceneVisits(s.id)}</b><span>浏览</span></div></div>`).join('');
-  $('#totalVisits').textContent = getAllVisits();
+  $('#entries').innerHTML=S.config.scenes.map((s,i)=>`<div class="entry" data-idx="${i}"><div class="ico">${s.icon||'📖'}</div><div class="txt"><h3>${escapeHtml(s.name)}</h3><p>${escapeHtml(s.desc||'')} · ${(s.spots||[]).length} 个点位</p></div><div class="stat-mini"><b>${getSceneVisits(s.id)}</b><span>浏览</span></div></div>`).join('');
+  $('#totalVisits').textContent=getAllVisits();
 }
 function renderHotspots(){
-  $('#hotspotLayer').innerHTML = S.config.scenes.map((s, i) => `
-    <div class="hotspot" data-idx="${i}" style="left:${s.x}%;top:${s.y}%">
-      <span class="pulse"></span><span class="pulse d2"></span><span class="dot"></span>
-      <span class="label">${escapeHtml(s.name)}</span></div>`).join('');
+  $('#hotspotLayer').innerHTML=S.config.scenes.map((s,i)=>`<div class="hotspot" data-idx="${i}" style="left:${s.x}%;top:${s.y}%"><span class="pulse"></span><span class="pulse d2"></span><span class="dot"></span><span class="label">${escapeHtml(s.name)}</span></div>`).join('');
 }
 function renderMap(){
-  const bg = $('#mapBg'), hint = $('#mapHint');
-  const src = (S.config.mapImageUrl || '').trim() || (S.config.mapImage || '');
-  if (src){
-    const test = new Image();
-    test.onload = () => { bg.style.setProperty('--map-img', `url("${src}")`); bg.classList.add('has-img'); hint.style.display = 'none'; };
-    test.onerror = () => { bg.classList.remove('has-img'); bg.style.removeProperty('--map-img'); hint.style.display = ''; hint.innerHTML = '<b>平面图加载失败</b>请确认 images/campus-map.jpg 是否已上传到仓库'; };
-    test.src = src;
-  } else {
-    bg.classList.remove('has-img'); bg.style.removeProperty('--map-img'); hint.style.display = '';
-  }
+  const bg=$('#mapBg'),hint=$('#mapHint');
+  const src=(S.config.mapImageUrl||'').trim()||(S.config.mapImage||'');
+  if(src){
+    const test=new Image();
+    test.onload=()=>{bg.style.setProperty('--map-img',`url("${src}")`);bg.classList.add('has-img');hint.style.display='none';};
+    test.onerror=()=>{bg.classList.remove('has-img');bg.style.removeProperty('--map-img');hint.style.display='';hint.innerHTML='<b>平面图加载失败</b>请确认 images/campus-map.jpg 是否已上传到仓库';};
+    test.src=src;
+  }else{bg.classList.remove('has-img');bg.style.removeProperty('--map-img');hint.style.display='';}
 }
-
-let trendChart, pieChart;
+let trendChart,pieChart;
 function initCharts(){
-  trendChart = echarts.init($('#c-trend'));
-  pieChart = echarts.init($('#c-pie'));
-  trendChart.setOption({
-    grid:{ left:34, right:12, top:18, bottom:22 },
-    tooltip:{ trigger:'axis', backgroundColor:'rgba(4,22,45,.94)', borderColor:'rgba(0,180,255,.5)', textStyle:{ color:'#cfe9ff', fontSize:11 } },
-    xAxis:{ type:'category', boundaryGap:false, data:[], axisLine:{ lineStyle:{ color:'rgba(0,180,255,.3)' } }, axisTick:{ show:false }, axisLabel:{ color:'#7fb6e0', fontSize:9.5, interval:0 } },
-    yAxis:{ type:'value', splitLine:{ lineStyle:{ color:'rgba(0,180,255,.1)' } }, axisLabel:{ color:'#7fb6e0', fontSize:9.5 } },
-    series:[{ type:'line', smooth:true, symbol:'circle', symbolSize:5, data:[],
-      lineStyle:{ color:'#00d4ff', width:2 }, itemStyle:{ color:'#00d4ff', borderColor:'#fff', borderWidth:1 },
-      areaStyle:{ color:new echarts.graphic.LinearGradient(0,0,0,1,[{ offset:0, color:'rgba(0,212,255,.45)' }, { offset:1, color:'rgba(0,212,255,0)' }]) } }]
-  });
-  pieChart.setOption({
-    tooltip:{ trigger:'item', backgroundColor:'rgba(4,22,45,.94)', borderColor:'rgba(0,180,255,.5)', textStyle:{ color:'#cfe9ff', fontSize:11 } },
-    legend:{ bottom:0, icon:'circle', itemWidth:7, itemHeight:7, textStyle:{ color:'#7fb6e0', fontSize:9.5 }, itemGap:8 },
-    series:[{ type:'pie', radius:['44%','68%'], center:['50%','43%'], label:{ show:false }, avoidLabelOverlap:true,
-      itemStyle:{ borderColor:'#031127', borderWidth:2 }, color:['#00d4ff','#3b82f6','#22e6ff','#7c5cff','#0ea5e9','#f59e0b'], data:[] }]
-  });
-  addEventListener('resize', () => { trendChart.resize(); pieChart.resize(); });
+  trendChart=echarts.init($('#c-trend'));pieChart=echarts.init($('#c-pie'));
+  trendChart.setOption({grid:{left:34,right:12,top:18,bottom:22},tooltip:{trigger:'axis'},xAxis:{type:'category',boundaryGap:false,data:[],axisLabel:{color:'#7fb6e0',fontSize:9.5}},yAxis:{type:'value',axisLabel:{color:'#7fb6e0',fontSize:9.5},splitLine:{lineStyle:{color:'rgba(0,180,255,.1)'}}},series:[{type:'line',smooth:true,symbol:'circle',symbolSize:5,data:[],lineStyle:{color:'#00d4ff',width:2},itemStyle:{color:'#00d4ff'},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,.45)'},{offset:1,color:'rgba(0,212,255,0)'}])}}]});
+  pieChart.setOption({tooltip:{trigger:'item'},legend:{bottom:0,icon:'circle',itemWidth:7,itemHeight:7,textStyle:{color:'#7fb6e0',fontSize:9.5}},series:[{type:'pie',radius:['44%','68%'],center:['50%','43%'],label:{show:false},itemStyle:{borderColor:'#031127',borderWidth:2},data:[]}]});
+  addEventListener('resize',()=>{trendChart.resize();pieChart.resize();});
 }
-function renderCharts(){
-  if (!trendChart) return;
-  trendChart.setOption({ xAxis:{ data: S.config.trend.labels }, series:[{ data: S.config.trend.values }] });
-  pieChart.setOption({ series:[{ data: S.config.pie }] });
-}
-function renderAll(){
-  renderTitle(); renderStats(); renderRank(); renderEntries(); renderHotspots(); renderMap(); renderCharts(); renderUserBadge();
-}
+function renderCharts(){if(!trendChart)return;trendChart.setOption({xAxis:{data:S.config.trend.labels},series:[{data:S.config.trend.values}]});pieChart.setOption({series:[{data:S.config.pie}]});}
+function renderAll(){renderTitle();renderStats();renderRank();renderEntries();renderHotspots();renderMap();renderCharts();renderUserBadge();}
 
-$('#mainTitle').dataset.path = 'title';
-$('#mainSub').dataset.path = 'subtitle';
-document.addEventListener('focusout', e => {
-  const el = e.target.closest('[contenteditable][data-path]');
-  if (!el) return;
-  if (!adminAuthed && !checkAdminSession()){ renderTitle(); return; }
-  setPath(S.config, el.dataset.path, el.textContent.trim());
-  S.config.updatedAt = Date.now();
-  S.config.booksDirty = true;  // 标题改动也算 config 修改
-  save();
-});
+$('#mainTitle').dataset.path='title';$('#mainSub').dataset.path='subtitle';
+document.addEventListener('focusout',e=>{const el=e.target.closest('[contenteditable][data-path]');if(!el)return;if(!adminAuthed&&!checkAdminSession()){renderTitle();return;}setPath(S.config,el.dataset.path,el.textContent.trim());S.config.updatedAt=Date.now();S.config.booksDirty=true;save();});
 
-/* =========================================================
-   用户登录
-   ========================================================= */
-const userModal = $('#userModal'); const inpName = $('#inpName'); const ucTip = $('#ucTip');
-
-function getClassValue(){
-  const g = $('#selGrade').value; const n = $('#selClassNum').value;
-  if (!g || !n) return '';
-  return g.endsWith('年级') ? (g + n + '班') : (g + '(' + n + ')班');
-}
-function makeKey(n, c){ return c + '|' + n; }
-
-function checkUser(){
-  const n = inpName.value.trim(); const c = getClassValue();
-  if (!n || !c){ ucTip.textContent = ''; ucTip.className = 'uc-tip'; return; }
-  const k = makeKey(n, c);
-  if (S.users[k]){
-    const cnt = (S.users[k].visits || []).length;
-    ucTip.textContent = `✓ 发现已有记录（${c} ${n}），将载入 ${cnt} 次浏览数据`;
-    ucTip.className = 'uc-tip';
-  } else {
-    ucTip.textContent = `✨ 新用户，将为你创建浏览档案`;
-    ucTip.className = 'uc-tip warn';
-  }
-}
-inpName.addEventListener('input', checkUser);
-$('#selGrade').addEventListener('change', checkUser);
-$('#selClassNum').addEventListener('change', checkUser);
-
+/* ================= 用户登录 ================= */
+const userModal=$('#userModal'),inpName=$('#inpName'),ucTip=$('#ucTip');
+function getClassValue(){const g=$('#selGrade').value,n=$('#selClassNum').value;if(!g||!n)return '';return g.endsWith('年级')?(g+n+'班'):(g+'('+n+')班');}
+function makeKey(n,c){return c+'|'+n;}
+function checkUser(){const n=inpName.value.trim(),c=getClassValue();if(!n||!c){ucTip.textContent='';ucTip.className='uc-tip';return;}const k=makeKey(n,c);if(S.users[k]){const cnt=(S.users[k].visits||[]).length;ucTip.textContent=`✓ 发现已有记录（${c} ${n}），将载入 ${cnt} 次浏览数据`;ucTip.className='uc-tip';}else{ucTip.textContent=`✨ 新用户，将为你创建浏览档案`;ucTip.className='uc-tip warn';}}
+inpName.addEventListener('input',checkUser);$('#selGrade').addEventListener('change',checkUser);$('#selClassNum').addEventListener('change',checkUser);
 function doLogin(){
-  const n = inpName.value.trim(); const c = getClassValue();
-  if (!n){ ucTip.textContent = '请填写姓名'; ucTip.className = 'uc-tip err'; inpName.focus(); return; }
-  if (!c){ ucTip.textContent = '请选择年级和班级'; ucTip.className = 'uc-tip err'; return; }
-  const k = makeKey(n, c);
-  const isNew = !S.users[k];
-  if (isNew) S.users[k] = { key: k, name: n, cls: c, visits: [], createdAt: Date.now() };
-  S.currentUser = k;
-  save();
-  userModal.classList.remove('on');
-  renderAll();
-  toast(isNew ? `欢迎新同学，${n}！` : `欢迎回来，${n}！`);
-  if (CLOUD.gistId) setTimeout(() => { pullFromCloud(true); }, 800);
+  const n=inpName.value.trim(),c=getClassValue();
+  if(!n){ucTip.textContent='请填写姓名';ucTip.className='uc-tip err';inpName.focus();return;}
+  if(!c){ucTip.textContent='请选择年级和班级';ucTip.className='uc-tip err';return;}
+  const k=makeKey(n,c);const isNew=!S.users[k];
+  if(isNew)S.users[k]={key:k,name:n,cls:c,visits:[],createdAt:Date.now()};
+  S.currentUser=k;save();userModal.classList.remove('on');renderAll();
+  toast(isNew?`欢迎新同学，${n}！`:`欢迎回来，${n}！`);
+  if(CLOUD.gistId)setTimeout(()=>{pullFromCloud(true);},800);
 }
-$('#btnLogin').onclick = doLogin;
-inpName.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
-
+$('#btnLogin').onclick=doLogin;
+inpName.addEventListener('keydown',e=>{if(e.key==='Enter')doLogin();});
 function parseClassToSelects(cls){
-  if (!cls) return { grade:'', num:'' };
-  let m = cls.match(/^([一二三四五六七八九十]+年级)(\d+)班$/);
-  if (m) return { grade: m[1], num: m[2] };
-  m = cls.match(/^([一二三四五六七八九十]+)\((\d+)\)班$/);
-  if (m){
-    const map = {'一':'一年级','二':'二年级','三':'三年级','四':'四年级','五':'五年级','六':'六年级'};
-    return { grade: map[m[1]] || '', num: m[2] };
-  }
-  return { grade:'', num:'' };
+  if(!cls)return{grade:'',num:''};
+  let m=cls.match(/^([一二三四五六七八九十]+年级)(\d+)班$/);if(m)return{grade:m[1],num:m[2]};
+  m=cls.match(/^([一二三四五六七八九十]+)\((\d+)\)班$/);
+  if(m){const map={'一':'一年级','二':'二年级','三':'三年级','四':'四年级','五':'五年级','六':'六年级'};return{grade:map[m[1]]||'',num:m[2]};}
+  return{grade:'',num:''};
 }
-$('#userChip').onclick = () => {
-  const u = S.users[S.currentUser];
-  inpName.value = u ? u.name : '';
-  if (u && u.cls){
-    const p = parseClassToSelects(u.cls);
-    $('#selGrade').value = p.grade; $('#selClassNum').value = p.num;
-  } else { $('#selGrade').value = ''; $('#selClassNum').value = ''; }
-  checkUser();
-  userModal.classList.add('on');
-  setTimeout(()=> inpName.focus(), 200);
-};
+$('#userChip').onclick=()=>{const u=S.users[S.currentUser];inpName.value=u?u.name:'';if(u&&u.cls){const p=parseClassToSelects(u.cls);$('#selGrade').value=p.grade;$('#selClassNum').value=p.num;}else{$('#selGrade').value='';$('#selClassNum').value='';}checkUser();userModal.classList.add('on');setTimeout(()=>inpName.focus(),200);};
 
-function recordVisit(sceneId){
-  const u = S.users[S.currentUser];
-  if (!u) return;
-  u.visits = u.visits || [];
-  u.visits.push({ t: Date.now(), s: sceneId });
-  if (u.visits.length > 1000) u.visits = u.visits.slice(-1000);
-  save();
-  renderStats(); renderRank(); renderEntries();
-}
+function recordVisit(sceneId){const u=S.users[S.currentUser];if(!u)return;u.visits=u.visits||[];u.visits.push({t:Date.now(),s:sceneId});if(u.visits.length>1000)u.visits=u.visits.slice(-1000);save();renderStats();renderRank();renderEntries();}
 
-/* =========================================================
-   地图交互
-   ========================================================= */
-let dragMode = false;
-function setDragMode(on){
-  dragMode = on;
-  $('#btnDrag').classList.toggle('on', dragMode);
-  $('#hotspotLayer').classList.toggle('drag-mode', dragMode);
-  toast(dragMode ? '拖动模式已开启' : '拖动模式已关闭');
-}
-$('#btnDrag').onclick = () => requireAdmin(() => setDragMode(!dragMode));
-
-let dragTarget = null;
-$('#hotspotLayer').addEventListener('pointerdown', e => {
-  if (!dragMode) return;
-  const hs = e.target.closest('.hotspot');
-  if (!hs) return;
-  e.preventDefault(); dragTarget = hs;
-  try{ hs.setPointerCapture(e.pointerId); }catch(err){}
-});
-$('#hotspotLayer').addEventListener('pointermove', e => {
-  if (!dragTarget) return;
-  const r = $('#map').getBoundingClientRect();
-  let x = ((e.clientX - r.left) / r.width) * 100;
-  let y = ((e.clientY - r.top) / r.height) * 100;
-  x = Math.max(0, Math.min(100, x)); y = Math.max(0, Math.min(100, y));
-  dragTarget.style.left = x + '%'; dragTarget.style.top = y + '%';
-  const s = S.config.scenes[+dragTarget.dataset.idx];
-  if (s){ s.x = +x.toFixed(2); s.y = +y.toFixed(2); }
-});
-$('#hotspotLayer').addEventListener('pointerup', () => {
-  if (dragTarget){ S.config.updatedAt = Date.now(); save(); dragTarget = null; }
-});
-$('#hotspotLayer').addEventListener('click', e => {
-  if (dragMode) return;
-  const hs = e.target.closest('.hotspot');
-  if (hs) enterScene(+hs.dataset.idx, null);
-});
-$('#entries').addEventListener('click', e => {
-  const card = e.target.closest('.entry');
-  if (card) enterScene(+card.dataset.idx, card);
-});
-$('#btnUpload').onclick = () => requireAdmin(() => openMapModal());
+/* ================= 地图交互 ================= */
+let dragMode=false;
+function setDragMode(on){dragMode=on;$('#btnDrag').classList.toggle('on',dragMode);$('#hotspotLayer').classList.toggle('drag-mode',dragMode);toast(dragMode?'拖动模式已开启':'拖动模式已关闭');}
+$('#btnDrag').onclick=()=>requireAdmin(()=>setDragMode(!dragMode));
+let dragTarget=null;
+$('#hotspotLayer').addEventListener('pointerdown',e=>{if(!dragMode)return;const hs=e.target.closest('.hotspot');if(!hs)return;e.preventDefault();dragTarget=hs;try{hs.setPointerCapture(e.pointerId);}catch(err){}});
+$('#hotspotLayer').addEventListener('pointermove',e=>{if(!dragTarget)return;const r=$('#map').getBoundingClientRect();let x=((e.clientX-r.left)/r.width)*100,y=((e.clientY-r.top)/r.height)*100;x=Math.max(0,Math.min(100,x));y=Math.max(0,Math.min(100,y));dragTarget.style.left=x+'%';dragTarget.style.top=y+'%';const s=S.config.scenes[+dragTarget.dataset.idx];if(s){s.x=+x.toFixed(2);s.y=+y.toFixed(2);}});
+$('#hotspotLayer').addEventListener('pointerup',()=>{if(dragTarget){S.config.updatedAt=Date.now();save();dragTarget=null;}});
+$('#hotspotLayer').addEventListener('click',e=>{if(dragMode)return;const hs=e.target.closest('.hotspot');if(hs)enterScene(+hs.dataset.idx,null);});
+$('#entries').addEventListener('click',e=>{const card=e.target.closest('.entry');if(card)enterScene(+card.dataset.idx,card);});
+$('#btnUpload').onclick=()=>requireAdmin(()=>openMapModal());
 
 /* 平面图 */
-const mapModal = $('#mapModal');
-function openMapModal(){
-  $('#inpMapUrl').value = S.config.mapImageUrl || '';
-  $('#mapTip').textContent = S.config.mapImageUrl ? '当前：' + S.config.mapImageUrl : (S.config.mapImage ? '当前使用本地上传图片' : '');
-  $('#mapTip').className = 'uc-tip';
-  mapModal.classList.add('on');
+const mapModal=$('#mapModal');
+function openMapModal(){$('#inpMapUrl').value=S.config.mapImageUrl||'';$('#mapTip').textContent=S.config.mapImageUrl?'当前：'+S.config.mapImageUrl:(S.config.mapImage?'当前使用本地上传图片':'');$('#mapTip').className='uc-tip';mapModal.classList.add('on');}
+function closeMapModal(){mapModal.classList.remove('on');}
+$('#btnMapCancel').onclick=closeMapModal;
+mapModal.addEventListener('click',e=>{if(e.target===mapModal)closeMapModal();});
+$('#btnMapApply').onclick=()=>{const url=$('#inpMapUrl').value.trim();const tip=$('#mapTip');if(!url){tip.textContent='请输入图片地址';tip.className='uc-tip err';return;}tip.textContent='正在加载图片…';const img=new Image();img.onload=()=>{S.config.mapImageUrl=url;S.config.mapImage='';S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderMap();closeMapModal();toast('平面图已更新');};img.onerror=()=>{tip.textContent='图片加载失败';tip.className='uc-tip err';};img.src=url;};
+$('#btnMapUpload').onclick=()=>$('#fileMap').click();
+$('#fileMap').onchange=e=>{const f=e.target.files[0];if(!f)return;if(!f.type.startsWith('image/')){toast('请选择图片文件');return;}const reader=new FileReader();reader.onload=ev=>{const img=new Image();img.onload=()=>{const MAXW=1600;let w=img.width,h=img.height;if(w>MAXW){h=Math.round(h*MAXW/w);w=MAXW;}const cv=document.createElement('canvas');cv.width=w;cv.height=h;cv.getContext('2d').drawImage(img,0,0,w,h);S.config.mapImage=cv.toDataURL('image/jpeg',0.82);S.config.mapImageUrl='';S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderMap();closeMapModal();toast('平面图已更新');};img.onerror=()=>toast('图片读取失败');img.src=ev.target.result;};reader.readAsDataURL(f);e.target.value='';};
+$('#btnMapClear').onclick=()=>{if(!confirm('确定清除当前平面图吗？'))return;S.config.mapImage='';S.config.mapImageUrl='';S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderMap();closeMapModal();toast('平面图已清除');};
+
+/* ================= 全景查看器 ================= */
+const viewerEl=$('#viewer'),panoEl=$('#pano'),panoWrap=$('#panoWrap'),spotsEl=$('#vSpots');
+let panoViewer=null,curSceneIdx=0,curSpotIdx=0,bookEditMode=false,curPanoIsFallback=false;
+function currentScene(){return S.config.scenes[curSceneIdx]||null;}
+function currentSpot(){const sc=currentScene();if(!sc)return null;return (sc.spots||[])[curSpotIdx]||null;}
+function currentSid(){const sp=currentSpot();return sp?sp.sid:null;}
+
+function enterScene(idx,cardEl){
+  const s=S.config.scenes[idx];if(!s)return;
+  if(!S.currentUser||!S.users[S.currentUser]){userModal.classList.add('on');toast('请先填写姓名和班级');return;}
+  if(cardEl){cardEl.classList.remove('flash');void cardEl.offsetWidth;cardEl.classList.add('flash');}
+  recordVisit(s.id);openViewer(idx,0);
 }
-function closeMapModal(){ mapModal.classList.remove('on'); }
-$('#btnMapCancel').onclick = closeMapModal;
-mapModal.addEventListener('click', e => { if (e.target === mapModal) closeMapModal(); });
-$('#btnMapApply').onclick = () => {
-  const url = $('#inpMapUrl').value.trim();
-  const tip = $('#mapTip');
-  if (!url){ tip.textContent = '请输入图片地址'; tip.className = 'uc-tip err'; return; }
-  tip.textContent = '正在加载图片…'; tip.className = 'uc-tip';
-  const img = new Image();
-  img.onload = () => {
-    S.config.mapImageUrl = url; S.config.mapImage = '';
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderMap(); closeMapModal();
-    toast('平面图已更新');
-  };
-  img.onerror = () => { tip.textContent = '图片加载失败：请检查路径或图片是否已上传'; tip.className = 'uc-tip err'; };
-  img.src = url;
-};
-$('#btnMapUpload').onclick = () => $('#fileMap').click();
-$('#fileMap').onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  if (!f.type.startsWith('image/')){ toast('请选择图片文件'); return; }
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = new Image();
-    img.onload = () => {
-      const MAXW = 1600;
-      let w = img.width, h = img.height;
-      if (w > MAXW){ h = Math.round(h * MAXW / w); w = MAXW; }
-      const cv = document.createElement('canvas');
-      cv.width = w; cv.height = h;
-      cv.getContext('2d').drawImage(img, 0, 0, w, h);
-      S.config.mapImage = cv.toDataURL('image/jpeg', 0.82);
-      S.config.mapImageUrl = '';
-      S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-      save(); renderMap(); closeMapModal();
-      toast('平面图已更新');
-    };
-    img.onerror = () => toast('图片读取失败');
-    img.src = ev.target.result;
-  };
-  reader.readAsDataURL(f);
-  e.target.value = '';
-};
-$('#btnMapClear').onclick = () => {
-  if (!confirm('确定清除当前平面图吗？')) return;
-  S.config.mapImage = ''; S.config.mapImageUrl = '';
-  S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-  save(); renderMap(); closeMapModal();
-  toast('平面图已清除');
-};
-
-/* =========================================================
-   全景查看器
-   ========================================================= */
-const viewerEl = $('#viewer'); const panoEl = $('#pano'); const panoWrap = $('#panoWrap'); const spotsEl = $('#vSpots');
-let panoViewer = null; let curSceneIdx = 0; let curSpotIdx = 0; let bookEditMode = false; let curPanoIsFallback = false;
-
-function currentScene(){ return S.config.scenes[curSceneIdx] || null; }
-function currentSpot(){ const sc = currentScene(); if (!sc) return null; return (sc.spots || [])[curSpotIdx] || null; }
-function currentSid(){ const sp = currentSpot(); return sp ? sp.sid : null; }
-
-function enterScene(idx, cardEl){
-  const s = S.config.scenes[idx]; if (!s) return;
-  if (!S.currentUser || !S.users[S.currentUser]){ userModal.classList.add('on'); toast('请先填写姓名和班级'); return; }
-  if (cardEl){ cardEl.classList.remove('flash'); void cardEl.offsetWidth; cardEl.classList.add('flash'); }
-  recordVisit(s.id);
-  openViewer(idx, 0);
-}
-function openViewer(sceneIdx, spotIdx){
-  curSceneIdx = sceneIdx; curSpotIdx = spotIdx || 0;
-  bookEditMode = false; document.body.classList.remove('book-editing');
-  $('#btnBookEdit').classList.remove('on'); $('#btnBookEdit').textContent = '✎ 编辑图书';
-  removeBookModeTip(); removePanoFallbackTip();
-  const s = currentScene(); if (!s) return;
-  $('#vTitle').textContent = s.name;
-  $('#vStats').innerHTML = (s.stats || []).map(st => `<div class="vs"><b>${escapeHtml(st.value)}</b><span>${escapeHtml(st.label)}</span></div>`).join('');
-  spotsEl.innerHTML = '<span class="v-tip">拖拽旋转 · 滚轮缩放 · ESC 返回</span>';
-  (s.spots || []).forEach((sp, i) => {
-    const chip = document.createElement('div');
-    chip.className = 'chip' + (i === curSpotIdx ? ' on' : '');
-    chip.textContent = sp.name;
-    chip.onclick = () => loadSpot(i);
-    spotsEl.insertBefore(chip, spotsEl.querySelector('.v-tip'));
+function openViewer(sceneIdx,spotIdx){
+  curSceneIdx=sceneIdx;curSpotIdx=spotIdx||0;
+  bookEditMode=false;document.body.classList.remove('book-editing');
+  $('#btnBookEdit').classList.remove('on');$('#btnBookEdit').textContent='✎ 编辑图书';
+  removeBookModeTip();removePanoFallbackTip();
+  const s=currentScene();if(!s)return;
+  $('#vTitle').textContent=s.name;
+  $('#vStats').innerHTML=(s.stats||[]).map(st=>`<div class="vs"><b>${escapeHtml(st.value)}</b><span>${escapeHtml(st.label)}</span></div>`).join('');
+  spotsEl.innerHTML='<span class="v-tip">拖拽旋转 · 滚轮缩放 · ESC 返回</span>';
+  (s.spots||[]).forEach((sp,i)=>{
+    const chip=document.createElement('div');
+    chip.className='chip'+(i===curSpotIdx?' on':'');
+    chip.textContent=sp.name;chip.onclick=()=>loadSpot(i);
+    spotsEl.insertBefore(chip,spotsEl.querySelector('.v-tip'));
   });
   viewerEl.classList.add('on');
   loadSpot(curSpotIdx);
 }
 async function loadSpot(i){
-  const s = currentScene(); if (!s) return;
-  const spot = (s.spots || [])[i]; if (!spot) return;
-  curSpotIdx = i;
-  $('#vSpotName').textContent = spot.name;
+  const s=currentScene();if(!s)return;
+  const spot=(s.spots||[])[i];if(!spot)return;
+  curSpotIdx=i;
+  $('#vSpotName').textContent=spot.name;
   $('#vSpotName').classList.remove('fallback');
-  spotsEl.querySelectorAll('.chip').forEach((el, k) => { el.classList.toggle('on', k === i); el.classList.remove('fallback'); });
+  spotsEl.querySelectorAll('.chip').forEach((el,k)=>{el.classList.toggle('on',k===i);el.classList.remove('fallback');});
   removePanoFallbackTip();
-  if (panoViewer){ try{ panoViewer.destroy(); }catch(e){} panoViewer = null; }
-  panoEl.innerHTML = ''; removeBookHint();
-  panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#6fa8d0;font-size:13px">全景加载中…</div>';
-  const userPano = spot.pano || '';
-  let finalPano = userPano; let isFallback = false;
-  if (!userPano){ finalPano = pickOnlinePano(spot.sid || spot.name || 'default'); isFallback = true; }
-  else {
-    const loadable = await checkImageLoadable(userPano);
-    if (!loadable){ finalPano = pickOnlinePano(spot.sid || spot.name || 'default'); isFallback = true; }
-  }
-  curPanoIsFallback = isFallback;
-  if (isFallback){
-    $('#vSpotName').classList.add('fallback');
-    const chip = spotsEl.querySelectorAll('.chip')[i];
-    if (chip) chip.classList.add('fallback');
-    showPanoFallbackTip();
-  }
-  requestAnimationFrame(() => {
-    if (typeof pannellum === 'undefined'){
-      panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#6fa8d0;font-size:13px">全景组件未加载</div>';
-      return;
-    }
-    const books = getBooks(spot.sid);
-    const hotSpots = books.map((b, k) => ({ id: 'book-' + k, pitch: Number(b.pitch) || 0, yaw: Number(b.yaw) || 0, type: 'info', cssClass: 'book-spot' }));
-    panoEl.innerHTML = '';
+  if(panoViewer){try{panoViewer.destroy();}catch(e){}panoViewer=null;}
+  panoEl.innerHTML='';removeBookHint();
+  panoEl.innerHTML='<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#6fa8d0;font-size:13px">全景加载中…</div>';
+  const userPano=spot.pano||'';let finalPano=userPano;let isFallback=false;
+  if(!userPano){finalPano=pickOnlinePano(spot.sid||spot.name||'default');isFallback=true;}
+  else{const loadable=await checkImageLoadable(userPano);if(!loadable){finalPano=pickOnlinePano(spot.sid||spot.name||'default');isFallback=true;}}
+  curPanoIsFallback=isFallback;
+  if(isFallback){$('#vSpotName').classList.add('fallback');const chip=spotsEl.querySelectorAll('.chip')[i];if(chip)chip.classList.add('fallback');showPanoFallbackTip();}
+  requestAnimationFrame(()=>{
+    if(typeof pannellum==='undefined'){panoEl.innerHTML='<div style="padding:20px;color:#6fa8d0">全景组件未加载</div>';return;}
+    const books=getBooks(spot.sid);
+    /* ★ 打印调试信息，便于确认图书数据 */
+    console.log('[全景] 点位='+spot.sid+'，图书数量='+books.length, books.map(b=>b.name));
+    const hotSpots=books.map((b,k)=>({id:'book-'+k,pitch:Number(b.pitch)||0,yaw:Number(b.yaw)||0,type:'info',cssClass:'book-spot'}));
+    panoEl.innerHTML='';
     try{
-      panoViewer = pannellum.viewer('pano', {
-        type: 'equirectangular', panorama: finalPano, autoLoad: true, autoRotate: -1.2,
-        hfov: 105, minHfov: 60, maxHfov: 120, showControls: true, backgroundColor: [2, 10, 24],
-        hotSpots: hotSpots,
-        strings: { loadingLabel:'全景加载中…', zoomIn:'放大', zoomOut:'缩小' }
+      panoViewer=pannellum.viewer('pano',{
+        type:'equirectangular',panorama:finalPano,autoLoad:true,autoRotate:-1.2,
+        hfov:105,minHfov:60,maxHfov:120,showControls:true,backgroundColor:[2,10,24],
+        hotSpots:hotSpots,
+        strings:{loadingLabel:'全景加载中…',zoomIn:'放大',zoomOut:'缩小'}
       });
-      panoViewer.on('load', () => { setTimeout(() => injectBookContent(), 80); setTimeout(() => injectBookContent(), 320); });
-    }catch(err){ panoEl.innerHTML = '<div style="padding:20px;color:#6fa8d0">全景加载失败</div>'; return; }
-    setTimeout(() => injectBookContent(), 260);
-    setTimeout(() => injectBookContent(), 700);
+      panoViewer.on('load',()=>{setTimeout(()=>injectBookContent(),80);setTimeout(()=>injectBookContent(),320);});
+    }catch(err){panoEl.innerHTML='<div style="padding:20px;color:#6fa8d0">全景加载失败</div>';return;}
+    setTimeout(()=>injectBookContent(),260);setTimeout(()=>injectBookContent(),700);
   });
 }
-function showPanoFallbackTip(){
-  removePanoFallbackTip();
-  const d = document.createElement('div');
-  d.className = 'pano-fallback-tip'; d.id = 'panoFallbackTip';
-  d.textContent = '⚠️ 该点位未配置全景图，当前显示在线示例图';
-  panoWrap.appendChild(d);
-  setTimeout(() => { if (d.parentNode){ d.style.transition = 'opacity .5s'; d.style.opacity = '0'; setTimeout(() => d.remove(), 600); } }, 4000);
-}
-function removePanoFallbackTip(){ const d = document.getElementById('panoFallbackTip'); if (d) d.remove(); }
+function showPanoFallbackTip(){removePanoFallbackTip();const d=document.createElement('div');d.className='pano-fallback-tip';d.id='panoFallbackTip';d.textContent='⚠️ 该点位未配置全景图，当前显示在线示例图';panoWrap.appendChild(d);setTimeout(()=>{if(d.parentNode){d.style.transition='opacity .5s';d.style.opacity='0';setTimeout(()=>d.remove(),600);}},4000);}
+function removePanoFallbackTip(){const d=document.getElementById('panoFallbackTip');if(d)d.remove();}
 
 function injectBookContent(){
-  if (!panoViewer) return;
-  const sid = currentSid(); if (!sid) return;
-  const books = getBooks(sid); removeBookHint();
-  const els = panoEl.querySelectorAll('.book-spot');
-  if (!books.length){ if (bookEditMode) showBookHint(); return; }
-  if (!els.length){ setTimeout(injectBookContent, 200); return; }
-  els.forEach((el, i) => {
-    const b = books[i]; if (!b) return;
-    el.innerHTML = '';
-    const img = document.createElement('img'); img.draggable = false;
-    el.appendChild(img); imgWithFallback(img, b.img || DEFAULT_BOOK_IMG);
-    const nm = document.createElement('div'); nm.className = 'bk-name'; nm.textContent = b.name || '图书';
-    el.appendChild(nm);
-    const del = document.createElement('button');
-    del.className = 'bk-del'; del.type = 'button'; del.textContent = '✕';
-    del.title = '删除该图书';
-    del.addEventListener('pointerdown', ev => { ev.stopPropagation(); });
-    del.addEventListener('click', ev => {
-      ev.stopPropagation(); ev.preventDefault();
-      const arr = getBooks(sid); arr.splice(i, 1);
-      S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-      save(); refreshBookHotSpots(); renderStats(); renderDrawer();
-      toast('已删除该图书');
-    });
+  if(!panoViewer)return;
+  const sid=currentSid();if(!sid)return;
+  const books=getBooks(sid);removeBookHint();
+  const els=panoEl.querySelectorAll('.book-spot');
+  console.log('[注入] 点位='+sid+'，图书='+books.length+'，DOM='+els.length);
+  if(!books.length){if(bookEditMode)showBookHint();return;}
+  if(!els.length){setTimeout(injectBookContent,200);return;}
+  els.forEach((el,i)=>{
+    const b=books[i];if(!b)return;
+    el.innerHTML='';
+    const img=document.createElement('img');img.draggable=false;el.appendChild(img);imgWithFallback(img,b.img||DEFAULT_BOOK_IMG);
+    const nm=document.createElement('div');nm.className='bk-name';nm.textContent=b.name||'图书';el.appendChild(nm);
+    const del=document.createElement('button');del.className='bk-del';del.type='button';del.textContent='✕';del.title='删除该图书';
+    del.addEventListener('pointerdown',ev=>{ev.stopPropagation();});
+    del.addEventListener('click',ev=>{ev.stopPropagation();ev.preventDefault();const arr=getBooks(sid);arr.splice(i,1);S.config.updatedAt=Date.now();S.config.booksDirty=true;save();refreshBookHotSpots();renderStats();renderDrawer();toast('已删除该图书');});
     el.appendChild(del);
-    el.addEventListener('click', ev => {
-      ev.stopPropagation();
-      if (bookEditMode) return;
-      if (b.url) window.open(b.url, '_blank', 'noopener');
-      else toast('该图书尚未设置电子书链接');
-    });
-    el.addEventListener('pointerdown', ev => {
-      if (!bookEditMode) return;
-      if (ev.target.closest('.bk-del')) return;
-      ev.preventDefault(); ev.stopPropagation();
-      startBookDrag(i, el, ev);
-    });
+    el.addEventListener('click',ev=>{ev.stopPropagation();if(bookEditMode)return;if(b.url)window.open(b.url,'_blank','noopener');else toast('该图书尚未设置电子书链接');});
+    el.addEventListener('pointerdown',ev=>{if(!bookEditMode)return;if(ev.target.closest('.bk-del'))return;ev.preventDefault();ev.stopPropagation();startBookDrag(i,el,ev);});
   });
 }
-function showBookHint(){
-  removeBookHint();
-  const d = document.createElement('div');
-  d.className = 'book-hint'; d.id = 'bookHint';
-  d.innerHTML = '<b>当前点位还没有图书</b>在「管理 → 全景图书展示」中<br>选中本场景的此点位，点击「＋ 添加」';
-  panoWrap.appendChild(d);
-}
-function removeBookHint(){ const d = document.getElementById('bookHint'); if (d) d.remove(); }
-function showBookModeTip(){
-  removeBookModeTip();
-  const d = document.createElement('div');
-  d.className = 'book-mode-tip'; d.id = 'bookModeTip';
-  d.textContent = '✎ 编辑模式：按住图书拖动到指定位置，点击 ✕ 可删除';
-  panoWrap.appendChild(d);
-}
-function removeBookModeTip(){ const d = document.getElementById('bookModeTip'); if (d) d.remove(); }
-const dragGhost = $('#dragGhost'); const dragGhostImg = $('#dragGhostImg');
-
-function startBookDrag(idx, el, startEv){
-  const sid = currentSid(); if (!sid) return;
-  const books = getBooks(sid); const b = books[idx]; if (!b) return;
-  imgWithFallback(dragGhostImg, b.img || DEFAULT_BOOK_IMG);
-  dragGhost.style.display = 'block'; moveGhost(startEv.clientX, startEv.clientY);
-  const overlay = document.createElement('div');
-  overlay.style.cssText = 'position:fixed;inset:0;z-index:99997;cursor:grabbing;background:transparent;';
-  document.body.appendChild(overlay);
-  const pRect = panoEl.getBoundingClientRect();
-  let moved = false; let lastClient = { x: startEv.clientX, y: startEv.clientY };
-  function onMove(e){
-    moved = true; lastClient = { x: e.clientX, y: e.clientY };
-    moveGhost(e.clientX, e.clientY);
-    el.style.left = (e.clientX - pRect.left) + 'px';
-    el.style.top = (e.clientY - pRect.top) + 'px';
-  }
+function showBookHint(){removeBookHint();const d=document.createElement('div');d.className='book-hint';d.id='bookHint';d.innerHTML='<b>当前点位还没有图书</b>在「管理 → 全景图书展示」中<br>选中本场景的此点位，点击「＋ 添加」';panoWrap.appendChild(d);}
+function removeBookHint(){const d=document.getElementById('bookHint');if(d)d.remove();}
+function showBookModeTip(){removeBookModeTip();const d=document.createElement('div');d.className='book-mode-tip';d.id='bookModeTip';d.textContent='✎ 编辑模式：按住图书拖动到指定位置，点击 ✕ 可删除';panoWrap.appendChild(d);}
+function removeBookModeTip(){const d=document.getElementById('bookModeTip');if(d)d.remove();}
+const dragGhost=$('#dragGhost'),dragGhostImg=$('#dragGhostImg');
+function startBookDrag(idx,el,startEv){
+  const sid=currentSid();if(!sid)return;
+  const books=getBooks(sid);const b=books[idx];if(!b)return;
+  imgWithFallback(dragGhostImg,b.img||DEFAULT_BOOK_IMG);
+  dragGhost.style.display='block';moveGhost(startEv.clientX,startEv.clientY);
+  const overlay=document.createElement('div');overlay.style.cssText='position:fixed;inset:0;z-index:99997;cursor:grabbing;background:transparent;';document.body.appendChild(overlay);
+  const pRect=panoEl.getBoundingClientRect();let moved=false;let lastClient={x:startEv.clientX,y:startEv.clientY};
+  function onMove(e){moved=true;lastClient={x:e.clientX,y:e.clientY};moveGhost(e.clientX,e.clientY);el.style.left=(e.clientX-pRect.left)+'px';el.style.top=(e.clientY-pRect.top)+'px';}
   function onUp(){
-    overlay.removeEventListener('pointermove', onMove);
-    overlay.removeEventListener('pointerup', onUp);
-    overlay.removeEventListener('pointercancel', onUp);
-    overlay.remove(); dragGhost.style.display = 'none';
-    if (!moved){ refreshBookHotSpots(); return; }
-    let coords = null;
-    try{ if (typeof panoViewer.mouseEventToCoords === 'function') coords = panoViewer.mouseEventToCoords({ clientX: lastClient.x, clientY: lastClient.y }); }catch(err){}
-    if (coords && coords.length >= 2){
-      const [pitch, yaw] = coords;
-      const arr = getBooks(sid);
-      if (arr[idx]){
-        arr[idx].pitch = +Number(pitch).toFixed(3);
-        arr[idx].yaw = +Number(yaw).toFixed(3);
-        S.config.updatedAt = Date.now();
-        S.config.booksDirty = true;  // 拖动位置也标记修改
-        save();
-        toast('图书位置已保存');
-      }
-    } else toast('定位失败，请重试');
-    refreshBookHotSpots(); renderDrawer();
+    overlay.removeEventListener('pointermove',onMove);overlay.removeEventListener('pointerup',onUp);overlay.removeEventListener('pointercancel',onUp);overlay.remove();dragGhost.style.display='none';
+    if(!moved){refreshBookHotSpots();return;}
+    let coords=null;
+    try{if(typeof panoViewer.mouseEventToCoords==='function')coords=panoViewer.mouseEventToCoords({clientX:lastClient.x,clientY:lastClient.y});}catch(err){}
+    if(coords&&coords.length>=2){const[pitch,yaw]=coords;const arr=getBooks(sid);if(arr[idx]){arr[idx].pitch=+Number(pitch).toFixed(3);arr[idx].yaw=+Number(yaw).toFixed(3);S.config.updatedAt=Date.now();S.config.booksDirty=true;save();toast('图书位置已保存');}}else toast('定位失败，请重试');
+    refreshBookHotSpots();renderDrawer();
   }
-  overlay.addEventListener('pointermove', onMove);
-  overlay.addEventListener('pointerup', onUp);
-  overlay.addEventListener('pointercancel', onUp);
-  onMove(startEv);
+  overlay.addEventListener('pointermove',onMove);overlay.addEventListener('pointerup',onUp);overlay.addEventListener('pointercancel',onUp);onMove(startEv);
 }
-function moveGhost(x, y){
-  const w = dragGhost.offsetWidth || 100; const h = dragGhost.offsetHeight || 100;
-  dragGhost.style.left = (x - w / 2) + 'px'; dragGhost.style.top = (y - h / 2) + 'px';
-}
+function moveGhost(x,y){const w=dragGhost.offsetWidth||100,h=dragGhost.offsetHeight||100;dragGhost.style.left=(x-w/2)+'px';dragGhost.style.top=(y-h/2)+'px';}
 function refreshBookHotSpots(){
-  if (!panoViewer) return;
-  let oldSpots = [];
-  try{ oldSpots = panoViewer.getHotSpots() || []; }catch(e){}
-  oldSpots.slice().forEach(hs => {
-    if (hs && hs.id && String(hs.id).indexOf('book-') === 0){
-      try{ panoViewer.removeHotSpot(hs.id); }catch(e){}
-      const dom = document.getElementById(hs.id); if (dom && dom.parentNode) dom.parentNode.removeChild(dom);
-    }
-  });
-  panoEl.querySelectorAll('.book-spot').forEach(el => el.remove());
-  const sid = currentSid(); if (!sid) return;
-  const books = getBooks(sid);
-  books.forEach((b, i) => {
-    try{ panoViewer.addHotSpot({ id: 'book-' + i, pitch: Number(b.pitch) || 0, yaw: Number(b.yaw) || 0, type: 'info', cssClass: 'book-spot' }); }catch(e){}
-  });
-  forceRender();
-  setTimeout(injectBookContent, 80); setTimeout(injectBookContent, 300);
+  if(!panoViewer)return;
+  let oldSpots=[];try{oldSpots=panoViewer.getHotSpots()||[];}catch(e){}
+  oldSpots.slice().forEach(hs=>{if(hs&&hs.id&&String(hs.id).indexOf('book-')===0){try{panoViewer.removeHotSpot(hs.id);}catch(e){}const dom=document.getElementById(hs.id);if(dom&&dom.parentNode)dom.parentNode.removeChild(dom);}});
+  panoEl.querySelectorAll('.book-spot').forEach(el=>el.remove());
+  const sid=currentSid();if(!sid)return;
+  const books=getBooks(sid);
+  books.forEach((b,i)=>{try{panoViewer.addHotSpot({id:'book-'+i,pitch:Number(b.pitch)||0,yaw:Number(b.yaw)||0,type:'info',cssClass:'book-spot'});}catch(e){}});
+  forceRender();setTimeout(injectBookContent,80);setTimeout(injectBookContent,300);
 }
-function forceRender(){
-  if (!panoViewer) return;
-  try{ const y = panoViewer.getYaw(); panoViewer.setYaw(y + 0.0005); panoViewer.setYaw(y); }catch(e){}
-}
-$('#btnBookEdit').onclick = () => requireAdmin(() => {
-  bookEditMode = !bookEditMode;
-  $('#btnBookEdit').classList.toggle('on', bookEditMode);
-  $('#btnBookEdit').textContent = bookEditMode ? '✓ 完成编辑' : '✎ 编辑图书';
-  document.body.classList.toggle('book-editing', bookEditMode);
-  if (bookEditMode){
-    showBookModeTip();
-    if (!getBooks(currentSid()).length) showBookHint();
-    try{ panoViewer.setAutoRotate(0); }catch(e){}
-    toast('编辑模式：拖动图片定位，点击 ✕ 删除');
-  } else {
-    removeBookModeTip(); removeBookHint();
-    try{ panoViewer.setAutoRotate(-1.2); }catch(e){}
-    toast('已退出编辑模式');
-  }
+function forceRender(){if(!panoViewer)return;try{const y=panoViewer.getYaw();panoViewer.setYaw(y+0.0005);panoViewer.setYaw(y);}catch(e){}}
+$('#btnBookEdit').onclick=()=>requireAdmin(()=>{
+  bookEditMode=!bookEditMode;
+  $('#btnBookEdit').classList.toggle('on',bookEditMode);
+  $('#btnBookEdit').textContent=bookEditMode?'✓ 完成编辑':'✎ 编辑图书';
+  document.body.classList.toggle('book-editing',bookEditMode);
+  if(bookEditMode){showBookModeTip();if(!getBooks(currentSid()).length)showBookHint();try{panoViewer.setAutoRotate(0);}catch(e){}toast('编辑模式：拖动图片定位，点击 ✕ 删除');}
+  else{removeBookModeTip();removeBookHint();try{panoViewer.setAutoRotate(-1.2);}catch(e){}toast('已退出编辑模式');}
   injectBookContent();
 });
-function closeViewer(){
-  viewerEl.classList.remove('on');
-  bookEditMode = false;
-  document.body.classList.remove('book-editing');
-  removeBookModeTip(); removeBookHint(); removePanoFallbackTip();
-  curPanoIsFallback = false;
-  dragGhost.style.display = 'none';
-  if (panoViewer){ try{ panoViewer.destroy(); }catch(e){} panoViewer = null; }
-}
-$('#vBack').onclick = closeViewer;
-addEventListener('keydown', e => { if (e.key === 'Escape' && viewerEl.classList.contains('on')) closeViewer(); });
-addEventListener('resize', () => { if (viewerEl.classList.contains('on')) setTimeout(() => { forceRender(); injectBookContent(); }, 120); });
+function closeViewer(){viewerEl.classList.remove('on');bookEditMode=false;document.body.classList.remove('book-editing');removeBookModeTip();removeBookHint();removePanoFallbackTip();curPanoIsFallback=false;dragGhost.style.display='none';if(panoViewer){try{panoViewer.destroy();}catch(e){}panoViewer=null;}}
+$('#vBack').onclick=closeViewer;
+addEventListener('keydown',e=>{if(e.key==='Escape'&&viewerEl.classList.contains('on'))closeViewer();});
+addEventListener('resize',()=>{if(viewerEl.classList.contains('on'))setTimeout(()=>{forceRender();injectBookContent();},120);});
 
-/* =========================================================
-   管理抽屉
-   ========================================================= */
-const drawer = $('#drawer'), drawerMask = $('#drawerMask');
-let curBookScene = null; let curBookSpot = null;
+/* ================= 管理抽屉 ================= */
+const drawer=$('#drawer'),drawerMask=$('#drawerMask');
+let curBookScene=null,curBookSpot=null;
 
 function openDrawer(){
-  if (!adminAuthed && !checkAdminSession()){ pendingAdminAction = openDrawer; openAdminModal(); return; }
-  renderDrawer(); drawer.classList.add('on'); drawerMask.classList.add('on');
-  setTimeout(updateCloudStatusUI, 50);
+  if(!adminAuthed&&!checkAdminSession()){pendingAdminAction=openDrawer;openAdminModal();return;}
+  renderDrawer();drawer.classList.add('on');drawerMask.classList.add('on');setTimeout(updateCloudStatusUI,50);
 }
-function closeDrawer(){ drawer.classList.remove('on'); drawerMask.classList.remove('on'); }
-$('#btnManage').onclick = () => {
-  if (adminAuthed || checkAdminSession()){ adminAuthed = true; updateManageBtn(); openDrawer(); return; }
-  pendingAdminAction = openDrawer; openAdminModal();
-};
-$('#drawerClose').onclick = closeDrawer;
-drawerMask.onclick = closeDrawer;
-$('#btnChangePwd').onclick = () => openAdminModal('change');
+function closeDrawer(){drawer.classList.remove('on');drawerMask.classList.remove('on');}
+$('#btnManage').onclick=()=>{if(adminAuthed||checkAdminSession()){adminAuthed=true;updateManageBtn();openDrawer();return;}pendingAdminAction=openDrawer;openAdminModal();};
+$('#drawerClose').onclick=closeDrawer;drawerMask.onclick=closeDrawer;
+$('#btnChangePwd').onclick=()=>openAdminModal('change');
 
 function updateCloudStatusUI(){
-  if (!CLOUD.gistId){ setCloudStatus('off', '⚠️ 未配置 Gist，榜单显示演示数据'); return; }
-  if (!CLOUD.token){ setCloudStatus('off', '⚠️ 已填 Gist，未配置 Token（只读）'); return; }
-  const cfgTime = S.config.updatedAt ? ' · 配置 ' + relativeTime(S.config.updatedAt) : '';
-  setCloudStatus('on', '☁️ 已配置 · ' + (CLOUD.lastSync ? relativeTime(CLOUD.lastSync) + cfgTime : '尚未同步'));
+  if(!CLOUD.gistId){setCloudStatus('off','⚠️ 未配置 Gist，榜单显示演示数据');return;}
+  if(!CLOUD.token){setCloudStatus('off','⚠️ 已填 Gist，未配置 Token（只读）');return;}
+  const cfgTime=S.config.updatedAt?' · 配置 '+relativeTime(S.config.updatedAt):'';
+  setCloudStatus('on','☁️ 已配置 · '+(CLOUD.lastSync?relativeTime(CLOUD.lastSync)+cfgTime:'尚未同步'));
 }
 
 function renderDrawer(){
-  let h = '';
-  h += `<div><div class="d-sec-title">基础信息</div>
+  let h='';
+  h+=`<div><div class="d-sec-title">基础信息</div>
     <div class="d-row"><span class="d-label">标题</span><input data-path="title" value="${escapeAttr(S.config.title)}"></div>
     <div class="d-row"><span class="d-label">副标题</span><input data-path="subtitle" value="${escapeAttr(S.config.subtitle)}"></div>
   </div>`;
 
-  h += `<div><div class="d-sec-title">☁️ 云端同步<span class="tail">图书 / 场景 / 用户</span></div>
+  h+=`<div><div class="d-sec-title">☁️ 云端同步<span class="tail">图书 / 场景 / 用户</span></div>
     <div class="cloud-box">
       <div class="cloud-status"><span class="dot off" id="cloudDot"></span><span id="cloudTxt">加载中…</span></div>
       <div class="d-sync-note">✅ <b>上传后图书会同步到云端</b>；其他电脑拉取即可看到。</div>
       <div class="d-warn-note">⚠️ 只有在本机修改了图书后才会用本机配置覆盖云端；<br>普通浏览不会覆盖云端的图书配置。</div>
-      <div class="d-row" style="margin-bottom:8px"><span class="d-label" style="flex:0 0 60px">Token</span>
-        <input id="cloudToken" type="password" value="${escapeAttr(CLOUD.token)}" placeholder="ghp_... 或 github_pat_..."></div>
-      <div class="d-row" style="margin-bottom:8px"><span class="d-label" style="flex:0 0 60px">Gist ID</span>
-        <input id="cloudGist" value="${escapeAttr(CLOUD.gistId)}" placeholder="从 gist 链接末尾复制"></div>
-      <div class="d-row" style="margin-bottom:10px">
-        <input type="checkbox" id="cloudAuto" ${CLOUD.autoSync ? 'checked' : ''}>
-        <label for="cloudAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">自动同步（改动后 2.5 秒自动上传）</label>
-      </div>
+      <div class="d-row" style="margin-bottom:8px"><span class="d-label" style="flex:0 0 60px">Token</span><input id="cloudToken" type="password" value="${escapeAttr(CLOUD.token)}" placeholder="ghp_... 或 github_pat_..."></div>
+      <div class="d-row" style="margin-bottom:8px"><span class="d-label" style="flex:0 0 60px">Gist ID</span><input id="cloudGist" value="${escapeAttr(CLOUD.gistId)}" placeholder="从 gist 链接末尾复制"></div>
+      <div class="d-row" style="margin-bottom:10px"><input type="checkbox" id="cloudAuto" ${CLOUD.autoSync?'checked':''}><label for="cloudAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">自动同步（改动后 2.5 秒自动上传）</label></div>
       <div class="cloud-actions">
         <button class="btn primary" id="cloudPushBtn">⬆️ 立即上传</button>
         <button class="btn" id="cloudPullBtn">⬇️ 立即拉取</button>
@@ -1913,667 +1100,323 @@ function renderDrawer(){
     </div>
   </div>`;
 
-  const userCount = Object.keys(S.users).length;
-  h += `<div><div class="d-sec-title">用户管理<span class="tail">共 ${userCount} 位</span></div>
-    <button class="entry-btn" id="btnOpenUsers"><span class="eb-ico">👥</span>
-      <span class="eb-txt"><b>打开用户管理页面</b><span>搜索 / 筛选 / 增删 / 导入导出</span></span>
-      <span class="eb-arrow">➤</span></button></div>`;
+  const userCount=Object.keys(S.users).length;
+  h+=`<div><div class="d-sec-title">用户管理<span class="tail">共 ${userCount} 位</span></div>
+    <button class="entry-btn" id="btnOpenUsers"><span class="eb-ico">👥</span><span class="eb-txt"><b>打开用户管理页面</b><span>搜索 / 筛选 / 增删 / 导入导出</span></span><span class="eb-arrow">➤</span></button>
+  </div>`;
 
-  const mapSrc = S.config.mapImageUrl || S.config.mapImage;
-  h += `<div><div class="d-sec-title">学校平面图</div>
-    <div class="d-note">当前状态：${mapSrc ? (S.config.mapImageUrl ? '路径：' + escapeHtml(S.config.mapImageUrl) : '本地上传图片') : '未设置'}</div>
+  const mapSrc=S.config.mapImageUrl||S.config.mapImage;
+  h+=`<div><div class="d-sec-title">学校平面图</div>
+    <div class="d-note">当前状态：${mapSrc?(S.config.mapImageUrl?'路径：'+escapeHtml(S.config.mapImageUrl):'本地上传图片'):'未设置'}</div>
     <div class="d-row"><button class="mini" id="btnMapFromDrawer" style="flex:1;padding:8px">🖼 打开平面图设置</button></div>
   </div>`;
 
-  h += `<div><div class="d-sec-title">馆藏数据</div>
+  h+=`<div><div class="d-sec-title">馆藏数据</div>
     <div class="d-row"><span class="d-label">纸质藏书</span><input type="number" data-path="paperBooks" value="${S.config.paperBooks}"></div>
     <div class="d-row"><span class="d-label">电子资源</span><input type="number" data-path="ebookBase" value="${S.config.ebookBase}"></div>
-    <div class="d-row"><input type="checkbox" id="chkEbookAuto" ${S.config.ebookAuto ? 'checked' : ''}>
-      <label for="chkEbookAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">电子资源 = 基础值 + 全景图书数（当前 ${getTotalBooks()} 册）</label></div>
+    <div class="d-row"><input type="checkbox" id="chkEbookAuto" ${S.config.ebookAuto?'checked':''}><label for="chkEbookAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">电子资源 = 基础值 + 全景图书数（当前 ${getTotalBooks()} 册）</label></div>
     <div class="d-row"><span class="d-label">阅览座位</span><input type="number" data-path="seats" value="${S.config.seats}"></div>
   </div>`;
 
-  h += `<div><div class="d-sec-title">本周借阅趋势</div>`;
-  S.config.trend.labels.forEach((lb, i) => {
-    h += `<div class="d-row"><input data-path="trend.labels.${i}" value="${escapeAttr(lb)}">
-      <input class="w60" type="number" data-path="trend.values.${i}" value="${S.config.trend.values[i] ?? 0}"></div>`;
-  });
-  h += `</div>`;
+  h+=`<div><div class="d-sec-title">本周借阅趋势</div>`;
+  S.config.trend.labels.forEach((lb,i)=>{h+=`<div class="d-row"><input data-path="trend.labels.${i}" value="${escapeAttr(lb)}"><input class="w60" type="number" data-path="trend.values.${i}" value="${S.config.trend.values[i]??0}"></div>`;});
+  h+=`</div>`;
 
-  h += `<div><div class="d-sec-title">馆藏分类占比</div>`;
-  S.config.pie.forEach((p, i) => {
-    h += `<div class="d-row"><input data-path="pie.${i}.name" value="${escapeAttr(p.name)}">
-      <input class="w60" type="number" data-path="pie.${i}.value" value="${p.value}"></div>`;
-  });
-  h += `</div>`;
+  h+=`<div><div class="d-sec-title">馆藏分类占比</div>`;
+  S.config.pie.forEach((p,i)=>{h+=`<div class="d-row"><input data-path="pie.${i}.name" value="${escapeAttr(p.name)}"><input class="w60" type="number" data-path="pie.${i}.value" value="${p.value}"></div>`;});
+  h+=`</div>`;
 
-  h += `<div><div class="d-sec-title">场景设置<span class="tail"><button class="mini" id="btnAddScene">＋ 添加场景</button></span></div>
+  h+=`<div><div class="d-sec-title">场景设置<span class="tail"><button class="mini" id="btnAddScene">＋ 添加场景</button></span></div>
     <div class="d-fallback-note">💡 全景图留空或加载失败时，会自动使用在线示例图</div>
     <div class="d-note">全景图请填写 <code>images/xxx.jpg</code> 格式，先上传到仓库</div>`;
-
-  S.config.scenes.forEach((s, i) => {
-    h += `<div class="d-scene">
-      <div class="d-scene-head">场景 <b>#${i+1}</b> · 浏览 ${getSceneVisits(s.id)} 次
-        <button class="rm" data-rmscene="${i}" title="删除该场景">✕</button></div>
-      <div class="d-row"><input class="w60" data-path="scenes.${i}.icon" value="${escapeAttr(s.icon)}">
-        <input data-path="scenes.${i}.name" value="${escapeAttr(s.name)}"></div>
+  S.config.scenes.forEach((s,i)=>{
+    h+=`<div class="d-scene">
+      <div class="d-scene-head">场景 <b>#${i+1}</b> · 浏览 ${getSceneVisits(s.id)} 次<button class="rm" data-rmscene="${i}" title="删除该场景">✕</button></div>
+      <div class="d-row"><input class="w60" data-path="scenes.${i}.icon" value="${escapeAttr(s.icon)}"><input data-path="scenes.${i}.name" value="${escapeAttr(s.name)}"></div>
       <div class="d-row"><input data-path="scenes.${i}.desc" value="${escapeAttr(s.desc||'')}" placeholder="场景描述"></div>
-      <div class="d-row"><span class="d-label">位置%</span>
-        <input class="w60" type="number" step="0.1" data-path="scenes.${i}.x" value="${s.x ?? 50}">
-        <input class="w60" type="number" step="0.1" data-path="scenes.${i}.y" value="${s.y ?? 50}"></div>
+      <div class="d-row"><span class="d-label">位置%</span><input class="w60" type="number" step="0.1" data-path="scenes.${i}.x" value="${s.x??50}"><input class="w60" type="number" step="0.1" data-path="scenes.${i}.y" value="${s.y??50}"></div>
       <div class="d-sub">统计数据</div>`;
-    (s.stats || []).forEach((st, k) => {
-      h += `<div class="d-row"><input data-path="scenes.${i}.stats.${k}.label" value="${escapeAttr(st.label)}">
-        <input data-path="scenes.${i}.stats.${k}.value" value="${escapeAttr(st.value)}"></div>`;
+    (s.stats||[]).forEach((st,k)=>{h+=`<div class="d-row"><input data-path="scenes.${i}.stats.${k}.label" value="${escapeAttr(st.label)}"><input data-path="scenes.${i}.stats.${k}.value" value="${escapeAttr(st.value)}"></div>`;});
+    h+=`<div class="d-sub">全景点位<button class="mini" data-addspot="${i}">＋ 添加点位</button></div>`;
+    (s.spots||[]).forEach((sp,k)=>{
+      h+=`<div class="d-spot"><div class="d-row"><span class="spot-label">点位${k+1}</span><input data-path="scenes.${i}.spots.${k}.name" value="${escapeAttr(sp.name)}"><button class="rm" data-rmspot="${i}:${k}" title="删除点位">✕</button></div>
+        <div class="d-row"><span class="spot-label">全景图</span><input data-path="scenes.${i}.spots.${k}.pano" value="${escapeAttr(sp.pano)}" placeholder="留空则用在线示例图"></div></div>`;
     });
-    h += `<div class="d-sub">全景点位<button class="mini" data-addspot="${i}">＋ 添加点位</button></div>`;
-    (s.spots || []).forEach((sp, k) => {
-      h += `<div class="d-spot">
-        <div class="d-row"><span class="spot-label">点位${k+1}</span>
-          <input data-path="scenes.${i}.spots.${k}.name" value="${escapeAttr(sp.name)}">
-          <button class="rm" data-rmspot="${i}:${k}" title="删除点位">✕</button></div>
-        <div class="d-row"><span class="spot-label">全景图</span>
-          <input data-path="scenes.${i}.spots.${k}.pano" value="${escapeAttr(sp.pano)}" placeholder="留空则用在线示例图"></div>
-      </div>`;
-    });
-    h += `</div>`;
+    h+=`</div>`;
   });
-  h += `</div>`;
+  h+=`</div>`;
 
-  if (!curBookScene || !S.config.scenes.some(s => s.id === curBookScene)) curBookScene = S.config.scenes[0] ? S.config.scenes[0].id : null;
-  const bookScene = S.config.scenes.find(s => s.id === curBookScene);
-  const spotOptions = bookScene ? (bookScene.spots || []) : [];
-  if (!curBookSpot || !spotOptions.some(sp => sp.sid === curBookSpot)) curBookSpot = spotOptions[0] ? spotOptions[0].sid : null;
+  if(!curBookScene||!S.config.scenes.some(s=>s.id===curBookScene))curBookScene=S.config.scenes[0]?S.config.scenes[0].id:null;
+  const bookScene=S.config.scenes.find(s=>s.id===curBookScene);
+  const spotOptions=bookScene?(bookScene.spots||[]):[];
+  if(!curBookSpot||!spotOptions.some(sp=>sp.sid===curBookSpot))curBookSpot=spotOptions[0]?spotOptions[0].sid:null;
 
-  h += `<div><div class="d-sec-title">全景图书展示<span class="tail">随配置一起上传到云端</span></div>
+  h+=`<div><div class="d-sec-title">全景图书展示<span class="tail">随配置一起上传到云端</span></div>
     <div class="d-sync-note">✅ <b>修改图书后，自动同步或点击「⬆️ 同步」即可上传</b>；<br>其他电脑拉取后即可看到相同图书。</div>
     <div class="d-warn-note">⚠️ 图书图片请用 <code>images/xxx.jpg</code> 相对路径；<br>本地上传的图片只在本机预览，不参与云端同步。</div>
     <div class="d-row"><span class="d-label">场景</span><select id="selBookScene">`;
-  S.config.scenes.forEach(s => {
-    h += `<option value="${s.id}" ${s.id === curBookScene ? 'selected' : ''}>${escapeHtml(s.name)}</option>`;
-  });
-  h += `</select></div>
-    <div class="d-row"><span class="d-label">点位</span>
-      <select id="selBookSpot" ${spotOptions.length ? '' : 'disabled'}>`;
-  if (!spotOptions.length) h += `<option>（该场景暂无点位）</option>`;
-  else spotOptions.forEach(sp => {
-    h += `<option value="${sp.sid}" ${sp.sid === curBookSpot ? 'selected' : ''}>${escapeHtml(sp.name)}</option>`;
-  });
-  h += `</select>
-      <button class="mini" id="btnAddBook" ${curBookSpot ? '' : 'disabled style="opacity:.5;cursor:not-allowed"'}>＋ 添加</button>
+  S.config.scenes.forEach(s=>{h+=`<option value="${s.id}" ${s.id===curBookScene?'selected':''}>${escapeHtml(s.name)}</option>`;});
+  h+=`</select></div>
+    <div class="d-row"><span class="d-label">点位</span><select id="selBookSpot" ${spotOptions.length?'':'disabled'}>`;
+  if(!spotOptions.length)h+=`<option>（该场景暂无点位）</option>`;
+  else spotOptions.forEach(sp=>{h+=`<option value="${sp.sid}" ${sp.sid===curBookSpot?'selected':''}>${escapeHtml(sp.name)}</option>`;});
+  h+=`</select>
+      <button class="mini" id="btnAddBook" ${curBookSpot?'':'disabled style="opacity:.5;cursor:not-allowed"'}>＋ 添加</button>
       <button class="mini" id="btnResetBooks" title="恢复该点位的默认基础图书">↺ 重置</button>
       <button class="mini" id="btnPushBooks" title="立即上传图书数据到云端">⬆️ 同步</button>
     </div>
     <div id="bookList">`;
-
-  const arr = curBookSpot ? getBooks(curBookSpot) : [];
-  if (!arr.length){
-    h += `<div class="d-empty">该点位暂无图书<br>点击「＋ 添加」创建 100×100 图书卡片</div>`;
-  } else {
-    arr.forEach((b, i) => {
-      h += `<div class="d-book">
-        <img src="${escapeAttr(b.img || DEFAULT_BOOK_IMG)}" data-bookimg="${i}" title="点击更换图片" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'">
-        <div class="fields">
-          <input data-path="books.${curBookSpot}.${i}.name" value="${escapeAttr(b.name||'')}" placeholder="图书名">
-          <input data-path="books.${curBookSpot}.${i}.title" value="${escapeAttr(b.title||'')}" placeholder="完整标题">
-          <input data-path="books.${curBookSpot}.${i}.img" value="${escapeAttr(b.img||'')}" placeholder="图片路径 images/ts01.jpg">
-          <input data-path="books.${curBookSpot}.${i}.url" value="${escapeAttr(b.url||'')}" placeholder="电子书链接 https://...">
-        </div>
-        <button class="rm" data-rmbook="${i}" title="删除">✕</button>
-      </div>`;
-    });
-  }
-  h += `</div></div>`;
-
-  $('#drawerBody').innerHTML = h;
+  const arr=curBookSpot?getBooks(curBookSpot):[];
+  if(!arr.length){h+=`<div class="d-empty">该点位暂无图书<br>点击「＋ 添加」创建 100×100 图书卡片</div>`;}
+  else{arr.forEach((b,i)=>{h+=`<div class="d-book"><img src="${escapeAttr(b.img||DEFAULT_BOOK_IMG)}" data-bookimg="${i}" title="点击更换图片" onerror="this.onerror=null;this.src='${FALLBACK_IMG}'"><div class="fields"><input data-path="books.${curBookSpot}.${i}.name" value="${escapeAttr(b.name||'')}" placeholder="图书名"><input data-path="books.${curBookSpot}.${i}.title" value="${escapeAttr(b.title||'')}" placeholder="完整标题"><input data-path="books.${curBookSpot}.${i}.img" value="${escapeAttr(b.img||'')}" placeholder="图片路径 images/ts01.jpg"><input data-path="books.${curBookSpot}.${i}.url" value="${escapeAttr(b.url||'')}" placeholder="电子书链接 https://..."></div><button class="rm" data-rmbook="${i}" title="删除">✕</button></div>`;});}
+  h+=`</div></div>`;
+  $('#drawerBody').innerHTML=h;
   bindDrawerEvents();
-  setTimeout(updateCloudStatusUI, 20);
+  setTimeout(updateCloudStatusUI,20);
 }
 
 function bindDrawerEvents(){
-  const tokenInput = $('#cloudToken'); const gistInput = $('#cloudGist'); const autoChk = $('#cloudAuto');
-  const persist = () => {
-    CLOUD.token = (tokenInput?.value || '').trim();
-    CLOUD.gistId = (gistInput?.value || '').trim();
-    CLOUD.autoSync = !!(autoChk?.checked);
-    saveCloud();
-  };
-  if (tokenInput) tokenInput.addEventListener('change', persist);
-  if (gistInput) gistInput.addEventListener('change', persist);
-  if (autoChk) autoChk.addEventListener('change', persist);
+  const tokenInput=$('#cloudToken'),gistInput=$('#cloudGist'),autoChk=$('#cloudAuto');
+  const persist=()=>{CLOUD.token=(tokenInput?.value||'').trim();CLOUD.gistId=(gistInput?.value||'').trim();CLOUD.autoSync=!!(autoChk?.checked);saveCloud();};
+  if(tokenInput)tokenInput.addEventListener('change',persist);
+  if(gistInput)gistInput.addEventListener('change',persist);
+  if(autoChk)autoChk.addEventListener('change',persist);
 
-  const saveBtn = $('#cloudSaveBtn');
-  if (saveBtn) saveBtn.onclick = () => { persist(); updateCloudStatusUI(); toast('云同步配置已保存'); };
-  const pushBtn = $('#cloudPushBtn');
-  if (pushBtn) pushBtn.onclick = () => { persist(); pushToCloud(false); };
-  const pullBtn = $('#cloudPullBtn');
-  if (pullBtn) pullBtn.onclick = () => { persist(); pullFromCloud(false); };
-  const helpBtn = $('#cloudHelpBtn');
-  if (helpBtn) helpBtn.onclick = () => {
-    alert('【云同步配置步骤】\n\n' +
-      '一、创建 Token\n1. 打开 https://github.com/settings/tokens\n2. 创建 Token，勾选 gist 权限\n3. 复制 Token\n\n' +
-      '二、创建 Gist\n1. 打开 https://gist.github.com\n2. 新建 Secret Gist，文件名 campus-data.json\n3. 内容随便填 {}，创建后复制 Gist ID\n\n' +
-      '三、填写并保存\n1. 填入 Token 和 Gist ID\n2. 点「保存配置」\n3. 点「立即上传」\n\n' +
-      '四、其他电脑\n1. 填同样的 Token 和 Gist ID，保存\n2. 打开后会自动拉取最新图书/场景\n\n' +
-      '【重要说明】\n· 只有修改图书后才会用本机配置覆盖云端\n· 其他电脑浏览不会覆盖云端的图书配置');
-  };
+  const saveBtn=$('#cloudSaveBtn');if(saveBtn)saveBtn.onclick=()=>{persist();updateCloudStatusUI();toast('云同步配置已保存');};
+  const pushBtn=$('#cloudPushBtn');if(pushBtn)pushBtn.onclick=()=>{persist();pushToCloud(false);};
+  const pullBtn=$('#cloudPullBtn');if(pullBtn)pullBtn.onclick=()=>{persist();pullFromCloud(false);};
+  const helpBtn=$('#cloudHelpBtn');if(helpBtn)helpBtn.onclick=()=>{alert('【云同步配置步骤】\n\n一、创建 Token\n1. 打开 https://github.com/settings/tokens\n2. 创建 Token，勾选 gist 权限\n3. 复制 Token\n\n二、创建 Gist\n1. 打开 https://gist.github.com\n2. 新建 Secret Gist，文件名 campus-data.json\n3. 内容随便填 {}，创建后复制 Gist ID\n\n三、填写并保存\n1. 填入 Token 和 Gist ID\n2. 点「保存配置」\n3. 点「立即上传」\n\n四、其他电脑\n1. 填同样的 Token 和 Gist ID，保存\n2. 打开后会自动拉取最新图书/场景\n\n【重要说明】\n· 修改图书后上传，会覆盖云端配置\n· 其他电脑拉取时以云端为准，能看到新图书\n· 普通浏览不会覆盖云端的图书配置');};
 
-  const chk = $('#chkEbookAuto');
-  if (chk) chk.onchange = e => {
-    S.config.ebookAuto = e.target.checked;
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderStats(); renderDrawer();
-  };
+  const chk=$('#chkEbookAuto');if(chk)chk.onchange=e=>{S.config.ebookAuto=e.target.checked;S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderStats();renderDrawer();};
+  const btnUsers=$('#btnOpenUsers');if(btnUsers)btnUsers.onclick=()=>{closeDrawer();openUsersPage();};
+  const btnMap=$('#btnMapFromDrawer');if(btnMap)btnMap.onclick=()=>openMapModal();
+  const btnAddScene=$('#btnAddScene');
+  if(btnAddScene)btnAddScene.onclick=()=>{const id=uid('sc');S.config.scenes.push({id,name:'新场景',icon:'🏛️',desc:'点击编辑描述',x:25+Math.random()*50,y:22+Math.random()*55,stats:[{label:'藏书量',value:'1,000 册'},{label:'座位数',value:'20 个'},{label:'开放时间',value:'08:00-18:00'},{label:'特　色',value:'自定义'}],spots:[{sid:uid('sp'),name:'全景 · 主视角',pano:''}]});S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderAll();renderDrawer();toast('已添加场景');};
 
-  const btnUsers = $('#btnOpenUsers');
-  if (btnUsers) btnUsers.onclick = () => { closeDrawer(); openUsersPage(); };
-  const btnMap = $('#btnMapFromDrawer');
-  if (btnMap) btnMap.onclick = () => openMapModal();
-  const btnAddScene = $('#btnAddScene');
-  if (btnAddScene) btnAddScene.onclick = () => {
-    const id = uid('sc');
-    S.config.scenes.push({
-      id, name:'新场景', icon:'🏛️', desc:'点击编辑描述',
-      x: 25 + Math.random() * 50, y: 22 + Math.random() * 55,
-      stats:[
-        { label:'藏书量', value:'1,000 册' }, { label:'座位数', value:'20 个' },
-        { label:'开放时间', value:'08:00-18:00' }, { label:'特　色', value:'自定义' }
-      ],
-      spots: [ { sid: uid('sp'), name:'全景 · 主视角', pano:'' } ]
-    });
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderAll(); renderDrawer();
-    toast('已添加场景');
-  };
+  const selScene=$('#selBookScene');if(selScene)selScene.onchange=e=>{curBookScene=e.target.value;curBookSpot=null;renderDrawer();};
+  const selSpot=$('#selBookSpot');if(selSpot)selSpot.onchange=e=>{curBookSpot=e.target.value;renderDrawer();};
 
-  const selScene = $('#selBookScene');
-  if (selScene) selScene.onchange = e => { curBookScene = e.target.value; curBookSpot = null; renderDrawer(); };
-  const selSpot = $('#selBookSpot');
-  if (selSpot) selSpot.onchange = e => { curBookSpot = e.target.value; renderDrawer(); };
-
-  const btnAdd = $('#btnAddBook');
-  if (btnAdd) btnAdd.onclick = () => {
-    if (!curBookSpot){ toast('请先选择点位'); return; }
-    const arr = getBooks(curBookSpot);
-    let pitch = 0, yaw = 0;
-    if (panoViewer && viewerEl.classList.contains('on') && currentSid() === curBookSpot){
-      try{ pitch = +Number(panoViewer.getPitch()).toFixed(2); yaw = +Number(panoViewer.getYaw()).toFixed(2); }catch(e){}
-    } else { pitch = -2; yaw = 0; }
-    arr.push({
-      name: '新图书', title: '点击编辑图书标题', url: '',
-      img: makeBookCover('新图书', Math.floor(Math.random() * 360)),
-      pitch, yaw
-    });
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;  // ← 标记配置修改
-    save(); renderStats(); renderDrawer();
-    if (viewerEl.classList.contains('on') && currentSid() === curBookSpot){
-      refreshBookHotSpots();
-      if (!bookEditMode) $('#btnBookEdit').click();
-    }
+  const btnAdd=$('#btnAddBook');
+  if(btnAdd)btnAdd.onclick=()=>{
+    if(!curBookSpot){toast('请先选择点位');return;}
+    const arr=getBooks(curBookSpot);let pitch=0,yaw=0;
+    if(panoViewer&&viewerEl.classList.contains('on')&&currentSid()===curBookSpot){try{pitch=+Number(panoViewer.getPitch()).toFixed(2);yaw=+Number(panoViewer.getYaw()).toFixed(2);}catch(e){}}
+    else{pitch=-2;yaw=0;}
+    arr.push({name:'新图书',title:'点击编辑图书标题',url:'',img:makeBookCover('新图书',Math.floor(Math.random()*360)),pitch,yaw});
+    S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderStats();renderDrawer();
+    if(viewerEl.classList.contains('on')&&currentSid()===curBookSpot){refreshBookHotSpots();if(!bookEditMode)$('#btnBookEdit').click();}
     toast('已添加图书，请在全景中拖动定位');
   };
 
-  const btnResetBooks = $('#btnResetBooks');
-  if (btnResetBooks) btnResetBooks.onclick = () => {
-    if (!curBookSpot){ toast('请先选择点位'); return; }
-    if (!DEFAULT_BOOKS[curBookSpot]){ toast('该点位暂无默认图书模板'); return; }
-    if (!confirm('确定恢复该点位的默认基础图书吗？\n当前图书会被替换')) return;
-    S.config.books[curBookSpot] = clone(DEFAULT_BOOKS[curBookSpot]);
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderDrawer(); renderStats();
-    if (viewerEl.classList.contains('on') && currentSid() === curBookSpot) refreshBookHotSpots();
+  const btnResetBooks=$('#btnResetBooks');
+  if(btnResetBooks)btnResetBooks.onclick=()=>{
+    if(!curBookSpot){toast('请先选择点位');return;}
+    if(!DEFAULT_BOOKS[curBookSpot]){toast('该点位暂无默认图书模板');return;}
+    if(!confirm('确定恢复该点位的默认基础图书吗？'))return;
+    S.config.books[curBookSpot]=clone(DEFAULT_BOOKS[curBookSpot]);
+    S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderDrawer();renderStats();
+    if(viewerEl.classList.contains('on')&&currentSid()===curBookSpot)refreshBookHotSpots();
     toast('已恢复默认基础图书');
   };
 
-  const btnPushBooks = $('#btnPushBooks');
-  if (btnPushBooks) btnPushBooks.onclick = () => {
+  const btnPushBooks=$('#btnPushBooks');
+  if(btnPushBooks)btnPushBooks.onclick=()=>{
     persist();
-    if (!CLOUD.token || !CLOUD.gistId){ toast('请先配置 Token 和 Gist ID'); return; }
-    S.config.booksDirty = true;  // 确保标记，强制以本机为准上传
+    if(!CLOUD.token||!CLOUD.gistId){toast('请先配置 Token 和 Gist ID');return;}
+    S.config.booksDirty=true;  /* 强制以本机为准上传 */
     pushToCloud(false);
   };
 
-  $$('[data-rmbook]').forEach(btn => {
-    btn.onclick = () => {
-      if (!curBookSpot) return;
-      const arr = getBooks(curBookSpot);
-      arr.splice(+btn.dataset.rmbook, 1);
-      S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-      save(); renderStats(); renderDrawer();
-      if (viewerEl.classList.contains('on') && currentSid() === curBookSpot) refreshBookHotSpots();
-    };
-  });
+  $$('[data-rmbook]').forEach(btn=>{btn.onclick=()=>{if(!curBookSpot)return;const arr=getBooks(curBookSpot);arr.splice(+btn.dataset.rmbook,1);S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderStats();renderDrawer();if(viewerEl.classList.contains('on')&&currentSid()===curBookSpot)refreshBookHotSpots();};});
 
-  $$('[data-bookimg]').forEach(img => {
-    img.onclick = () => {
-      if (!curBookSpot) return;
-      const idx = +img.dataset.bookimg;
-      const f = document.createElement('input');
-      f.type = 'file'; f.accept = 'image/*';
-      f.onchange = () => {
-        const file = f.files[0]; if (!file) return;
-        const reader = new FileReader();
-        reader.onload = ev => {
-          const im = new Image();
-          im.onload = () => {
-            const cv = document.createElement('canvas');
-            cv.width = 200; cv.height = 200;
-            const ctx = cv.getContext('2d');
-            const size = Math.min(im.width, im.height);
-            const sx = (im.width - size) / 2, sy = (im.height - size) / 2;
-            ctx.drawImage(im, sx, sy, size, size, 0, 0, 200, 200);
-            getBooks(curBookSpot)[idx].img = cv.toDataURL('image/jpeg', 0.85);
-            S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-            save(); renderDrawer();
-            if (viewerEl.classList.contains('on') && currentSid() === curBookSpot) refreshBookHotSpots();
-            toast('图片已更新（本机预览）；如需跨电脑同步，请上传到仓库 images/ 并改路径');
-          };
-          im.src = ev.target.result;
-        };
-        reader.readAsDataURL(file);
-      };
+  $$('[data-bookimg]').forEach(img=>{
+    img.onclick=()=>{
+      if(!curBookSpot)return;
+      const idx=+img.dataset.bookimg;
+      const f=document.createElement('input');f.type='file';f.accept='image/*';
+      f.onchange=()=>{const file=f.files[0];if(!file)return;const reader=new FileReader();reader.onload=ev=>{const im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=200;cv.height=200;const ctx=cv.getContext('2d');const size=Math.min(im.width,im.height);const sx=(im.width-size)/2,sy=(im.height-size)/2;ctx.drawImage(im,sx,sy,size,size,0,0,200,200);getBooks(curBookSpot)[idx].img=cv.toDataURL('image/jpeg',0.85);S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderDrawer();if(viewerEl.classList.contains('on')&&currentSid()===curBookSpot)refreshBookHotSpots();toast('图片已更新（本机预览）');};im.src=ev.target.result;};reader.readAsDataURL(file);};
       f.click();
     };
   });
 }
 
-$('#drawerBody').addEventListener('click', e => {
-  const rmScene = e.target.closest('[data-rmscene]');
-  if (rmScene){
-    const i = +rmScene.dataset.rmscene;
-    const sc = S.config.scenes[i]; if (!sc) return;
-    if (S.config.scenes.length <= 1){ toast('至少保留一个场景'); return; }
-    if (!confirm(`确定删除场景「${sc.name}」？`)) return;
-    (sc.spots || []).forEach(sp => { if (sp.sid && S.config.books[sp.sid]) delete S.config.books[sp.sid]; });
-    S.config.scenes.splice(i, 1);
-    if (curBookScene === sc.id){ curBookScene = null; curBookSpot = null; }
-    if (curSceneIdx >= S.config.scenes.length) curSceneIdx = 0;
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderAll(); renderDrawer();
-    toast('场景已删除');
-    return;
-  }
-  const addSpot = e.target.closest('[data-addspot]');
-  if (addSpot){
-    const si = +addSpot.dataset.addspot;
-    const sc = S.config.scenes[si]; if (!sc) return;
-    if (!Array.isArray(sc.spots)) sc.spots = [];
-    const newSid = uid('sp');
-    sc.spots.push({ sid: newSid, name: '新点位 ' + (sc.spots.length + 1), pano: '' });
-    S.config.books[newSid] = [];
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderAll(); renderDrawer();
-    toast('已添加点位');
-    return;
-  }
-  const rmSpot = e.target.closest('[data-rmspot]');
-  if (rmSpot){
-    const [si, pi] = rmSpot.dataset.rmspot.split(':').map(Number);
-    const sc = S.config.scenes[si]; if (!sc) return;
-    if ((sc.spots || []).length <= 1){ toast('每个场景至少保留一个点位'); return; }
-    const sp = sc.spots[pi]; if (!sp) return;
-    if (!confirm(`确定删除点位「${sp.name}」？`)) return;
-    if (sp.sid && S.config.books[sp.sid]) delete S.config.books[sp.sid];
-    sc.spots.splice(pi, 1);
-    if (curBookSpot === sp.sid){ curBookSpot = null; }
-    S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-    save(); renderAll(); renderDrawer();
-    if (viewerEl.classList.contains('on') && currentScene() && currentScene().id === sc.id){
-      if (curSpotIdx >= sc.spots.length) curSpotIdx = 0;
-      openViewer(curSceneIdx, curSpotIdx);
-    }
-    toast('点位已删除');
-    return;
-  }
+$('#drawerBody').addEventListener('click',e=>{
+  const rmScene=e.target.closest('[data-rmscene]');
+  if(rmScene){const i=+rmScene.dataset.rmscene;const sc=S.config.scenes[i];if(!sc)return;if(S.config.scenes.length<=1){toast('至少保留一个场景');return;}if(!confirm(`确定删除场景「${sc.name}」？`))return;(sc.spots||[]).forEach(sp=>{if(sp.sid&&S.config.books[sp.sid])delete S.config.books[sp.sid];});S.config.scenes.splice(i,1);if(curBookScene===sc.id){curBookScene=null;curBookSpot=null;}if(curSceneIdx>=S.config.scenes.length)curSceneIdx=0;S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderAll();renderDrawer();toast('场景已删除');return;}
+  const addSpot=e.target.closest('[data-addspot]');
+  if(addSpot){const si=+addSpot.dataset.addspot;const sc=S.config.scenes[si];if(!sc)return;if(!Array.isArray(sc.spots))sc.spots=[];const newSid=uid('sp');sc.spots.push({sid:newSid,name:'新点位 '+(sc.spots.length+1),pano:''});S.config.books[newSid]=[];S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderAll();renderDrawer();toast('已添加点位');return;}
+  const rmSpot=e.target.closest('[data-rmspot]');
+  if(rmSpot){const[si,pi]=rmSpot.dataset.rmspot.split(':').map(Number);const sc=S.config.scenes[si];if(!sc)return;if((sc.spots||[]).length<=1){toast('每个场景至少保留一个点位');return;}const sp=sc.spots[pi];if(!sp)return;if(!confirm(`确定删除点位「${sp.name}」？`))return;if(sp.sid&&S.config.books[sp.sid])delete S.config.books[sp.sid];sc.spots.splice(pi,1);if(curBookSpot===sp.sid){curBookSpot=null;}S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderAll();renderDrawer();if(viewerEl.classList.contains('on')&&currentScene()&&currentScene().id===sc.id){if(curSpotIdx>=sc.spots.length)curSpotIdx=0;openViewer(curSceneIdx,curSpotIdx);}toast('点位已删除');return;}
 });
 
-let drawerTimer = null;
-$('#drawerBody').addEventListener('input', e => {
-  const el = e.target.closest('[data-path]'); if (!el) return;
-  let v = el.value;
-  if (el.type === 'number'){ v = v === '' ? 0 : Number(v); if (Number.isNaN(v)) v = 0; }
-  setPath(S.config, el.dataset.path, v);
-  S.config.updatedAt = Date.now();
-  // ★ 如果修改的是图书相关字段，标记 booksDirty
-  if (el.dataset.path.indexOf('books.') === 0){
-    S.config.booksDirty = true;
-  }
+let drawerTimer=null;
+$('#drawerBody').addEventListener('input',e=>{
+  const el=e.target.closest('[data-path]');if(!el)return;
+  let v=el.value;
+  if(el.type==='number'){v=v===''?0:Number(v);if(Number.isNaN(v))v=0;}
+  setPath(S.config,el.dataset.path,v);
+  S.config.updatedAt=Date.now();
+  if(el.dataset.path.indexOf('books.')===0)S.config.booksDirty=true;
   save();
   clearTimeout(drawerTimer);
-  drawerTimer = setTimeout(() => {
-    renderTitle(); renderStats(); renderRank();
-    renderEntries(); renderHotspots(); renderMap(); renderCharts();
-    if (viewerEl.classList.contains('on')){
-      const s = currentScene();
-      if (s){
-        $('#vTitle').textContent = s.name;
-        $('#vStats').innerHTML = (s.stats||[]).map(st => `<div class="vs"><b>${escapeHtml(st.value)}</b><span>${escapeHtml(st.label)}</span></div>`).join('');
-        spotsEl.querySelectorAll('.chip').forEach((el, k) => { const sp = (s.spots || [])[k]; if (sp) el.textContent = sp.name; });
-        const sp = currentSpot(); if (sp) $('#vSpotName').textContent = sp.name;
+  drawerTimer=setTimeout(()=>{
+    renderTitle();renderStats();renderRank();renderEntries();renderHotspots();renderMap();renderCharts();
+    if(viewerEl.classList.contains('on')){
+      const s=currentScene();
+      if(s){
+        $('#vTitle').textContent=s.name;
+        $('#vStats').innerHTML=(s.stats||[]).map(st=>`<div class="vs"><b>${escapeHtml(st.value)}</b><span>${escapeHtml(st.label)}</span></div>`).join('');
+        spotsEl.querySelectorAll('.chip').forEach((el,k)=>{const sp=(s.spots||[])[k];if(sp)el.textContent=sp.name;});
+        const sp=currentSpot();if(sp)$('#vSpotName').textContent=sp.name;
       }
     }
-  }, 240);
+  },240);
 });
 
-/* =========================================================
-   用户管理页面
-   ========================================================= */
-const usersPage = $('#usersPage');
-const upState = { page:1, pageSize:20, q:'', grade:'', sort:'recent', selected: new Set() };
+/* ================= 用户管理页面 ================= */
+const usersPage=$('#usersPage');
+const upState={page:1,pageSize:20,q:'',grade:'',sort:'recent',selected:new Set()};
 
 function openUsersPage(){
-  if (!adminAuthed && !checkAdminSession()){ pendingAdminAction = openUsersPage; openAdminModal(); return; }
-  upState.page = 1; upState.q = ''; upState.grade = ''; upState.sort = 'recent'; upState.selected = new Set();
-  $('#upSearch').value = ''; $('#upSort').value = 'recent';
-  $('#upAddForm').style.display = 'none';
-  renderUsersPage(); usersPage.classList.add('on');
+  if(!adminAuthed&&!checkAdminSession()){pendingAdminAction=openUsersPage;openAdminModal();return;}
+  upState.page=1;upState.q='';upState.grade='';upState.sort='recent';upState.selected=new Set();
+  $('#upSearch').value='';$('#upSort').value='recent';$('#upAddForm').style.display='none';
+  renderUsersPage();usersPage.classList.add('on');
 }
-function closeUsersPage(){ usersPage.classList.remove('on'); }
-$('#upBack').onclick = closeUsersPage;
+function closeUsersPage(){usersPage.classList.remove('on');}
+$('#upBack').onclick=closeUsersPage;
 
-function lastActiveTime(u){ if (!u.visits || !u.visits.length) return u.createdAt || 0; return Math.max(...u.visits.map(v => v.t)); }
+function lastActiveTime(u){if(!u.visits||!u.visits.length)return u.createdAt||0;return Math.max(...u.visits.map(v=>v.t));}
 function getFilteredUsers(){
-  let list = Object.values(S.users);
-  const q = upState.q.trim().toLowerCase();
-  if (q) list = list.filter(u => String(u.name||'').toLowerCase().includes(q) || String(u.cls||'').toLowerCase().includes(q));
-  if (upState.grade) list = list.filter(u => String(u.cls||'').includes(upState.grade));
-  const sort = upState.sort;
-  list.sort((a, b) => {
-    if (sort === 'visits'){ const d = (b.visits||[]).length - (a.visits||[]).length; if (d) return d; return String(a.name).localeCompare(String(b.name), 'zh'); }
-    if (sort === 'name') return String(a.name).localeCompare(String(b.name), 'zh');
-    return lastActiveTime(b) - lastActiveTime(a);
+  let list=Object.values(S.users);
+  const q=upState.q.trim().toLowerCase();
+  if(q)list=list.filter(u=>String(u.name||'').toLowerCase().includes(q)||String(u.cls||'').toLowerCase().includes(q));
+  if(upState.grade)list=list.filter(u=>String(u.cls||'').includes(upState.grade));
+  const sort=upState.sort;
+  list.sort((a,b)=>{
+    if(sort==='visits'){const d=(b.visits||[]).length-(a.visits||[]).length;if(d)return d;return String(a.name).localeCompare(String(b.name),'zh');}
+    if(sort==='name')return String(a.name).localeCompare(String(b.name),'zh');
+    return lastActiveTime(b)-lastActiveTime(a);
   });
   return list;
 }
 function renderUsersPage(){
-  const all = Object.values(S.users);
-  const total = all.length;
-  const totalVisits = all.reduce((s, u) => s + (u.visits||[]).length, 0);
-  const todayActive = getTodayActiveUsers();
-  $('#upTotalUsers').textContent = total;
-  $('#upTotalVisits2').textContent = totalVisits;
-  $('#upTodayActive').textContent = todayActive;
-  const filtered = getFilteredUsers();
-  const totalPages = Math.max(1, Math.ceil(filtered.length / upState.pageSize));
-  if (upState.page > totalPages) upState.page = totalPages;
-  if (upState.page < 1) upState.page = 1;
-  const startIdx = (upState.page - 1) * upState.pageSize;
-  const pageList = filtered.slice(startIdx, startIdx + upState.pageSize);
-  const validKeys = new Set(all.map(u => u.key));
-  [...upState.selected].forEach(k => { if (!validKeys.has(k)) upState.selected.delete(k); });
-  const wrap = $('#upListWrap');
-  if (!filtered.length){
-    wrap.innerHTML = total ? `<div class="up-empty"><span class="ue-ico">🔍</span><b>没有匹配的用户</b></div>`
-      : `<div class="up-empty"><span class="ue-ico">👥</span><b>还没有用户</b>用户首次登录后会自动出现</div>`;
-  } else {
-    wrap.innerHTML = pageList.map(u => {
-      const cnt = (u.visits||[]).length;
-      const isMe = u.key === S.currentUser;
-      const sel = upState.selected.has(u.key);
-      const last = lastActiveTime(u); const lastStr = last ? relativeTime(last) : '—';
-      return `<div class="up-row ${isMe?'me':''} ${sel?'sel':''}" data-key="${escapeAttr(u.key)}">
-        <input type="checkbox" class="up-check" ${sel?'checked':''}>
-        <div class="up-av">${escapeHtml((u.name||'?').slice(0,1))}</div>
-        <div class="up-info"><b>${escapeHtml(u.name)}${isMe ? '<span class="tag-me">我</span>' : ''}</b>
-        <span>${escapeHtml(u.cls)} · 最后活跃 ${lastStr}</span></div>
-        <div class="up-count ${cnt>0?'':'zero'}"><b>${cnt}</b><span>次浏览</span></div>
-        <button class="up-del" title="删除">✕</button></div>`;
-    }).join('');
-  }
-  const pager = $('#upPager');
-  if (filtered.length > upState.pageSize){
-    const from = startIdx + 1; const to = Math.min(startIdx + upState.pageSize, filtered.length);
-    pager.innerHTML = `<button class="pg-btn" id="upPrev" ${upState.page<=1?'disabled':''}>◀ 上一页</button>
-      <span class="pg-info">第 <b>${upState.page}</b> / ${totalPages} 页 · ${from}-${to} / 共 ${filtered.length}</span>
-      <button class="pg-btn" id="upNext" ${upState.page>=totalPages?'disabled':''}>下一页 ▶</button>`;
-    const prev = $('#upPrev'), next = $('#upNext');
-    if (prev) prev.onclick = () => { upState.page--; renderUsersPage(); };
-    if (next) next.onclick = () => { upState.page++; renderUsersPage(); };
-  } else if (filtered.length){
-    pager.innerHTML = `<span class="pg-info">共 <b>${filtered.length}</b> 位用户</span>`;
-  } else pager.innerHTML = '';
+  const all=Object.values(S.users);const total=all.length;
+  const totalVisits=all.reduce((s,u)=>s+(u.visits||[]).length,0);
+  const todayActive=getTodayActiveUsers();
+  $('#upTotalUsers').textContent=total;$('#upTotalVisits2').textContent=totalVisits;$('#upTodayActive').textContent=todayActive;
+  const filtered=getFilteredUsers();
+  const totalPages=Math.max(1,Math.ceil(filtered.length/upState.pageSize));
+  if(upState.page>totalPages)upState.page=totalPages;
+  if(upState.page<1)upState.page=1;
+  const startIdx=(upState.page-1)*upState.pageSize;
+  const pageList=filtered.slice(startIdx,startIdx+upState.pageSize);
+  const validKeys=new Set(all.map(u=>u.key));
+  [...upState.selected].forEach(k=>{if(!validKeys.has(k))upState.selected.delete(k);});
+  const wrap=$('#upListWrap');
+  if(!filtered.length){wrap.innerHTML=total?`<div class="up-empty"><span class="ue-ico">🔍</span><b>没有匹配的用户</b></div>`:`<div class="up-empty"><span class="ue-ico">👥</span><b>还没有用户</b>用户首次登录后会自动出现</div>`;}
+  else{wrap.innerHTML=pageList.map(u=>{
+    const cnt=(u.visits||[]).length;const isMe=u.key===S.currentUser;const sel=upState.selected.has(u.key);
+    const last=lastActiveTime(u);const lastStr=last?relativeTime(last):'—';
+    return `<div class="up-row ${isMe?'me':''} ${sel?'sel':''}" data-key="${escapeAttr(u.key)}"><input type="checkbox" class="up-check" ${sel?'checked':''}><div class="up-av">${escapeHtml((u.name||'?').slice(0,1))}</div><div class="up-info"><b>${escapeHtml(u.name)}${isMe?'<span class="tag-me">我</span>':''}</b><span>${escapeHtml(u.cls)} · 最后活跃 ${lastStr}</span></div><div class="up-count ${cnt>0?'':'zero'}"><b>${cnt}</b><span>次浏览</span></div><button class="up-del" title="删除">✕</button></div>`;
+  }).join('');}
+  const pager=$('#upPager');
+  if(filtered.length>upState.pageSize){
+    const from=startIdx+1;const to=Math.min(startIdx+upState.pageSize,filtered.length);
+    pager.innerHTML=`<button class="pg-btn" id="upPrev" ${upState.page<=1?'disabled':''}>◀ 上一页</button><span class="pg-info">第 <b>${upState.page}</b> / ${totalPages} 页 · ${from}-${to} / 共 ${filtered.length}</span><button class="pg-btn" id="upNext" ${upState.page>=totalPages?'disabled':''}>下一页 ▶</button>`;
+    const prev=$('#upPrev'),next=$('#upNext');
+    if(prev)prev.onclick=()=>{upState.page--;renderUsersPage();};
+    if(next)next.onclick=()=>{upState.page++;renderUsersPage();};
+  }else if(filtered.length){pager.innerHTML=`<span class="pg-info">共 <b>${filtered.length}</b> 位用户</span>`;}
+  else pager.innerHTML='';
   updateBatchBar();
 }
-function updateBatchBar(){
-  const bar = $('#upBatch'); const count = upState.selected.size;
-  if (count > 0){ bar.style.display = 'flex'; $('#upSelCount').textContent = count; }
-  else bar.style.display = 'none';
-}
+function updateBatchBar(){const bar=$('#upBatch');const count=upState.selected.size;if(count>0){bar.style.display='flex';$('#upSelCount').textContent=count;}else bar.style.display='none';}
 
-let upSearchTimer = null;
-$('#upSearch').addEventListener('input', e => {
-  upState.q = e.target.value; upState.page = 1;
-  clearTimeout(upSearchTimer); upSearchTimer = setTimeout(renderUsersPage, 180);
-});
-$('#upSort').addEventListener('change', e => { upState.sort = e.target.value; upState.page = 1; renderUsersPage(); });
+let upSearchTimer=null;
+$('#upSearch').addEventListener('input',e=>{upState.q=e.target.value;upState.page=1;clearTimeout(upSearchTimer);upSearchTimer=setTimeout(renderUsersPage,180);});
+$('#upSort').addEventListener('change',e=>{upState.sort=e.target.value;upState.page=1;renderUsersPage();});
 
-$('#upListWrap').addEventListener('click', e => {
-  const row = e.target.closest('.up-row'); if (!row) return;
-  const key = row.dataset.key; const u = S.users[key]; if (!u) return;
-  if (e.target.closest('.up-del')){
-    const isMe = key === S.currentUser;
-    const warn = isMe ? '\n（这是当前登录的用户，删除后将自动退出）' : '';
-    if (!confirm(`确定删除用户「${u.cls} ${u.name}」？${warn}`)) return;
-    delete S.users[key]; upState.selected.delete(key);
-    if (isMe){ S.currentUser = null; userModal.classList.add('on'); }
-    save(); renderAll(); renderUsersPage();
-    toast('用户已删除');
-    return;
+$('#upListWrap').addEventListener('click',e=>{
+  const row=e.target.closest('.up-row');if(!row)return;
+  const key=row.dataset.key;const u=S.users[key];if(!u)return;
+  if(e.target.closest('.up-del')){
+    const isMe=key===S.currentUser;
+    const warn=isMe?'\n（这是当前登录的用户，删除后将自动退出）':'';
+    if(!confirm(`确定删除用户「${u.cls} ${u.name}」？${warn}`))return;
+    delete S.users[key];upState.selected.delete(key);
+    if(isMe){S.currentUser=null;userModal.classList.add('on');}
+    save();renderAll();renderUsersPage();toast('用户已删除');return;
   }
-  if (e.target.classList.contains('up-check')){
-    if (e.target.checked) upState.selected.add(key); else upState.selected.delete(key);
-    row.classList.toggle('sel', e.target.checked); updateBatchBar();
-    return;
-  }
-  if (!e.target.closest('input')){
-    const chk = row.querySelector('.up-check');
-    if (chk){
-      chk.checked = !chk.checked;
-      if (chk.checked) upState.selected.add(key); else upState.selected.delete(key);
-      row.classList.toggle('sel', chk.checked); updateBatchBar();
-    }
-  }
+  if(e.target.classList.contains('up-check')){if(e.target.checked)upState.selected.add(key);else upState.selected.delete(key);row.classList.toggle('sel',e.target.checked);updateBatchBar();return;}
+  if(!e.target.closest('input')){const chk=row.querySelector('.up-check');if(chk){chk.checked=!chk.checked;if(chk.checked)upState.selected.add(key);else upState.selected.delete(key);row.classList.toggle('sel',chk.checked);updateBatchBar();}}
 });
 
-$('#upBatchClear').onclick = () => { upState.selected.clear(); renderUsersPage(); };
-$('#upBatchDelete').onclick = () => {
-  const keys = [...upState.selected]; if (!keys.length) return;
-  const hasMe = keys.includes(S.currentUser);
-  const warn = hasMe ? '\n（其中包含当前登录用户）' : '';
-  if (!confirm(`确定删除选中的 ${keys.length} 位用户？${warn}`)) return;
-  keys.forEach(k => { delete S.users[k]; });
-  if (hasMe){ S.currentUser = null; userModal.classList.add('on'); }
-  upState.selected.clear();
-  save(); renderAll(); renderUsersPage();
-  toast(`已删除 ${keys.length} 位用户`);
-};
-$('#upBatchExport').onclick = () => {
-  const keys = [...upState.selected]; if (!keys.length) return;
-  const data = { version:'user-subset', exportedAt: Date.now(), users:{} };
-  keys.forEach(k => { if (S.users[k]) data.users[k] = S.users[k]; });
-  downloadJSON(data, `用户数据_选中${keys.length}人`);
-  toast(`已导出 ${keys.length} 位用户`);
-};
+$('#upBatchClear').onclick=()=>{upState.selected.clear();renderUsersPage();};
+$('#upBatchDelete').onclick=()=>{const keys=[...upState.selected];if(!keys.length)return;const hasMe=keys.includes(S.currentUser);const warn=hasMe?'\n（其中包含当前登录用户）':'';if(!confirm(`确定删除选中的 ${keys.length} 位用户？${warn}`))return;keys.forEach(k=>{delete S.users[k];});if(hasMe){S.currentUser=null;userModal.classList.add('on');}upState.selected.clear();save();renderAll();renderUsersPage();toast(`已删除 ${keys.length} 位用户`);};
+$('#upBatchExport').onclick=()=>{const keys=[...upState.selected];if(!keys.length)return;const data={version:'user-subset',exportedAt:Date.now(),users:{}};keys.forEach(k=>{if(S.users[k])data.users[k]=S.users[k];});downloadJSON(data,`用户数据_选中${keys.length}人`);toast(`已导出 ${keys.length} 位用户`);};
 
-$('#upAddBtn').onclick = () => {
-  const f = $('#upAddForm');
-  const show = f.style.display === 'none';
-  f.style.display = show ? 'block' : 'none';
-  if (show){
-    $('#upAddName').value = ''; $('#upAddGrade').value = ''; $('#upAddClassNum').value = '';
-    $('#upAddTip').textContent = ''; $('#upAddTip').className = 'uaf-tip';
-    setTimeout(() => $('#upAddName').focus(), 100);
-  }
-};
-$('#upAddCancel').onclick = () => { $('#upAddForm').style.display = 'none'; };
-$('#upAddConfirm').onclick = () => {
-  const name = $('#upAddName').value.trim();
-  const grade = $('#upAddGrade').value; const num = $('#upAddClassNum').value;
-  const tip = $('#upAddTip'); tip.className = 'uaf-tip';
-  if (!name){ tip.textContent = '请填写姓名'; tip.className = 'uaf-tip err'; return; }
-  if (!grade){ tip.textContent = '请选择年级'; tip.className = 'uaf-tip err'; return; }
-  if (!num){ tip.textContent = '请选择班级'; tip.className = 'uaf-tip err'; return; }
-  const cls = grade.endsWith('年级') ? (grade + num + '班') : (grade + '(' + num + ')班');
-  const key = makeKey(name, cls);
-  if (S.users[key]){ tip.textContent = `该用户已存在：${cls} ${name}`; tip.className = 'uaf-tip warn'; return; }
-  S.users[key] = { key, name, cls, visits: [], createdAt: Date.now() };
-  save(); renderAll(); renderUsersPage();
-  tip.textContent = `✓ 已添加：${cls} ${name}`; tip.className = 'uaf-tip';
-  $('#upAddName').value = '';
-  setTimeout(() => { $('#upAddForm').style.display = 'none'; tip.textContent = ''; }, 1400);
+$('#upAddBtn').onclick=()=>{const f=$('#upAddForm');const show=f.style.display==='none';f.style.display=show?'block':'none';if(show){$('#upAddName').value='';$('#upAddGrade').value='';$('#upAddClassNum').value='';$('#upAddTip').textContent='';$('#upAddTip').className='uaf-tip';setTimeout(()=>$('#upAddName').focus(),100);}};
+$('#upAddCancel').onclick=()=>{$('#upAddForm').style.display='none';};
+$('#upAddConfirm').onclick=()=>{
+  const name=$('#upAddName').value.trim(),grade=$('#upAddGrade').value,num=$('#upAddClassNum').value;
+  const tip=$('#upAddTip');tip.className='uaf-tip';
+  if(!name){tip.textContent='请填写姓名';tip.className='uaf-tip err';return;}
+  if(!grade){tip.textContent='请选择年级';tip.className='uaf-tip err';return;}
+  if(!num){tip.textContent='请选择班级';tip.className='uaf-tip err';return;}
+  const cls=grade.endsWith('年级')?(grade+num+'班'):(grade+'('+num+')班');
+  const key=makeKey(name,cls);
+  if(S.users[key]){tip.textContent=`该用户已存在：${cls} ${name}`;tip.className='uaf-tip warn';return;}
+  S.users[key]={key,name,cls,visits:[],createdAt:Date.now()};
+  save();renderAll();renderUsersPage();
+  tip.textContent=`✓ 已添加：${cls} ${name}`;tip.className='uaf-tip';
+  $('#upAddName').value='';setTimeout(()=>{$('#upAddForm').style.display='none';tip.textContent='';},1400);
   toast('用户已添加');
 };
 
-$('#upExportBtn').onclick = () => {
-  const data = { version:'users-export', exportedAt: Date.now(), users: S.users };
-  downloadJSON(data, `用户数据_全部${Object.keys(S.users).length}人`);
-  toast('用户数据已导出');
-};
-function downloadJSON(obj, filename){
-  const blob = new Blob([JSON.stringify(obj, null, 2)], { type:'application/json' });
-  const a = document.createElement('a');
-  const d = new Date();
-  const stamp = `${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
-  a.href = URL.createObjectURL(blob);
-  a.download = `${filename}_${stamp}.json`;
-  document.body.appendChild(a); a.click(); a.remove();
-  setTimeout(()=> URL.revokeObjectURL(a.href), 1000);
-}
-$('#upImportBtn').onclick = () => $('#fileUserImport').click();
-$('#fileUserImport').onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
+$('#upExportBtn').onclick=()=>{const data={version:'users-export',exportedAt:Date.now(),users:S.users};downloadJSON(data,`用户数据_全部${Object.keys(S.users).length}人`);toast('用户数据已导出');};
+function downloadJSON(obj,filename){const blob=new Blob([JSON.stringify(obj,null,2)],{type:'application/json'});const a=document.createElement('a');const d=new Date();const stamp=`${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;a.href=URL.createObjectURL(blob);a.download=`${filename}_${stamp}.json`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+$('#upImportBtn').onclick=()=>$('#fileUserImport').click();
+$('#fileUserImport').onchange=e=>{
+  const f=e.target.files[0];if(!f)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
     try{
-      const obj = JSON.parse(ev.target.result);
-      let incoming = {};
-      if (obj && typeof obj === 'object'){
-        if (obj.users && typeof obj.users === 'object') incoming = obj.users;
-        else if (!obj.config && !obj.currentUser) incoming = obj;
-      }
-      const keys = Object.keys(incoming);
-      if (!keys.length){ toast('文件中没有用户数据'); return; }
-      let added = 0, merged = 0, skipped = 0;
-      keys.forEach(k => {
-        const u = incoming[k];
-        if (!u || typeof u !== 'object' || !u.name || !u.cls){ skipped++; return; }
-        const norm = {
-          key: k, name: String(u.name).slice(0, 12), cls: String(u.cls).slice(0, 20),
-          visits: Array.isArray(u.visits) ? u.visits.filter(v => v && typeof v.t === 'number' && v.s) : [],
-          createdAt: u.createdAt || Date.now()
-        };
-        if (S.users[k]){
-          S.users[k] = { key: k, name: norm.name, cls: norm.cls,
-            visits: mergeVisits(S.users[k].visits, norm.visits),
-            createdAt: Math.min(S.users[k].createdAt || norm.createdAt, norm.createdAt) };
-          merged++;
-        } else { S.users[k] = norm; added++; }
-      });
-      save(); renderAll(); renderUsersPage();
-      toast(`导入完成：新增 ${added} · 合并 ${merged}${skipped ? ' · 忽略 ' + skipped : ''}`);
-    }catch(err){ toast('导入失败：文件格式不正确'); }
+      const obj=JSON.parse(ev.target.result);let incoming={};
+      if(obj&&typeof obj==='object'){if(obj.users&&typeof obj.users==='object')incoming=obj.users;else if(!obj.config&&!obj.currentUser)incoming=obj;}
+      const keys=Object.keys(incoming);if(!keys.length){toast('文件中没有用户数据');return;}
+      let added=0,merged=0,skipped=0;
+      keys.forEach(k=>{const u=incoming[k];if(!u||typeof u!=='object'||!u.name||!u.cls){skipped++;return;}const norm={key:k,name:String(u.name).slice(0,12),cls:String(u.cls).slice(0,20),visits:Array.isArray(u.visits)?u.visits.filter(v=>v&&typeof v.t==='number'&&v.s):[],createdAt:u.createdAt||Date.now()};if(S.users[k]){S.users[k]={key:k,name:norm.name,cls:norm.cls,visits:mergeVisits(S.users[k].visits,norm.visits),createdAt:Math.min(S.users[k].createdAt||norm.createdAt,norm.createdAt)};merged++;}else{S.users[k]=norm;added++;}});
+      save();renderAll();renderUsersPage();
+      toast(`导入完成：新增 ${added} · 合并 ${merged}${skipped?' · 忽略 '+skipped:''}`);
+    }catch(err){toast('导入失败：文件格式不正确');}
   };
-  reader.readAsText(f);
-  e.target.value = '';
+  reader.readAsText(f);e.target.value='';
 };
 
-/* 导出 / 导入 / 重置 */
-$('#btnExport').onclick = () => {
-  const data = { config: S.config, users: S.users, exportedAt: Date.now() };
-  downloadJSON(data, `云逛校园图书馆数据_${Object.keys(S.users).length}人`);
-  toast('数据已导出');
-};
-$('#btnImport').onclick = () => $('#fileImport').click();
-$('#fileImport').onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const r = new FileReader();
-  r.onload = ev => {
-    try{
-      const obj = JSON.parse(ev.target.result);
-      S = deepMerge({ config: clone(DEFAULT_CONFIG), users: {}, currentUser: null }, obj);
-      S.config.booksDirty = true;
-      migrate();
-      save(); renderAll(); renderDrawer(); renderUserBadge();
-      toast('数据导入成功');
-    }catch(err){ toast('导入失败：文件格式不正确'); }
-  };
-  r.readAsText(f);
-  e.target.value = '';
-};
-$('#btnReset').onclick = () => {
-  if (!confirm('确定恢复默认数据吗？')) return;
-  S = { config: clone(DEFAULT_CONFIG), users: {}, currentUser: null };
-  S.config.updatedAt = Date.now(); S.config.booksDirty = true;
-  migrate();
-  save(); renderAll(); renderDrawer(); renderUserBadge();
-  userModal.classList.add('on');
-  toast('已恢复默认数据');
-};
+/* 导出/导入/重置 */
+$('#btnExport').onclick=()=>{const data={config:S.config,users:S.users,exportedAt:Date.now()};downloadJSON(data,`云逛校园图书馆数据_${Object.keys(S.users).length}人`);toast('数据已导出');};
+$('#btnImport').onclick=()=>$('#fileImport').click();
+$('#fileImport').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const obj=JSON.parse(ev.target.result);S=deepMerge({config:clone(DEFAULT_CONFIG),users:{},currentUser:null},obj);S.config.booksDirty=true;migrate();save();renderAll();renderDrawer();renderUserBadge();toast('数据导入成功');}catch(err){toast('导入失败：文件格式不正确');}};r.readAsText(f);e.target.value='';};
+$('#btnReset').onclick=()=>{if(!confirm('确定恢复默认数据吗？'))return;S={config:clone(DEFAULT_CONFIG),users:{},currentUser:null};S.config.updatedAt=Date.now();S.config.booksDirty=true;migrate();save();renderAll();renderDrawer();renderUserBadge();userModal.classList.add('on');toast('已恢复默认数据');};
 
-addEventListener('storage', e => {
-  if (e.key === STORE_KEY){
-    load(); renderAll(); renderUserBadge();
-    if (drawer.classList.contains('on')) renderDrawer();
-    if (usersPage.classList.contains('on')) renderUsersPage();
-  }
-  if (e.key === CLOUD_KEY) loadCloud();
+addEventListener('storage',e=>{
+  if(e.key===STORE_KEY){load();renderAll();renderUserBadge();if(drawer.classList.contains('on'))renderDrawer();if(usersPage.classList.contains('on'))renderUsersPage();}
+  if(e.key===CLOUD_KEY)loadCloud();
 });
 
 /* 时钟 & 背景 */
-(function(){
-  const t = $('#time'), d = $('#date');
-  const W = '日一二三四五六';
-  function tick(){
-    const n = new Date();
-    t.textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0') + ':' + String(n.getSeconds()).padStart(2,'0');
-    d.textContent = `${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${W[n.getDay()]}`;
-  }
-  tick(); setInterval(tick, 1000);
-})();
-(function(){
-  const c = $('#bg'), ctx = c.getContext('2d');
-  let W, H, pts = [];
-  function init(){
-    W = c.width = innerWidth; H = c.height = innerHeight;
-    const n = Math.min(50, Math.floor(W * H / 32000));
-    pts = Array.from({ length: n }, () => ({ x: Math.random()*W, y: Math.random()*H, vx:(Math.random()-.5)*.3, vy:(Math.random()-.5)*.3, r: Math.random()*1.5+.5 }));
-  }
-  function loop(){
-    ctx.clearRect(0, 0, W, H);
-    for (const p of pts){
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > W) p.vx *= -1;
-      if (p.y < 0 || p.y > H) p.vy *= -1;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 7); ctx.fillStyle = 'rgba(0,190,255,.7)'; ctx.fill();
-    }
-    for (let i = 0; i < pts.length; i++){
-      for (let j = i + 1; j < pts.length; j++){
-        const dx = pts[i].x - pts[j].x, dy = pts[i].y - pts[j].y;
-        const d = Math.hypot(dx, dy);
-        if (d < 130){
-          ctx.beginPath(); ctx.moveTo(pts[i].x, pts[i].y); ctx.lineTo(pts[j].x, pts[j].y);
-          ctx.strokeStyle = 'rgba(0,150,255,' + (1 - d / 130) * .22 + ')'; ctx.lineWidth = 1; ctx.stroke();
-        }
-      }
-    }
-    requestAnimationFrame(loop);
-  }
-  init(); loop();
-  addEventListener('resize', init);
-})();
+(function(){const t=$('#time'),d=$('#date');const W='日一二三四五六';function tick(){const n=new Date();t.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');d.textContent=`${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${W[n.getDay()]}`;}tick();setInterval(tick,1000);})();
+(function(){const c=$('#bg'),ctx=c.getContext('2d');let W,H,pts=[];function init(){W=c.width=innerWidth;H=c.height=innerHeight;const n=Math.min(50,Math.floor(W*H/32000));pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5}));}function loop(){ctx.clearRect(0,0,W,H);for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(0,190,255,.7)';ctx.fill();}for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;const d=Math.hypot(dx,dy);if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='rgba(0,150,255,'+(1-d/130)*.22+')';ctx.lineWidth=1;ctx.stroke();}}}requestAnimationFrame(loop);}init();loop();addEventListener('resize',init);})();
 
 /* 启动 */
 async function bootstrap(){
-  loadCloud();
-  load();
-  initCharts();
-  renderAll();
-  adminAuthed = checkAdminSession();
-  updateManageBtn();
-  if (S.currentUser && S.users[S.currentUser]) userModal.classList.remove('on');
-  else setTimeout(() => inpName.focus(), 400);
-  if (CLOUD.gistId && CLOUD.token) setTimeout(() => { pullFromCloud(true); }, 1200);
-  setInterval(() => { if (CLOUD.gistId && CLOUD.token && !syncBusy) pullFromCloud(true); }, 60000);
+  loadCloud();load();initCharts();renderAll();
+  adminAuthed=checkAdminSession();updateManageBtn();
+  if(S.currentUser&&S.users[S.currentUser])userModal.classList.remove('on');
+  else setTimeout(()=>inpName.focus(),400);
+  if(CLOUD.gistId&&CLOUD.token)setTimeout(()=>{pullFromCloud(true);},1200);
+  setInterval(()=>{if(CLOUD.gistId&&CLOUD.token&&!syncBusy)pullFromCloud(true);},60000);
 }
 bootstrap();
 </script>
