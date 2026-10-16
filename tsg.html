@@ -276,7 +276,6 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
   background:rgba(0,20,45,.7);border:1px dashed rgba(0,180,255,.5);
   border-radius:10px;padding:18px 26px}
 .book-hint b{display:block;font-size:14px;color:rgba(120,200,255,.95);margin-bottom:6px}
-/* 全景兜底提示条 */
 .pano-fallback-tip{
   position:absolute;left:50%;bottom:14px;transform:translateX(-50%);
   z-index:25;padding:6px 16px;border-radius:16px;font-size:11px;letter-spacing:.5px;
@@ -408,6 +407,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
   border:1px solid rgba(0,180,255,.4);cursor:pointer}
 .d-book .fields{flex:1;min-width:0;display:flex;flex-direction:column;gap:5px}
 .d-book .fields input{font-size:11px;padding:6px 8px}
+.d-book-actions{display:flex;gap:4px;flex:0 0 auto;flex-direction:column}
 .d-empty{font-size:11px;color:var(--dim);text-align:center;padding:14px 0;line-height:1.9}
 .d-note{font-size:11px;color:var(--dim);line-height:1.8;margin-bottom:10px}
 .d-note code{background:rgba(0,180,255,.14);padding:1px 6px;border-radius:3px;
@@ -415,6 +415,12 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
 .d-fallback-note{font-size:10.5px;color:#ffd76e;line-height:1.7;margin-bottom:8px;
   padding:7px 10px;border-radius:5px;
   background:rgba(255,215,110,.08);border:1px dashed rgba(255,215,110,.4)}
+.d-sync-note{font-size:10.5px;color:#4fd8a8;line-height:1.7;margin-bottom:8px;
+  padding:7px 10px;border-radius:5px;
+  background:rgba(79,216,168,.08);border:1px dashed rgba(79,216,168,.4)}
+.d-warn-note{font-size:10.5px;color:#ffb74d;line-height:1.7;margin-bottom:8px;
+  padding:7px 10px;border-radius:5px;
+  background:rgba(255,183,77,.08);border:1px dashed rgba(255,183,77,.4)}
 .cloud-box{background:linear-gradient(180deg,rgba(0,180,255,.14),rgba(0,90,255,.04));
   border:1px solid rgba(0,180,255,.4);border-radius:8px;padding:14px}
 .cloud-status{font-size:11.5px;color:var(--dim);line-height:1.8;margin-bottom:10px;
@@ -736,7 +742,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
           <option value="四年级">四年级</option>
           <option value="五年级">五年级</option>
           <option value="六年级">六年级</option>
-       
+         
         </select>
         <select id="selClassNum">
           <option value="">选择班级</option>
@@ -750,7 +756,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
           <option value="8">8 班</option>
           <option value="9">9 班</option>
           <option value="10">10 班</option>
-        
+          
         </select>
       </div>
     </div>
@@ -766,11 +772,11 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
     <p id="adminDesc">数据管理仅对管理员开放，请输入账号密码</p>
     <div class="uc-field" id="grpUser">
       <label>管理员账号</label>
-      <input id="inpAdminUser" placeholder="" autocomplete="off" spellcheck="false">
+      <input id="inpAdminUser" placeholder="请输入账号" autocomplete="off" spellcheck="false">
     </div>
     <div class="uc-field" id="grpPass">
       <label id="lbPass">管理员密码</label>
-      <input id="inpAdminPass" type="password" placeholder="" autocomplete="new-password">
+      <input id="inpAdminPass" type="password" placeholder="请输入密码" autocomplete="new-password">
     </div>
     <div class="uc-field" id="grpNew" style="display:none">
       <label>新密码</label>
@@ -785,7 +791,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
       <button class="btn" id="btnAdminCancel">取消</button>
       <button class="btn primary" id="btnAdminSubmit">验证进入</button>
     </div>
-  
+   
   </div>
 </div>
 
@@ -841,12 +847,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
       <option value="四年级">四年级</option>
       <option value="五年级">五年级</option>
       <option value="六年级">六年级</option>
-      <option value="初一">初一</option>
-      <option value="初二">初二</option>
-      <option value="初三">初三</option>
-      <option value="高一">高一</option>
-      <option value="高二">高二</option>
-      <option value="高三">高三</option>
+ 
     </select>
     <select class="up-select" id="upSort">
       <option value="recent">最近活跃</option>
@@ -870,7 +871,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
         <option value="四年级">四年级</option>
         <option value="五年级">五年级</option>
         <option value="六年级">六年级</option>
-        
+    
       </select>
       <select id="upAddClassNum">
         <option value="">选择班级</option>
@@ -884,7 +885,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
         <option value="8">8 班</option>
         <option value="9">9 班</option>
         <option value="10">10 班</option>
-   
+     
       </select>
       <button class="btn primary" id="upAddConfirm">确认添加</button>
       <button class="btn" id="upAddCancel">取消</button>
@@ -1001,10 +1002,7 @@ function imgWithFallback(el, src){
 }
 
 /* =========================================================
-   ★ 全景图默认在线图片
-   ---------------------------------------------------------
-   当用户没有上传全景图、或图片加载失败时，自动切换到这些
-   在线全景图，保证界面永远不为空。
+   全景图默认在线图片
    ========================================================= */
 const ONLINE_PANOS = [
   'https://pannellum.org/images/alma.jpg',
@@ -1013,38 +1011,15 @@ const ONLINE_PANOS = [
   'https://pannellum.org/images/jfk.jpg',
   'https://photo-sphere-viewer-data.netlify.app/assets/sphere.jpg'
 ];
-/* 根据字符串稳定地选一张在线全景图，避免每次随机变化 */
 function pickOnlinePano(seed){
   const s = String(seed || 'default');
   let h = 0;
   for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;
   return ONLINE_PANOS[h % ONLINE_PANOS.length];
 }
-
-/* 检测图片是否可加载 */
 function checkImageLoadable(url){
   return new Promise(resolve => {
     if (!url){ resolve(false); return; }
-    // 已经是可用格式
-    if (/^https?:\/\//i.test(url) || /^data:image\//i.test(url)){
-      // 在线图快速返回成功，避免不必要的等待
-      // 但仍做一次真实加载检测（带超时）
-      const img = new Image();
-      let settled = false;
-      const timer = setTimeout(() => {
-        if (!settled){ settled = true; resolve(false); }
-      }, 3500);
-      img.onload = () => {
-        if (!settled){ settled = true; clearTimeout(timer); resolve(true); }
-      };
-      img.onerror = () => {
-        if (!settled){ settled = true; clearTimeout(timer); resolve(false); }
-      };
-      img.crossOrigin = 'anonymous';
-      img.src = url;
-      return;
-    }
-    // 相对路径也做检测
     const img = new Image();
     let settled = false;
     const timer = setTimeout(() => {
@@ -1276,7 +1251,6 @@ adminModal.addEventListener('click', e => {
    默认数据
    ========================================================= */
 const DEFAULT_BOOK_IMG = 'images/book-default.jpg';
-/* 默认全景图 —— 用在线图，确保所有电脑都能看到 */
 const DEFAULT_PANO = 'https://pannellum.org/images/alma.jpg';
 const DEFAULT_MAP = 'images/campus-map.jpg';
 
@@ -1289,6 +1263,7 @@ const DEFAULT_CONFIG = {
   seats: 260,
   mapImage: '',
   mapImageUrl: DEFAULT_MAP,
+  updatedAt: 0,
   scenes: [
     {
       id:'library', name:'图书馆', icon:'📚', desc:'主馆 3 层 · 全景漫游',
@@ -1350,8 +1325,8 @@ const DEFAULT_CONFIG = {
   books: {}
 };
 
-const STORE_KEY = 'campus-lib-v11';
-const CLOUD_KEY = 'campus-lib-cloud-v4';
+const STORE_KEY = 'campus-lib-v12';
+const CLOUD_KEY = 'campus-lib-cloud-v5';
 
 let CLOUD = {
   token: '',
@@ -1386,6 +1361,7 @@ let S = {
 function migrate(){
   if (!S.config.books || typeof S.config.books !== 'object') S.config.books = {};
   if (S.config.mapImageUrl == null) S.config.mapImageUrl = '';
+  if (S.config.updatedAt == null) S.config.updatedAt = 0;
   const validSids = new Set();
   (S.config.scenes || []).forEach((sc) => {
     if (!Array.isArray(sc.spots)) sc.spots = [];
@@ -1394,7 +1370,6 @@ function migrate(){
     }
     sc.spots.forEach((sp) => {
       if (!sp.sid) sp.sid = uid('sp');
-      // 空全景图使用默认在线图
       if (!sp.pano) sp.pano = DEFAULT_PANO;
       validSids.add(sp.sid);
     });
@@ -1452,7 +1427,9 @@ function save(){
   }
 }
 
-/* 数据合并 */
+/* =========================================================
+   数据合并
+   ========================================================= */
 function mergeVisits(a, b){
   const seen = new Set();
   const out = [];
@@ -1496,7 +1473,9 @@ function mergeUsers(local, remote){
   return out;
 }
 
-/* 云同步 */
+/* =========================================================
+   云同步
+   ========================================================= */
 let cloudPushTimer = null;
 let syncBusy = false;
 
@@ -1530,6 +1509,9 @@ async function fetchFromCloud(){
   return JSON.parse(files[fileName].content);
 }
 
+/* 拉取云端数据：
+   用户数据合并；
+   配置数据以 updatedAt 较新者为准（管理员维护的内容能同步到所有电脑） */
 async function pullFromCloud(silent){
   if (syncBusy){ if (!silent) toast('同步进行中，请稍候…'); return; }
   if (!CLOUD.gistId){ if (!silent) toast('尚未配置 Gist ID'); return; }
@@ -1538,17 +1520,32 @@ async function pullFromCloud(silent){
     setCloudStatus('sync', '⬇️ 正在拉取云端…');
     const data = await fetchFromCloud();
     if (!data){ syncBusy = false; return; }
+
+    // 用户数据合并
     if (data.users && typeof data.users === 'object'){
       const remoteUserCount = Object.keys(data.users).length;
       S.users = mergeUsers(S.users, data.users);
       if (remoteUserCount > 0) cloudRealDataLoaded = true;
     }
-    if (data.config){
-      const localHasConfig = S.config && S.config.title;
-      if (!localHasConfig){
+
+    // ★ 配置数据：以云端 updatedAt 为准
+    if (data.config && typeof data.config === 'object'){
+      const remoteAt = data.config.updatedAt || 0;
+      const localAt = S.config.updatedAt || 0;
+      if (remoteAt > localAt){
+        // 保留本机运行时状态
+        const keepCurrentUser = S.currentUser;
+        const keepMapImage = S.config.mapImage; // 本地上传的平面图（base64）保留
         S.config = deepMerge(clone(DEFAULT_CONFIG), data.config);
+        // 恢复本机特有的东西
+        if (keepMapImage && !S.config.mapImage){
+          S.config.mapImage = keepMapImage;
+        }
+        S.currentUser = keepCurrentUser;
+        console.log('[云同步] 配置已更新到最新版本（' + new Date(remoteAt).toLocaleString() + '）');
       }
     }
+
     migrate();
     saveWithoutSync();
     renderAll();
@@ -1558,7 +1555,7 @@ async function pullFromCloud(silent){
     CLOUD.lastSync = Date.now();
     saveCloud();
     setCloudStatus('on', '☁️ 已同步 · ' + relativeTime(CLOUD.lastSync));
-    if (!silent) toast('已从云端合并数据');
+    if (!silent) toast('已从云端合并数据（含图书展示）');
   }catch(e){
     setCloudStatus('err', '❌ ' + e.message);
     if (!silent) toast('拉取失败：' + e.message);
@@ -1566,6 +1563,8 @@ async function pullFromCloud(silent){
     syncBusy = false;
   }
 }
+/* 上传：先把远端合并进来，再上传合并后的结果
+   同时更新 config.updatedAt，让其他电脑知道这是最新配置 */
 async function pushToCloud(silent){
   if (syncBusy){ if (!silent) toast('同步进行中，请稍候…'); return; }
   if (!CLOUD.token){ if (!silent) toast('尚未配置 Token'); return; }
@@ -1573,24 +1572,40 @@ async function pushToCloud(silent){
   syncBusy = true;
   try{
     setCloudStatus('sync', '🔄 同步中…');
+    // 先拉一次，合并用户数据
     try{
       const remote = await fetchFromCloud();
-      if (remote && remote.users){
-        const remoteUserCount = Object.keys(remote.users).length;
-        S.users = mergeUsers(S.users, remote.users);
-        if (remoteUserCount > 0) cloudRealDataLoaded = true;
-        saveWithoutSync();
-        renderAll();
-        if (usersPage.classList.contains('on')) renderUsersPage();
+      if (remote){
+        if (remote.users){
+          const remoteUserCount = Object.keys(remote.users).length;
+          S.users = mergeUsers(S.users, remote.users);
+          if (remoteUserCount > 0) cloudRealDataLoaded = true;
+        }
+        // 配置：以较新的为准
+        if (remote.config && typeof remote.config === 'object'){
+          const remoteAt = remote.config.updatedAt || 0;
+          const localAt = S.config.updatedAt || 0;
+          if (remoteAt > localAt){
+            const keepCurrentUser = S.currentUser;
+            const keepMapImage = S.config.mapImage;
+            S.config = deepMerge(clone(DEFAULT_CONFIG), remote.config);
+            if (keepMapImage && !S.config.mapImage) S.config.mapImage = keepMapImage;
+            S.currentUser = keepCurrentUser;
+          }
+        }
       }
     }catch(e){
       console.warn('拉取失败，直接上传当前数据', e);
     }
+
+    // ★ 更新 updatedAt 并上传
+    S.config.updatedAt = Date.now();
     const payload = {
       config: S.config,
       users: S.users,
       exportedAt: Date.now()
     };
+
     setCloudStatus('sync', '⬆️ 正在上传…');
     const r = await fetch('https://api.github.com/gists/' + CLOUD.gistId, {
       method: 'PATCH',
@@ -1608,10 +1623,12 @@ async function pushToCloud(silent){
       if (r.status === 401 || r.status === 403) throw new Error('Token 无效或权限不足');
       throw new Error('HTTP ' + r.status);
     }
+    saveWithoutSync();
+    renderAll();
     CLOUD.lastSync = Date.now();
     saveCloud();
     setCloudStatus('on', '☁️ 已同步 · ' + relativeTime(CLOUD.lastSync));
-    if (!silent) toast('已上传到云端');
+    if (!silent) toast('已上传到云端（含图书展示）');
   }catch(e){
     setCloudStatus('err', '❌ ' + e.message);
     if (!silent) toast('上传失败：' + e.message);
@@ -1742,10 +1759,10 @@ function renderRank(){
       <div class="rank-item demo">
         <span class="no">${i+1}</span>
         <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-        <span class="demo-tag">*</span>
+        <span class="demo-tag">**</span>
         <span class="val">${r.count}</span>
       </div>`).join('');
-    tail.textContent = '演示数据';
+    tail.textContent = '数据';
     hint.style.display = 'flex';
     hint.innerHTML = '<span class="hi-ico">💡</span>读万卷书，行万里路';
     return;
@@ -1788,7 +1805,7 @@ function renderRank(){
       <div class="rank-item demo">
         <span class="no">${no}</span>
         <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-        <span class="demo-tag">演示</span>
+        <span class="demo-tag">*</span>
         <span class="val">${r.count}</span>
       </div>`;
   });
@@ -1916,6 +1933,7 @@ document.addEventListener('focusout', e => {
   if (!el) return;
   if (!adminAuthed && !checkAdminSession()) { renderTitle(); return; }
   setPath(S.config, el.dataset.path, el.textContent.trim());
+  S.config.updatedAt = Date.now();
   save();
 });
 document.addEventListener('keydown', e => {
@@ -2053,7 +2071,11 @@ $('#hotspotLayer').addEventListener('pointermove', e => {
   if (s){ s.x = +x.toFixed(2); s.y = +y.toFixed(2); }
 });
 $('#hotspotLayer').addEventListener('pointerup', () => {
-  if (dragTarget){ save(); dragTarget = null; }
+  if (dragTarget){
+    S.config.updatedAt = Date.now();
+    save();
+    dragTarget = null;
+  }
 });
 $('#hotspotLayer').addEventListener('click', e => {
   if (dragMode) return;
@@ -2091,6 +2113,7 @@ $('#btnMapApply').onclick = () => {
   img.onload = () => {
     S.config.mapImageUrl = url;
     S.config.mapImage = '';
+    S.config.updatedAt = Date.now();
     save(); renderMap();
     closeMapModal();
     toast('平面图已更新');
@@ -2118,9 +2141,10 @@ $('#fileMap').onchange = e => {
       cv.getContext('2d').drawImage(img, 0, 0, w, h);
       S.config.mapImage = cv.toDataURL('image/jpeg', 0.82);
       S.config.mapImageUrl = '';
+      S.config.updatedAt = Date.now();
       save(); renderMap();
       closeMapModal();
-      toast('平面图已更新（本地上传）');
+      toast('平面图已更新（本地上传，仅本机显示）');
     };
     img.onerror = () => toast('图片读取失败');
     img.src = ev.target.result;
@@ -2132,6 +2156,7 @@ $('#btnMapClear').onclick = () => {
   if (!confirm('确定清除当前平面图吗？')) return;
   S.config.mapImage = '';
   S.config.mapImageUrl = '';
+  S.config.updatedAt = Date.now();
   save(); renderMap();
   closeMapModal();
   toast('平面图已清除');
@@ -2148,7 +2173,6 @@ let panoViewer = null;
 let curSceneIdx = 0;
 let curSpotIdx = 0;
 let bookEditMode = false;
-/* 当前全景是否使用兜底图 */
 let curPanoIsFallback = false;
 
 function currentScene(){ return S.config.scenes[curSceneIdx] || null; }
@@ -2205,7 +2229,6 @@ function openViewer(sceneIdx, spotIdx){
   loadSpot(curSpotIdx);
 }
 
-/* ★ 智能加载全景：优先用户图片，失败则用在线默认图 */
 async function loadSpot(i){
   const s = currentScene();
   if (!s) return;
@@ -2224,22 +2247,18 @@ async function loadSpot(i){
   panoEl.innerHTML = '';
   removeBookHint();
 
-  /* 显示加载提示 */
   panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;' +
     'justify-content:center;color:#6fa8d0;font-size:13px;letter-spacing:2px">' +
     '全景加载中…</div>';
 
-  /* 用户配置的图片 */
   const userPano = spot.pano || '';
   let finalPano = userPano;
   let isFallback = false;
 
-  /* 如果用户没填，直接用默认在线图 */
   if (!userPano){
     finalPano = pickOnlinePano(spot.sid || spot.name || 'default');
     isFallback = true;
   } else {
-    /* 有填写，尝试加载；失败则用默认在线图 */
     const loadable = await checkImageLoadable(userPano);
     if (!loadable){
       finalPano = pickOnlinePano(spot.sid || spot.name || 'default');
@@ -2247,7 +2266,6 @@ async function loadSpot(i){
     }
   }
 
-  /* 记录状态 */
   curPanoIsFallback = isFallback;
   if (isFallback){
     $('#vSpotName').classList.add('fallback');
@@ -2256,7 +2274,6 @@ async function loadSpot(i){
     showPanoFallbackTip();
   }
 
-  /* 渲染全景 */
   requestAnimationFrame(() => {
     if (typeof pannellum === 'undefined'){
       panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;' +
@@ -2290,7 +2307,6 @@ async function loadSpot(i){
         setTimeout(() => injectBookContent(), 320);
       });
     }catch(err){
-      /* 极端情况：连在线图也失败，显示提示 */
       panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;' +
         'justify-content:center;color:#6fa8d0;font-size:13px;text-align:center;' +
         'line-height:2;padding:20px">全景图加载失败<br>' +
@@ -2302,7 +2318,6 @@ async function loadSpot(i){
   });
 }
 
-/* 兜底提示条 */
 function showPanoFallbackTip(){
   removePanoFallbackTip();
   const d = document.createElement('div');
@@ -2310,7 +2325,6 @@ function showPanoFallbackTip(){
   d.id = 'panoFallbackTip';
   d.textContent = '⚠️ 该点位未配置全景图，当前显示在线示例图';
   panoWrap.appendChild(d);
-  /* 4 秒后淡出 */
   setTimeout(() => {
     if (d && d.parentNode){
       d.style.transition = 'opacity .5s';
@@ -2366,6 +2380,7 @@ function injectBookContent(){
       ev.preventDefault();
       const arr = getBooks(sid);
       arr.splice(i, 1);
+      S.config.updatedAt = Date.now();
       save();
       refreshBookHotSpots();
       renderStats();
@@ -2464,6 +2479,7 @@ function startBookDrag(idx, el, startEv){
       if (arr[idx]){
         arr[idx].pitch = +Number(pitch).toFixed(3);
         arr[idx].yaw   = +Number(yaw).toFixed(3);
+        S.config.updatedAt = Date.now();
         save();
         toast('图书位置已保存');
       }
@@ -2603,7 +2619,9 @@ function updateCloudStatusUI(){
     setCloudStatus('off', '⚠️ 已填 Gist，未配置 Token（只读）');
     return;
   }
-  setCloudStatus('on', '☁️ 已配置 · ' + (CLOUD.lastSync ? relativeTime(CLOUD.lastSync) : '尚未同步'));
+  const cfgTime = S.config.updatedAt
+    ? ' · 配置 ' + relativeTime(S.config.updatedAt) : '';
+  setCloudStatus('on', '☁️ 已配置 · ' + (CLOUD.lastSync ? relativeTime(CLOUD.lastSync) + cfgTime : '尚未同步'));
 }
 
 function renderDrawer(){
@@ -2619,18 +2637,21 @@ function renderDrawer(){
 
   h += `<div>
     <div class="d-sec-title">☁️ 云端同步
-      <span class="tail">填写 Token 后本月榜自动用真实数据覆盖</span>
+      <span class="tail">图书展示 / 场景 / 用户 都会同步</span>
     </div>
     <div class="cloud-box">
       <div class="cloud-status">
         <span class="dot off" id="cloudDot"></span>
         <span id="cloudTxt">加载中…</span>
       </div>
+      <div class="d-sync-note">
+        ✅ 上传后，图书展示、场景配置、用户数据会自动同步到云端，<br>
+        其他电脑打开时会自动拉取最新版本。
+      </div>
       <div class="d-note" style="font-size:10.5px;margin-bottom:10px">
-        <b style="color:#7fd8ff">说明：</b>数据存到 GitHub Gist（私密代码片段），<br>
-        各电脑通过 Token 读写同一个 Gist 实现同步。<br>
-        · 未配置 Token → 本月榜显示演示数据<br>
-        · 填写正确 Token 并上传后 → 用真实数据覆盖
+        <b style="color:#7fd8ff">说明：</b>数据存到 GitHub Gist（私密代码片段）。<br>
+        · 配置（图书/场景等）以最新上传的为准<br>
+        · 用户浏览记录会合并去重，不会互相覆盖
       </div>
       <div class="d-row" style="margin-bottom:8px">
         <span class="d-label" style="flex:0 0 60px">Token</span>
@@ -2643,12 +2664,12 @@ function renderDrawer(){
       <div class="d-row" style="margin-bottom:10px">
         <input type="checkbox" id="cloudAuto" ${CLOUD.autoSync ? 'checked' : ''}>
         <label for="cloudAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">
-          自动同步（浏览后 2.5 秒上传，登录后自动拉取）
+          自动同步（改动后 2.5 秒自动上传）
         </label>
       </div>
       <div class="cloud-actions">
-        <button class="btn primary" id="cloudPushBtn">⬆️ 上传</button>
-        <button class="btn" id="cloudPullBtn">⬇️ 拉取</button>
+        <button class="btn primary" id="cloudPushBtn">⬆️ 立即上传</button>
+        <button class="btn" id="cloudPullBtn">⬇️ 立即拉取</button>
         <button class="btn" id="cloudSaveBtn">💾 保存配置</button>
         <button class="btn" id="cloudHelpBtn">❓ 帮助</button>
       </div>
@@ -2724,7 +2745,7 @@ function renderDrawer(){
       </span>
     </div>
     <div class="d-fallback-note">
-      💡 全景图留空或加载失败时，会自动使用在线示例图，界面不会空白
+      💡 全景图留空或加载失败时，会自动使用在线示例图
     </div>
     <div class="d-note">全景图请填写 <code>images/xxx.jpg</code> 格式，先上传到仓库</div>`;
 
@@ -2782,12 +2803,19 @@ function renderDrawer(){
     curBookSpot = spotOptions[0] ? spotOptions[0].sid : null;
   }
 
+  /* ========== 全景图书展示 ========== */
   h += `<div>
-    <div class="d-sec-title">全景图书展示</div>
-    <div class="d-note">
-      · 图书图片请填写 <code>images/xxx.jpg</code> 格式<br>
-      · 添加后进入全景的「编辑图书」模式拖动定位<br>
-      · 点击图片即可跳转到电子书链接
+    <div class="d-sec-title">全景图书展示
+      <span class="tail">随配置一起上传到云端</span>
+    </div>
+    <div class="d-sync-note">
+      ✅ 添加图书后点「立即上传」或开启自动同步，<br>
+      其他电脑打开时会自动加载相同的图书
+    </div>
+    <div class="d-warn-note">
+      ⚠️ 图书图片请用 <code>images/xxx.jpg</code> 相对路径，<br>
+      图片文件需提前上传到 GitHub 仓库；<br>
+      本地上传的图片只在本机预览，不参与云端同步。
     </div>
     <div class="d-row">
       <span class="d-label">场景</span>
@@ -2809,6 +2837,7 @@ function renderDrawer(){
   }
   h += `  </select>
       <button class="mini" id="btnAddBook" ${curBookSpot ? '' : 'disabled style="opacity:.5;cursor:not-allowed"'}>＋ 添加</button>
+      <button class="mini" id="btnPushBooks" title="立即上传图书数据到云端">⬆️ 同步</button>
     </div>
     <div id="bookList">`;
 
@@ -2877,20 +2906,24 @@ function bindDrawerEvents(){
       '三、填写并保存\n' +
       '1. 把 Token 和 Gist ID 填到上面两个输入框\n' +
       '2. 点「保存配置」\n' +
-      '3. 点「上传」把当前数据推上去\n\n' +
+      '3. 点「立即上传」把当前配置推上去\n\n' +
       '四、其他电脑\n' +
       '1. 填同样的 Token 和 Gist ID，保存\n' +
-      '2. 点「拉取」即可拿到所有电脑的数据\n\n' +
-      '【全景图兜底说明】\n' +
-      '· 点位没填全景图 → 自动用在线示例图\n' +
-      '· 填了但加载失败 → 也会自动切换到在线图\n' +
-      '· 界面永远不会出现空白全景'
+      '2. 打开后会自动拉取最新图书/场景\n\n' +
+      '【同步内容】\n' +
+      '· 图书展示（图片路径、名称、链接、位置）\n' +
+      '· 场景和点位配置\n' +
+      '· 用户浏览记录（合并去重）\n\n' +
+      '【图片说明】\n' +
+      '· 图书图片请上传到仓库 images/ 目录，填相对路径\n' +
+      '· 本地上传的图片只在本机预览，不会同步到其他电脑'
     );
   };
 
   const chk = $('#chkEbookAuto');
   if (chk) chk.onchange = e => {
     S.config.ebookAuto = e.target.checked;
+    S.config.updatedAt = Date.now();
     save(); renderStats(); renderDrawer();
   };
 
@@ -2915,8 +2948,9 @@ function bindDrawerEvents(){
       ],
       spots: [ { sid: uid('sp'), name:'全景 · 主视角', pano:'' } ]
     });
+    S.config.updatedAt = Date.now();
     save(); renderAll(); renderDrawer();
-    toast('已添加场景（全景图留空自动用示例图）');
+    toast('已添加场景');
   };
 
   const selScene = $('#selBookScene');
@@ -2932,6 +2966,7 @@ function bindDrawerEvents(){
       try{ pitch = +Number(panoViewer.getPitch()).toFixed(2); yaw = +Number(panoViewer.getYaw()).toFixed(2); }catch(e){}
     } else { pitch = -2; yaw = 0; }
     arr.push({ name:'新图书', title:'点击编辑图书标题', url:'', img:'images/book-default.jpg', pitch, yaw });
+    S.config.updatedAt = Date.now();
     save(); renderStats(); renderDrawer();
     if (viewerEl.classList.contains('on') && currentSid() === curBookSpot){
       refreshBookHotSpots();
@@ -2939,11 +2974,24 @@ function bindDrawerEvents(){
     }
     toast('已添加图书，请在全景中拖动定位');
   };
+
+  // 立即同步图书
+  const btnPushBooks = $('#btnPushBooks');
+  if (btnPushBooks) btnPushBooks.onclick = () => {
+    persist();
+    if (!CLOUD.token || !CLOUD.gistId){
+      toast('请先配置 Token 和 Gist ID');
+      return;
+    }
+    pushToCloud(false);
+  };
+
   $$('[data-rmbook]').forEach(btn => {
     btn.onclick = () => {
       if (!curBookSpot) return;
       const arr = getBooks(curBookSpot);
       arr.splice(+btn.dataset.rmbook, 1);
+      S.config.updatedAt = Date.now();
       save(); renderStats(); renderDrawer();
       if (viewerEl.classList.contains('on') && currentSid() === curBookSpot) refreshBookHotSpots();
     };
@@ -2957,8 +3005,8 @@ function bindDrawerEvents(){
       f.onchange = () => {
         const file = f.files[0];
         if (!file) return;
-        const r = new FileReader();
-        r.onload = ev => {
+        const reader = new FileReader();
+        reader.onload = ev => {
           const im = new Image();
           im.onload = () => {
             const cv = document.createElement('canvas');
@@ -2967,14 +3015,16 @@ function bindDrawerEvents(){
             const size = Math.min(im.width, im.height);
             const sx = (im.width - size) / 2, sy = (im.height - size) / 2;
             ctx.drawImage(im, sx, sy, size, size, 0, 0, 200, 200);
-            getBooks(curBookSpot)[idx].img = cv.toDataURL('image/jpeg', 0.85);
+            const base64 = cv.toDataURL('image/jpeg', 0.85);
+            getBooks(curBookSpot)[idx].img = base64;
+            S.config.updatedAt = Date.now();
             save(); renderDrawer();
             if (viewerEl.classList.contains('on') && currentSid() === curBookSpot) refreshBookHotSpots();
-            toast('图片已更换（本地上传）');
+            toast('图片已更新（本机预览）；如需跨电脑同步，请上传到仓库 images/ 并改路径');
           };
           im.src = ev.target.result;
         };
-        r.readAsDataURL(file);
+        reader.readAsDataURL(file);
       };
       f.click();
     };
@@ -2993,6 +3043,7 @@ $('#drawerBody').addEventListener('click', e => {
     S.config.scenes.splice(i, 1);
     if (curBookScene === sc.id){ curBookScene = null; curBookSpot = null; }
     if (curSceneIdx >= S.config.scenes.length) curSceneIdx = 0;
+    S.config.updatedAt = Date.now();
     save(); renderAll(); renderDrawer();
     toast('场景已删除');
     return;
@@ -3006,8 +3057,9 @@ $('#drawerBody').addEventListener('click', e => {
     const newSid = uid('sp');
     sc.spots.push({ sid: newSid, name: '新点位 ' + (sc.spots.length + 1), pano: '' });
     S.config.books[newSid] = [];
+    S.config.updatedAt = Date.now();
     save(); renderAll(); renderDrawer();
-    toast('已添加点位（全景图留空自动用示例图）');
+    toast('已添加点位');
     return;
   }
   const rmSpot = e.target.closest('[data-rmspot]');
@@ -3022,6 +3074,7 @@ $('#drawerBody').addEventListener('click', e => {
     if (sp.sid && S.config.books[sp.sid]) delete S.config.books[sp.sid];
     sc.spots.splice(pi, 1);
     if (curBookSpot === sp.sid){ curBookSpot = null; }
+    S.config.updatedAt = Date.now();
     save(); renderAll(); renderDrawer();
     if (viewerEl.classList.contains('on') && currentScene() && currentScene().id === sc.id){
       if (curSpotIdx >= sc.spots.length) curSpotIdx = 0;
@@ -3039,6 +3092,7 @@ $('#drawerBody').addEventListener('input', e => {
   let v = el.value;
   if (el.type === 'number'){ v = v === '' ? 0 : Number(v); if (Number.isNaN(v)) v = 0; }
   setPath(S.config, el.dataset.path, v);
+  S.config.updatedAt = Date.now();
   save();
   clearTimeout(drawerTimer);
   drawerTimer = setTimeout(() => {
@@ -3407,6 +3461,7 @@ $('#fileImport').onchange = e => {
 $('#btnReset').onclick = () => {
   if (!confirm('确定恢复默认数据吗？所有修改和用户记录将丢失（管理员密码不受影响）。')) return;
   S = { config: clone(DEFAULT_CONFIG), users: {}, currentUser: null };
+  S.config.updatedAt = Date.now();
   migrate();
   save();
   renderAll(); renderDrawer(); renderUserBadge();
