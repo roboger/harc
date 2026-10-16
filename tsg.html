@@ -4,10 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>云逛校园图书馆 · 可视化数据大屏</title>
+<title>淮安市通甫路小学云逛校园图书馆 · 可视化数据大屏</title>
+
+<!-- 优化：网络预连接加速依赖下载 -->
+<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+<link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
-<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
 <style>
 :root{--cyan:#00d4ff;--blue:#0a84ff;--panel-a:rgba(10,42,84,.66);--panel-b:rgba(5,20,45,.55);--line:rgba(0,180,255,.28);--text:#cfe9ff;--dim:#6fa8d0;--gold:#ffd76e;--h:100vh;--h:100dvh}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -350,13 +354,12 @@ body.book-editing .book-spot .bk-del{display:block}
     <div class="ac-logo" id="adminIcon">🔒</div>
     <h2 id="adminTitle">管理员验证</h2>
     <p id="adminDesc">数据管理仅对管理员开放，请输入账号密码</p>
-    <div class="uc-field" id="grpUser"><label>管理员账号</label><input id="inpAdminUser" placeholder="默认 admin" autocomplete="off"></div>
-    <div class="uc-field" id="grpPass"><label id="lbPass">管理员密码</label><input id="inpAdminPass" type="password" placeholder="默认 admin123" autocomplete="new-password"></div>
+    <div class="uc-field" id="grpUser"><label>管理员账号</label><input id="inpAdminUser" placeholder="请输入账号账户" autocomplete="off"></div>
+    <div class="uc-field" id="grpPass"><label id="lbPass">管理员密码</label><input id="inpAdminPass" type="password" placeholder="请输入账号密码" autocomplete="new-password"></div>
     <div class="uc-field" id="grpNew" style="display:none"><label>新密码</label><input id="inpAdminNew" type="password" placeholder="至少 6 位"></div>
     <div class="uc-field" id="grpNew2" style="display:none"><label>确认新密码</label><input id="inpAdminNew2" type="password" placeholder="再次输入新密码"></div>
     <div class="uc-tip" id="adminTip"></div>
     <div class="admin-btns"><button class="btn" id="btnAdminCancel">取消</button><button class="btn primary" id="btnAdminSubmit">验证进入</button></div>
-    <div class="ac-secure">默认账号 admin · 默认密码 admin123</div>
   </div>
 </div>
 
@@ -437,6 +440,10 @@ body.book-editing .book-spot .bk-del{display:block}
 <input type="file" id="fileMap" accept="image/*" hidden>
 <input type="file" id="fileUserImport" accept=".json" hidden>
 <div id="dragGhost"><img id="dragGhostImg" alt=""></div>
+
+<!-- 优化：将沉重的 JS 从 head 移到 body 末尾，避免阻塞 HTML 渲染 -->
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
 
 <script>
 /* ================= 工具 ================= */
@@ -572,7 +579,7 @@ const DEFAULT_MAP='images/campus-map.jpg';
 const DEFAULT_BOOKS=buildDefaultBooks();
 
 const DEFAULT_CONFIG={
-  title:'XX学校 · 云逛校园图书馆',
+  title:'淮安市通甫路小学 · 云逛校园图书馆可视化数据大屏',
   subtitle:'SMART CAMPUS READING SPACE · VISUALIZATION PLATFORM',
   paperBooks:32800,ebookBase:12000,ebookAuto:true,seats:260,
   mapImage:'',mapImageUrl:DEFAULT_MAP,updatedAt:0,booksDirty:false,
@@ -595,7 +602,8 @@ const DEFAULT_CONFIG={
 const STORE_KEY='campus-lib-v15';
 const CLOUD_KEY='campus-lib-cloud-v8';
 
-let CLOUD={token:'',gistId:'',autoSync:false,lastSync:0};
+// 优化：默认开启自动同步，解决“管理员修改后没同步”的问题
+let CLOUD={token:'',gistId:'',autoSync:true,lastSync:0};
 let cloudRealDataLoaded=false;
 
 function loadCloud(){try{const raw=localStorage.getItem(CLOUD_KEY);if(raw){const o=JSON.parse(raw);if(o&&typeof o==='object'){CLOUD={...CLOUD,...o};}}}catch(e){}}
@@ -660,7 +668,8 @@ function mergeUsers(local,remote){
 /* ================= 云同步 ================= */
 let cloudPushTimer=null,syncBusy=false;
 
-function scheduleCloudPush(){clearTimeout(cloudPushTimer);cloudPushTimer=setTimeout(()=>{pushToCloud(true);},2500);}
+// 优化：加快了自动同步的触发响应时间 (2500ms -> 2000ms)
+function scheduleCloudPush(){clearTimeout(cloudPushTimer);cloudPushTimer=setTimeout(()=>{pushToCloud(true);},2000);}
 function cloudStatusEl(){return{dot:$('#cloudDot'),txt:$('#cloudTxt')};}
 function setCloudStatus(state,txt){const{dot,txt:t}=cloudStatusEl();if(!dot||!t)return;dot.className='dot '+state;t.textContent=txt;}
 async function fetchFromCloud(){
@@ -673,7 +682,7 @@ async function fetchFromCloud(){
   return JSON.parse(files[fileName].content);
 }
 
-/* ★ 拉取：以云端为准，直接替换（解决"其他电脑看不到新图书"问题） */
+/* 拉取：以云端为准，直接替换 */
 async function pullFromCloud(silent){
   if(syncBusy){if(!silent)toast('同步进行中，请稍候…');return;}
   if(!CLOUD.gistId){if(!silent)toast('尚未配置 Gist ID');return;}
@@ -689,8 +698,6 @@ async function pullFromCloud(silent){
       if(remoteUserCount>0)cloudRealDataLoaded=true;
     }
 
-    /* ★ 关键改动：直接替换 config，不用 deepMerge
-       这样云端的新图书能完整同步过来，本机旧数据不会干扰 */
     if(data.config&&typeof data.config==='object'){
       const remoteAt=data.config.updatedAt||0;
       const localAt=S.config.updatedAt||0;
@@ -701,10 +708,6 @@ async function pullFromCloud(silent){
         if(keepMapImage&&!S.config.mapImage)S.config.mapImage=keepMapImage;
         S.currentUser=keepCurrentUser;
         S.config.booksDirty=false;
-        console.log('[拉取] 已用云端配置覆盖本机');
-        console.log('[拉取] 图书分布:',Object.keys(S.config.books||{}).map(k=>k+':'+(S.config.books[k]?.length||0)).join(', '));
-      }else{
-        console.log('[拉取] 跳过（本机更新或相同）');
       }
     }
 
@@ -724,7 +727,7 @@ async function pullFromCloud(silent){
   }finally{syncBusy=false;}
 }
 
-/* ★ 上传：本机有修改时用本机；否则用云端避免覆盖 */
+/* 优化：修复重大Bug！只要本机的时间戳比云端新，就强制上传最新修改，避免标题、场景等设置被旧版云端覆盖 */
 async function pushToCloud(silent){
   if(syncBusy){if(!silent)toast('同步进行中，请稍候…');return;}
   if(!CLOUD.token){if(!silent)toast('尚未配置 Token');return;}
@@ -732,7 +735,6 @@ async function pushToCloud(silent){
   syncBusy=true;
   try{
     setCloudStatus('sync','🔄 同步中…');
-    let needUpload=true;
     try{
       const remote=await fetchFromCloud();
       if(remote){
@@ -742,24 +744,25 @@ async function pushToCloud(silent){
           if(remoteUserCount>0)cloudRealDataLoaded=true;
         }
         if(remote.config&&typeof remote.config==='object'){
-          if(S.config.booksDirty){
-            /* 本机有未上传的图书修改 → 用本机，更新时间戳 */
+          const localAt=S.config.updatedAt||0;
+          const remoteAt=remote.config.updatedAt||0;
+          // 重大修复：不但判断 booksDirty，还判断本机更新时间戳是否大于等于云端，防止非图书的其他修改被云端覆盖！
+          if(S.config.booksDirty || localAt >= remoteAt){
             S.config.updatedAt=Date.now();
-            console.log('[推送] 本机有修改，用本机 config 上传');
+            console.log('[推送] 本机有较新修改，用本机 config 上传');
           }else{
-            /* 本机没修改 → 用云端 config 避免覆盖 */
             const keepCurrentUser=S.currentUser;
             const keepMapImage=S.config.mapImage;
             S.config=clone(remote.config);
             if(keepMapImage&&!S.config.mapImage)S.config.mapImage=keepMapImage;
             S.currentUser=keepCurrentUser;
-            console.log('[推送] 本机无修改，用云端 config 上传');
+            console.log('[推送] 本机无修改，且云端较新，用云端 config 上传');
           }
         }else{
           S.config.updatedAt=Date.now();
         }
       }
-    }catch(e){console.warn('[推送] 拉取失败:',e);if(S.config.booksDirty)S.config.updatedAt=Date.now();}
+    }catch(e){console.warn('[推送] 拉取比对失败，强制上传:',e); S.config.updatedAt=Date.now();}
 
     const payload={config:S.config,users:S.users,exportedAt:Date.now()};
     setCloudStatus('sync','⬆️ 正在上传…');
@@ -776,8 +779,7 @@ async function pushToCloud(silent){
     CLOUD.lastSync=Date.now();
     saveCloud();
     setCloudStatus('on','☁️ 已同步 · '+relativeTime(CLOUD.lastSync));
-    console.log('[推送] 上传成功，图书分布:',Object.keys(S.config.books||{}).map(k=>k+':'+(S.config.books[k]?.length||0)).join(', '));
-    if(!silent)toast('已上传到云端');
+    if(!silent)toast('已成功保存到云端');
   }catch(e){
     setCloudStatus('err','❌ '+e.message);
     if(!silent)toast('上传失败：'+e.message);
@@ -821,8 +823,8 @@ function renderRank(){
   const hasReal=realList.length>0||hasAnyUser;
   const box=$('#rankList'),hint=$('#rankHint'),tail=$('#rankTail');
   if(!hasReal&&!cloudRealDataLoaded){
-    box.innerHTML=DEMO_RANK.slice(0,10).map((r,i)=>`<div class="rank-item demo"><span class="no">${i+1}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span><span class="demo-tag">演示</span><span class="val">${r.count}</span></div>`).join('');
-    tail.textContent='演示数据';hint.style.display='flex';hint.innerHTML='<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖';return;
+    box.innerHTML=DEMO_RANK.slice(0,10).map((r,i)=>`<div class="rank-item demo"><span class="no">${i+1}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span><span class="demo-tag">*</span><span class="val">${r.count}</span></div>`).join('');
+    tail.textContent='演示数据';hint.style.display='flex';hint.innerHTML='<span class="hi-ico">💡</span>读万卷书，行万里路';return;
   }
   const meKey=S.currentUser;let realTop=realList.slice(0,10);
   if(meKey&&!realTop.some(r=>r.key===meKey)&&S.users[meKey]){const mk=monthKey(Date.now());let n=0;for(const v of(S.users[meKey].visits||[]))if(monthKey(v.t)===mk)n++;if(n>0){const all=getMonthlyRank();const rank=all.findIndex(r=>r.key===meKey)+1;realTop.push({key:meKey,name:S.users[meKey].name,cls:S.users[meKey].cls,count:n,isMe:true,rank:rank||'-'});}}
@@ -830,9 +832,9 @@ function renderRank(){
   const demoFill=DEMO_RANK.filter(d=>!usedNames.has(d.name)).slice(0,needDemo);
   let html='';
   realTop.forEach((r,i)=>{const isMe=r.key===meKey||r.isMe;const no=r.isMe?r.rank:(i+1);html+=`<div class="rank-item ${isMe?'me':''}"><span class="no">${no}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}${isMe&&r.isMe?' · 我':''}</em></span><span class="val">${r.count}</span></div>`;});
-  demoFill.forEach((r,i)=>{const no=realTop.length+i+1;html+=`<div class="rank-item demo"><span class="no">${no}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span><span class="demo-tag">演示</span><span class="val">${r.count}</span></div>`;});
+  demoFill.forEach((r,i)=>{const no=realTop.length+i+1;html+=`<div class="rank-item demo"><span class="no">${no}</span><span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span><span class="demo-tag">*</span><span class="val">${r.count}</span></div>`;});
   box.innerHTML=html;
-  if(demoFill.length>0){tail.textContent='真实 + 演示';hint.style.display='flex';hint.innerHTML=cloudRealDataLoaded?'<span class="hi-ico">☁️</span>已同步云端真实数据':(CLOUD.token&&CLOUD.gistId?'<span class="hi-ico">☁️</span>已配置云同步，正在等待真实数据…':'<span class="hi-ico">💡</span>填写云同步 Token 后，将用真实数据覆盖');}
+  if(demoFill.length>0){tail.textContent='TOP10';hint.style.display='flex';hint.innerHTML=cloudRealDataLoaded?'<span class="hi-ico">☁️</span>已同步云端真实数据':(CLOUD.token&&CLOUD.gistId?'<span class="hi-ico">☁️</span>已配置云同步，正在等待真实数据…':'<span class="hi-ico">💡</span>读万卷书，行万里路');}
   else{tail.textContent='TOP 10';hint.style.display='none';}
 }
 function renderEntries(){
@@ -857,7 +859,16 @@ function initCharts(){
   trendChart=echarts.init($('#c-trend'));pieChart=echarts.init($('#c-pie'));
   trendChart.setOption({grid:{left:34,right:12,top:18,bottom:22},tooltip:{trigger:'axis'},xAxis:{type:'category',boundaryGap:false,data:[],axisLabel:{color:'#7fb6e0',fontSize:9.5}},yAxis:{type:'value',axisLabel:{color:'#7fb6e0',fontSize:9.5},splitLine:{lineStyle:{color:'rgba(0,180,255,.1)'}}},series:[{type:'line',smooth:true,symbol:'circle',symbolSize:5,data:[],lineStyle:{color:'#00d4ff',width:2},itemStyle:{color:'#00d4ff'},areaStyle:{color:new echarts.graphic.LinearGradient(0,0,0,1,[{offset:0,color:'rgba(0,212,255,.45)'},{offset:1,color:'rgba(0,212,255,0)'}])}}]});
   pieChart.setOption({tooltip:{trigger:'item'},legend:{bottom:0,icon:'circle',itemWidth:7,itemHeight:7,textStyle:{color:'#7fb6e0',fontSize:9.5}},series:[{type:'pie',radius:['44%','68%'],center:['50%','43%'],label:{show:false},itemStyle:{borderColor:'#031127',borderWidth:2},data:[]}]});
-  addEventListener('resize',()=>{trendChart.resize();pieChart.resize();});
+  
+  // 优化：给图表 Resize 增加防抖，避免拖拉窗口时卡死浏览器
+  let resizeTimer;
+  addEventListener('resize',()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(()=>{
+      if(trendChart) trendChart.resize();
+      if(pieChart) pieChart.resize();
+    }, 200);
+  });
 }
 function renderCharts(){if(!trendChart)return;trendChart.setOption({xAxis:{data:S.config.trend.labels},series:[{data:S.config.trend.values}]});pieChart.setOption({series:[{data:S.config.pie}]});}
 function renderAll(){renderTitle();renderStats();renderRank();renderEntries();renderHotspots();renderMap();renderCharts();renderUserBadge();}
@@ -967,8 +978,6 @@ async function loadSpot(i){
   requestAnimationFrame(()=>{
     if(typeof pannellum==='undefined'){panoEl.innerHTML='<div style="padding:20px;color:#6fa8d0">全景组件未加载</div>';return;}
     const books=getBooks(spot.sid);
-    /* ★ 打印调试信息，便于确认图书数据 */
-    console.log('[全景] 点位='+spot.sid+'，图书数量='+books.length, books.map(b=>b.name));
     const hotSpots=books.map((b,k)=>({id:'book-'+k,pitch:Number(b.pitch)||0,yaw:Number(b.yaw)||0,type:'info',cssClass:'book-spot'}));
     panoEl.innerHTML='';
     try{
@@ -991,7 +1000,6 @@ function injectBookContent(){
   const sid=currentSid();if(!sid)return;
   const books=getBooks(sid);removeBookHint();
   const els=panoEl.querySelectorAll('.book-spot');
-  console.log('[注入] 点位='+sid+'，图书='+books.length+'，DOM='+els.length);
   if(!books.length){if(bookEditMode)showBookHint();return;}
   if(!els.length){setTimeout(injectBookContent,200);return;}
   els.forEach((el,i)=>{
@@ -1086,16 +1094,14 @@ function renderDrawer(){
   h+=`<div><div class="d-sec-title">☁️ 云端同步<span class="tail">图书 / 场景 / 用户</span></div>
     <div class="cloud-box">
       <div class="cloud-status"><span class="dot off" id="cloudDot"></span><span id="cloudTxt">加载中…</span></div>
-      <div class="d-sync-note">✅ <b>上传后图书会同步到云端</b>；其他电脑拉取即可看到。</div>
-      <div class="d-warn-note">⚠️ 只有在本机修改了图书后才会用本机配置覆盖云端；<br>普通浏览不会覆盖云端的图书配置。</div>
+      <div class="d-sync-note">✅ <b>上传后会自动同步到云端</b>；其他电脑拉取即可看到。</div>
       <div class="d-row" style="margin-bottom:8px"><span class="d-label" style="flex:0 0 60px">Token</span><input id="cloudToken" type="password" value="${escapeAttr(CLOUD.token)}" placeholder="ghp_... 或 github_pat_..."></div>
       <div class="d-row" style="margin-bottom:8px"><span class="d-label" style="flex:0 0 60px">Gist ID</span><input id="cloudGist" value="${escapeAttr(CLOUD.gistId)}" placeholder="从 gist 链接末尾复制"></div>
-      <div class="d-row" style="margin-bottom:10px"><input type="checkbox" id="cloudAuto" ${CLOUD.autoSync?'checked':''}><label for="cloudAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">自动同步（改动后 2.5 秒自动上传）</label></div>
+      <div class="d-row" style="margin-bottom:10px"><input type="checkbox" id="cloudAuto" ${CLOUD.autoSync?'checked':''}><label for="cloudAuto" style="font-size:11.5px;color:#9fdcff;cursor:pointer">自动同步（修改后自动上传云端）</label></div>
       <div class="cloud-actions">
         <button class="btn primary" id="cloudPushBtn">⬆️ 立即上传</button>
         <button class="btn" id="cloudPullBtn">⬇️ 立即拉取</button>
         <button class="btn" id="cloudSaveBtn">💾 保存配置</button>
-        <button class="btn" id="cloudHelpBtn">❓ 帮助</button>
       </div>
     </div>
   </div>`;
@@ -1185,7 +1191,6 @@ function bindDrawerEvents(){
   const saveBtn=$('#cloudSaveBtn');if(saveBtn)saveBtn.onclick=()=>{persist();updateCloudStatusUI();toast('云同步配置已保存');};
   const pushBtn=$('#cloudPushBtn');if(pushBtn)pushBtn.onclick=()=>{persist();pushToCloud(false);};
   const pullBtn=$('#cloudPullBtn');if(pullBtn)pullBtn.onclick=()=>{persist();pullFromCloud(false);};
-  const helpBtn=$('#cloudHelpBtn');if(helpBtn)helpBtn.onclick=()=>{alert('【云同步配置步骤】\n\n一、创建 Token\n1. 打开 https://github.com/settings/tokens\n2. 创建 Token，勾选 gist 权限\n3. 复制 Token\n\n二、创建 Gist\n1. 打开 https://gist.github.com\n2. 新建 Secret Gist，文件名 campus-data.json\n3. 内容随便填 {}，创建后复制 Gist ID\n\n三、填写并保存\n1. 填入 Token 和 Gist ID\n2. 点「保存配置」\n3. 点「立即上传」\n\n四、其他电脑\n1. 填同样的 Token 和 Gist ID，保存\n2. 打开后会自动拉取最新图书/场景\n\n【重要说明】\n· 修改图书后上传，会覆盖云端配置\n· 其他电脑拉取时以云端为准，能看到新图书\n· 普通浏览不会覆盖云端的图书配置');};
 
   const chk=$('#chkEbookAuto');if(chk)chk.onchange=e=>{S.config.ebookAuto=e.target.checked;S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderStats();renderDrawer();};
   const btnUsers=$('#btnOpenUsers');if(btnUsers)btnUsers.onclick=()=>{closeDrawer();openUsersPage();};
@@ -1249,6 +1254,7 @@ $('#drawerBody').addEventListener('click',e=>{
   if(rmSpot){const[si,pi]=rmSpot.dataset.rmspot.split(':').map(Number);const sc=S.config.scenes[si];if(!sc)return;if((sc.spots||[]).length<=1){toast('每个场景至少保留一个点位');return;}const sp=sc.spots[pi];if(!sp)return;if(!confirm(`确定删除点位「${sp.name}」？`))return;if(sp.sid&&S.config.books[sp.sid])delete S.config.books[sp.sid];sc.spots.splice(pi,1);if(curBookSpot===sp.sid){curBookSpot=null;}S.config.updatedAt=Date.now();S.config.booksDirty=true;save();renderAll();renderDrawer();if(viewerEl.classList.contains('on')&&currentScene()&&currentScene().id===sc.id){if(curSpotIdx>=sc.spots.length)curSpotIdx=0;openViewer(curSceneIdx,curSpotIdx);}toast('点位已删除');return;}
 });
 
+// 优化：将输入更新大屏渲染的防抖时间大幅延长 (240ms -> 600ms)，避免因连续输入标题/图表数据导致整个 DOM 疯狂重绘引起的严重卡顿
 let drawerTimer=null;
 $('#drawerBody').addEventListener('input',e=>{
   const el=e.target.closest('[data-path]');if(!el)return;
@@ -1270,7 +1276,7 @@ $('#drawerBody').addEventListener('input',e=>{
         const sp=currentSpot();if(sp)$('#vSpotName').textContent=sp.name;
       }
     }
-  },240);
+  },600); 
 });
 
 /* ================= 用户管理页面 ================= */
@@ -1407,10 +1413,47 @@ addEventListener('storage',e=>{
 
 /* 时钟 & 背景 */
 (function(){const t=$('#time'),d=$('#date');const W='日一二三四五六';function tick(){const n=new Date();t.textContent=String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0')+':'+String(n.getSeconds()).padStart(2,'0');d.textContent=`${n.getFullYear()}年${n.getMonth()+1}月${n.getDate()}日 星期${W[n.getDay()]}`;}tick();setInterval(tick,1000);})();
-(function(){const c=$('#bg'),ctx=c.getContext('2d');let W,H,pts=[];function init(){W=c.width=innerWidth;H=c.height=innerHeight;const n=Math.min(50,Math.floor(W*H/32000));pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5}));}function loop(){ctx.clearRect(0,0,W,H);for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);ctx.fillStyle='rgba(0,190,255,.7)';ctx.fill();}for(let i=0;i<pts.length;i++){for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;const d=Math.hypot(dx,dy);if(d<130){ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.strokeStyle='rgba(0,150,255,'+(1-d/130)*.22+')';ctx.lineWidth=1;ctx.stroke();}}}requestAnimationFrame(loop);}init();loop();addEventListener('resize',init);})();
+
+/* 优化：背景 Canvas 动画在页面切到后台、不可见时暂停计算，大幅降低发热和 GPU 消耗 */
+(function(){
+  const c=$('#bg'),ctx=c.getContext('2d');
+  let W,H,pts=[],isVisible=true;
+  function init(){
+    W=c.width=innerWidth;H=c.height=innerHeight;
+    const n=Math.min(50,Math.floor(W*H/32000));
+    pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5}));
+  }
+  function loop(){
+    if(isVisible){
+      ctx.clearRect(0,0,W,H);
+      for(const p of pts){
+        p.x+=p.vx;p.y+=p.vy;
+        if(p.x<0||p.x>W)p.vx*=-1;
+        if(p.y<0||p.y>H)p.vy*=-1;
+        ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,7);
+        ctx.fillStyle='rgba(0,190,255,.7)';ctx.fill();
+      }
+      for(let i=0;i<pts.length;i++){
+        for(let j=i+1;j<pts.length;j++){
+          const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+          const d=Math.hypot(dx,dy);
+          if(d<130){
+            ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);
+            ctx.strokeStyle='rgba(0,150,255,'+(1-d/130)*.22+')';ctx.lineWidth=1;ctx.stroke();
+          }
+        }
+      }
+    }
+    requestAnimationFrame(loop);
+  }
+  init();
+  loop();
+  addEventListener('resize',init);
+  document.addEventListener('visibilitychange',()=>{isVisible=!document.hidden;});
+})();
 
 /* 启动 */
-async function bootstrap(){
+function bootstrap(){
   loadCloud();load();initCharts();renderAll();
   adminAuthed=checkAdminSession();updateManageBtn();
   if(S.currentUser&&S.users[S.currentUser])userModal.classList.remove('on');
@@ -1418,7 +1461,12 @@ async function bootstrap(){
   if(CLOUD.gistId&&CLOUD.token)setTimeout(()=>{pullFromCloud(true);},1200);
   setInterval(()=>{if(CLOUD.gistId&&CLOUD.token&&!syncBusy)pullFromCloud(true);},60000);
 }
-bootstrap();
+// 等待核心 DOM 加载完毕后启动业务逻辑
+if(document.readyState==='loading'){
+  document.addEventListener('DOMContentLoaded', bootstrap);
+} else {
+  bootstrap();
+}
 </script>
 </body>
 </html>
