@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>淮安市通甫路小学云逛校园图书馆 · 可视化数据大屏</title>
+<title>淮安市通甫路小学 · 云逛校园图书馆 · 可视化数据大屏</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
 <script src="https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
@@ -742,7 +742,12 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
           <option value="四年级">四年级</option>
           <option value="五年级">五年级</option>
           <option value="六年级">六年级</option>
-         
+          <option value="初一">初一</option>
+          <option value="初二">初二</option>
+          <option value="初三">初三</option>
+          <option value="高一">高一</option>
+          <option value="高二">高二</option>
+          <option value="高三">高三</option>
         </select>
         <select id="selClassNum">
           <option value="">选择班级</option>
@@ -756,7 +761,16 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
           <option value="8">8 班</option>
           <option value="9">9 班</option>
           <option value="10">10 班</option>
-          
+          <option value="11">11 班</option>
+          <option value="12">12 班</option>
+          <option value="13">13 班</option>
+          <option value="14">14 班</option>
+          <option value="15">15 班</option>
+          <option value="16">16 班</option>
+          <option value="17">17 班</option>
+          <option value="18">18 班</option>
+          <option value="19">19 班</option>
+          <option value="20">20 班</option>
         </select>
       </div>
     </div>
@@ -791,7 +805,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
       <button class="btn" id="btnAdminCancel">取消</button>
       <button class="btn primary" id="btnAdminSubmit">验证进入</button>
     </div>
-   
+
   </div>
 </div>
 
@@ -847,7 +861,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
       <option value="四年级">四年级</option>
       <option value="五年级">五年级</option>
       <option value="六年级">六年级</option>
- 
+      
     </select>
     <select class="up-select" id="upSort">
       <option value="recent">最近活跃</option>
@@ -871,7 +885,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
         <option value="四年级">四年级</option>
         <option value="五年级">五年级</option>
         <option value="六年级">六年级</option>
-    
+        
       </select>
       <select id="upAddClassNum">
         <option value="">选择班级</option>
@@ -885,7 +899,7 @@ body.book-editing .book-spot .bk-drag-hint{display:block}
         <option value="8">8 班</option>
         <option value="9">9 班</option>
         <option value="10">10 班</option>
-     
+        
       </select>
       <button class="btn primary" id="upAddConfirm">确认添加</button>
       <button class="btn" id="upAddCancel">取消</button>
@@ -983,6 +997,34 @@ function relativeTime(ts){
   return `${d.getMonth()+1}月${d.getDate()}日`;
 }
 
+/* =========================================================
+   SVG 兜底图片生成
+   ========================================================= */
+function svgEscape(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+/* 生成漂亮的彩色书封 SVG（默认基础图书使用） */
+function makeBookCover(name, hue){
+  const h = (hue % 360 + 360) % 360;
+  const name1 = svgEscape(String(name || '').slice(0, 5));
+  const svg =
+    '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">' +
+      '<defs>' +
+        '<linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
+          '<stop offset="0" stop-color="hsl(' + h + ',65%,42%)"/>' +
+          '<stop offset="1" stop-color="hsl(' + ((h+50)%360) + ',60%,18%)"/>' +
+        '</linearGradient>' +
+      '</defs>' +
+      '<rect width="200" height="200" fill="url(#g)"/>' +
+      '<rect x="24" y="30" width="152" height="140" rx="8" fill="rgba(255,255,255,.06)" stroke="rgba(255,255,255,.45)" stroke-width="2"/>' +
+      '<line x1="60" y1="30" x2="60" y2="170" stroke="rgba(255,255,255,.4)" stroke-width="2"/>' +
+      '<text x="114" y="100" text-anchor="middle" font-size="22" font-weight="bold" fill="#ffffff" font-family="sans-serif">' + name1 + '</text>' +
+      '<text x="114" y="128" text-anchor="middle" font-size="11" fill="rgba(255,255,255,.65)" font-family="sans-serif">校园图书馆</text>' +
+    '</svg>';
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+/* 通用兜底（图片加载失败时使用） */
 const FALLBACK_IMG = 'data:image/svg+xml;utf8,' + encodeURIComponent(
   '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200">' +
   '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1">' +
@@ -1033,6 +1075,85 @@ function checkImageLoadable(url){
     };
     img.src = url;
   });
+}
+
+/* =========================================================
+   ★ 每个点位的默认基础图书（无 Token 也有内容）
+   ---------------------------------------------------------
+   这些图书使用 SVG 彩色封面，无需外部图片即可显示。
+   管理员可以随时编辑、删除或替换成真实图片。
+   用户添加的图书会追加在这些默认图书之后。
+   ========================================================= */
+function buildDefaultBooks(){
+  const mk = (name, title, pitch, yaw, hue) => ({
+    name, title,
+    img: makeBookCover(name, hue),
+    url: '',
+    pitch, yaw
+  });
+  return {
+    /* 图书馆 · 一层服务大厅 */
+    'lib-s1': [
+      mk('图书馆导览', '图书馆使用指南', -5,  -60, 200),
+      mk('读者手册',   '借阅规则与服务说明', 2,   20, 220),
+      mk('馆藏分布',   '图书馆楼层索引',   -8,   90, 180),
+      mk('新书推荐',   '本月精选新书',      0,  150, 260)
+    ],
+    /* 图书馆 · 二层少儿阅览区 */
+    'lib-s2': [
+      mk('安徒生童话',  '经典童话全集',     -5, -100, 320),
+      mk('格林童话',    '德国民间故事集',    0,  -30, 300),
+      mk('小王子',      '圣埃克苏佩里',      5,   40, 280),
+      mk('十万个为什么','少儿科普百科',     -3,  120, 260)
+    ],
+    /* 图书馆 · 三层自习区 */
+    'lib-s3': [
+      mk('唐诗三百首',   '古典诗词精选',    -8, -130, 30),
+      mk('论语解读',     '孔子与儒家思想',   0,  -50, 40),
+      mk('中学作文精选', '优秀范文合集',     5,   30, 20),
+      mk('英语单词速记', '高效记忆法',      -2,  110, 200)
+    ],
+    /* 阳光书房 · 主视角 */
+    'sun-s1': [
+      mk('窗边的小豆豆', '黑柳彻子',      -5, -110, 340),
+      mk('城南旧事',     '林海音',         0,  -40, 15),
+      mk('朝花夕拾',     '鲁迅散文集',     5,   40, 30),
+      mk('边城',         '沈从文',        -3,  130, 190)
+    ],
+    /* 阳光书房 · 落地窗阅读区 */
+    'sun-s2': [
+      mk('散文精选',   '中国现代散文选',  -5,  -80, 210),
+      mk('现代诗集',   '现当代诗歌选集',   0,    0, 230),
+      mk('名家随笔',   '文学大家的随笔',   5,   80, 250)
+    ],
+    /* 阳光书房 · 亲子共读区 */
+    'sun-s3': [
+      mk('猜猜我有多爱你', '山姆·麦克布雷尼', -5, -70, 340),
+      mk('好饿的毛毛虫',   '艾瑞·卡尔',        0,   0, 100),
+      mk('花婆婆',         '芭芭拉·库尼',      5,  70, 290)
+    ],
+    /* 读书角 · 一楼走廊 */
+    'cor-s1': [
+      mk('昆虫记',       '法布尔',        -5,  -90, 80),
+      mk('海底两万里',   '儒勒·凡尔纳',    0,  -20, 200),
+      mk('童年',         '高尔基',         5,   60, 20),
+      mk('稻草人',       '叶圣陶',        -3,  130, 40)
+    ],
+    /* 读书角 · 二楼连廊 */
+    'cor-s2': [
+      mk('名人传',           '罗曼·罗兰',  -5, -100, 30),
+      mk('钢铁是怎样炼成的', '奥斯特洛夫斯基', 0, -30, 0),
+      mk('骆驼祥子',         '老舍',          5,  50, 15),
+      mk('边城',             '沈从文',       -2, 120, 200)
+    ],
+    /* 读书角 · 三楼平台 */
+    'cor-s3': [
+      mk('科学百科',     '青少年科普读物',  -5,  -90, 200),
+      mk('中国历史故事', '上下五千年',       0,  -20, 30),
+      mk('世界地理',     '环球国家地理',     5,   60, 180),
+      mk('万物简史',     '比尔·布莱森',     -3,  130, 260)
+    ]
+  };
 }
 
 /* =========================================================
@@ -1254,8 +1375,10 @@ const DEFAULT_BOOK_IMG = 'images/book-default.jpg';
 const DEFAULT_PANO = 'https://pannellum.org/images/alma.jpg';
 const DEFAULT_MAP = 'images/campus-map.jpg';
 
+const DEFAULT_BOOKS = buildDefaultBooks();
+
 const DEFAULT_CONFIG = {
-  title: '淮安市通甫路小学 · 云逛校园图书馆',
+  title: '淮安市通甫路小学 · 云逛校园图书馆可视化大屏',
   subtitle: 'SMART CAMPUS READING SPACE · VISUALIZATION PLATFORM',
   paperBooks: 32800,
   ebookBase: 12000,
@@ -1322,11 +1445,11 @@ const DEFAULT_CONFIG = {
     { name:'绘本类', value:4300  },
     { name:'其他',   value:5220  }
   ],
-  books: {}
+  books: clone(DEFAULT_BOOKS)
 };
 
-const STORE_KEY = 'campus-lib-v12';
-const CLOUD_KEY = 'campus-lib-cloud-v5';
+const STORE_KEY = 'campus-lib-v13';
+const CLOUD_KEY = 'campus-lib-cloud-v6';
 
 let CLOUD = {
   token: '',
@@ -1390,7 +1513,10 @@ function migrate(){
     if (!validSids.has(k)) delete S.config.books[k];
   });
   validSids.forEach(sid => {
-    if (!Array.isArray(S.config.books[sid])) S.config.books[sid] = [];
+    // 若该点位没有图书数据，则使用默认基础图书填充
+    if (!Array.isArray(S.config.books[sid])){
+      S.config.books[sid] = DEFAULT_BOOKS[sid] ? clone(DEFAULT_BOOKS[sid]) : [];
+    }
     S.config.books[sid].forEach(b => {
       if (b.pitch == null){
         if (b.x != null){
@@ -1509,9 +1635,6 @@ async function fetchFromCloud(){
   return JSON.parse(files[fileName].content);
 }
 
-/* 拉取云端数据：
-   用户数据合并；
-   配置数据以 updatedAt 较新者为准（管理员维护的内容能同步到所有电脑） */
 async function pullFromCloud(silent){
   if (syncBusy){ if (!silent) toast('同步进行中，请稍候…'); return; }
   if (!CLOUD.gistId){ if (!silent) toast('尚未配置 Gist ID'); return; }
@@ -1521,28 +1644,24 @@ async function pullFromCloud(silent){
     const data = await fetchFromCloud();
     if (!data){ syncBusy = false; return; }
 
-    // 用户数据合并
     if (data.users && typeof data.users === 'object'){
       const remoteUserCount = Object.keys(data.users).length;
       S.users = mergeUsers(S.users, data.users);
       if (remoteUserCount > 0) cloudRealDataLoaded = true;
     }
 
-    // ★ 配置数据：以云端 updatedAt 为准
     if (data.config && typeof data.config === 'object'){
       const remoteAt = data.config.updatedAt || 0;
       const localAt = S.config.updatedAt || 0;
       if (remoteAt > localAt){
-        // 保留本机运行时状态
         const keepCurrentUser = S.currentUser;
-        const keepMapImage = S.config.mapImage; // 本地上传的平面图（base64）保留
+        const keepMapImage = S.config.mapImage;
         S.config = deepMerge(clone(DEFAULT_CONFIG), data.config);
-        // 恢复本机特有的东西
         if (keepMapImage && !S.config.mapImage){
           S.config.mapImage = keepMapImage;
         }
         S.currentUser = keepCurrentUser;
-        console.log('[云同步] 配置已更新到最新版本（' + new Date(remoteAt).toLocaleString() + '）');
+        console.log('[云同步] 配置已更新到最新版本');
       }
     }
 
@@ -1555,7 +1674,7 @@ async function pullFromCloud(silent){
     CLOUD.lastSync = Date.now();
     saveCloud();
     setCloudStatus('on', '☁️ 已同步 · ' + relativeTime(CLOUD.lastSync));
-    if (!silent) toast('已从云端合并数据（含图书展示）');
+    if (!silent) toast('已从云端合并数据');
   }catch(e){
     setCloudStatus('err', '❌ ' + e.message);
     if (!silent) toast('拉取失败：' + e.message);
@@ -1563,8 +1682,6 @@ async function pullFromCloud(silent){
     syncBusy = false;
   }
 }
-/* 上传：先把远端合并进来，再上传合并后的结果
-   同时更新 config.updatedAt，让其他电脑知道这是最新配置 */
 async function pushToCloud(silent){
   if (syncBusy){ if (!silent) toast('同步进行中，请稍候…'); return; }
   if (!CLOUD.token){ if (!silent) toast('尚未配置 Token'); return; }
@@ -1572,7 +1689,6 @@ async function pushToCloud(silent){
   syncBusy = true;
   try{
     setCloudStatus('sync', '🔄 同步中…');
-    // 先拉一次，合并用户数据
     try{
       const remote = await fetchFromCloud();
       if (remote){
@@ -1581,7 +1697,6 @@ async function pushToCloud(silent){
           S.users = mergeUsers(S.users, remote.users);
           if (remoteUserCount > 0) cloudRealDataLoaded = true;
         }
-        // 配置：以较新的为准
         if (remote.config && typeof remote.config === 'object'){
           const remoteAt = remote.config.updatedAt || 0;
           const localAt = S.config.updatedAt || 0;
@@ -1598,7 +1713,6 @@ async function pushToCloud(silent){
       console.warn('拉取失败，直接上传当前数据', e);
     }
 
-    // ★ 更新 updatedAt 并上传
     S.config.updatedAt = Date.now();
     const payload = {
       config: S.config,
@@ -1628,7 +1742,7 @@ async function pushToCloud(silent){
     CLOUD.lastSync = Date.now();
     saveCloud();
     setCloudStatus('on', '☁️ 已同步 · ' + relativeTime(CLOUD.lastSync));
-    if (!silent) toast('已上传到云端（含图书展示）');
+    if (!silent) toast('已上传到云端');
   }catch(e){
     setCloudStatus('err', '❌ ' + e.message);
     if (!silent) toast('上传失败：' + e.message);
@@ -1643,7 +1757,10 @@ async function pushToCloud(silent){
 function getBooks(sid){
   if (!sid) return [];
   if (!S.config.books) S.config.books = {};
-  if (!S.config.books[sid]) S.config.books[sid] = [];
+  if (!S.config.books[sid]){
+    // 首次访问某点位，自动填充默认基础图书
+    S.config.books[sid] = DEFAULT_BOOKS[sid] ? clone(DEFAULT_BOOKS[sid]) : [];
+  }
   return S.config.books[sid];
 }
 function getTotalBooks(){
@@ -1759,7 +1876,7 @@ function renderRank(){
       <div class="rank-item demo">
         <span class="no">${i+1}</span>
         <span class="name">${escapeHtml(r.name)}<em>${escapeHtml(r.cls)}</em></span>
-        <span class="demo-tag">**</span>
+        <span class="demo-tag">*</span>
         <span class="val">${r.count}</span>
       </div>`).join('');
     tail.textContent = '数据';
@@ -2645,8 +2762,7 @@ function renderDrawer(){
         <span id="cloudTxt">加载中…</span>
       </div>
       <div class="d-sync-note">
-        ✅ 上传后，图书展示、场景配置、用户数据会自动同步到云端，<br>
-        其他电脑打开时会自动拉取最新版本。
+        ✅ 上传后，图书展示、场景配置、用户数据会自动同步到云端。
       </div>
       <div class="d-note" style="font-size:10.5px;margin-bottom:10px">
         <b style="color:#7fd8ff">说明：</b>数据存到 GitHub Gist（私密代码片段）。<br>
@@ -2803,14 +2919,14 @@ function renderDrawer(){
     curBookSpot = spotOptions[0] ? spotOptions[0].sid : null;
   }
 
-  /* ========== 全景图书展示 ========== */
+  /* 全景图书展示 */
   h += `<div>
     <div class="d-sec-title">全景图书展示
       <span class="tail">随配置一起上传到云端</span>
     </div>
     <div class="d-sync-note">
-      ✅ 添加图书后点「立即上传」或开启自动同步，<br>
-      其他电脑打开时会自动加载相同的图书
+      ✅ 每个点位默认带有基础图书（无需上传图片即可显示）；<br>
+      管理员可在此基础上添加、编辑、替换成真实图片。
     </div>
     <div class="d-warn-note">
       ⚠️ 图书图片请用 <code>images/xxx.jpg</code> 相对路径，<br>
@@ -2837,6 +2953,7 @@ function renderDrawer(){
   }
   h += `  </select>
       <button class="mini" id="btnAddBook" ${curBookSpot ? '' : 'disabled style="opacity:.5;cursor:not-allowed"'}>＋ 添加</button>
+      <button class="mini" id="btnResetBooks" title="恢复该点位的默认基础图书">↺ 重置</button>
       <button class="mini" id="btnPushBooks" title="立即上传图书数据到云端">⬆️ 同步</button>
     </div>
     <div id="bookList">`;
@@ -2910,13 +3027,10 @@ function bindDrawerEvents(){
       '四、其他电脑\n' +
       '1. 填同样的 Token 和 Gist ID，保存\n' +
       '2. 打开后会自动拉取最新图书/场景\n\n' +
-      '【同步内容】\n' +
-      '· 图书展示（图片路径、名称、链接、位置）\n' +
-      '· 场景和点位配置\n' +
-      '· 用户浏览记录（合并去重）\n\n' +
-      '【图片说明】\n' +
-      '· 图书图片请上传到仓库 images/ 目录，填相对路径\n' +
-      '· 本地上传的图片只在本机预览，不会同步到其他电脑'
+      '【关于默认基础图书】\n' +
+      '· 每个点位默认带几本基础图书，无需上传图片即可显示\n' +
+      '· 管理员可编辑、删除、替换成真实图片\n' +
+      '· 编辑后上传到云端，其他电脑拉取即可看到'
     );
   };
 
@@ -2957,6 +3071,7 @@ function bindDrawerEvents(){
   if (selScene) selScene.onchange = e => { curBookScene = e.target.value; curBookSpot = null; renderDrawer(); };
   const selSpot = $('#selBookSpot');
   if (selSpot) selSpot.onchange = e => { curBookSpot = e.target.value; renderDrawer(); };
+
   const btnAdd = $('#btnAddBook');
   if (btnAdd) btnAdd.onclick = () => {
     if (!curBookSpot){ toast('请先选择点位'); return; }
@@ -2965,7 +3080,13 @@ function bindDrawerEvents(){
     if (panoViewer && viewerEl.classList.contains('on') && currentSid() === curBookSpot){
       try{ pitch = +Number(panoViewer.getPitch()).toFixed(2); yaw = +Number(panoViewer.getYaw()).toFixed(2); }catch(e){}
     } else { pitch = -2; yaw = 0; }
-    arr.push({ name:'新图书', title:'点击编辑图书标题', url:'', img:'images/book-default.jpg', pitch, yaw });
+    arr.push({
+      name: '新图书',
+      title: '点击编辑图书标题',
+      url: '',
+      img: makeBookCover('新图书', Math.floor(Math.random() * 360)),
+      pitch, yaw
+    });
     S.config.updatedAt = Date.now();
     save(); renderStats(); renderDrawer();
     if (viewerEl.classList.contains('on') && currentSid() === curBookSpot){
@@ -2973,6 +3094,25 @@ function bindDrawerEvents(){
       if (!bookEditMode) $('#btnBookEdit').click();
     }
     toast('已添加图书，请在全景中拖动定位');
+  };
+
+  // 恢复默认基础图书
+  const btnResetBooks = $('#btnResetBooks');
+  if (btnResetBooks) btnResetBooks.onclick = () => {
+    if (!curBookSpot){ toast('请先选择点位'); return; }
+    if (!DEFAULT_BOOKS[curBookSpot]){
+      toast('该点位暂无默认图书模板');
+      return;
+    }
+    if (!confirm('确定恢复该点位的默认基础图书吗？\n当前图书会被替换（自定义添加的图书将丢失）')) return;
+    S.config.books[curBookSpot] = clone(DEFAULT_BOOKS[curBookSpot]);
+    S.config.updatedAt = Date.now();
+    save();
+    renderDrawer(); renderStats();
+    if (viewerEl.classList.contains('on') && currentSid() === curBookSpot){
+      refreshBookHotSpots();
+    }
+    toast('已恢复默认基础图书');
   };
 
   // 立即同步图书
@@ -3466,7 +3606,7 @@ $('#btnReset').onclick = () => {
   save();
   renderAll(); renderDrawer(); renderUserBadge();
   userModal.classList.add('on');
-  toast('已恢复默认数据');
+  toast('已恢复默认数据（含基础图书）');
 };
 
 addEventListener('storage', e => {
