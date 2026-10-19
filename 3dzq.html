@@ -639,7 +639,7 @@
                 bCtx2.stroke();
             }
 
- // ✅ 修复版：先水平镜像抵消 BackSide 的反向显示
+// ✅ 修复版：先水平镜像抵消 BackSide 的反向显示
 bCtx2.save();
 bCtx2.translate(BW, 0);
 bCtx2.scale(-1, 1);          // ★ 关键：水平翻转
@@ -700,7 +700,7 @@ bCtx2.restore();
             const W=3.0, L=6.0, H=3.0;
             const aN = (w, h, x, y, z, rY, rX, rpX, rpY, sA) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), nMat.clone()); m.position.set(x, y, z); m.rotation.set(rX, rY, 0); m.material.map.repeat.set(rpX, rpY); cg.add(m); if(sA) endNets[sA]=m; };
             aN(L, H, -W/2, H/2, 0, Math.PI/2, 0, 12, 6); aN(L, H, W/2, H/2, 0, Math.PI/2, 0, 12, 6); aN(W, H, 0, H/2, -L/2, 0, 0, 8, 6, 'neg'); aN(W, H, 0, H/2, L/2, 0, 0, 8, 6, 'pos'); aN(W, L, 0, H, 0, 0, Math.PI/2, 8, 12);
-            const tW = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.15 }), tR = new THREE.MeshStandardMaterial({ color: 0xef4444, roughness: 0.15 }), tB = new THREE.MeshStandardMaterial({ color: 0x3b82f6, roughness: 0.15 });
+            const tW = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.15 }), tR = new THREE.MeshStandardMaterial({ color: 0xff0000, roughness: 0.15 }), tB = new THREE.MeshStandardMaterial({ color: 0x0000ff, roughness: 0.15 });
             const aP = (geo, mat, x, y, z, rx=0, rz=0) => { const p = new THREE.Mesh(geo, mat); p.position.set(x, y, z); p.rotation.set(rx, 0, rz); p.castShadow = true; cg.add(p); };
             const vG = new THREE.CylinderGeometry(0.15, 0.15, H, 16), hLG = new THREE.CylinderGeometry(0.15, 0.15, L, 16), hSG = new THREE.CylinderGeometry(0.15, 0.15, W, 16);
             aP(vG, tR, -W/2, H/2, -L/2); aP(vG, tR, W/2, H/2, -L/2); aP(vG, tB, -W/2, H/2, L/2); aP(vG, tB, W/2, H/2, L/2);
