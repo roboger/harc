@@ -28,7 +28,7 @@
             background-color: #020617;
         }
         .tech-font { font-family: 'Share Tech Mono', monospace; }
-        
+
         .glassmorphism {
             background: rgba(15, 23, 42, 0.65);
             backdrop-filter: blur(16px);
@@ -45,13 +45,13 @@
             border-color: rgba(59, 130, 246, 0.4);
             transform: translateY(-1px);
         }
-        
+
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: rgba(59, 130, 246, 0.5); border-radius: 4px; }
         .joystick-zone { touch-action: none; }
-        .safe-bottom-joy { bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem); } /* 抬高摇杆防遮挡 */
-        
+        .safe-bottom-joy { bottom: calc(env(safe-area-inset-bottom, 0px) + 5.5rem); }
+
         /* 移动端与桌面端的显隐控制 */
         #touchControls { display: none; }
         @media (max-width: 1024px) {
@@ -68,7 +68,7 @@
     <!-- 开场与加载画面 -->
     <div id="startScreen" class="absolute inset-0 z-[80] flex flex-col items-center justify-center bg-slate-950/80 backdrop-blur-sm transition-all duration-700">
         <div class="w-11/12 max-w-2xl px-6 py-8 mx-auto text-center glassmorphism rounded-2xl shadow-[0_0_40px_rgba(16,185,129,0.15)] max-h-[95vh] overflow-y-auto">
-            
+
             <h1 class="text-3xl md:text-4xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-500 mb-6 drop-shadow-sm">
                 无人机足球竞技场
             </h1>
@@ -127,7 +127,7 @@
                 <p class="mb-1"><span class="text-white font-semibold">左摇杆</span>：上下推升降高度，左右推偏航旋转。</p>
                 <p><span class="text-white font-semibold">右摇杆</span>：前后左右水平移动。</p>
             </div>
-            
+
             <div class="kb-only text-left text-xs text-slate-400 mb-6 p-3 bg-slate-900/50 border border-slate-800 rounded-lg flex flex-wrap gap-x-4 gap-y-2">
                 <p class="w-full text-emerald-400 font-bold mb-0.5"><i class="fa-solid fa-keyboard mr-1"></i> 键盘操作：</p>
                 <p><span class="bg-slate-800 px-1 rounded text-white font-bold">W/S</span> 上升/下降</p>
@@ -162,7 +162,7 @@
                     <span id="scoreStatusText" class="text-[9px] font-bold tech-font text-emerald-300">可以得分</span>
                 </div>
             </div>
-            
+
             <!-- 手机专属：极简血条式遥测 (不挡视线) -->
             <div class="md:hidden mt-2 flex flex-col gap-1.5 w-[110px] pointer-events-none drop-shadow-md">
                 <div class="flex items-center gap-1.5"><span class="text-[8px] text-emerald-300/90 font-bold tech-font w-5 text-right">SPD</span><div class="flex-1 h-1.5 bg-slate-800/80 rounded-full overflow-hidden border border-slate-700/50"><div id="mobBarSpd" class="h-full bg-emerald-400 rounded-full transition-all duration-100" style="width:0%"></div></div></div>
@@ -179,7 +179,7 @@
                 <button id="btnLand" class="px-2.5 h-9 rounded-lg glassmorphism text-rose-400 hover:text-rose-300 border border-rose-500/20 flex items-center justify-center gap-1.5 cursor-pointer pointer-events-auto">
                     <i class="fa-solid fa-plane-arrival text-xs"></i><span class="text-[10px] font-bold tech-font">降落</span>
                 </button>
-                
+
                 <!-- 移动端下拉菜单，PC横向展示 -->
                 <div id="actionMenu" class="hidden md:flex flex-col md:flex-row absolute md:relative right-0 top-11 md:top-0 gap-2 p-1.5 md:p-0 glassmorphism md:bg-transparent md:backdrop-filter-none md:border-none rounded-xl border border-slate-700/50 shadow-xl md:shadow-none min-w-[100px] md:min-w-0 origin-top-right">
                     <button id="btnCam" class="w-full md:w-auto px-3 h-9 rounded-lg md:glassmorphism text-slate-300 hover:text-white flex items-center justify-start md:justify-center gap-2 cursor-pointer pointer-events-auto border border-transparent md:border-slate-700/30">
@@ -198,7 +198,7 @@
                         <i class="fa-solid fa-house text-xs w-4 text-cyan-400"></i><span class="md:hidden text-[10px] tech-font text-cyan-400">返回主界</span>
                     </button>
                 </div>
-                
+
                 <button id="btnMobileMenuToggle" class="md:hidden w-9 h-9 rounded-lg glassmorphism text-slate-300 flex items-center justify-center border border-slate-700/30 shadow-md pointer-events-auto">
                     <i class="fa-solid fa-bars text-xs"></i>
                 </button>
@@ -311,12 +311,12 @@
             if (!navigator.vibrate) return;
             try {
                 switch(type) {
-                    case 'light': navigator.vibrate(15); break; 
-                    case 'medium': navigator.vibrate(30); break; 
-                    case 'heavy': navigator.vibrate([40, 20, 40]); break; 
-                    case 'goal': navigator.vibrate([50, 50, 100, 50, 150]); break; 
-                    case 'error': navigator.vibrate([30, 50, 30]); break; 
-                    case 'engine': navigator.vibrate(20); break; 
+                    case 'light': navigator.vibrate(15); break;
+                    case 'medium': navigator.vibrate(30); break;
+                    case 'heavy': navigator.vibrate([40, 20, 40]); break;
+                    case 'goal': navigator.vibrate([50, 50, 100, 50, 150]); break;
+                    case 'error': navigator.vibrate([30, 50, 30]); break;
+                    case 'engine': navigator.vibrate(20); break;
                 }
             } catch(e) {}
         }
@@ -324,7 +324,7 @@
         // 全局变量
         let scene, camera, renderer, clock, orbitControls;
         const container = document.getElementById('canvas-container');
-        let soundEnabled = true; 
+        let soundEnabled = true;
         let audioCtx = null;
         let droneSynth = null;
         let currentPlayerName = "匿名学员";
@@ -344,10 +344,10 @@
             { pos: new THREE.Vector3(0, GOAL_HEIGHT, -2.25), color: 0xef4444, team: 'red', size: RING_CENTER_RADIUS * 2, lastPassTime: 0, forwardSign: -1, prevSide: null },
             { pos: new THREE.Vector3(0, GOAL_HEIGHT, 2.25), color: 0x3b82f6, team: 'blue', size: RING_CENTER_RADIUS * 2, lastPassTime: 0, forwardSign: 1, prevSide: null }
         ];
-        
+
         let score = 0, particles = [], readyToScore = true, centerLinePrevSide = null;
-        
-        let matchSeconds = 0, matchTimerId = null, matchDurationMinutes = 3, isMatchActive = false; 
+
+        let matchSeconds = 0, matchTimerId = null, matchDurationMinutes = 3, isMatchActive = false;
 
         function formatMatchClock(totalSeconds) {
             const mm = Math.floor(totalSeconds / 60), ss = Math.floor(totalSeconds % 60);
@@ -371,7 +371,7 @@
         // Leaderboard Logic
         const STORAGE_KEY = 'droneSoccerLeaderboard';
         let inMemoryBoard = [];
-        
+
         function getLocalBoard() {
             try { return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return inMemoryBoard; }
         }
@@ -470,7 +470,7 @@
         const PILOT_NET_Z = 3.0, PILOT_DIST_FROM_NET = 0.0, PILOT_NET_CLEARANCE = 0.06, PILOT_EYE_HEIGHT = 1.53, DEFAULT_FOV = 60, SIDE_EYE_HEIGHT = 1.65, SIDE_OFFSET_X = 0.9, SIDE_MIN_UP_DEG = 6;
         let PILOT_FOV = 45; const pilotLook = new THREE.Vector3(0, 1.2, 0), endNets = { neg: null, pos: null };
         function setEndNetsVisible(hideSide) { if(endNets.neg) endNets.neg.visible = hideSide !== -1; if(endNets.pos) endNets.pos.visible = hideSide !== 1; }
-        function setCameraFov(f) { if(camera.fov !== f) { camera.fov = f; camera.updateProjectionMatrix(); } }
+        function setCameraFov(f) { if(camera && camera.fov !== f) { camera.fov = f; camera.updateProjectionMatrix(); } }
 
         function initAudio() {
             if (audioCtx) { if(audioCtx.state === 'suspended') audioCtx.resume(); return; }
@@ -514,19 +514,44 @@
         }
 
         function initScene() {
-            scene = new THREE.Scene(); scene.background = new THREE.Color(0x010409); scene.fog = new THREE.FogExp2(0x010409, 0.025);
+            scene = new THREE.Scene(); scene.background = new THREE.Color(0x010409);
+            // ★ 雾效加强：让远处观众自然虚化
+            scene.fog = new THREE.FogExp2(0x010409, 0.045);
             clock = new THREE.Clock(); camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.05, 100);
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: false });
-            renderer.setSize(window.innerWidth, window.innerHeight); renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            // ★ 像素比从 1.25 降到 1.0，显著减少填充率开销
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0));
             renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.1;
             container.appendChild(renderer.domElement);
-            orbitControls = new THREE.OrbitControls(camera, renderer.domElement); orbitControls.enableDamping = true; orbitControls.dampingFactor = 0.05; orbitControls.maxPolarAngle = Math.PI / 2 - 0.02; orbitControls.enabled = false;
-            window.addEventListener('resize', () => { camera.aspect=window.innerWidth/window.innerHeight; camera.updateProjectionMatrix(); renderer.setSize(window.innerWidth,window.innerHeight); }, false);
+
+            // ★ 保护：OrbitControls 若加载失败，不影响其余初始化
+            if (typeof THREE.OrbitControls === 'function') {
+                orbitControls = new THREE.OrbitControls(camera, renderer.domElement);
+                orbitControls.enableDamping = true;
+                orbitControls.dampingFactor = 0.05;
+                orbitControls.maxPolarAngle = Math.PI / 2 - 0.02;
+                orbitControls.enabled = false;
+            } else {
+                console.warn('[Init] OrbitControls 未加载，自由视角将不可用');
+                orbitControls = null;
+            }
+
+            window.addEventListener('resize', () => {
+                if (!camera || !renderer) return;
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+            }, false);
         }
 
         function setupLights() {
             scene.add(new THREE.AmbientLight(0x071510, 1.2)); scene.add(new THREE.HemisphereLight(0x10b981, 0x010409, 0.5));
-            const sl = new THREE.DirectionalLight(0xffffff, 0.5); sl.position.set(3, 8, 5); sl.castShadow = true; sl.shadow.mapSize.width = 1024; sl.shadow.mapSize.height = 1024; scene.add(sl);
+            const sl = new THREE.DirectionalLight(0xffffff, 0.5); sl.position.set(3, 8, 5); sl.castShadow = true;
+            // ★ 阴影贴图分辨率减半，省显存
+            sl.shadow.mapSize.width = 512;
+            sl.shadow.mapSize.height = 512;
+            scene.add(sl);
             const corners = [ { x: -1.8, z: -3.3, c: 0xef4444 }, { x: 1.8, z: -3.3, c: 0xef4444 }, { x: -1.8, z: 3.3, c: 0x3b82f6 }, { x: 1.8, z: 3.3, c: 0x3b82f6 } ];
             corners.forEach(cr => {
                 const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.08, 3.5, 8), new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.9, roughness: 0.1 })); pole.position.set(cr.x, 1.75, cr.z); scene.add(pole);
@@ -535,23 +560,119 @@
             });
         }
 
+        // ★ 性能优化版：观众减量 + 静态模糊烘焙
         function createStadiumEnvironment() {
-            const fC = document.createElement('canvas'); fC.width = 1024; fC.height = 512; const fCtx = fC.getContext('2d');
-            fCtx.fillStyle = '#050b14'; fCtx.fillRect(0, 0, 1024, 512);
-            for(let y=20; y<350; y+=20) { for(let x=0; x<1024; x+=16) { fCtx.fillStyle = Math.floor(x/64+y/40)%2===0 ? '#b91c1c' : '#1d4ed8'; fCtx.fillRect(x+2, y+2, 12, 16); } }
-            fCtx.fillStyle = '#020617'; fCtx.fillRect(0, 350, 1024, 162);
-            let sTex = new THREE.CanvasTexture(fC); sTex.wrapS = THREE.RepeatWrapping; sTex.repeat.set(4, 1);
-            const std = new THREE.Mesh(new THREE.CylinderGeometry(25, 25, 15, 32, 1, true), new THREE.MeshBasicMaterial({ map: sTex, side: THREE.BackSide, color: 0xdddddd })); std.position.y = 5; scene.add(std);
-            
-            new THREE.TextureLoader().load('背景.png', tex => { tex.wrapS = THREE.RepeatWrapping; tex.repeat.set(4, 1); std.material.map = tex; std.material.needsUpdate = true; }, undefined, ()=>{});
-            
-            const bC = document.createElement('canvas'); bC.width = 2048; bC.height = 256; const bCtx = bC.getContext('2d');
-            bCtx.fillStyle = '#08080a'; bCtx.fillRect(0, 0, bC.width, bC.height); bCtx.strokeStyle = 'rgba(16, 185, 129, 0.15)'; bCtx.lineWidth = 4;
-            for(let i=0; i<10; i++) { bCtx.beginPath(); bCtx.moveTo(0, i*25); bCtx.lineTo(bC.width, i*25 + 50); bCtx.stroke(); }
-            bCtx.save(); bCtx.translate(bC.width, 0); bCtx.scale(-1, 1); bCtx.fillStyle = '#ffffff'; bCtx.font = 'bold 36px "Noto Sans SC", sans-serif'; bCtx.textAlign = 'center'; bCtx.textBaseline = 'middle'; bCtx.shadowColor = '#10b981'; bCtx.shadowBlur = 15; 
-            bCtx.fillText('HARC无人机足球模拟赛', bC.width * 0.25, bC.height / 2); bCtx.fillText('HARC无人机足球模拟赛', bC.width * 0.75, bC.height / 2); bCtx.restore();
-            const bTex = new THREE.CanvasTexture(bC); bTex.wrapS = THREE.RepeatWrapping; bTex.repeat.set(4, 1);
-            const bnr = new THREE.Mesh(new THREE.CylinderGeometry(24.5, 24.5, 4, 32, 1, true), new THREE.MeshBasicMaterial({ map: bTex, side: THREE.BackSide })); bnr.position.y = 2.0; scene.add(bnr);
+            // ============ 观众席：低分辨率 + 静态模糊（预烘焙，运行零开销）============
+            const CW = 512, CH = 256;
+            const fC = document.createElement('canvas');
+            fC.width = CW; fC.height = CH;
+            const fCtx = fC.getContext('2d');
+
+            // 深色底
+            fCtx.fillStyle = '#050b14';
+            fCtx.fillRect(0, 0, CW, CH);
+
+            // 观众点：8 行 × 32 列 = 256 个（原来 17×64 ≈ 1088 个，减少约 4 倍）
+            const ROWS = 8, COLS = 32;
+            const cellW = CW / COLS, cellH = 180 / ROWS;
+            for (let y = 0; y < ROWS; y++) {
+                for (let x = 0; x < COLS; x++) {
+                    // 更暗的红蓝，观感更沉稳，也降低视觉"噪点"
+                    fCtx.fillStyle = (x + y) % 2 === 0 ? '#7f1d1d' : '#1e3a8a';
+                    fCtx.fillRect(x * cellW + 2, y * cellH + 12, cellW - 6, cellH - 6);
+                }
+            }
+
+            // 用第二张 canvas 做整体高斯模糊（一次性，运行时 0 成本）
+            const bCv = document.createElement('canvas');
+            bCv.width = CW; bCv.height = CH;
+            const bCtx = bCv.getContext('2d');
+            if ('filter' in bCtx) {
+                bCtx.filter = 'blur(3px)';
+            }
+            bCtx.drawImage(fC, 0, 0);
+            if ('filter' in bCtx) {
+                bCtx.filter = 'none';
+            }
+
+            // 底部暗化（模拟看台阴影/围挡）
+            bCtx.fillStyle = 'rgba(2,6,23,0.85)';
+            bCtx.fillRect(0, 180, CW, CH - 180);
+
+            const sTex = new THREE.CanvasTexture(bCv);
+            sTex.wrapS = THREE.RepeatWrapping;
+            sTex.repeat.set(4, 1);
+            sTex.minFilter = THREE.LinearFilter;
+            sTex.magFilter = THREE.LinearFilter;
+            sTex.generateMipmaps = false;   // 省显存，观众席不需要 mipmap
+
+            // 圆柱段数 32 → 16，颜色调暗，配合雾效更柔和
+            const std = new THREE.Mesh(
+                new THREE.CylinderGeometry(25, 25, 15, 16, 1, true),
+                new THREE.MeshBasicMaterial({ map: sTex, side: THREE.BackSide, color: 0xaaaaaa, fog: true })
+            );
+            std.position.y = 5;
+            scene.add(std);
+
+            // 可选背景图（本地没有会走 onError，不影响）
+            new THREE.TextureLoader().load(
+                '背景.png',
+                tex => { tex.wrapS = THREE.RepeatWrapping; tex.repeat.set(4, 1); std.material.map = tex; std.material.needsUpdate = true; },
+                undefined,
+                () => {}
+            );
+
+            // ============ 横幅：分辨率减半 + 段数减半 ============
+            const BW = 1024, BH = 128;
+            const bnrCv = document.createElement('canvas');
+            bnrCv.width = BW; bnrCv.height = BH;
+            const bCtx2 = bnrCv.getContext('2d');
+
+            bCtx2.fillStyle = '#08080a';
+            bCtx2.fillRect(0, 0, BW, BH);
+            bCtx2.strokeStyle = 'rgba(16,185,129,0.12)';
+            bCtx2.lineWidth = 3;
+            for (let i = 0; i < 6; i++) {
+                bCtx2.beginPath();
+                bCtx2.moveTo(0, i * 22);
+                bCtx2.lineTo(BW, i * 22 + 40);
+                bCtx2.stroke();
+            }
+
+            bCtx2.fillStyle = '#ffffff';
+            bCtx2.font = 'bold 28px "Noto Sans SC", sans-serif';
+            bCtx2.textAlign = 'center';
+            bCtx2.textBaseline = 'middle';
+            bCtx2.shadowColor = '#10b981';
+            bCtx2.shadowBlur = 12;
+            bCtx2.fillText('HARC无人机足球模拟赛', BW * 0.25, BH / 2);
+            bCtx2.fillText('HARC无人机足球模拟赛', BW * 0.75, BH / 2);
+
+            // 横幅轻微模糊，让文字融入背景，避免"贴纸感"
+            const bnrBlur = document.createElement('canvas');
+            bnrBlur.width = BW; bnrBlur.height = BH;
+            const bnrBlurCtx = bnrBlur.getContext('2d');
+            if ('filter' in bnrBlurCtx) {
+                bnrBlurCtx.filter = 'blur(1px)';
+            }
+            bnrBlurCtx.drawImage(bnrCv, 0, 0);
+            if ('filter' in bnrBlurCtx) {
+                bnrBlurCtx.filter = 'none';
+            }
+
+            const bTex = new THREE.CanvasTexture(bnrBlur);
+            bTex.wrapS = THREE.RepeatWrapping;
+            bTex.repeat.set(4, 1);
+            bTex.minFilter = THREE.LinearFilter;
+            bTex.magFilter = THREE.LinearFilter;
+            bTex.generateMipmaps = false;
+
+            const bnr = new THREE.Mesh(
+                new THREE.CylinderGeometry(24.5, 24.5, 4, 16, 1, true),
+                new THREE.MeshBasicMaterial({ map: bTex, side: THREE.BackSide, fog: true })
+            );
+            bnr.position.y = 2.0;
+            scene.add(bnr);
         }
 
         function createSoccerField() {
@@ -654,9 +775,9 @@
             const c=gd.canvas, g=gd.ctx, W=c.width, H=c.height; g.clearRect(0,0,W,H); g.fillStyle='#05080f'; g.fillRect(0,0,W,H);
             g.fillStyle = r.team==='red'?'#ef4444':'#3b82f6'; g.fillRect(0,0,W,54); g.fillStyle='#fff'; g.font='bold 34px sans-serif'; g.textAlign='left'; g.textBaseline='middle'; g.fillText(r.team==='red'?'红方球门':'蓝方球门', 22, 28);
             if(fls){ g.fillStyle='#10b981'; g.shadowColor='#34d399'; g.shadowBlur=20; g.font='bold 120px monospace'; g.textAlign='center'; g.fillText('GOAL!', W/2, 150); g.shadowBlur=0; }
-            else{ 
+            else{
                 const gsStr = (gs < 10 ? '0' : '') + gs;
-                g.fillStyle='#facc15'; g.font='bold 140px monospace'; g.textAlign='center'; g.fillText(gsStr, W/2, 152); 
+                g.fillStyle='#facc15'; g.font='bold 140px monospace'; g.textAlign='center'; g.fillText(gsStr, W/2, 152);
             }
             g.fillStyle='rgba(148,163,184,0.15)'; g.fillRect(0,H-40,W,40); g.font='bold 22px sans-serif'; g.textAlign='center';
             if(!isO){ g.fillStyle='#94a3b8'; g.fillText('防守中・穿越不计分', W/2, H-20); } else if(readyToScore){ g.fillStyle='#34d399'; g.fillText('● 可以得分', W/2, H-20); } else { g.fillStyle='#fbbf24'; g.fillText('● 需回中线', W/2, H-20); }
@@ -668,7 +789,7 @@
             ringCourse.forEach(r => {
                 const mh = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS, 32, 64), new THREE.MeshPhysicalMaterial({ color: G_W, roughness: 0.3, emissive: G_G, emissiveIntensity: 0.16 })); mh.castShadow = true; mh.position.copy(r.pos); scene.add(mh); r.mesh = mh;
                 const gl = new THREE.Mesh(new THREE.TorusGeometry(r.size/2, RING_TUBE_RADIUS*1.5, 16, 32), new THREE.MeshBasicMaterial({color: G_G, transparent: true, opacity: 0.1, blending: THREE.AdditiveBlending, depthWrite: false})); mh.add(gl); r.glowMesh = gl;
-                
+
                 const cv = document.createElement('canvas'); cv.width=512; cv.height=240; const tx = new THREE.CanvasTexture(cv); tx.anisotropy=4;
                 const gp = new THREE.Group(), sm = new THREE.MeshBasicMaterial({map:tx}), sg = new THREE.PlaneGeometry(0.26, 0.12);
                 const fr = new THREE.Mesh(sg, sm); fr.position.z = 0.026; gp.add(fr); const bk = new THREE.Mesh(sg, sm); bk.position.z = -0.026; bk.rotation.y = Math.PI; gp.add(bk);
@@ -710,7 +831,7 @@
             if(Math.abs(drone.touchAltitudeInput)>0.03) { drone.targetAltitude = THREE.MathUtils.clamp(drone.targetAltitude+drone.touchAltitudeInput*dt*3.5, 0.1, 2.6); drone.autoFlightState='none'; }
             if(keys.w||keys[' ']) { drone.targetAltitude=Math.min(2.6, drone.targetAltitude+0.7*dt); drone.autoFlightState='none'; }
             if(keys.s||keys.control) { drone.targetAltitude=Math.max(0.1, drone.targetAltitude-0.7*dt); drone.autoFlightState='none'; }
-            
+
             if(keys.arrowup) drone.input.pitch=1; else if(keys.arrowdown) drone.input.pitch=-1; else if(!drone.touchActive) drone.input.pitch=0;
             if(keys.arrowright) drone.input.roll=1; else if(keys.arrowleft) drone.input.roll=-1; else if(!drone.touchActive) drone.input.roll=0;
             if(keys.d) drone.input.yaw=1; else if(keys.a) drone.input.yaw=-1; else if(!drone.touchActiveLeft) drone.input.yaw=0;
@@ -778,7 +899,7 @@
                 if(a.altitudeState==='grounded') { a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*8*dt); return; }
                 if(a.altitudeState==='takingoff') { a.position.y=THREE.MathUtils.lerp(a.position.y,hY,dt*1.8); a.mesh.position.copy(a.position); if(Math.abs(a.position.y-hY)<0.05){a.position.y=hY;a.altitudeState='flying';a.reactionTimer=0;} a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*50*dt); return; }
                 if(a.altitudeState==='landing') { a.velocity.multiplyScalar(0.8); a.position.x=THREE.MathUtils.lerp(a.position.x,hX,dt*1.5); a.position.z=THREE.MathUtils.lerp(a.position.z,hZ,dt*1.5); a.position.y=THREE.MathUtils.lerp(a.position.y,0.1,dt*2); a.mesh.position.copy(a.position); if(a.position.y<0.12){a.position.y=0.1;a.altitudeState='grounded';} a.rotors.forEach((rt,i)=>rt.rotation.y+=(i===0||i===3?1:-1)*30*dt); return; }
-                
+
                 a.reactionTimer-=dt;
                 if(a.reactionTimer<=0) {
                     a.reactionTimer=c.reactionMin+Math.random()*(c.reactionMax-c.reactionMin);
@@ -804,11 +925,11 @@
         }
 
         function updateCamera() {
-            if(!drone.mesh) return; setCameraFov(cameraMode===3?PILOT_FOV:DEFAULT_FOV); setEndNetsVisible(0); ringCourse.forEach(r=>setGoalVis(r,true));
+            if(!drone.mesh || !camera) return; setCameraFov(cameraMode===3?PILOT_FOV:DEFAULT_FOV); setEndNetsVisible(0); ringCourse.forEach(r=>setGoalVis(r,true));
             const oG=getOwnGoalRing(), eS=oG&&oG.pos.z>0?1:-1; if(cameraMode>=3&&oG) setGoalVis(oG,false);
             if(cameraMode===0) { drone.mesh.visible=true; camera.position.lerp(drone.position.clone().add(new THREE.Vector3(0,0.55,-1.6).applyAxisAngle(new THREE.Vector3(0,1,0),drone.rotation.y)),0.12); camera.lookAt(drone.position.clone().add(new THREE.Vector3(0,0.1,0))); }
             else if(cameraMode===1) { drone.mesh.visible=false; camera.position.copy(drone.position.clone().add(new THREE.Vector3(0,0.04,0.1).applyAxisAngle(new THREE.Vector3(0,1,0),drone.rotation.y))); camera.lookAt(camera.position.clone().add(new THREE.Vector3(0,0,1).applyEuler(new THREE.Euler(drone.currentPitch,drone.rotation.y,0,'YXZ')))); }
-            else if(cameraMode===2) { drone.mesh.visible=true; orbitControls.target.lerp(drone.position,0.1); orbitControls.update(); }
+            else if(cameraMode===2) { drone.mesh.visible=true; if (orbitControls) { orbitControls.target.lerp(drone.position,0.1); orbitControls.update(); } }
             else if(cameraMode===3) { drone.mesh.visible=true; const t=getOpponentGoalRing(); camera.position.set(0,PILOT_EYE_HEIGHT,eS*(PILOT_NET_Z)); pilotLook.copy(t?t.pos:new THREE.Vector3(0,PILOT_EYE_HEIGHT,-eS*3)); camera.lookAt(pilotLook); setEndNetsVisible(eS); }
             else if(cameraMode===4||cameraMode===5) { drone.mesh.visible=true; camera.position.lerp(new THREE.Vector3((cameraMode===4?-1:1)*eS*SIDE_OFFSET_X,SIDE_EYE_HEIGHT,eS*(PILOT_NET_Z)),0.15); camera.lookAt(drone.position.x,Math.max(drone.position.y,camera.position.y+Math.max(0.5,Math.hypot(drone.position.x-camera.position.x,drone.position.z-camera.position.z))*Math.tan(THREE.MathUtils.degToRad(SIDE_MIN_UP_DEG))),drone.position.z); setEndNetsVisible(eS); }
         }
@@ -817,12 +938,12 @@
             const sEl=document.getElementById('scoreText'); if(sEl) sEl.innerText = score; ringCourse.forEach(drawGoalDisplay);
             const sD=document.getElementById('scoreStatusDot'), sT=document.getElementById('scoreStatusText');
             if(sD&&sT) { if(readyToScore){sD.className="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_4px_rgba(52,211,153,0.8)]";sT.className="text-[9px] font-bold tech-font text-emerald-300";sT.innerText="可以得分";}else{sD.className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse";sT.className="text-[9px] font-bold tech-font text-amber-300";sT.innerText="需回中线";} }
-            
+
             const spd = drone.velocity.length(), alt = drone.position.y, thr = Math.round(drone.input.throttle*100);
             const ts=document.getElementById('telemetrySpeed'); if(ts) { ts.innerText=spd.toFixed(1); document.getElementById('speedBar').style.width=`${Math.min(spd*10,100)}%`; }
             const ta=document.getElementById('telemetryAlt'); if(ta) { ta.innerText=alt.toFixed(2); document.getElementById('altBar').style.width=`${Math.min(alt/3*100,100)}%`; }
             const tt=document.getElementById('telemetryThrottle'); if(tt) { tt.innerText=`${thr}%`; document.getElementById('throttleBar').style.width=`${thr}%`; }
-            
+
             const mbSpd=document.getElementById('mobBarSpd'); if(mbSpd) mbSpd.style.width=`${Math.min(spd*10,100)}%`;
             const mbAlt=document.getElementById('mobBarAlt'); if(mbAlt) mbAlt.style.width=`${Math.min(alt/3*100,100)}%`;
             const mbThr=document.getElementById('mobBarThr'); if(mbThr) mbThr.style.width=`${thr}%`;
@@ -831,7 +952,7 @@
         function showSystemNotification(t) {
             const oldN = document.getElementById('sysNotification');
             if (oldN) oldN.remove();
-            
+
             const n=document.createElement('div'); n.id='sysNotification'; n.className='absolute top-20 left-1/2 -translate-x-1/2 glassmorphism text-emerald-300 font-bold px-4 py-2 rounded-lg text-xs tracking-wider border border-emerald-500/30 shadow-md z-30 transition-all duration-300 transform -translate-y-2 opacity-0 pointer-events-none uppercase tech-font'; n.innerText=t; document.body.appendChild(n);
             requestAnimationFrame(()=>n.classList.remove('-translate-y-2','opacity-0')); setTimeout(()=>{n.classList.add('-translate-y-2','opacity-0');setTimeout(()=>n.remove(),300);},1600);
         }
@@ -849,93 +970,232 @@
         }
 
         function animate() {
-            requestAnimationFrame(animate); const dt=Math.min(clock.getDelta(),0.1);
-            updateDronePhysics(dt); updateAIDrone(dt); checkCenterLineCrossing(); checkRingCollisions(); checkDroneVsDroneCollision(); updateParticles(dt); updateCamera(); updateDroneSound(); updateHUD();
-            updateTailBeacon(drone.tailBeaconMat, drone.tailBeaconLight); aiDrones.forEach(a=>updateTailBeacon(a.tailBeaconMat,a.tailBeaconLight));
-            renderer.render(scene, camera);
+            requestAnimationFrame(animate);
+            // ★ 保护：初始化失败时不渲染，避免刷错误
+            if (!clock || !renderer || !scene || !camera) return;
+            const dt=Math.min(clock.getDelta(),0.1);
+            try {
+                updateDronePhysics(dt); updateAIDrone(dt); checkCenterLineCrossing(); checkRingCollisions(); checkDroneVsDroneCollision(); updateParticles(dt); updateCamera(); updateDroneSound(); updateHUD();
+                updateTailBeacon(drone.tailBeaconMat, drone.tailBeaconLight); aiDrones.forEach(a=>updateTailBeacon(a.tailBeaconMat,a.tailBeaconLight));
+                renderer.render(scene, camera);
+            } catch(e) { /* 单帧异常不终止渲染循环 */ }
         }
 
         document.addEventListener('DOMContentLoaded', () => {
-            initScene(); setupLights(); createSoccerField(); createStadiumEnvironment(); buildInflatableCage(); buildDrone(); buildAIDrones(); setupTargetRings(); configureMatch('red'); setupKeyboard();
-            
-            // 触控防呆绑定
-            const touchZone = (id, outX, outY) => {
-                const z=document.getElementById(id); if(!z) return; const k=z.children[0];
-                const mv = (e) => { 
-                    try { e.preventDefault(); } catch(err){} 
-                    const t = (e.targetTouches && e.targetTouches.length > 0) ? e.targetTouches[0] : (e.touches ? e.touches[0] : null); 
-                    if(!t)return; 
-                    const r=z.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=t.clientX-cx, dy=t.clientY-cy, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), px=Math.cos(a)*d/(r.width/2), py=Math.sin(a)*d/(r.height/2); k.style.transform=`translate(${px*25}px, ${py*25}px) scale(1.15)`; outX(px); outY(py); 
-                };
-                const ed = () => { k.style.transform='translate(0,0) scale(1)'; outX(0); outY(0); };
-                z.addEventListener('touchstart', e=>{ triggerHaptic('light'); outX(0); outY(0); mv(e); }, {passive:false}); z.addEventListener('touchmove', mv, {passive:false}); z.addEventListener('touchend', ed); z.addEventListener('touchcancel', ed);
-            };
-            touchZone('joyLeft', (x)=>{ drone.touchActiveLeft=true; drone.input.yaw=x; if(x===0&&drone.touchAltitudeInput===0) drone.touchActiveLeft=false; }, (y)=>{ drone.touchActiveLeft=true; drone.touchAltitudeInput=-Math.sign(y)*Math.pow(y,2); if(y===0&&drone.input.yaw===0) drone.touchActiveLeft=false; });
-            touchZone('joyRight', (x)=>{ drone.touchActive=true; drone.input.roll=x; if(x===0&&drone.input.pitch===0) drone.touchActive=false; }, (y)=>{ drone.touchActive=true; drone.input.pitch=-y; if(y===0&&drone.input.roll===0) drone.touchActive=false; drone.autoFlightState='none'; });
+            // ============ 1) 初始化（出错不阻断 UI 绑定）============
+            try {
+                initScene();
+                setupLights();
+                createSoccerField();
+                createStadiumEnvironment();
+                buildInflatableCage();
+                buildDrone();
+                buildAIDrones();
+                setupTargetRings();
+                configureMatch('red');
+                setupKeyboard();
+            } catch (e) {
+                console.error('[Init] 初始化失败，但继续绑定UI:', e);
+            }
 
+            // ============ 2) 触控摇杆（仅触屏设备真正会用到）============
+            const touchZone = (id, outX, outY) => {
+                const z = document.getElementById(id); if (!z) return;
+                const k = z.children[0];
+                const mv = (e) => {
+                    try { e.preventDefault(); } catch (err) {}
+                    const t = (e.targetTouches && e.targetTouches.length > 0)
+                        ? e.targetTouches[0]
+                        : (e.touches ? e.touches[0] : null);
+                    if (!t) return;
+                    const r = z.getBoundingClientRect(), cx = r.left + r.width/2, cy = r.top + r.height/2;
+                    const dx = t.clientX - cx, dy = t.clientY - cy;
+                    const d = Math.min(r.width/2, Math.hypot(dx, dy)), a = Math.atan2(dy, dx);
+                    const px = Math.cos(a) * d / (r.width/2), py = Math.sin(a) * d / (r.height/2);
+                    k.style.transform = `translate(${px*25}px, ${py*25}px) scale(1.15)`;
+                    outX(px); outY(py);
+                };
+                const ed = () => { k.style.transform = 'translate(0,0) scale(1)'; outX(0); outY(0); };
+                z.addEventListener('touchstart', e => { triggerHaptic('light'); outX(0); outY(0); mv(e); }, { passive: false });
+                z.addEventListener('touchmove', mv, { passive: false });
+                z.addEventListener('touchend', ed);
+                z.addEventListener('touchcancel', ed);
+            };
+            touchZone('joyLeft',
+                x => { drone.touchActiveLeft = true; drone.input.yaw = x; if (x === 0 && drone.touchAltitudeInput === 0) drone.touchActiveLeft = false; },
+                y => { drone.touchActiveLeft = true; drone.touchAltitudeInput = -Math.sign(y) * Math.pow(y, 2); if (y === 0 && drone.input.yaw === 0) drone.touchActiveLeft = false; });
+            touchZone('joyRight',
+                x => { drone.touchActive = true; drone.input.roll = x; if (x === 0 && drone.input.pitch === 0) drone.touchActive = false; },
+                y => { drone.touchActive = true; drone.input.pitch = -y; if (y === 0 && drone.input.roll === 0) drone.touchActive = false; drone.autoFlightState = 'none'; });
+
+            // ============ 3) 队伍选择 ============
             let curTeam = 'red';
             const sR = document.getElementById('btnTeamRed'), sB = document.getElementById('btnTeamBlue');
-            addClick('btnTeamRed', () => { curTeam='red'; sR.className="flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/10 hover:bg-rose-500/25 transition-colors"; sB.className="flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button opacity-70 hover:opacity-100 transition-all"; triggerHaptic('light'); });
-            addClick('btnTeamBlue', () => { curTeam='blue'; sB.className="flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button border-blue-500/50 bg-blue-500/10 hover:bg-blue-500/25 transition-colors"; sR.className="flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button opacity-70 hover:opacity-100 transition-all"; triggerHaptic('light'); });
-
-            document.querySelectorAll('.difficulty-option').forEach(el=> {
-                if(el) el.addEventListener('click', e => { e.preventDefault(); e.stopPropagation(); applyDifficulty(el.dataset.level); document.querySelectorAll('.difficulty-option').forEach(x=>{ const a=x.dataset.level===el.dataset.level; x.style.borderColor=a?['rgba(16,185,129,0.6)','rgba(250,204,21,0.6)','rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'rgba(255, 255, 255, 0.1)'; x.style.background=a?['rgba(16,185,129,0.12)','rgba(250,204,21,0.12)','rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)]:'rgba(30, 41, 59, 0.6)'; }); triggerHaptic('light'); });
+            addClick('btnTeamRed', () => {
+                curTeam = 'red';
+                if (sR) sR.className = "flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button border-rose-500/50 bg-rose-500/10 hover:bg-rose-500/25 transition-colors";
+                if (sB) sB.className = "flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button opacity-70 hover:opacity-100 transition-all";
+                triggerHaptic('light');
+            });
+            addClick('btnTeamBlue', () => {
+                curTeam = 'blue';
+                if (sB) sB.className = "flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button border-blue-500/50 bg-blue-500/10 hover:bg-blue-500/25 transition-colors";
+                if (sR) sR.className = "flex-1 py-3 text-center cursor-pointer select-none rounded-xl glass-button opacity-70 hover:opacity-100 transition-all";
+                triggerHaptic('light');
             });
 
-            addClick('btnTimeMinus', () => { if(matchDurationMinutes>1){ matchDurationMinutes--; document.getElementById('timeDisplay').innerText=matchDurationMinutes; triggerHaptic('light'); } });
-            addClick('btnTimePlus', () => { if(matchDurationMinutes<9){ matchDurationMinutes++; document.getElementById('timeDisplay').innerText=matchDurationMinutes; triggerHaptic('light'); } });
+            // ============ 4) 难度选择 ============
+            document.querySelectorAll('.difficulty-option').forEach(el => {
+                if (el) el.addEventListener('click', e => {
+                    e.preventDefault(); e.stopPropagation();
+                    applyDifficulty(el.dataset.level);
+                    document.querySelectorAll('.difficulty-option').forEach(x => {
+                        const a = x.dataset.level === el.dataset.level;
+                        x.style.borderColor = a ? ['rgba(16,185,129,0.6)', 'rgba(250,204,21,0.6)', 'rgba(239,68,68,0.6)'][['easy','medium','hard'].indexOf(x.dataset.level)] : 'rgba(255,255,255,0.1)';
+                        x.style.background = a ? ['rgba(16,185,129,0.12)', 'rgba(250,204,21,0.12)', 'rgba(239,68,68,0.12)'][['easy','medium','hard'].indexOf(x.dataset.level)] : 'rgba(30,41,59,0.6)';
+                    });
+                    triggerHaptic('light');
+                });
+            });
 
+            // ============ 5) 时间加减 ============
+            addClick('btnTimeMinus', () => { if (matchDurationMinutes > 1) { matchDurationMinutes--; document.getElementById('timeDisplay').innerText = matchDurationMinutes; triggerHaptic('light'); } });
+            addClick('btnTimePlus', () => { if (matchDurationMinutes < 9) { matchDurationMinutes++; document.getElementById('timeDisplay').innerText = matchDurationMinutes; triggerHaptic('light'); } });
+
+            // ============ 6) 开始逻辑（带防重入 + 多重事件兜底）============
+            let __matchStartedFlag = false;
             const startF = () => {
-                const s = document.getElementById('startScreen'); if(!s || s.classList.contains('hidden')) return;
-                const pIn = document.getElementById('playerNameInput'); currentPlayerName = pIn && pIn.value.trim()!=='' ? pIn.value.trim() : "匿名学员";
-                triggerHaptic('heavy'); configureMatch(curTeam); startMatchClock(); initAudio(); soundEnabled=true;
-                s.classList.add('opacity-0', 'scale-95', 'pointer-events-none'); setTimeout(() => s.classList.add('hidden'), 700);
+                if (__matchStartedFlag) return;
+                const s = document.getElementById('startScreen');
+                if (!s || s.classList.contains('hidden')) return;
+                __matchStartedFlag = true;
+
+                try {
+                    const pIn = document.getElementById('playerNameInput');
+                    currentPlayerName = (pIn && pIn.value.trim() !== '') ? pIn.value.trim() : "匿名学员";
+                    triggerHaptic('heavy');
+                    configureMatch(curTeam);
+                    startMatchClock();
+                    initAudio();
+                    soundEnabled = true;
+                } catch (e) {
+                    console.error('[Start] 启动异常:', e);
+                }
+
+                s.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                setTimeout(() => s.classList.add('hidden'), 700);
                 showSystemNotification(`系统启动 - 倒计时 ${matchDurationMinutes} 分钟`);
             };
-            
-            // 安全绑定主界面进入按钮
-            const btnSt = document.getElementById('btnStartMatch');
-            if (btnSt) { 
-                btnSt.addEventListener('click', startF); 
-                btnSt.addEventListener('touchend', e => { e.preventDefault(); startF(); }); 
-            }
-            
-            // 安全绑定键盘，避免在输入框打字时触发
-            window.addEventListener('keydown', e => { if(e.key!=='F12' && e.key!=='F5' && (!document.activeElement||document.activeElement.tagName!=='INPUT')) startF(); }, {once:true});
 
-            addClick('btnTakeoff', () => { if(isMatchActive) { triggerHaptic('engine'); if(drone.position.y<0.15){drone.targetAltitude=GOAL_HEIGHT; drone.autoFlightState='takingoff'; aiDrones.forEach(a=>{if(a.altitudeState==='grounded') a.altitudeState='takingoff';});} } });
-            addClick('btnLand', () => { triggerHaptic('engine'); if(drone.position.y>0.15){drone.targetAltitude=0.1; drone.autoFlightState='landing'; aiDrones.forEach(a=>{if(a.altitudeState!=='grounded') a.altitudeState='landing';});} });
-            addClick('btnSound', () => { 
-                soundEnabled = !soundEnabled; 
-                const i = document.querySelector('#btnSound i'); 
-                if (i) { 
+            // 方式 A：标准 click
+            const btnSt = document.getElementById('btnStartMatch');
+            if (btnSt) {
+                btnSt.addEventListener('click', startF);
+                // 方式 B：指针抬起（部分 PC 环境 click 会丢失）
+                btnSt.addEventListener('pointerup', startF);
+                // 方式 C：触摸
+                btnSt.addEventListener('touchend', e => { if (e.cancelable) { try { e.preventDefault(); } catch (_) {} } startF(); }, { passive: false });
+            }
+
+            // 方式 D：全局兜底 —— 任何落到按钮上的 pointerup 都兜住
+            document.addEventListener('pointerup', e => {
+                if (e.target && e.target.closest && e.target.closest('#btnStartMatch')) startF();
+            }, true);
+
+            // 方式 E：键盘启动
+            window.addEventListener('keydown', e => {
+                if (e.key !== 'F12' && e.key !== 'F5' &&
+                    (!document.activeElement || document.activeElement.tagName !== 'INPUT')) startF();
+            }, { once: true });
+
+            // ============ 7) 其余游戏内按钮 ============
+            addClick('btnTakeoff', () => { if (isMatchActive) { triggerHaptic('engine'); if (drone.position.y < 0.15) { drone.targetAltitude = GOAL_HEIGHT; drone.autoFlightState = 'takingoff'; aiDrones.forEach(a => { if (a.altitudeState === 'grounded') a.altitudeState = 'takingoff'; }); } } });
+            addClick('btnLand', () => { triggerHaptic('engine'); if (drone.position.y > 0.15) { drone.targetAltitude = 0.1; drone.autoFlightState = 'landing'; aiDrones.forEach(a => { if (a.altitudeState !== 'grounded') a.altitudeState = 'landing'; }); } });
+            addClick('btnSound', () => {
+                soundEnabled = !soundEnabled;
+                const i = document.querySelector('#btnSound i');
+                if (i) {
                     if (soundEnabled) {
-                        initAudio(); 
-                        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); 
-                        i.className = 'fa-solid fa-volume-high text-xs w-4'; 
-                        document.getElementById('btnSound').classList.add('text-emerald-400'); 
+                        initAudio();
+                        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume();
+                        i.className = 'fa-solid fa-volume-high text-xs w-4';
+                        document.getElementById('btnSound').classList.add('text-emerald-400');
                         showSystemNotification("音效: 开");
                     } else {
-                        i.className = 'fa-solid fa-volume-xmark text-xs w-4 text-slate-400'; 
-                        document.getElementById('btnSound').classList.remove('text-emerald-400'); 
+                        i.className = 'fa-solid fa-volume-xmark text-xs w-4 text-slate-400';
+                        document.getElementById('btnSound').classList.remove('text-emerald-400');
                         showSystemNotification("音效: 关");
-                    } 
-                } 
+                    }
+                }
             });
-            addClick('btnCam', () => { triggerHaptic('light'); cameraMode=CAMERA_CYCLE_ORDER[(CAMERA_CYCLE_ORDER.indexOf(cameraMode)+1)%CAMERA_CYCLE_ORDER.length]; if(cameraMode===2){orbitControls.enabled=true;orbitControls.target.copy(drone.position);}else orbitControls.enabled=false; const c=document.getElementById('camText'); if(c) c.innerText=CAMERA_MODES_ZH[cameraMode]; showSystemNotification(`镜头: ${CAMERA_MODES_ZH[cameraMode]}`); });
-            addClick('btnDifficulty', () => { triggerHaptic('light'); applyDifficulty(['easy','medium','hard'][(['easy','medium','hard'].indexOf(aiDifficulty)+1)%3]); });
-            
-            const rst = () => { drone.position.set(0,0.1,0); drone.velocity.set(0,0,0); drone.rotation.set(0,0,0); drone.currentPitch=0; drone.currentRoll=0; drone.currentYawRate=0; drone.input.throttle=0; drone.targetAltitude=0.1; drone.autoFlightState='none'; score=0; readyToScore=true; centerLinePrevSide=null; ringCourse.forEach(r=>{r.lastPassTime=0; r.prevSide=null; setRingFlash(r,false);}); configureMatch(playerTeam); updateHUD(); };
-            addClick('btnReset', () => { rst(); if(isMatchActive) showSystemNotification("已强制复位"); });
-            addClick('btnRestart', () => { rst(); startMatchClock(); const v=document.getElementById('victoryScreen'); if(v){v.classList.add('hidden'); v.classList.remove('flex');} });
-            addClick('btnHome', () => { rst(); stopMatchClock(); isMatchActive=false; drone.autoFlightState='landing'; soundEnabled=false; const i=document.querySelector('#btnSound i'); if(i) { i.className='fa-solid fa-volume-xmark text-xs w-4 text-slate-400'; document.getElementById('btnSound').classList.remove('text-emerald-400'); } const s=document.getElementById('startScreen'); if(s){s.classList.remove('hidden'); requestAnimationFrame(()=>s.classList.remove('opacity-0', 'scale-95', 'pointer-events-none'));} const v=document.getElementById('victoryScreen'); if(v){v.classList.add('hidden'); v.classList.remove('flex');} });
-            addClick('btnEndHome', () => { document.getElementById('btnHome').click(); });
+            addClick('btnCam', () => {
+                triggerHaptic('light');
+                cameraMode = CAMERA_CYCLE_ORDER[(CAMERA_CYCLE_ORDER.indexOf(cameraMode) + 1) % CAMERA_CYCLE_ORDER.length];
+                if (cameraMode === 2 && orbitControls) {
+                    orbitControls.enabled = true;
+                    orbitControls.target.copy(drone.position);
+                } else if (orbitControls) {
+                    orbitControls.enabled = false;
+                }
+                const c = document.getElementById('camText');
+                if (c) c.innerText = CAMERA_MODES_ZH[cameraMode];
+                showSystemNotification(`镜头: ${CAMERA_MODES_ZH[cameraMode]}`);
+            });
+            addClick('btnDifficulty', () => { triggerHaptic('light'); applyDifficulty(['easy', 'medium', 'hard'][(['easy', 'medium', 'hard'].indexOf(aiDifficulty) + 1) % 3]); });
 
-            addClick('btnMobileMenuToggle', () => { const m = document.getElementById('actionMenu'); if(m) { m.classList.toggle('hidden'); m.classList.toggle('flex'); } });
+            const rst = () => {
+                drone.position.set(0, 0.1, 0); drone.velocity.set(0, 0, 0);
+                drone.rotation.set(0, 0, 0); drone.currentPitch = 0; drone.currentRoll = 0;
+                drone.currentYawRate = 0; drone.input.throttle = 0;
+                drone.targetAltitude = 0.1; drone.autoFlightState = 'none';
+                score = 0; readyToScore = true; centerLinePrevSide = null;
+                ringCourse.forEach(r => { r.lastPassTime = 0; r.prevSide = null; setRingFlash(r, false); });
+                configureMatch(playerTeam);
+                updateHUD();
+            };
+            addClick('btnReset', () => { rst(); if (isMatchActive) showSystemNotification("已强制复位"); });
+            addClick('btnRestart', () => {
+                __matchStartedFlag = false;
+                rst(); startMatchClock();
+                const v = document.getElementById('victoryScreen');
+                if (v) { v.classList.add('hidden'); v.classList.remove('flex'); }
+            });
+            addClick('btnHome', () => {
+                __matchStartedFlag = false;
+                rst(); stopMatchClock(); isMatchActive = false;
+                drone.autoFlightState = 'landing'; soundEnabled = false;
+                const i = document.querySelector('#btnSound i');
+                if (i) { i.className = 'fa-solid fa-volume-xmark text-xs w-4 text-slate-400'; document.getElementById('btnSound').classList.remove('text-emerald-400'); }
+                const s = document.getElementById('startScreen');
+                if (s) { s.classList.remove('hidden'); requestAnimationFrame(() => s.classList.remove('opacity-0', 'scale-95', 'pointer-events-none')); }
+                const v = document.getElementById('victoryScreen');
+                if (v) { v.classList.add('hidden'); v.classList.remove('flex'); }
+            });
+            addClick('btnEndHome', () => { const b = document.getElementById('btnHome'); if (b) b.click(); });
+
+            addClick('btnMobileMenuToggle', () => { const m = document.getElementById('actionMenu'); if (m) { m.classList.toggle('hidden'); m.classList.toggle('flex'); } });
             addClick('btnExportLeaderboard', exportLeaderboardCSV);
-            addClick('btnClearLeaderboard', () => { const b=document.getElementById('btnClearLeaderboard'); if(b.dataset.c!=='1') { b.innerHTML='<i class="fa-solid fa-triangle-exclamation mr-1"></i>确认清空?'; b.classList.replace('bg-rose-600/20','bg-rose-600/60'); b.dataset.c='1'; setTimeout(()=>{if(b.dataset.c==='1'){b.innerHTML='<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60','bg-rose-600/20'); b.dataset.c='0';}},3000); } else { try{window.localStorage.removeItem(STORAGE_KEY);}catch(e){} inMemoryBoard=[]; renderLeaderboard([]); b.innerHTML='<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60','bg-rose-600/20'); b.dataset.c='0'; showSystemNotification("已清空排行榜"); } });
+            addClick('btnClearLeaderboard', () => {
+                const b = document.getElementById('btnClearLeaderboard');
+                if (!b) return;
+                if (b.dataset.c !== '1') {
+                    b.innerHTML = '<i class="fa-solid fa-triangle-exclamation mr-1"></i>确认清空?';
+                    b.classList.replace('bg-rose-600/20', 'bg-rose-600/60');
+                    b.dataset.c = '1';
+                    setTimeout(() => { if (b.dataset.c === '1') { b.innerHTML = '<i class="fa-solid fa-trash-can mr-1"></i>清空'; b.classList.replace('bg-rose-600/60', 'bg-rose-600/20'); b.dataset.c = '0'; } }, 3000);
+                } else {
+                    try { window.localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+                    inMemoryBoard = [];
+                    renderLeaderboard([]);
+                    b.innerHTML = '<i class="fa-solid fa-trash-can mr-1"></i>清空';
+                    b.classList.replace('bg-rose-600/60', 'bg-rose-600/20');
+                    b.dataset.c = '0';
+                    showSystemNotification("已清空排行榜");
+                }
+            });
 
-            animate();
+            // ============ 8) 启动渲染循环 ============
+            try { animate(); } catch (e) { console.error('[Animate] 渲染循环启动失败:', e); }
         });
     </script>
 </body>
