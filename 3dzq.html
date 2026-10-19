@@ -351,7 +351,7 @@
 
         function formatMatchClock(totalSeconds) {
             const mm = Math.floor(totalSeconds / 60), ss = Math.floor(totalSeconds % 60);
-            return `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+            return (mm < 10 ? '0' + mm : mm) + ':' + (ss < 10 ? '0' + ss : ss);
         }
         function updateMatchClockDisplay() {
             const el = document.getElementById('gameClockText');
@@ -368,9 +368,9 @@
             }, 1000);
         }
 
-        // Leaderboard Logic (With robust fallback for Sandbox environments)
+        // Leaderboard Logic
         const STORAGE_KEY = 'droneSoccerLeaderboard';
-        let inMemoryBoard = []; // Fallback if localStorage throws SecurityError
+        let inMemoryBoard = [];
         
         function getLocalBoard() {
             try { return JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '[]'); } catch(e) { return inMemoryBoard; }
@@ -403,7 +403,11 @@
         function saveScoreAndShowLeaderboard() {
             let board = getLocalBoard();
             const now = new Date();
-            const dateStr = `${String(now.getMonth()+1).padStart(2,'0')}/${String(now.getDate()).padStart(2,'0')} ${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+            const mo = now.getMonth() + 1 < 10 ? '0' + (now.getMonth() + 1) : now.getMonth() + 1;
+            const da = now.getDate() < 10 ? '0' + now.getDate() : now.getDate();
+            const ho = now.getHours() < 10 ? '0' + now.getHours() : now.getHours();
+            const mi = now.getMinutes() < 10 ? '0' + now.getMinutes() : now.getMinutes();
+            const dateStr = mo + '/' + da + ' ' + ho + ':' + mi;
             board.push({ name: currentPlayerName, score: score, date: dateStr, timestamp: now.getTime() });
             board.sort((a, b) => b.score !== a.score ? b.score - a.score : b.timestamp - a.timestamp);
             saveBoard(board);
@@ -472,7 +476,6 @@
             if (audioCtx) { if(audioCtx.state === 'suspended') audioCtx.resume(); return; }
             try {
                 audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                // 解决 iOS 静音策略
                 const buffer = audioCtx.createBuffer(1, 1, 22050), source = audioCtx.createBufferSource();
                 source.buffer = buffer; source.connect(audioCtx.destination); if(source.noteOn) source.noteOn(0); else source.start(0);
                 const osc = audioCtx.createOscillator(), gain = audioCtx.createGain();
@@ -651,7 +654,10 @@
             const c=gd.canvas, g=gd.ctx, W=c.width, H=c.height; g.clearRect(0,0,W,H); g.fillStyle='#05080f'; g.fillRect(0,0,W,H);
             g.fillStyle = r.team==='red'?'#ef4444':'#3b82f6'; g.fillRect(0,0,W,54); g.fillStyle='#fff'; g.font='bold 34px sans-serif'; g.textAlign='left'; g.textBaseline='middle'; g.fillText(r.team==='red'?'红方球门':'蓝方球门', 22, 28);
             if(fls){ g.fillStyle='#10b981'; g.shadowColor='#34d399'; g.shadowBlur=20; g.font='bold 120px monospace'; g.textAlign='center'; g.fillText('GOAL!', W/2, 150); g.shadowBlur=0; }
-            else{ g.fillStyle='#facc15'; g.font='bold 140px monospace'; g.textAlign='center'; g.fillText(String(gs).padStart(2,'0'), W/2, 152); }
+            else{ 
+                const gsStr = (gs < 10 ? '0' : '') + gs;
+                g.fillStyle='#facc15'; g.font='bold 140px monospace'; g.textAlign='center'; g.fillText(gsStr, W/2, 152); 
+            }
             g.fillStyle='rgba(148,163,184,0.15)'; g.fillRect(0,H-40,W,40); g.font='bold 22px sans-serif'; g.textAlign='center';
             if(!isO){ g.fillStyle='#94a3b8'; g.fillText('防守中・穿越不计分', W/2, H-20); } else if(readyToScore){ g.fillStyle='#34d399'; g.fillText('● 可以得分', W/2, H-20); } else { g.fillStyle='#fbbf24'; g.fillText('● 需回中线', W/2, H-20); }
             gd.texture.needsUpdate = true;
@@ -823,7 +829,9 @@
         }
 
         function showSystemNotification(t) {
-            document.getElementById('sysNotification')?.remove();
+            const oldN = document.getElementById('sysNotification');
+            if (oldN) oldN.remove();
+            
             const n=document.createElement('div'); n.id='sysNotification'; n.className='absolute top-20 left-1/2 -translate-x-1/2 glassmorphism text-emerald-300 font-bold px-4 py-2 rounded-lg text-xs tracking-wider border border-emerald-500/30 shadow-md z-30 transition-all duration-300 transform -translate-y-2 opacity-0 pointer-events-none uppercase tech-font'; n.innerText=t; document.body.appendChild(n);
             requestAnimationFrame(()=>n.classList.remove('-translate-y-2','opacity-0')); setTimeout(()=>{n.classList.add('-translate-y-2','opacity-0');setTimeout(()=>n.remove(),300);},1600);
         }
@@ -853,7 +861,12 @@
             // 触控防呆绑定
             const touchZone = (id, outX, outY) => {
                 const z=document.getElementById(id); if(!z) return; const k=z.children[0];
-                const mv = (e) => { try{e.preventDefault();}catch(e){} const t=e.targetTouches?.[0]||e.touches[0]; if(!t)return; const r=z.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=t.clientX-cx, dy=t.clientY-cy, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), px=Math.cos(a)*d/(r.width/2), py=Math.sin(a)*d/(r.height/2); k.style.transform=`translate(${px*25}px, ${py*25}px) scale(1.15)`; outX(px); outY(py); };
+                const mv = (e) => { 
+                    try { e.preventDefault(); } catch(err){} 
+                    const t = (e.targetTouches && e.targetTouches.length > 0) ? e.targetTouches[0] : (e.touches ? e.touches[0] : null); 
+                    if(!t)return; 
+                    const r=z.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2, dx=t.clientX-cx, dy=t.clientY-cy, d=Math.min(r.width/2, Math.hypot(dx,dy)), a=Math.atan2(dy,dx), px=Math.cos(a)*d/(r.width/2), py=Math.sin(a)*d/(r.height/2); k.style.transform=`translate(${px*25}px, ${py*25}px) scale(1.15)`; outX(px); outY(py); 
+                };
                 const ed = () => { k.style.transform='translate(0,0) scale(1)'; outX(0); outY(0); };
                 z.addEventListener('touchstart', e=>{ triggerHaptic('light'); outX(0); outY(0); mv(e); }, {passive:false}); z.addEventListener('touchmove', mv, {passive:false}); z.addEventListener('touchend', ed); z.addEventListener('touchcancel', ed);
             };
@@ -879,16 +892,36 @@
                 s.classList.add('opacity-0', 'scale-95', 'pointer-events-none'); setTimeout(() => s.classList.add('hidden'), 700);
                 showSystemNotification(`系统启动 - 倒计时 ${matchDurationMinutes} 分钟`);
             };
-            // 支持点击和移动端触摸直接启动
+            
+            // 安全绑定主界面进入按钮
             const btnSt = document.getElementById('btnStartMatch');
-            if(btnSt) { btnSt.addEventListener('click', startF); btnSt.addEventListener('touchend', e => { e.preventDefault(); startF(); }); }
+            if (btnSt) { 
+                btnSt.addEventListener('click', startF); 
+                btnSt.addEventListener('touchend', e => { e.preventDefault(); startF(); }); 
+            }
             
             // 安全绑定键盘，避免在输入框打字时触发
             window.addEventListener('keydown', e => { if(e.key!=='F12' && e.key!=='F5' && (!document.activeElement||document.activeElement.tagName!=='INPUT')) startF(); }, {once:true});
 
             addClick('btnTakeoff', () => { if(isMatchActive) { triggerHaptic('engine'); if(drone.position.y<0.15){drone.targetAltitude=GOAL_HEIGHT; drone.autoFlightState='takingoff'; aiDrones.forEach(a=>{if(a.altitudeState==='grounded') a.altitudeState='takingoff';});} } });
             addClick('btnLand', () => { triggerHaptic('engine'); if(drone.position.y>0.15){drone.targetAltitude=0.1; drone.autoFlightState='landing'; aiDrones.forEach(a=>{if(a.altitudeState!=='grounded') a.altitudeState='landing';});} });
-            addClick('btnSound', () => { soundEnabled=!soundEnabled; const i=document.querySelector('#btnSound i'); if(i){ if(soundEnabled){initAudio(); if(audioCtx?.state==='suspended') audioCtx.resume(); i.className='fa-solid fa-volume-high text-xs w-4'; document.getElementById('btnSound').classList.add('text-emerald-400'); showSystemNotification("音效: 开");}else{i.className='fa-solid fa-volume-xmark text-xs w-4 text-slate-400'; document.getElementById('btnSound').classList.remove('text-emerald-400'); showSystemNotification("音效: 关");} } });
+            addClick('btnSound', () => { 
+                soundEnabled = !soundEnabled; 
+                const i = document.querySelector('#btnSound i'); 
+                if (i) { 
+                    if (soundEnabled) {
+                        initAudio(); 
+                        if (audioCtx && audioCtx.state === 'suspended') audioCtx.resume(); 
+                        i.className = 'fa-solid fa-volume-high text-xs w-4'; 
+                        document.getElementById('btnSound').classList.add('text-emerald-400'); 
+                        showSystemNotification("音效: 开");
+                    } else {
+                        i.className = 'fa-solid fa-volume-xmark text-xs w-4 text-slate-400'; 
+                        document.getElementById('btnSound').classList.remove('text-emerald-400'); 
+                        showSystemNotification("音效: 关");
+                    } 
+                } 
+            });
             addClick('btnCam', () => { triggerHaptic('light'); cameraMode=CAMERA_CYCLE_ORDER[(CAMERA_CYCLE_ORDER.indexOf(cameraMode)+1)%CAMERA_CYCLE_ORDER.length]; if(cameraMode===2){orbitControls.enabled=true;orbitControls.target.copy(drone.position);}else orbitControls.enabled=false; const c=document.getElementById('camText'); if(c) c.innerText=CAMERA_MODES_ZH[cameraMode]; showSystemNotification(`镜头: ${CAMERA_MODES_ZH[cameraMode]}`); });
             addClick('btnDifficulty', () => { triggerHaptic('light'); applyDifficulty(['easy','medium','hard'][(['easy','medium','hard'].indexOf(aiDifficulty)+1)%3]); });
             
