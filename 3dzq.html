@@ -639,14 +639,21 @@
                 bCtx2.stroke();
             }
 
-            bCtx2.fillStyle = '#ffffff';
-            bCtx2.font = 'bold 28px "Noto Sans SC", sans-serif';
-            bCtx2.textAlign = 'center';
-            bCtx2.textBaseline = 'middle';
-            bCtx2.shadowColor = '#10b981';
-            bCtx2.shadowBlur = 12;
-            bCtx2.fillText('HARC无人机足球模拟赛', BW * 0.25, BH / 2);
-            bCtx2.fillText('HARC无人机足球模拟赛', BW * 0.75, BH / 2);
+ // ✅ 修复版：先水平镜像抵消 BackSide 的反向显示
+bCtx2.save();
+bCtx2.translate(BW, 0);
+bCtx2.scale(-1, 1);          // ★ 关键：水平翻转
+
+bCtx2.fillStyle = '#ffffff';
+bCtx2.font = 'bold 28px "Noto Sans SC", sans-serif';
+bCtx2.textAlign = 'center';
+bCtx2.textBaseline = 'middle';
+bCtx2.shadowColor = '#10b981';
+bCtx2.shadowBlur = 12;
+bCtx2.fillText('HARC无人机足球模拟赛', BW * 0.25, BH / 2);
+bCtx2.fillText('HARC无人机足球模拟赛', BW * 0.75, BH / 2);
+
+bCtx2.restore();
 
             // 横幅轻微模糊，让文字融入背景，避免"贴纸感"
             const bnrBlur = document.createElement('canvas');
