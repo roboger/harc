@@ -29,13 +29,46 @@ img{display:block;max-width:100%}
 
 /* ========== 布局 ========== */
 .stage{position:relative;z-index:2;height:var(--h);display:grid;
-  grid-template-rows:64px 1fr;gap:10px;padding:0 14px 12px;
+  grid-template-rows:64px 1fr 40px;gap:10px;padding:0 14px 12px;
   padding-bottom:calc(12px + env(safe-area-inset-bottom))}
 .main{display:grid;grid-template-columns:290px 1fr 290px;gap:10px;min-height:0}
 .col{display:grid;gap:10px;min-height:0}
 .col-left{grid-template-rows:auto 1fr}
 .col-right{grid-template-rows:1fr 1fr}
 .center{display:flex;flex-direction:column;gap:10px;min-height:0}
+
+/* ========== 实时动态 ========== */
+.feed-bar{
+  position:relative;background:rgba(6,24,50,.85);
+  border:1px solid var(--line);border-radius:6px;
+  display:flex;align-items:center;overflow:hidden;padding:0 12px;
+  box-shadow:inset 0 0 30px rgba(0,120,255,.08);
+}
+.feed-label{
+  flex:0 0 auto;color:var(--cyan);font-weight:700;letter-spacing:2px;
+  font-size:13px;padding-right:12px;border-right:1px solid rgba(0,180,255,.3);
+  margin-right:12px;text-shadow:0 0 10px rgba(0,212,255,.5);
+  display:flex;align-items:center;gap:6px;
+}
+.feed-scroll-wrap{
+  flex:1;overflow:hidden;white-space:nowrap;position:relative;
+  height:100%;display:flex;align-items:center;
+}
+.feed-track{
+  display:inline-flex;align-items:center;gap:40px;
+  will-change:transform;padding-left:20px;
+}
+.feed-item{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:13px;color:var(--text);
+}
+.feed-item .feed-key{
+  color:var(--blue);font-weight:600;
+  text-shadow:0 0 8px rgba(10,132,255,.5);
+}
+.feed-item .feed-time{
+  color:var(--dim);font-size:11px;
+}
 
 /* ========== 顶栏 ========== */
 .topbar{display:grid;grid-template-columns:auto 1fr auto;align-items:center;
@@ -224,7 +257,7 @@ img{display:block;max-width:100%}
   grid-template-rows:56px 1fr 76px}
 .viewer.on{display:grid;animation:fade .3s ease}
 @keyframes fade{from{opacity:0}to{opacity:1}}
-.v-head{display:flex;align-items:center;gap:10px;padding:0 14px;
+.v-head{display:flex;align-items:center;gap:8px;padding:0 14px;
   border-bottom:1px solid var(--line);background:rgba(6,24,50,.94);flex-wrap:wrap}
 .v-back{cursor:pointer;padding:6px 13px;border-radius:18px;font-size:12px;
   color:#9fdcff;border:1px solid rgba(0,180,255,.5);background:rgba(0,120,255,.12);
@@ -237,6 +270,8 @@ img{display:block;max-width:100%}
   white-space:nowrap;max-width:180px;overflow:hidden;text-overflow:ellipsis}
 .v-spot-name.fallback{color:#ffd76e;border-color:rgba(255,215,110,.5);
   background:rgba(255,215,110,.1)}
+.v-spot-name.local{color:#4fd8a8;border-color:rgba(79,216,168,.5);
+  background:rgba(79,216,168,.1)}
 .v-stats{margin-left:auto;display:flex;gap:16px;flex-wrap:wrap}
 .v-stats .vs{text-align:right}
 .v-stats .vs b{display:block;font-size:13px;color:#39e0ff;font-family:Consolas,monospace}
@@ -298,6 +333,10 @@ body.book-editing .book-spot .bk-del{display:block}
   z-index:25;padding:5px 14px;border-radius:14px;font-size:10.5px;
   color:#ffe9ab;background:rgba(60,40,0,.88);border:1px solid rgba(255,215,110,.6);
   white-space:nowrap;pointer-events:none}
+.pano-local-tip{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);
+  z-index:25;padding:5px 14px;border-radius:14px;font-size:10.5px;
+  color:#4fd8a8;background:rgba(0,40,20,.88);border:1px solid rgba(79,216,168,.6);
+  white-space:nowrap;pointer-events:none}
 
 .v-foot{display:flex;align-items:center;gap:8px;padding:0 14px;overflow-x:auto;
   border-top:1px solid var(--line);background:rgba(6,24,50,.94);
@@ -312,6 +351,8 @@ body.book-editing .book-spot .bk-del{display:block}
   border-color:var(--cyan);color:#fff}
 .chip.fallback{color:#ffe9ab;border-color:rgba(255,215,110,.5);
   background:rgba(255,215,110,.12)}
+.chip.local{color:#4fd8a8;border-color:rgba(79,216,168,.5);
+  background:rgba(79,216,168,.12)}
 .v-tip{margin-left:auto;font-size:10px;color:var(--dim);padding-left:12px;white-space:nowrap}
 
 /* ========== 通用弹窗 ========== */
@@ -545,7 +586,7 @@ body.book-editing .book-spot .bk-del{display:block}
 }
 @media (max-width:1200px){
   .main{grid-template-columns:230px 1fr 230px}
-  .stage{padding:0 10px 10px;grid-template-rows:58px 1fr;gap:8px}
+  .stage{padding:0 10px 10px;grid-template-rows:58px 1fr 38px;gap:8px}
   .clock #date{display:none}
 }
 @media (max-width:980px){
@@ -558,7 +599,7 @@ body.book-editing .book-spot .bk-del{display:block}
   .col{grid-template-rows:auto}
   .col-left,.col-right{grid-template-columns:1fr 1fr;grid-template-rows:none}
   .center{min-height:auto}
-  .stage{height:auto;min-height:var(--h);grid-template-rows:auto auto;padding:0 8px 8px}
+  .stage{height:auto;min-height:var(--h);grid-template-rows:auto auto 36px;padding:0 8px 8px}
   body{overflow-y:auto}
   .topbar{padding:8px 0 6px;grid-template-columns:auto 1fr auto;gap:6px}
   .brand h1{font-size:14px;letter-spacing:1px;white-space:normal;line-height:1.3}
@@ -576,15 +617,19 @@ body.book-editing .book-spot .bk-del{display:block}
   .panel{padding:10px}
   .panel-title{font-size:12px;margin-bottom:8px}
   .stat .num{font-size:16px}
+  .feed-bar{padding:0 8px;font-size:12px;}
+  .feed-label{font-size:12px;padding-right:8px;margin-right:8px;}
+  .feed-item{font-size:12px;}
   /* 移动端查看器 */
   .viewer{grid-template-rows:50px 1fr 66px}
-  .v-head{padding:0 8px;gap:6px}
+  .v-head{padding:0 6px;gap:4px}
   .v-back{padding:5px 10px;font-size:11px}
   .v-head h2{font-size:12px}
-  .v-spot-name{font-size:9.5px;max-width:100px}
+  .v-spot-name{font-size:9.5px;max-width:90px;padding:2px 7px}
   .v-stats .vs b{font-size:11px}
   .v-stats .vs span{font-size:8px}
   .v-stats .vs:nth-child(n+3){display:none}
+  .v-head .btn.mini{padding:3px 7px;font-size:10px}
   .v-foot{padding:0 8px;gap:6px}
   .chip{padding:6px 12px;font-size:11px}
   .v-tip{display:none}
@@ -699,6 +744,14 @@ body.book-editing .book-spot .bk-del{display:block}
       </section>
     </aside>
   </main>
+
+  <!-- 新增：实时动态滚动条 -->
+  <div class="feed-bar">
+    <div class="feed-label"><span>实时动态</span></div>
+    <div class="feed-scroll-wrap">
+      <div class="feed-track" id="feedTrack"></div>
+    </div>
+  </div>
 </div>
 
 <!-- 全景查看器 -->
@@ -708,6 +761,8 @@ body.book-editing .book-spot .bk-del{display:block}
     <h2 id="vTitle">图书馆</h2>
     <span class="v-spot-name" id="vSpotName">一层 · 服务大厅</span>
     <div class="v-stats" id="vStats"></div>
+    <button class="btn mini" id="btnUploadPano" style="flex:0 0 auto" title="上传本机全景图（仅本机显示）">📁 上传</button>
+    <button class="btn mini" id="btnResetPano" style="flex:0 0 auto;display:none" title="清除本机全景图，恢复原配置">↺ 恢复</button>
     <button class="btn mini" id="btnBookEdit" style="flex:0 0 auto">✎ 编辑图书</button>
   </div>
   <div class="pano-wrap" id="panoWrap">
@@ -733,7 +788,6 @@ body.book-editing .book-spot .bk-del{display:block}
           <option value="">选择年级</option>
           <option>一年级</option><option>二年级</option><option>三年级</option>
           <option>四年级</option><option>五年级</option><option>六年级</option>
-         
         </select>
         <select id="selClassNum">
           <option value="">选择班级</option>
@@ -775,7 +829,6 @@ body.book-editing .book-spot .bk-del{display:block}
       <button class="btn" id="btnAdminCancel">取消</button>
       <button class="btn primary" id="btnAdminSubmit">验证进入</button>
     </div>
- 
   </div>
 </div>
 
@@ -887,6 +940,7 @@ body.book-editing .book-spot .bk-del{display:block}
 <input type="file" id="fileMap" accept="image/*" hidden>
 <input type="file" id="fileUserImport" accept=".json" hidden>
 <input type="file" id="fileDataImport" accept=".json" hidden>
+<input type="file" id="filePanoLocal" accept="image/*" hidden>
 <div id="dragProxy"><img id="dragProxyImg" alt=""><div class="dp-tip">松开保存位置</div></div>
 
 <script>
@@ -919,6 +973,34 @@ function setPath(o, p, v){
 const dayKey = ts => { const d = new Date(ts); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); };
 const monthKey = ts => { const d = new Date(ts); return d.getFullYear()+'-'+(d.getMonth()+1); };
 const uid = p => (p||'id')+'-'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+
+const LAST_USER_KEY = 'campus-lib-current-user-v1';
+const LOCAL_PANO_PREFIX = 'campus-lib-local-pano-';
+
+function getSavedUser(){
+  try{ return localStorage.getItem(LAST_USER_KEY) || ''; }catch(e){ return ''; }
+}
+function setSavedUser(key){
+  try{
+    if (key) localStorage.setItem(LAST_USER_KEY, key);
+    else localStorage.removeItem(LAST_USER_KEY);
+  }catch(e){}
+}
+function getLocalPano(sid){
+  if (!sid) return '';
+  try{ return localStorage.getItem(LOCAL_PANO_PREFIX + sid) || ''; }catch(e){ return ''; }
+}
+function setLocalPano(sid, base64){
+  if (!sid) return false;
+  try{
+    if (base64) localStorage.setItem(LOCAL_PANO_PREFIX + sid, base64);
+    else localStorage.removeItem(LOCAL_PANO_PREFIX + sid);
+    return true;
+  }catch(e){
+    console.warn('保存本机全景图失败:', e);
+    return false;
+  }
+}
 
 function toast(msg){
   const t = document.createElement('div');
@@ -1072,6 +1154,15 @@ const DEMO_RANK = [
   {name:'吴欣怡',cls:'三(3)班',count:9},
   {name:'郑子涵',cls:'二(1)班',count:8}
 ];
+
+const DEFAULT_FEED = [
+  { key: '阳光书房', text: '三年级(2)班已开展班级读书会' },
+  { key: '周悦', text: '获得本月第 1次借阅记录' },
+  { key: '自助借还机', text: '今日已完成 16次借还' },
+  { key: '图书馆', text: '电子资源库更新 38 本电子书' },
+  { key: '读书角', text: '新增《神奇校车》系列绘本 12 册' },
+  { key: '陈思远', text: '借阅《三体·黑暗森林》' }
+].map((f, i) => ({ ...f, t: Date.now() - i * 60000 * 5 })); // 间隔5分钟
 
 /* ============================================================
    管理员
@@ -1277,8 +1368,8 @@ const DEFAULT_CONFIG = {
   books: clone(DEFAULT_BOOKS)
 };
 
-const STORE_KEY = 'campus-lib-v16';
-const CLOUD_KEY = 'campus-lib-cloud-v9';
+const STORE_KEY = 'campus-lib-v17';
+const CLOUD_KEY = 'campus-lib-cloud-v10';
 
 let CLOUD = { token:'', gistId:'', autoSync:false, lastSync:0 };
 let cloudRealDataLoaded = false;
@@ -1291,7 +1382,7 @@ function loadCloud(){
 }
 function saveCloud(){ try{ localStorage.setItem(CLOUD_KEY, JSON.stringify(CLOUD)); }catch(e){} }
 
-let S = { config: clone(DEFAULT_CONFIG), users: {}, currentUser: null };
+let S = { config: clone(DEFAULT_CONFIG), users: {}, currentUser: null, feed: [] };
 
 /* ============================================================
    数据迁移
@@ -1301,6 +1392,12 @@ function migrate(){
   if (S.config.mapImageUrl == null) S.config.mapImageUrl = '';
   if (S.config.updatedAt == null) S.config.updatedAt = 0;
   if (S.config.booksDirty == null) S.config.booksDirty = false;
+  
+  // ★ 初始化实时动态
+  if (!Array.isArray(S.feed) || S.feed.length === 0) {
+    S.feed = clone(DEFAULT_FEED);
+  }
+  
   const validSids = new Set();
   (S.config.scenes || []).forEach(sc=>{
     if (!Array.isArray(sc.spots)) sc.spots = [];
@@ -1311,7 +1408,6 @@ function migrate(){
       validSids.add(sp.sid);
     });
   });
-  // 旧格式迁移（books[sceneId] → books[spotSid]）
   Object.keys(S.config.books).forEach(k=>{
     const sc = (S.config.scenes || []).find(s => s.id === k);
     if (sc){
@@ -1324,9 +1420,7 @@ function migrate(){
       delete S.config.books[k];
     }
   });
-  // 清理无效 sid
   Object.keys(S.config.books).forEach(k=>{ if (!validSids.has(k)) delete S.config.books[k]; });
-  // 每个点位初始化图书
   validSids.forEach(sid=>{
     if (!Array.isArray(S.config.books[sid])) S.config.books[sid] = DEFAULT_BOOKS[sid] ? clone(DEFAULT_BOOKS[sid]) : [];
     S.config.books[sid].forEach(b=>{
@@ -1346,10 +1440,11 @@ function load(){
   let raw = null;
   try{ raw = JSON.parse(localStorage.getItem(STORE_KEY)); }catch(e){}
   if (raw && typeof raw === 'object'){
-    S = deepMerge({config:clone(DEFAULT_CONFIG),users:{},currentUser:null}, raw);
+    S = deepMerge({config:clone(DEFAULT_CONFIG),users:{},currentUser:null,feed:[]}, raw);
   }
   S.config = S.config || clone(DEFAULT_CONFIG);
   S.users = S.users || {};
+  S.feed = S.feed || [];
   Object.values(S.users).forEach(u=>{ u.visits = u.visits || []; });
   migrate();
 }
@@ -1390,6 +1485,13 @@ function mergeUsers(local, remote){
     }
   }
   return out;
+}
+function mergeFeeds(local, remote) {
+  const map = new Map();
+  [...(local||[]), ...(remote||[])].forEach(f => {
+    if (f && f.t && f.key && f.text) map.set(f.t + '|' + f.key, f);
+  });
+  return Array.from(map.values()).sort((a,b) => b.t - a.t).slice(0, 50);
 }
 
 /* ============================================================
@@ -1440,7 +1542,10 @@ async function pullFromCloud(silent){
       S.users = mergeUsers(S.users, data.users);
       if (rc > 0) cloudRealDataLoaded = true;
     }
-    // 云端配置优先覆盖（直接替换，避免 deepMerge 干扰）
+    if (data.feed && Array.isArray(data.feed)) {
+      S.feed = mergeFeeds(S.feed, data.feed);
+      renderFeed();
+    }
     if (data.config && typeof data.config === 'object'){
       const remoteAt = data.config.updatedAt || 0;
       const localAt = S.config.updatedAt || 0;
@@ -1483,7 +1588,9 @@ async function pushToCloud(silent){
           S.users = mergeUsers(S.users, remote.users);
           if (rc > 0) cloudRealDataLoaded = true;
         }
-        // 配置冲突处理
+        if (remote.feed && Array.isArray(remote.feed)) {
+          S.feed = mergeFeeds(S.feed, remote.feed);
+        }
         if (remote.config && typeof remote.config === 'object' && !S.config.booksDirty){
           const remoteAt = remote.config.updatedAt || 0;
           const localAt = S.config.updatedAt || 0;
@@ -1500,7 +1607,7 @@ async function pushToCloud(silent){
       }
     }catch(e){ console.warn('拉取失败，直接上传', e); if (S.config.booksDirty) S.config.updatedAt = Date.now(); }
 
-    const payload = {config:S.config, users:S.users, exportedAt:Date.now()};
+    const payload = {config:S.config, users:S.users, feed:S.feed, exportedAt:Date.now()};
     setCloudStatus('sync', '⬆️ 正在上传…');
     const r = await fetch('https://api.github.com/gists/' + CLOUD.gistId, {
       method: 'PATCH',
@@ -1605,7 +1712,6 @@ function renderStats(){
       <div class="lab">${c.lab}</div>
       ${c.note?`<div class="note">${c.note}</div>`:''}
     </div>`).join('');
-  // 数字动画用 RAF
   $$('#statGrid [data-count]').forEach(el=>{
     const target = +el.dataset.count;
     const dur = 600; const st = performance.now();
@@ -1732,6 +1838,50 @@ function renderMap(){
   }
 }
 
+/* ★ 实时动态 */
+let feedOffset = 0;
+let feedRafId = null;
+function renderFeed() {
+  const track = $('#feedTrack');
+  if (!track) return;
+  let html = '';
+  S.feed.forEach(item => {
+    html += `<div class="feed-item">
+      <span class="feed-key">${escapeHtml(item.key)}</span>
+      <span>${escapeHtml(item.text)}</span>
+    </div>`;
+  });
+  // 复制一份以实现无缝滚动
+  track.innerHTML = html + html;
+  if (!feedRafId) {
+    feedOffset = 0;
+    feedLoop();
+  }
+}
+function feedLoop() {
+  const track = $('#feedTrack');
+  if (!track) { feedRafId = null; return; }
+  const halfWidth = track.scrollWidth / 2;
+  if (halfWidth <= 0) { feedRafId = null; return; }
+  feedOffset -= 0.5; // 滚动速度
+  if (Math.abs(feedOffset) >= halfWidth) {
+    feedOffset = 0;
+  }
+  track.style.transform = `translateX(${feedOffset}px)`;
+  feedRafId = requestAnimationFrame(feedLoop);
+}
+function addFeed(key, text) {
+  if (!S.feed) S.feed = [];
+  const last = S.feed[0];
+  // 防刷屏：如果相同内容一分钟内不重复
+  if (last && last.key === key && last.text === text && Date.now() - last.t < 60000) return;
+  S.feed.unshift({ key, text, t: Date.now() });
+  S.feed = S.feed.slice(0, 50); // 限制最多 50 条
+  saveNoSync();
+  renderFeed();
+  if (CLOUD.autoSync && CLOUD.token && CLOUD.gistId) scheduleCloudPush();
+}
+
 /* ============================================================
    图表
    ============================================================ */
@@ -1757,16 +1907,34 @@ function initCharts(){
         {offset:1,color:'rgba(0,212,255,0)'}
       ])}}]
   });
+  /* ★ 修改饼图：显示标签 */
   pieChart.setOption({
     tooltip:{trigger:'item',backgroundColor:'rgba(4,22,45,.94)',
       borderColor:'rgba(0,180,255,.5)',textStyle:{color:'#cfe9ff',fontSize:10}},
     legend:{bottom:0,icon:'circle',itemWidth:6,itemHeight:6,
       textStyle:{color:'#7fb6e0',fontSize:9},itemGap:6},
-    series:[{type:'pie',radius:['42%','68%'],center:['50%','42%'],
-      label:{show:false},avoidLabelOverlap:true,
+    series:[{
+      type:'pie',
+      radius:['36%','58%'],
+      center:['50%','42%'],
+      label: {
+        show: true,
+        formatter: '{b} {d}%',
+        color: '#cfe9ff',
+        fontSize: 10,
+        lineHeight: 14
+      },
+      labelLine: {
+        show: true,
+        length: 6,
+        length2: 8,
+        lineStyle: { color: 'rgba(0,180,255,.4)' }
+      },
+      avoidLabelOverlap: true,
       itemStyle:{borderColor:'#031127',borderWidth:2},
       color:['#00d4ff','#3b82f6','#22e6ff','#7c5cff','#0ea5e9','#f59e0b'],
-      data:[]}]
+      data:[]
+    }]
   });
   let resizeTimer = null;
   addEventListener('resize', ()=>{
@@ -1797,6 +1965,7 @@ function renderAll(){
   renderMap();
   renderCharts();
   renderUserBadge();
+  renderFeed();
 }
 
 /* ============================================================
@@ -1855,9 +2024,11 @@ function doLogin(){
   const isNew = !S.users[k];
   if (isNew) S.users[k] = {key:k, name:n, cls:c, visits:[], createdAt:Date.now()};
   S.currentUser = k;
+  setSavedUser(k);
   save();
   userModal.classList.remove('on');
   renderAll();
+  addFeed('新读者', `${n} 加入了阅读空间`);
   toast(isNew ? `欢迎新同学，${n}！` : `欢迎回来，${n}！`);
   if (CLOUD.gistId) setTimeout(()=>pullFromCloud(true), 800);
 }
@@ -2029,6 +2200,7 @@ function enterScene(idx, cardEl){
   }
   if (cardEl){ cardEl.classList.remove('flash'); void cardEl.offsetWidth; cardEl.classList.add('flash'); }
   recordVisit(s.id);
+  addFeed(s.name, `${S.users[S.currentUser].name} 正在浏览 ${s.name}`);
   openViewer(idx, 0);
 }
 function openViewer(sceneIdx, spotIdx){
@@ -2038,7 +2210,7 @@ function openViewer(sceneIdx, spotIdx){
   document.body.classList.remove('book-editing');
   $('#btnBookEdit').classList.remove('on');
   $('#btnBookEdit').textContent = '✎ 编辑图书';
-  removeBookModeTip(); removePanoFallbackTip();
+  removeBookModeTip(); removePanoFallbackTip(); removePanoLocalTip();
 
   const s = currentScene(); if (!s) return;
   $('#vTitle').textContent = s.name;
@@ -2060,30 +2232,53 @@ async function loadSpot(i){
   const spot = (s.spots||[])[i]; if (!spot) return;
   curSpotIdx = i;
   $('#vSpotName').textContent = spot.name;
-  $('#vSpotName').classList.remove('fallback');
+  $('#vSpotName').classList.remove('fallback','local');
   spotsEl.querySelectorAll('.chip').forEach((el,k)=>{
     el.classList.toggle('on', k===i);
-    el.classList.remove('fallback');
+    el.classList.remove('fallback','local');
   });
-  removePanoFallbackTip();
+  removePanoFallbackTip(); removePanoLocalTip();
   if (panoViewer){ try{ panoViewer.destroy(); }catch(e){} panoViewer = null; }
   panoEl.innerHTML = '';
   removeBookHint();
   panoEl.innerHTML = '<div style="display:flex;height:100%;align-items:center;justify-content:center;color:#6fa8d0;font-size:12px">全景加载中…</div>';
 
-  const userPano = spot.pano || '';
-  let finalPano = userPano, isFallback = false;
-  if (!userPano){ finalPano = pickOnlinePano(spot.sid||spot.name||'default'); isFallback = true; }
-  else {
-    const ok = await checkImageLoadable(userPano);
-    if (!ok){ finalPano = pickOnlinePano(spot.sid||spot.name||'default'); isFallback = true; }
+  const localPano = getLocalPano(spot.sid);
+  const spotPano = spot.pano || '';
+
+  let finalPano = '';
+  let isFallback = false;
+  let isLocal = false;
+
+  if (localPano){
+    finalPano = localPano;
+    isLocal = true;
+  } else if (!spotPano){
+    finalPano = pickOnlinePano(spot.sid || spot.name || 'default');
+    isFallback = true;
+  } else {
+    const ok = await checkImageLoadable(spotPano);
+    if (ok){
+      finalPano = spotPano;
+    } else {
+      finalPano = pickOnlinePano(spot.sid || spot.name || 'default');
+      isFallback = true;
+    }
   }
+
   if (isFallback){
     $('#vSpotName').classList.add('fallback');
     const chip = spotsEl.querySelectorAll('.chip')[i];
     if (chip) chip.classList.add('fallback');
     showPanoFallbackTip();
+  } else if (isLocal){
+    $('#vSpotName').classList.add('local');
+    const chip = spotsEl.querySelectorAll('.chip')[i];
+    if (chip) chip.classList.add('local');
+    showPanoLocalTip();
   }
+
+  updatePanoButtons();
 
   requestAnimationFrame(()=>{
     if (typeof pannellum === 'undefined'){
@@ -2122,6 +2317,13 @@ async function loadSpot(i){
   });
 }
 
+function updatePanoButtons(){
+  const sp = currentSpot();
+  const hasLocal = sp && !!getLocalPano(sp.sid);
+  const btnReset = $('#btnResetPano');
+  if (btnReset) btnReset.style.display = hasLocal ? '' : 'none';
+}
+
 function showPanoFallbackTip(){
   removePanoFallbackTip();
   const d = document.createElement('div');
@@ -2132,6 +2334,17 @@ function showPanoFallbackTip(){
   setTimeout(()=>{ if (d.parentNode){ d.style.transition='opacity .4s'; d.style.opacity='0'; setTimeout(()=>d.remove(), 500); } }, 3500);
 }
 function removePanoFallbackTip(){ const d = document.getElementById('panoFallbackTip'); if (d) d.remove(); }
+
+function showPanoLocalTip(){
+  removePanoLocalTip();
+  const d = document.createElement('div');
+  d.className = 'pano-local-tip';
+  d.id = 'panoLocalTip';
+  d.textContent = '✅ 正在使用本机上传的全景图';
+  panoWrap.appendChild(d);
+  setTimeout(()=>{ if (d.parentNode){ d.style.transition='opacity .4s'; d.style.opacity='0'; setTimeout(()=>d.remove(), 500); } }, 3000);
+}
+function removePanoLocalTip(){ const d = document.getElementById('panoLocalTip'); if (d) d.remove(); }
 
 function injectBooks(){
   if (!panoViewer) return;
@@ -2170,7 +2383,6 @@ function injectBooks(){
       if (b.url) window.open(b.url, '_blank', 'noopener');
       else toast('该图书尚未设置电子书链接');
     });
-    // 拖动使用 pointerdown 绑定到 el
     el.addEventListener('pointerdown', ev=>{
       if (!bookEditMode) return;
       if (ev.target.closest('.bk-del')) return;
@@ -2197,7 +2409,7 @@ function showBookModeTip(){
 function removeBookModeTip(){ const d = document.getElementById('bookModeTip'); if (d) d.remove(); }
 
 /* ============================================================
-   图书拖动 - 高性能方案：拖出元素，独立浮层跟随
+   图书拖动
    ============================================================ */
 const dragProxy = $('#dragProxy');
 const dragProxyImg = $('#dragProxyImg');
@@ -2208,7 +2420,6 @@ function startBookDrag(idx, el, startEv){
   const books = getBooks(sid);
   const b = books[idx]; if (!b) return;
 
-  // 记录起始状态
   dragState = {
     idx, sid,
     startX: startEv.clientX,
@@ -2219,20 +2430,15 @@ function startBookDrag(idx, el, startEv){
     lastY: startEv.clientY
   };
 
-  // 显示浮层
   imgFallback(dragProxyImg, b.img || DEFAULT_BOOK_IMG);
   dragProxy.style.left = startEv.clientX + 'px';
   dragProxy.style.top = startEv.clientY + 'px';
   dragProxy.style.display = 'block';
 
-  // 原元素半透明，提示正在拖动
   el.style.opacity = '0.25';
   el.dataset.dragging = '1';
-
-  // 尝试短暂禁用全景自动旋转
   try{ if (panoViewer) panoViewer.setAutoRotate(0); }catch(e){}
 
-  // 用 requestAnimationFrame 节流更新浮层位置
   function updateProxy(){
     dragState.rafId = null;
     if (!dragState) return;
@@ -2253,7 +2459,6 @@ function startBookDrag(idx, el, startEv){
   function onPointerUp(){
     if (!dragState) return;
     const state = dragState;
-    // 清理事件
     document.removeEventListener('pointermove', onPointerMove);
     document.removeEventListener('pointerup', onPointerUp);
     document.removeEventListener('pointercancel', onPointerUp);
@@ -2263,12 +2468,10 @@ function startBookDrag(idx, el, startEv){
     el.dataset.dragging = '';
     dragState = null;
 
-    // 恢复自动旋转
     try{ if (panoViewer) panoViewer.setAutoRotate(-1.2); }catch(e){}
 
     if (!state.moved){ refreshBookHotSpots(); return; }
 
-    // 转换为全景坐标
     let coords = null;
     try{
       if (panoViewer && typeof panoViewer.mouseEventToCoords === 'function'){
@@ -2324,7 +2527,6 @@ function refreshBookHotSpots(){
       });
     }catch(e){}
   });
-  // 轻微偏移触发重绘
   try{ const y = panoViewer.getYaw(); panoViewer.setYaw(y+0.0005); panoViewer.setYaw(y); }catch(e){}
   setTimeout(injectBooks, 60);
   setTimeout(injectBooks, 260);
@@ -2349,6 +2551,64 @@ $('#btnBookEdit').onclick = ()=>requireAdmin(()=>{
   injectBooks();
 });
 
+/* ============================================================
+   本机全景图上传/恢复
+   ============================================================ */
+$('#btnUploadPano').onclick = ()=>{
+  const sp = currentSpot();
+  if (!sp){ toast('请先选择点位'); return; }
+  $('#filePanoLocal').click();
+};
+
+$('#filePanoLocal').onchange = e=>{
+  const f = e.target.files[0];
+  if (!f) return;
+  if (!f.type.startsWith('image/')){ toast('请选择图片文件'); return; }
+  const sp = currentSpot();
+  if (!sp){ toast('请先选择点位'); return; }
+  toast('正在处理图片…');
+  const reader = new FileReader();
+  reader.onload = ev=>{
+    const img = new Image();
+    img.onload = ()=>{
+      try{
+        const MAXW = 4096;
+        let w = img.width, h = img.height;
+        if (w > MAXW){ h = Math.round(h * MAXW / w); w = MAXW; }
+        const cv = document.createElement('canvas');
+        cv.width = w; cv.height = h;
+        cv.getContext('2d').drawImage(img, 0, 0, w, h);
+        let base64 = cv.toDataURL('image/jpeg', 0.82);
+        if (!setLocalPano(sp.sid, base64)){
+          base64 = cv.toDataURL('image/jpeg', 0.7);
+          if (!setLocalPano(sp.sid, base64)){
+            toast('图片太大，无法保存。请用更小的图片或用在线图');
+            return;
+          }
+        }
+        toast('已保存到本机（仅本机显示）');
+        loadSpot(curSpotIdx);
+      }catch(err){
+        console.warn(err);
+        toast('处理图片失败，请换一张图片试试');
+      }
+    };
+    img.onerror = ()=>toast('图片读取失败');
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(f);
+  e.target.value = '';
+};
+
+$('#btnResetPano').onclick = ()=>{
+  const sp = currentSpot();
+  if (!sp) return;
+  if (!confirm('确定清除本机上传的全景图，恢复使用配置里的全景图？\n（本机操作，不会影响其他电脑）')) return;
+  setLocalPano(sp.sid, '');
+  toast('已清除本机全景图，正在重新加载…');
+  loadSpot(curSpotIdx);
+};
+
 function closeViewer(){
   viewerEl.classList.remove('on');
   bookEditMode = false;
@@ -2356,8 +2616,8 @@ function closeViewer(){
   removeBookModeTip();
   removeBookHint();
   removePanoFallbackTip();
+  removePanoLocalTip();
   if (dragState){
-    // 强制清理
     dragProxy.style.display = 'none';
     dragState = null;
   }
@@ -2419,7 +2679,6 @@ function renderAdminContent(){
   if (curTab === 'sync') setTimeout(updateCloudStatusUI, 30);
 }
 
-/* --- 基础信息 --- */
 function renderTabBasic(){
   return `<div class="sec">
     <div class="sec-title">基础信息</div>
@@ -2446,7 +2705,6 @@ function renderTabBasic(){
   </div>`;
 }
 
-/* --- 云同步 --- */
 function renderTabSync(){
   return `<div class="sec">
     <div class="sec-title">云端同步
@@ -2484,7 +2742,6 @@ function renderTabSync(){
   </div>`;
 }
 
-/* --- 场景管理 --- */
 function renderTabScenes(){
   let h = `<div class="sec">
     <div class="sec-title">场景管理
@@ -2510,10 +2767,12 @@ function renderTabScenes(){
     });
     h += `<div style="font-size:11px;color:var(--dim);margin:10px 0 6px;padding-top:8px;border-top:1px dashed rgba(0,180,255,.2);display:flex;align-items:center">全景点位<button class="mini" data-addspot="${i}" style="margin-left:auto">＋ 添加点位</button></div>`;
     (s.spots||[]).forEach((sp,k)=>{
+      const hasLocal = !!getLocalPano(sp.sid);
       h += `<div class="spot-box">
         <div class="spot-box-head">点位 ${k+1} <button class="rm" data-rmspot="${i}:${k}" style="margin-left:auto">✕</button></div>
         <div class="form-row"><span class="form-label">名称</span><input data-path="scenes.${i}.spots.${k}.name" value="${escapeAttr(sp.name)}"></div>
         <div class="form-row"><span class="form-label">全景图</span><input data-path="scenes.${i}.spots.${k}.pano" value="${escapeAttr(sp.pano)}" placeholder="images/tsg01.jpg 留空则用在线示例"></div>
+        ${hasLocal ? `<div class="notice ok" style="margin-top:6px;margin-bottom:0;padding:6px 10px;font-size:10.5px">✅ 本机已上传全景图（仅本机显示，如需删除可在全景查看器里点「↺ 恢复」）</div>` : ''}
       </div>`;
     });
     h += `</div>`;
@@ -2522,9 +2781,7 @@ function renderTabScenes(){
   return h;
 }
 
-/* --- 图书管理 --- */
 function renderTabBooks(){
-  // 确保场景和点位选择
   if (!renderTabBooks._scene || !S.config.scenes.some(s=>s.id===renderTabBooks._scene)){
     renderTabBooks._scene = S.config.scenes[0] ? S.config.scenes[0].id : null;
   }
@@ -2580,7 +2837,6 @@ function renderTabBooks(){
   return h;
 }
 
-/* --- 平面图 --- */
 function renderTabMap(){
   const src = S.config.mapImageUrl || S.config.mapImage;
   return `<div class="sec">
@@ -2601,7 +2857,6 @@ function renderTabMap(){
   </div>`;
 }
 
-/* --- 用户管理入口 --- */
 function renderTabUsers(){
   const userCount = Object.keys(S.users).length;
   return `<div class="sec">
@@ -2615,7 +2870,6 @@ function renderTabUsers(){
   </div>`;
 }
 
-/* --- 数据备份 --- */
 function renderTabData(){
   return `<div class="sec">
     <div class="sec-title">数据备份</div>
@@ -2631,12 +2885,9 @@ function renderTabData(){
   </div>`;
 }
 
-/* --- 绑定管理界面事件 --- */
 function bindAdminEvents(){
-  // 通用输入
   $('#adminContent').addEventListener('input', onAdminInput, {once:false});
 
-  // 基础 Tab
   const chkEbookAuto = $('#chkEbookAuto');
   if (chkEbookAuto) chkEbookAuto.onchange = e=>{
     S.config.ebookAuto = e.target.checked;
@@ -2644,7 +2895,6 @@ function bindAdminEvents(){
     save(); renderStats(); renderAdminContent();
   };
 
-  // 云同步 Tab
   const tokenInput = $('#cloudToken');
   const gistInput = $('#cloudGist');
   const autoChk = $('#cloudAuto');
@@ -2667,7 +2917,6 @@ function bindAdminEvents(){
   const chgPwd = $('#btnChangePwd');
   if (chgPwd) chgPwd.onclick = ()=>openAdminModal('change');
 
-  // 场景 Tab
   const addScene = $('#btnAddScene');
   if (addScene) addScene.onclick = ()=>{
     const id = uid('sc');
@@ -2687,7 +2936,6 @@ function bindAdminEvents(){
     toast('已添加场景');
   };
 
-  // 图书 Tab
   const selScene = $('#selBookScene');
   if (selScene) selScene.onchange = e=>{
     renderTabBooks._scene = e.target.value;
@@ -2732,7 +2980,6 @@ function bindAdminEvents(){
     pushToCloud(false);
   };
 
-  // 图书卡片图片点击更换
   $$('[data-bookimg]').forEach(img=>{
     img.onclick = ()=>{
       const sid = renderTabBooks._spot;
@@ -2765,7 +3012,6 @@ function bindAdminEvents(){
     };
   });
 
-  // 平面图 Tab
   const applyMain = $('#btnMapApplyMain');
   if (applyMain) applyMain.onclick = ()=>{
     const url = $('#inpMapUrlMain').value.trim();
@@ -2794,14 +3040,12 @@ function bindAdminEvents(){
     toast('已清除');
   };
 
-  // 用户 Tab
   const openUsers = $('#btnOpenUsersFromAdmin');
   if (openUsers) openUsers.onclick = ()=>{ closeAdminPage(); openUsersPage(); };
 
-  // 数据备份 Tab
   const dataExport = $('#btnDataExport');
   if (dataExport) dataExport.onclick = ()=>{
-    const data = {config:S.config, users:S.users, exportedAt:Date.now()};
+    const data = {config:S.config, users:S.users, feed:S.feed, exportedAt:Date.now()};
     downloadJSON(data, `云逛校园图书馆数据_${Object.keys(S.users).length}人`);
     toast('数据已导出');
   };
@@ -2810,14 +3054,14 @@ function bindAdminEvents(){
   const dataReset = $('#btnDataReset');
   if (dataReset) dataReset.onclick = ()=>{
     if (!confirm('确定重置为默认数据？所有用户数据将丢失！')) return;
-    S = {config:clone(DEFAULT_CONFIG), users:{}, currentUser:null};
+    S = {config:clone(DEFAULT_CONFIG), users:{}, currentUser:null, feed:clone(DEFAULT_FEED)};
     S.config.updatedAt = Date.now(); S.config.booksDirty = true;
+    setSavedUser('');
     migrate(); save(); renderAll(); renderAdminContent(); renderUserBadge();
     toast('已重置');
   };
 }
 
-/* 管理输入统一处理 */
 let adminInputTimer = null;
 function onAdminInput(e){
   const el = e.target.closest('[data-path]');
@@ -2832,23 +3076,25 @@ function onAdminInput(e){
   adminInputTimer = setTimeout(()=>{
     renderTitle(); renderStats(); renderRank();
     renderEntries(); renderHotspots(); renderMap(); renderCharts();
-    // 全景打开时若修改的是当前点位图书，刷新
     if (viewerEl.classList.contains('on') && el.dataset.path.indexOf('books.') === 0 && el.dataset.path.indexOf('books.'+currentSid()+'.') === 0){
       injectBooks();
     }
   }, 200);
 }
 
-/* 场景/图书 Tab 内删除（事件委托） */
 $('#adminContent').addEventListener('click', e=>{
-  // 删除场景
   const rmScene = e.target.closest('[data-rmscene]');
   if (rmScene){
     const i = +rmScene.dataset.rmscene;
     const sc = S.config.scenes[i]; if (!sc) return;
     if (S.config.scenes.length <= 1){ toast('至少保留一个场景'); return; }
     if (!confirm(`确定删除场景「${sc.name}」？`)) return;
-    (sc.spots||[]).forEach(sp=>{ if (sp.sid && S.config.books[sp.sid]) delete S.config.books[sp.sid]; });
+    (sc.spots||[]).forEach(sp=>{
+      if (sp.sid){
+        if (S.config.books[sp.sid]) delete S.config.books[sp.sid];
+        setLocalPano(sp.sid, '');
+      }
+    });
     S.config.scenes.splice(i, 1);
     if (curSceneIdx >= S.config.scenes.length) curSceneIdx = 0;
     S.config.updatedAt = Date.now(); S.config.booksDirty = true;
@@ -2856,7 +3102,6 @@ $('#adminContent').addEventListener('click', e=>{
     toast('场景已删除');
     return;
   }
-  // 添加点位
   const addSpot = e.target.closest('[data-addspot]');
   if (addSpot){
     const si = +addSpot.dataset.addspot;
@@ -2870,7 +3115,6 @@ $('#adminContent').addEventListener('click', e=>{
     toast('已添加点位');
     return;
   }
-  // 删除点位
   const rmSpot = e.target.closest('[data-rmspot]');
   if (rmSpot){
     const [si, pi] = rmSpot.dataset.rmspot.split(':').map(Number);
@@ -2878,14 +3122,16 @@ $('#adminContent').addEventListener('click', e=>{
     if ((sc.spots||[]).length <= 1){ toast('每个场景至少保留一个点位'); return; }
     const sp = sc.spots[pi]; if (!sp) return;
     if (!confirm(`确定删除点位「${sp.name}」？`)) return;
-    if (sp.sid && S.config.books[sp.sid]) delete S.config.books[sp.sid];
+    if (sp.sid){
+      if (S.config.books[sp.sid]) delete S.config.books[sp.sid];
+      setLocalPano(sp.sid, '');
+    }
     sc.spots.splice(pi, 1);
     S.config.updatedAt = Date.now(); S.config.booksDirty = true;
     save(); renderAll(); renderAdminContent();
     toast('点位已删除');
     return;
   }
-  // 删除图书
   const rmBook = e.target.closest('[data-rmbook]');
   if (rmBook){
     const sid = renderTabBooks._spot;
@@ -2951,7 +3197,6 @@ function renderUsersPage(){
   const startIdx = (upState.page-1) * upState.pageSize;
   const pageList = filtered.slice(startIdx, startIdx + upState.pageSize);
 
-  // 清理失效选中
   const validKeys = new Set(all.map(u=>u.key));
   [...upState.selected].forEach(k=>{ if (!validKeys.has(k)) upState.selected.delete(k); });
 
@@ -3029,7 +3274,11 @@ $('#upList').addEventListener('click', e=>{
     if (!confirm(`确定删除用户「${u.cls} ${u.name}」？${warn}`)) return;
     delete S.users[key];
     upState.selected.delete(key);
-    if (isMe){ S.currentUser = null; userModal.classList.add('on'); }
+    if (isMe){
+      S.currentUser = null;
+      setSavedUser('');
+      userModal.classList.add('on');
+    }
     save(); renderAll(); renderUsersPage();
     toast('已删除');
     return;
@@ -3061,7 +3310,11 @@ $('#upBatchDelete').onclick = ()=>{
   const warn = hasMe ? '\n（包含当前登录用户）' : '';
   if (!confirm(`删除 ${keys.length} 位用户？${warn}`)) return;
   keys.forEach(k=>delete S.users[k]);
-  if (hasMe){ S.currentUser = null; userModal.classList.add('on'); }
+  if (hasMe){
+    S.currentUser = null;
+    setSavedUser('');
+    userModal.classList.add('on');
+  }
   upState.selected.clear();
   save(); renderAll(); renderUsersPage();
   toast(`已删除 ${keys.length} 位`);
@@ -3157,7 +3410,7 @@ $('#fileDataImport').onchange = e=>{
   r.onload = ev=>{
     try{
       const obj = JSON.parse(ev.target.result);
-      S = deepMerge({config:clone(DEFAULT_CONFIG), users:{}, currentUser:null}, obj);
+      S = deepMerge({config:clone(DEFAULT_CONFIG), users:{}, currentUser:null, feed:clone(DEFAULT_FEED)}, obj);
       S.config.booksDirty = true;
       migrate();
       save(); renderAll(); renderAdminContent(); renderUserBadge();
@@ -3198,7 +3451,7 @@ function downloadJSON(obj, filename){
 })();
 
 /* ============================================================
-   背景粒子（性能优化：24个点 + 30fps）
+   背景粒子
    ============================================================ */
 (function(){
   const c = $('#bg'), ctx = c.getContext('2d');
@@ -3251,12 +3504,25 @@ function downloadJSON(obj, filename){
 async function bootstrap(){
   loadCloud();
   load();
+  try{
+    const lastKey = getSavedUser();
+    if (lastKey && S.users[lastKey]){
+      S.currentUser = lastKey;
+      saveNoSync();
+    }
+  }catch(e){}
+
   initCharts();
   renderAll();
   adminAuthed = checkAdminSession();
   updateManageBtn();
-  if (S.currentUser && S.users[S.currentUser]) userModal.classList.remove('on');
-  else setTimeout(()=>inpName.focus(), 350);
+
+  if (S.currentUser && S.users[S.currentUser]){
+    userModal.classList.remove('on');
+  } else {
+    setTimeout(()=>inpName.focus(), 350);
+  }
+
   if (CLOUD.gistId && CLOUD.token) setTimeout(()=>pullFromCloud(true), 1200);
   setInterval(()=>{
     if (CLOUD.gistId && CLOUD.token && !syncBusy && !viewerEl.classList.contains('on')){
